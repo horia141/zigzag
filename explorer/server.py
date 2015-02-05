@@ -58,7 +58,7 @@ def main():
             logging.info('Saving artifact "%s" to database', artifact_desc['title'])
             artifact = models.Artifact.add(artifact_desc['page_url'], 
                 generation, artifact_source, artifact_desc['title'],
-                '$$$'.join(artifact_desc['image_url_paths']))
+                artifact_desc['images_description'])
 
             logging.info('Finished processing for "%s"', artifact.title)
 

@@ -1,4 +1,5 @@
 import datetime
+import json
 
 from django.db import models
 
@@ -115,19 +116,26 @@ class Artifact(models.Model):
     generation = models.ForeignKey(Generation, related_name='artifacts')
     artifact_source = models.ForeignKey(ArtifactSource, related_name='artifacts')
     title = models.CharField(max_length=100)
-    image_url_paths = models.TextField()
+    images_description_coded = models.TextField()
 
     @staticmethod
     def all():
         return Artifact.objects.all().order_by('id')
 
     @staticmethod
-    def add(page_url, generation, artifact_source, title, image_url_paths):
+    def add(page_url, generation, artifact_source, title, images_description):
         assert isinstance(page_url, basestring)
         assert isinstance(generation, Generation)
         assert isinstance(artifact_source, ArtifactSource)
         assert isinstance(title, basestring)
-        assert isinstance(image_url_paths, basestring)
+        assert isinstance(images_description, list)
+        assert all(isinstance(d, dict) for d in images_description)
+        assert all('subtitle' in d for d in images_description)
+        assert all(isinstance(d['subtitle'], basestring) for d in images_description)
+        assert all('description' in d for d in images_description)
+        assert all(isinstance(d['description'], basestring) for d in images_description)
+        assert all('url_path' for d in images_description)
+        assert all(isinstance(d['url_path'], basestring) for d in images_description)
 
         try:
             artifact = Artifact.objects.get(page_url=page_url)
@@ -140,7 +148,8 @@ class Artifact(models.Model):
         artifact.generation = generation
         artifact.artifact_source = artifact_source
         artifact.title = title
-        artifact.image_url_paths = image_url_paths
+        artifact.images_description = images_description
+        artifact.images_description_coded = json.dumps(images_description)
         artifact.save()
 
         return artifact
@@ -150,11 +159,16 @@ class Artifact(models.Model):
         assert isinstance(artifact_page_url, basestring)
 
         try:
-            artifact = Artifact.objects.get(page_url=artifact_page_url)
+           artifact = Artifact.objects.get(page_url=artifact_page_url)
         except Artifact.DoesNotExist as e:
             raise Error('Artifact "%s" does not exist' % artifact_page_url)
 
         return artifact
+
+    def __init__(self, *args, **kwargs):
+        super(Artifact, self).__init__(*args, **kwargs)
+        if self.images_description_coded:
+            self.images_description = json.loads(self.images_description_coded)
 
     def to_json_dict(self):
         json_dict = {}
@@ -163,14 +177,6 @@ class Artifact(models.Model):
         json_dict['page_url'] = self.page_url
         json_dict['artifact_source_id'] = str(self.artifact_source.id)
         json_dict['title'] = self.title
-        json_dict['image_url_paths'] = self.image_url_paths.split('$$$')
+        json_dict['images_description'] = self.images_description
 
         return json_dict
-
-# class User(models.Model):
-#     time_joined = models.DateTimeField()
-
-
-# class UserGenerationViews(models.Model):
-#     user = models.ForeignKey(User, related_name='viewed_generations')
-#     generation = models.ForeignKey(Generation, related_names='viewed_by_users')

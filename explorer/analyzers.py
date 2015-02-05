@@ -121,7 +121,11 @@ class Reddit(Analyzer):
             return {
                 'page_url': artifact_page_url,
                 'title': title,
-                'image_url_paths': [artifact_page_url]
+                'images_description': [{
+                    'subtitle': '',
+                    'description': '',
+                    'url_path': artifact_page_url
+                }]
             }
         else:
             return self._imgur_analyzer._analyze_artifact_link(artifact_page_url)
@@ -200,6 +204,32 @@ class Imgur(Analyzer):
         if soup is None:
             raise Error('Could not parse structure')
 
+        # panel = soup.find('div', {'class': 'panel'})
+
+        # if panel is not None:
+        #     # Might be one of them panels.
+        #     title_elem = soup.find('h1', {'class': 'image-title'})
+
+        #     if title_elem is None:
+        #         raise Error('Could not find title')
+
+        #     title = title_elem.text
+
+        #     url_path_raw = panel.find('img')
+        #     if url_path_raw is None:
+        #         raise Error('Could not find url')
+        #     url_path = urlparse.urlparse(url_path_raw.get('src'), scheme='http').geturl()
+
+        #     return {
+        #         'page_url': artifact_page_url,
+        #         'title': title,
+        #         'images_description': [{
+        #             'subtitle': '',
+        #             'description': '',
+        #             'url_path': url_path
+        #         }]
+        #     }
+
         title_elem = soup.find('h1', id='image-title')
 
         if title_elem is None:
@@ -217,17 +247,43 @@ class Imgur(Analyzer):
         if image is None:
             raise Error('Could not find image')
 
-        possible_image_url_paths = image.findAll('img')
-        image_url_paths = [urlparse.urlparse(i.get('src'), scheme='http').geturl()
-                           for i in possible_image_url_paths]
+        actual_images = image.findAll('div', {'class': 'album-image'})
 
-        if len(image_url_paths) == 0:
+        if len(actual_images) == 0:
+            # Sometimes, a single image is present, and that is "image".
+            actual_images = [image]
+
+        images_description = []
+
+        for actual_image in actual_images:
+            subtitle_raw = actual_image.find('h2', {'class': 'image-title small-margin-bottom'})
+            if subtitle_raw is None:
+                subtitle = ''
+            else:
+                subtitle = subtitle_raw.text
+            description_raw = actual_image.find('p', {'class': 'description textbox'})
+            if description_raw is None:
+                description = ''
+            else:
+                description = description_raw.text
+            url_path_raw = actual_image.find('img')
+            if url_path_raw is None:
+                continue
+            url_path = urlparse.urlparse(url_path_raw.get('src'), scheme='http').geturl()
+
+            images_description.append({
+                'subtitle': subtitle,
+                'description': description,
+                'url_path': url_path
+            })
+
+        if len(images_description) == 0:
             raise Error('Could not find images')
 
-        logging.info('Found title and %d images', len(image_url_paths))
+        logging.info('Found title and %d images', len(images_description))
 
         return {
             'page_url': artifact_page_url,
             'title': title,
-            'image_url_paths': image_url_paths
+            'images_description': images_description
         }
