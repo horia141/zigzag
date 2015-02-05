@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">ZigZag</string>
+    <string name="action_settings">Settings</string>
+    <string name="fragment_media_carousel_title">Title</string>
+    <string name="fragment_media_carousel_save_button">Save</string>
+    <string name="fragment_media_carousel_share_button">Share</string>
+    <string name="fragment_media_carousel_next_button">Next</string>
+
+</resources>
