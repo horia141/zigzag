@@ -4,6 +4,7 @@ import com.zigzag.client_app.model.Artifact;
 import com.zigzag.client_app.model.ArtifactSource;
 import com.zigzag.client_app.model.EntityId;
 import com.zigzag.client_app.model.Generation;
+import com.zigzag.client_app.model.ImageDescription;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -116,16 +117,32 @@ public class ModelDecoder {
 
             String title = artifactJson.getString("title");
 
-            JSONArray imageUrlPathsJson = artifactJson.getJSONArray("image_url_paths");
-            List<String> imageUrlPaths = new ArrayList<String>(imageUrlPathsJson.length());
+            JSONArray imagesDescriptionJson = artifactJson.getJSONArray("images_description");
+            List<ImageDescription> imagesDescription = new ArrayList<ImageDescription>();
 
-            for (int ii = 0; ii < imageUrlPathsJson.length(); ii++) {
-                imageUrlPaths.add(imageUrlPathsJson.getString(ii));
+            for (int ii = 0; ii < imagesDescriptionJson.length(); ii++) {
+                imagesDescription.add(decodeImageDescription(imagesDescriptionJson.getJSONObject(ii)));
             }
 
-            Artifact artifact = new Artifact(id, pageUrl, artifactSource, title, imageUrlPaths);
+            Artifact artifact = new Artifact(id, pageUrl, artifactSource, title, imagesDescription);
 
             return artifact;
+        } catch (JSONException e) {
+            throw new Error(e.toString());
+        }
+    }
+
+    private ImageDescription decodeImageDescription(JSONObject imageDescriptionJson) throws Error {
+        try {
+            String subtitle = imageDescriptionJson.getString("subtitle");
+
+            String description = imageDescriptionJson.getString("description");
+
+            String urlPath = imageDescriptionJson.getString("url_path");
+
+            ImageDescription imageDescription = new ImageDescription(subtitle, description, urlPath);
+
+            return imageDescription;
         } catch (JSONException e) {
             throw new Error(e.toString());
         }

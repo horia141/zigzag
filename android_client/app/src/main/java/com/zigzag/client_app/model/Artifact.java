@@ -7,15 +7,15 @@ public class Artifact extends Entity {
     private final String pageUrl;
     private final ArtifactSource artifactSource;
     private final String title;
-    private final List<String> imageUrlPaths;
+    private final List<ImageDescription> imagesDescription;
 
     public Artifact(EntityId id, String pageUrl, ArtifactSource artifactSource,
-                    String title, List<String> imageUrlPaths) {
+                    String title, List<ImageDescription> imagesDescription) {
         super(id);
         this.pageUrl = pageUrl;
         this.artifactSource = artifactSource;
         this.title = title;
-        this.imageUrlPaths = imageUrlPaths;
+        this.imagesDescription = imagesDescription;
     }
 
     public String getPageUrl() {
@@ -30,7 +30,7 @@ public class Artifact extends Entity {
         return title;
     }
 
-    public List<String> getImageUrlPaths() {
-        return Collections.unmodifiableList(imageUrlPaths);
+    public List<ImageDescription> getImagesDescription() {
+        return Collections.unmodifiableList(imagesDescription);
     }
 }

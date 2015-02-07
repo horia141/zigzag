@@ -7,5 +7,7 @@
     <string name="fragment_media_carousel_save_button">Save</string>
     <string name="fragment_media_carousel_share_button">Share</string>
     <string name="fragment_media_carousel_next_button">Next</string>
+    <string name="fragment_media_carousel_one_image_subtitle">Subtitle</string>
+    <string name="fragment_media_carousel_one_image_description">Description</string>
 
 </resources>

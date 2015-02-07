@@ -14,6 +14,7 @@ import com.android.volley.toolbox.Volley;
 import com.zigzag.client_app.model.Artifact;
 import com.zigzag.client_app.model.EntityId;
 import com.zigzag.client_app.model.Generation;
+import com.zigzag.client_app.model.ImageDescription;
 
 import org.json.JSONObject;
 
@@ -23,7 +24,7 @@ import java.util.List;
 public final class Controller {
     public static interface NextArtifactListener {
         void onInitialArtifactData(EntityId id, String title, String sourceName, int numberOfImage);
-        void onImageForArtifact(EntityId id, int imageIdx, Bitmap image);
+        void onImageForArtifact(EntityId id, int imageIdx, ImageDescription imageDescription, Bitmap image);
         void onError(String errorDescription);
     }
 
@@ -153,14 +154,14 @@ public final class Controller {
 
         // Change the view to reflect new changes.
         nextArtifactListener.onInitialArtifactData(lastArtifact.getId(), lastArtifact.getTitle(),
-                lastArtifact.getArtifactSource().getName(), lastArtifact.getImageUrlPaths().size());
+                lastArtifact.getArtifactSource().getName(), lastArtifact.getImagesDescription().size());
 
         // Trigger fetch of artifact images.
-        for (int ii = 0; ii < lastArtifact.getImageUrlPaths().size(); ii++) {
+        for (int ii = 0; ii < lastArtifact.getImagesDescription().size(); ii++) {
             final int imageIdx = ii;
-            String imageUrlPath = lastArtifact.getImageUrlPaths().get(ii);
+            final ImageDescription imageDescription = lastArtifact.getImagesDescription().get(ii);
             // TODO(horia141): these should be cancelled if that's the case.
-            imageLoader.get(imageUrlPath, new ImageLoader.ImageListener() {
+            imageLoader.get(imageDescription.getUrlPath(), new ImageLoader.ImageListener() {
                 @Override
                 public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
                     // Either {@link stopEverything} has been called, or the listener has changed. In either
@@ -175,7 +176,8 @@ public final class Controller {
                         return;
                     }
 
-                    nextArtifactListener.onImageForArtifact(lastArtifact.getId(), imageIdx, response.getBitmap());
+                    nextArtifactListener.onImageForArtifact(lastArtifact.getId(), imageIdx,
+                            imageDescription, response.getBitmap());
                 }
 
                 @Override

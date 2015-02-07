@@ -13,10 +13,22 @@
         android:indeterminate="true"
         android:layout_gravity="center" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/fragment_media_carousel_one_image_subtitle"
+        android:id="@+id/subtitle" />
+
     <com.zigzag.client_app.ResizableImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:id="@+id/image"
         android:src="@drawable/just_an_image"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/fragment_media_carousel_one_image_description"
+        android:id="@+id/description" />
 </LinearLayout>
