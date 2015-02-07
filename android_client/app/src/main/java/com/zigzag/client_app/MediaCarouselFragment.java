@@ -1,6 +1,5 @@
 package com.zigzag.client_app;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -14,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -27,12 +25,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MediaCarouselFragment extends Fragment implements Controller.NextArtifactListener {
-    private static class BitmapListAdapter extends ArrayAdapter<Pair<ImageDescription, Bitmap>> {
-        private final List<Pair<ImageDescription, Bitmap>> bitmapList;
+    private static class ImagesDescriptionBitmapListAdapter extends ArrayAdapter<Pair<ImageDescription, Bitmap>> {
+        private static class ViewHolder {
+            ProgressBar progressBar;
+            TextView subtitleTextView;
+            ResizableImageView imageView;
+            TextView descriptionTextView;
+        }
 
-        public BitmapListAdapter(Context context, List<Pair<ImageDescription, Bitmap>> bitmapList) {
-            super(context, R.layout.fragment_media_carousel_one_image, bitmapList);
-            this.bitmapList = bitmapList;
+        private final List<Pair<ImageDescription, Bitmap>> imagesDescriptionBitmapList;
+
+        public ImagesDescriptionBitmapListAdapter(Context context, List<Pair<ImageDescription, Bitmap>> imagesDescriptionBitmapList) {
+            super(context, R.layout.fragment_media_carousel_one_image, imagesDescriptionBitmapList);
+            this.imagesDescriptionBitmapList = imagesDescriptionBitmapList;
         }
 
         @Override
@@ -40,42 +45,52 @@ public class MediaCarouselFragment extends Fragment implements Controller.NextAr
             LayoutInflater inflater = (LayoutInflater) getContext()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-            // Build the basic view of the element.
-            View rowView = inflater.inflate(R.layout.fragment_media_carousel_one_image, parent, false);
+            View rowView = convertView;
+            ViewHolder rowViewHolder;
 
-            ProgressBar progressBar = (ProgressBar)rowView.findViewById(R.id.waiting);
-            TextView subtitleTextView = (TextView)rowView.findViewById(R.id.subtitle);
-            ResizableImageView imageView = (ResizableImageView)rowView.findViewById(R.id.image);
-            TextView descriptionTextView = (TextView)rowView.findViewById(R.id.description);
+            // Build the basic view of the element, and cache it for later use.
+            if (rowView == null) {
+                rowView = inflater.inflate(R.layout.fragment_media_carousel_one_image, parent, false);
+                rowViewHolder = new ViewHolder();
 
-            Pair<ImageDescription, Bitmap> pair = bitmapList.get(position);
+                rowViewHolder.progressBar = (ProgressBar) rowView.findViewById(R.id.waiting);
+                rowViewHolder.subtitleTextView = (TextView) rowView.findViewById(R.id.subtitle);
+                rowViewHolder.imageView = (ResizableImageView) rowView.findViewById(R.id.image);
+                rowViewHolder.descriptionTextView = (TextView) rowView.findViewById(R.id.description);
+
+                rowView.setTag(rowViewHolder);
+            } else {
+                rowViewHolder = (ViewHolder)rowView.getTag();
+            }
+
+            Pair<ImageDescription, Bitmap> pair = imagesDescriptionBitmapList.get(position);
 
             if (pair == null) {
-                progressBar.setVisibility(View.VISIBLE);
-                subtitleTextView.setVisibility(View.GONE);
-                imageView.setVisibility(View.GONE);
-                descriptionTextView.setVisibility(View.GONE);
+                rowViewHolder.progressBar.setVisibility(View.VISIBLE);
+                rowViewHolder.subtitleTextView.setVisibility(View.GONE);
+                rowViewHolder.imageView.setVisibility(View.GONE);
+                rowViewHolder.descriptionTextView.setVisibility(View.GONE);
             } else {
                 ImageDescription imageDescription = pair.first;
                 Bitmap bitmap = pair.second;
 
-                progressBar.setVisibility(View.GONE);
+                rowViewHolder.progressBar.setVisibility(View.GONE);
 
                 if (!imageDescription.getSubtitle().equals("")) {
-                    subtitleTextView.setText(imageDescription.getSubtitle());
-                    subtitleTextView.setVisibility(View.VISIBLE);
+                    rowViewHolder.subtitleTextView.setText(imageDescription.getSubtitle());
+                    rowViewHolder.subtitleTextView.setVisibility(View.VISIBLE);
                 } else {
-                    subtitleTextView.setVisibility(View.GONE);
+                    rowViewHolder.subtitleTextView.setVisibility(View.GONE);
                 }
 
-                imageView.setVisibility(View.VISIBLE);
-                imageView.setImageBitmap(bitmap);
+                rowViewHolder.imageView.setVisibility(View.VISIBLE);
+                rowViewHolder.imageView.setImageBitmap(bitmap);
 
                 if (!imageDescription.getDescription().equals("")) {
-                    descriptionTextView.setText(imageDescription.getDescription());
-                    descriptionTextView.setVisibility(View.VISIBLE);
+                    rowViewHolder.descriptionTextView.setText(imageDescription.getDescription());
+                    rowViewHolder.descriptionTextView.setVisibility(View.VISIBLE);
                 } else {
-                    descriptionTextView.setVisibility(View.GONE);
+                    rowViewHolder.descriptionTextView.setVisibility(View.GONE);
                 }
             }
 
@@ -84,13 +99,13 @@ public class MediaCarouselFragment extends Fragment implements Controller.NextAr
     }
 
     private EntityId currentImageId;
-    private final List<Pair<ImageDescription, Bitmap>> bitmapList;
-    @Nullable private BitmapListAdapter bitmapListAdapter;
+    private final List<Pair<ImageDescription, Bitmap>> imagesDescriptionBitmapList;
+    @Nullable private ImagesDescriptionBitmapListAdapter imagesDescriptionBitmapListAdapter;
 
     public MediaCarouselFragment() {
         this.currentImageId = null;
-        this.bitmapList = new ArrayList<Pair<ImageDescription, Bitmap>>();
-        this.bitmapListAdapter = null;
+        this.imagesDescriptionBitmapList = new ArrayList<Pair<ImageDescription, Bitmap>>();
+        this.imagesDescriptionBitmapListAdapter = null;
     }
 
     @Override
@@ -102,11 +117,11 @@ public class MediaCarouselFragment extends Fragment implements Controller.NextAr
 
         ProgressBar waitingView = (ProgressBar)rootView.findViewById(R.id.waiting);
 
-        bitmapListAdapter = new BitmapListAdapter(getActivity(), this.bitmapList);
+        imagesDescriptionBitmapListAdapter = new ImagesDescriptionBitmapListAdapter(getActivity(), this.imagesDescriptionBitmapList);
 
         ListView imageListView = (ListView)rootView.findViewById(R.id.image_list);
         imageListView.setEmptyView(waitingView);
-        imageListView.setAdapter(bitmapListAdapter);
+        imageListView.setAdapter(imagesDescriptionBitmapListAdapter);
 
         Button saveButton = (Button)rootView.findViewById(R.id.save_button);
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -178,11 +193,11 @@ public class MediaCarouselFragment extends Fragment implements Controller.NextAr
         // to contain only nulls and the associated adapter and associate them with the image
         // list view.
         currentImageId = id;
-        bitmapList.clear();
+        imagesDescriptionBitmapList.clear();
         for (int ii = 0; ii < numberOfImages; ii++) {
-            bitmapList.add(null);
+            imagesDescriptionBitmapList.add(null);
         }
-        bitmapListAdapter.notifyDataSetChanged();
+        imagesDescriptionBitmapListAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -191,9 +206,9 @@ public class MediaCarouselFragment extends Fragment implements Controller.NextAr
 
         if (imageIdx < 0) {
             return;
-        } else if (imageIdx >= bitmapList.size()) {
+        } else if (imageIdx >= imagesDescriptionBitmapList.size()) {
             Log.e("ZigZag/MediaCarouselFragment", String.format("Got an image for list index %d, but list" +
-                    " has size %d", imageIdx, bitmapList.size()));
+                    " has size %d", imageIdx, imagesDescriptionBitmapList.size()));
             return;
         }
 
@@ -203,8 +218,8 @@ public class MediaCarouselFragment extends Fragment implements Controller.NextAr
         }
 
         // Update the list of bitmaps and notify the adapter about it.
-        bitmapList.set(imageIdx, new Pair(imageDescription, image));
-        bitmapListAdapter.notifyDataSetChanged();
+        imagesDescriptionBitmapList.set(imageIdx, new Pair(imageDescription, image));
+        imagesDescriptionBitmapListAdapter.notifyDataSetChanged();
     }
 
     @Override
