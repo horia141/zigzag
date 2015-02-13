@@ -31,6 +31,10 @@ class Analyzer(object):
 
         return (raw_content, file_obj.info().gettype())
 
+    @staticmethod
+    def _parse_incomplete_url(incomplete_url):
+        return urlparse.urlparse(incomplete_url, scheme='http').geturl()
+
 class Reddit(Analyzer):
     """Class for performing analysis of the Reddit artifact source."""
 
@@ -204,6 +208,21 @@ class Imgur(Analyzer):
         if soup is None:
             raise Error('Could not parse structure')
 
+        album_truncated = soup.find('div', id='album-truncated')
+
+        if album_truncated is not None:
+            # The album was truncated. Need to get to the real deal.
+            new_artifact_page_url_elem = album_truncated.find('a')
+            if new_artifact_page_url_elem is not None:
+                logging.info('A very big album. Rescanning album')
+                new_artifact_page_url = self._parse_incomplete_url(
+                    new_artifact_page_url_elem.get('href'))
+                return self._analyze_artifact_link_as_album(new_artifact_page_url)
+            else:
+                # Still continue with the regular analysis if we couldn't find the
+                # actual link.
+                pass
+
         # panel = soup.find('div', {'class': 'panel'})
 
         # if panel is not None:
@@ -269,7 +288,80 @@ class Imgur(Analyzer):
             url_path_raw = actual_image.find('img')
             if url_path_raw is None:
                 continue
-            url_path = urlparse.urlparse(url_path_raw.get('src'), scheme='http').geturl()
+            url_path = self._parse_incomplete_url(url_path_raw.get('src'))
+
+            images_description.append({
+                'subtitle': subtitle,
+                'description': description,
+                'url_path': url_path
+            })
+
+        if len(images_description) == 0:
+            raise Error('Could not find images')
+
+        logging.info('Found title and %d images', len(images_description))
+
+        return {
+            'page_url': artifact_page_url,
+            'title': title,
+            'images_description': images_description
+        }
+
+    def _analyze_artifact_link_as_album(self, artifact_page_url):
+        logging.info('Analyzing "%s"', artifact_page_url)
+
+        try:
+            (page_raw_content, page_mime_type) = self._fetch_as_bot(artifact_page_url)
+            if page_mime_type not in defines.WEBPAGE_MIMETYPES:
+                raise Error('Page is of wrong MIME type')
+        except urllib2.URLError as e:
+            raise Error('Could not fetch - %s' % str(e))
+
+        logging.info('Parse structure')
+        soup = bs.BeautifulSoup(page_raw_content, convertEntities=bs.BeautifulSoup.HTML_ENTITIES)
+
+        if soup is None:
+            raise Error('Could not parse structure')
+
+        title_elem_container = soup.find('div', {'class': 'album-description'})
+
+        if title_elem_container is None:
+            raise Error('Could not find title container')
+
+        title_elem = title_elem_container.find('h1')
+
+        if title_elem is None:
+            raise Error('Could not find title')
+
+        title = title_elem.text
+
+        main_image = soup.find('div', id='image-container')
+
+        if main_image is None:
+            raise Error('Could not find set of images')
+
+        actual_images = main_image.findAll('div', {'class': 'image'})
+        images_description = []
+
+        for actual_image in actual_images:
+            subtitle_raw = actual_image.find('h2', {'class': 'first'})
+
+            if subtitle_raw is None:
+                subtitle = ''
+            else:
+                subtitle = subtitle_raw.text
+            description_raw = actual_image.find('p', {'class': 'description textbox'})
+            if description_raw is None:
+                description = ''
+            else:
+                description = description_raw.text
+            url_path_container = actual_image.find('div', {'class': 'options'})
+            if url_path_container is None:
+                continue
+            url_path_raw = url_path_container.find('a')
+            if url_path_raw is None:
+                continue
+            url_path = self._parse_incomplete_url(url_path_raw.get('href'))
 
             images_description.append({
                 'subtitle': subtitle,
