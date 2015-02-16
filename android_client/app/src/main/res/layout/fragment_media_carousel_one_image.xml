@@ -15,9 +15,12 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:text="@string/fragment_media_carousel_one_image_subtitle"
-        android:id="@+id/subtitle" />
+        android:id="@+id/subtitle"
+        android:textSize="18sp"
+        android:ellipsize="end"
+        android:lines="2" />
 
     <com.zigzag.client_app.ResizableImageView
         android:layout_width="wrap_content"
@@ -30,5 +33,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/fragment_media_carousel_one_image_description"
-        android:id="@+id/description" />
+        android:id="@+id/description"
+        android:textSize="16sp" />
 </LinearLayout>
