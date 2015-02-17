@@ -14,15 +14,43 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="@string/fragment_media_carousel_title"
-            android:id="@+id/title"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:ellipsize="end"
-            android:lines="2" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="50dp"
+                android:text="@string/fragment_media_carousel_title"
+                android:id="@+id/title"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:ellipsize="end"
+                android:lines="2" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/fragment_media_carousel_save_button"
+                android:src="@drawable/ic_save"
+                android:id="@+id/save_button" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/fragment_media_carousel_share_button"
+                android:src="@drawable/ic_share"
+                android:id="@+id/share_button" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/fragment_media_carousel_next_button"
+                android:src="@drawable/ic_next"
+                android:id="@+id/next_button" />
+        </LinearLayout>
 
         <ProgressBar
             android:id="@+id/waiting"
@@ -38,34 +66,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"/>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal">
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="@string/fragment_media_carousel_save_button"
-                android:id="@+id/save_button" />
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="@string/fragment_media_carousel_share_button"
-                android:id="@+id/share_button" />
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="@string/fragment_media_carousel_next_button"
-                android:id="@+id/next_button" />
-        </LinearLayout>
 
     </LinearLayout>
 </RelativeLayout>

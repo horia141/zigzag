@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -123,21 +124,21 @@ public class MediaCarouselFragment extends Fragment implements Controller.NextAr
         imageListView.setEmptyView(waitingView);
         imageListView.setAdapter(imagesDescriptionBitmapListAdapter);
 
-        Button saveButton = (Button)rootView.findViewById(R.id.save_button);
+        ImageButton saveButton = (ImageButton)rootView.findViewById(R.id.save_button);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View saveButton) {
             }
         });
 
-        Button shareButton = (Button)rootView.findViewById(R.id.share_button);
+        ImageButton shareButton = (ImageButton)rootView.findViewById(R.id.share_button);
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View shareButton) {
             }
         });
 
-        Button nextButton = (Button)rootView.findViewById(R.id.next_button);
+        ImageButton nextButton = (ImageButton)rootView.findViewById(R.id.next_button);
         final MediaCarouselFragment thisForClosure = this;
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
