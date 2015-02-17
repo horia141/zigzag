@@ -176,8 +176,11 @@ public final class Controller {
                         return;
                     }
 
+                    // Bitmap is rounded here. For performance reasons, only this copy of the thing
+                    // should exist, rather than it being recomputed every time.
+                    Bitmap roundedCornerBitmap = ImageHelper.getRoundedCornerBitmap(response.getBitmap(), 12);
                     nextArtifactListener.onImageForArtifact(lastArtifact.getId(), imageIdx,
-                            imageDescription, response.getBitmap());
+                            imageDescription, roundedCornerBitmap);
                 }
 
                 @Override
