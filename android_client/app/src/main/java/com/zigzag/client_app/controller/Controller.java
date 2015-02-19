@@ -3,6 +3,7 @@ package com.zigzag.client_app.controller;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class Controller {
+
     public static interface NextArtifactListener {
         void onInitialArtifactData(EntityId id, String title, String sourceName, int numberOfImage);
         void onImageForArtifact(EntityId id, int imageIdx, ImageDescription imageDescription, Bitmap image);
@@ -33,6 +35,7 @@ public final class Controller {
 
         public void putBitmap(String url, Bitmap bitmap) {
             cache.put(url, bitmap);
+            Log.i("ZigZag/Cache", String.format("Got image %dx%d", bitmap.getWidth(), bitmap.getHeight()));
         }
 
         public Bitmap getBitmap(String url) {
@@ -43,6 +46,8 @@ public final class Controller {
     private static final String REQUESTS_TAG = "ZigZag";
     private static final String API_NEXTGEN_URL_PATTERN = "http://horia141.com:9000/api/v1/nextgen?from=%s";
     private static final int IMAGE_CACHE_SIZE = 20;
+    public static final int STANDARD_IMAGE_WIDTH = 960;
+    public static final int ROUNDED_CORNER_SIZE = 12;
 
     private final Context context;
     private final RequestQueue requestQueue;
@@ -178,7 +183,8 @@ public final class Controller {
 
                     // Bitmap is rounded here. For performance reasons, only this copy of the thing
                     // should exist, rather than it being recomputed every time.
-                    Bitmap roundedCornerBitmap = ImageHelper.getRoundedCornerBitmap(response.getBitmap(), 12);
+                    Bitmap roundedCornerBitmap = ImageHelper.getResizedRoundedCornerBitmap(
+                            response.getBitmap(), STANDARD_IMAGE_WIDTH, ROUNDED_CORNER_SIZE);
                     nextArtifactListener.onImageForArtifact(lastArtifact.getId(), imageIdx,
                             imageDescription, roundedCornerBitmap);
                 }
