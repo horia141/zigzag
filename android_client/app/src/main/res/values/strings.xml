@@ -10,4 +10,9 @@
     <string name="fragment_media_carousel_one_image_subtitle">Subtitle</string>
     <string name="fragment_media_carousel_one_image_description">Description</string>
 
+    <color name="background_black">#000000</color>
+    <color name="background_white">#CCCCCC</color>
+    <color name="text_black">#000000</color>
+    <color name="text_white">#CCCCCC</color>
+
 </resources>

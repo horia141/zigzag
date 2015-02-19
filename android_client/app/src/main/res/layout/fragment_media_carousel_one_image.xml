@@ -11,28 +11,31 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:indeterminate="true"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:visibility="gone"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:text="@string/fragment_media_carousel_one_image_subtitle"
         android:id="@+id/subtitle"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:ellipsize="end"
-        android:lines="2" />
+        android:lines="2"
+        android:textColor="@color/text_black" />
 
     <com.zigzag.client_app.ResizableImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:id="@+id/image"
-        android:src="@drawable/just_an_image"/>
+        android:src="@drawable/just_an_image" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/fragment_media_carousel_one_image_description"
         android:id="@+id/description"
-        android:textSize="16sp" />
+        android:textSize="14sp"
+        android:textColor="@color/text_black"  />
 </LinearLayout>
