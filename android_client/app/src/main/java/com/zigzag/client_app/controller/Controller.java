@@ -24,7 +24,7 @@ import java.util.List;
 
 public final class Controller {
 
-    public static interface NextArtifactListener {
+    public static interface ArtifactListener {
         void onInitialArtifactData(EntityId id, String title, String sourceName, int numberOfImage);
         void onImageForArtifact(EntityId id, int imageIdx, ImageDescription imageDescription, Bitmap image);
         void onError(String errorDescription);
@@ -56,7 +56,7 @@ public final class Controller {
     private final List<Artifact> artifacts;
     private int nextArtifact;
     private final ModelDecoder modelDecoder;
-    private NextArtifactListener listener;
+    private ArtifactListener listener;
 
     private Controller(Context context) {
         this.context = context;
@@ -69,12 +69,12 @@ public final class Controller {
         this.listener = null;
     }
 
-    public void setListener(NextArtifactListener nextArtifactListener) {
-        listener = nextArtifactListener;
+    public void setListener(ArtifactListener artifactListener) {
+        listener = artifactListener;
     }
 
-    public void getNextArtifact(final NextArtifactListener nextArtifactListener) {
-        listener = nextArtifactListener;
+    public void getNextArtifact(final ArtifactListener artifactListener) {
+        listener = artifactListener;
 
         if (generations.size() == 0 || nextArtifact == artifacts.size()) {
             String apiNextgenUrl;
@@ -99,7 +99,7 @@ public final class Controller {
                             // Parse the JSON response and obtain a new generation.
                             generation = modelDecoder.decodeGeneration(response);
                         } catch (ModelDecoder.Error e) {
-                            nextArtifactListener.onError(e.toString());
+                            artifactListener.onError(e.toString());
                             return;
                         }
 
@@ -108,17 +108,17 @@ public final class Controller {
                         artifacts.addAll(generation.getArtifacts());
 
                         if (generation.getArtifacts().size() == 0) {
-                            getNextArtifact(nextArtifactListener);
+                            getNextArtifact(artifactListener);
                             return;
                         }
 
                         // Either {@link stopEverything} has been called, or the listener has
                         // changed. In either case there's no point in continuing.
-                        if (listener == null || nextArtifactListener != listener) {
+                        if (listener == null || artifactListener != listener) {
                             return;
                         }
 
-                        doNextArtifact(nextArtifactListener);
+                        doNextArtifact(artifactListener);
                     }
                 },
                 new Response.ErrorListener() {
@@ -126,19 +126,44 @@ public final class Controller {
                     public void onErrorResponse(VolleyError error) {
                         // Either {@link stopEverything} has been called, or the listener has
                         // changed. In either case there's no point in continuing.
-                        if (listener == null || nextArtifactListener != listener) {
+                        if (listener == null || artifactListener != listener) {
                             return;
                         }
 
-                        nextArtifactListener.onError(error.getMessage());
+                        artifactListener.onError(error.getMessage());
                     }
                 });
 
             request.setTag(REQUESTS_TAG);
             requestQueue.add(request);
         } else {
-            doNextArtifact(nextArtifactListener);
+            doNextArtifact(artifactListener);
         }
+    }
+
+    private void doNextArtifact(ArtifactListener artifactListener) {
+        // Either {@link stopEverything} has been called, or the listener has changed. In either
+        // case there's no point in continuing.
+        if (listener == null || artifactListener != listener) {
+            return;
+        }
+
+        // Get the next artifact to show.
+        final Artifact lastArtifact = artifacts.get(nextArtifact);
+        nextArtifact = nextArtifact + 1;
+        handleArtifact(artifactListener, lastArtifact);
+    }
+
+    public void getPrevArtifact(final ArtifactListener artifactListener) {
+        listener = artifactListener;
+
+        if (nextArtifact == 0) {
+            return;
+        }
+
+        nextArtifact = nextArtifact - 1;
+        final Artifact lastArtifact = artifacts.get(nextArtifact);
+        handleArtifact(artifactListener, lastArtifact);
     }
 
     public void stopEverything() {
@@ -146,19 +171,9 @@ public final class Controller {
         listener = null;
     }
 
-    private void doNextArtifact(final NextArtifactListener nextArtifactListener) {
-        // Either {@link stopEverything} has been called, or the listener has changed. In either
-        // case there's no point in continuing.
-        if (listener == null || nextArtifactListener != listener) {
-            return;
-        }
-
-        // Get the next artifact to show.
-        final Artifact lastArtifact = artifacts.get(nextArtifact);
-        nextArtifact = nextArtifact + 1;
-
+    private void handleArtifact(final ArtifactListener artifactListener, final Artifact lastArtifact) {
         // Change the view to reflect new changes.
-        nextArtifactListener.onInitialArtifactData(lastArtifact.getId(), lastArtifact.getTitle(),
+        artifactListener.onInitialArtifactData(lastArtifact.getId(), lastArtifact.getTitle(),
                 lastArtifact.getArtifactSource().getName(), lastArtifact.getImagesDescription().size());
 
         // Trigger fetch of artifact images.
@@ -171,7 +186,7 @@ public final class Controller {
                 public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
                     // Either {@link stopEverything} has been called, or the listener has changed. In either
                     // case there's no point in continuing.
-                    if (listener == null || nextArtifactListener != listener) {
+                    if (listener == null || artifactListener != listener) {
                         return;
                     }
 
@@ -185,7 +200,7 @@ public final class Controller {
                     // should exist, rather than it being recomputed every time.
                     Bitmap roundedCornerBitmap = ImageHelper.getResizedRoundedCornerBitmap(
                             response.getBitmap(), STANDARD_IMAGE_WIDTH, ROUNDED_CORNER_SIZE);
-                    nextArtifactListener.onImageForArtifact(lastArtifact.getId(), imageIdx,
+                    artifactListener.onImageForArtifact(lastArtifact.getId(), imageIdx,
                             imageDescription, roundedCornerBitmap);
                 }
 
@@ -193,11 +208,11 @@ public final class Controller {
                 public void onErrorResponse(VolleyError error) {
                     // Either {@link stopEverything} has been called, or the listener has changed. In either
                     // case there's no point in continuing.
-                    if (listener == null || nextArtifactListener != listener) {
+                    if (listener == null || artifactListener != listener) {
                         return;
                     }
 
-                    nextArtifactListener.onError(error.getMessage());
+                    artifactListener.onError(error.getMessage());
                 }
             });
         }

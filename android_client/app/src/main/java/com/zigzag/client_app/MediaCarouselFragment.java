@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MediaCarouselFragment extends Fragment
-        implements Controller.NextArtifactListener, GestureDetector.OnGestureListener {
+        implements Controller.ArtifactListener, GestureDetector.OnGestureListener {
     private static class ImagesDescriptionBitmapListAdapter extends ArrayAdapter<Pair<ImageDescription, Bitmap>> {
         private static class ViewHolder {
             ProgressBar progressBar;
@@ -103,7 +103,7 @@ public class MediaCarouselFragment extends Fragment
     }
 
     private static final int SWIPE_THRESHOLD = 50;
-    private static final int SWIPE_VELOCITY_THRESHOLD = 50;
+    private static final int SWIPE_VELOCITY_THRESHOLD = 25;
 
     @Nullable private EntityId currentImageId;
     private final List<Pair<ImageDescription, Bitmap>> imagesDescriptionBitmapList;
@@ -122,7 +122,7 @@ public class MediaCarouselFragment extends Fragment
                              Bundle savedInstanceState) {
         Log.i("ZigZag/MediaCarouselFragment", "Creating view");
 
-        View rootView = inflater.inflate(R.layout.fragment_media_carousel, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_media_carousel, container, false);
 
         ProgressBar waitingView = (ProgressBar)rootView.findViewById(R.id.waiting);
 
@@ -157,6 +157,17 @@ public class MediaCarouselFragment extends Fragment
                 }
 
                 imageListView.onTouchEvent(e);
+                return thisForClosure.gestureDetector.onTouchEvent(e);
+            }
+        });
+        rootView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent e) {
+                if (thisForClosure.gestureDetector == null) {
+                    return false;
+                }
+
+                rootView.onTouchEvent(e);
                 return thisForClosure.gestureDetector.onTouchEvent(e);
             }
         });
@@ -258,7 +269,7 @@ public class MediaCarouselFragment extends Fragment
             if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
                 if (diffX > 0) {
                     // Swiping to the right.
-                    // TODO(horia141): Nothing yet to do for right swipe.
+                    Controller.getInstance(getActivity()).getPrevArtifact(this);
                 } else {
                     // Swiping to the left.
                     Controller.getInstance(getActivity()).getNextArtifact(this);
