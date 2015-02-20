@@ -25,7 +25,7 @@ import java.util.List;
 public final class Controller {
 
     public static interface ArtifactListener {
-        void onInitialArtifactData(EntityId id, String title, String sourceName, int numberOfImage);
+        void onInitialArtifactData(EntityId id, String title, String pageUrl, String sourceName, int numberOfImage);
         void onImageForArtifact(EntityId id, int imageIdx, ImageDescription imageDescription, Bitmap image);
         void onError(String errorDescription);
     }
@@ -174,7 +174,8 @@ public final class Controller {
     private void handleArtifact(final ArtifactListener artifactListener, final Artifact lastArtifact) {
         // Change the view to reflect new changes.
         artifactListener.onInitialArtifactData(lastArtifact.getId(), lastArtifact.getTitle(),
-                lastArtifact.getArtifactSource().getName(), lastArtifact.getImagesDescription().size());
+                lastArtifact.getPageUrl(), lastArtifact.getArtifactSource().getName(),
+                lastArtifact.getImagesDescription().size());
 
         // Trigger fetch of artifact images.
         for (int ii = 0; ii < lastArtifact.getImagesDescription().size(); ii++) {

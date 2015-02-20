@@ -1,6 +1,7 @@
 package com.zigzag.client_app;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -109,12 +110,16 @@ public class MediaCarouselFragment extends Fragment
     private final List<Pair<ImageDescription, Bitmap>> imagesDescriptionBitmapList;
     @Nullable private ImagesDescriptionBitmapListAdapter imagesDescriptionBitmapListAdapter;
     @Nullable private GestureDetectorCompat gestureDetector;
+    @Nullable private String currentTitle;
+    @Nullable private String currentPageUrl;
 
     public MediaCarouselFragment() {
         this.currentImageId = null;
         this.imagesDescriptionBitmapList = new ArrayList<Pair<ImageDescription, Bitmap>>();
         this.imagesDescriptionBitmapListAdapter = null;
         this.gestureDetector = null;
+        this.currentTitle = null;
+        this.currentPageUrl = null;
     }
 
     @Override
@@ -143,6 +148,17 @@ public class MediaCarouselFragment extends Fragment
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View shareButton) {
+                if (currentTitle == null || currentPageUrl == null) {
+                    return;
+                }
+
+                String subject = String.format("%s via %s", currentTitle, getActivity().getString(R.string.app_name));
+                String text = String.format("%s via %s %s", currentTitle, getActivity().getString(R.string.app_name), currentPageUrl);
+                Intent i = new Intent(Intent.ACTION_SEND);
+                i.setType("text/plain");
+                i.putExtra(Intent.EXTRA_SUBJECT, subject);
+                i.putExtra(Intent.EXTRA_TEXT, text);
+                startActivity(Intent.createChooser(i, getActivity().getString(R.string.share_title)));
             }
         });
 
@@ -197,7 +213,7 @@ public class MediaCarouselFragment extends Fragment
     }
 
     @Override
-    public void onInitialArtifactData(EntityId id, String title, String sourceName, int numberOfImages) {
+    public void onInitialArtifactData(EntityId id, String title, String pageUrl, String sourceName, int numberOfImages) {
         Log.i("ZigZag", String.format("Got %s %s - %d", title, sourceName, numberOfImages));
         View rootView = getView();
 
@@ -224,6 +240,10 @@ public class MediaCarouselFragment extends Fragment
             imagesDescriptionBitmapList.add(null);
         }
         imagesDescriptionBitmapListAdapter.notifyDataSetChanged();
+
+        // Update global state about the image.
+        currentTitle = title;
+        currentPageUrl = pageUrl;
     }
 
     @Override
