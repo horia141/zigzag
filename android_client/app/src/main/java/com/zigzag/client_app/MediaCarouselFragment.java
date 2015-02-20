@@ -6,9 +6,12 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
 import android.util.Pair;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -24,7 +27,8 @@ import com.zigzag.client_app.model.ImageDescription;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MediaCarouselFragment extends Fragment implements Controller.NextArtifactListener {
+public class MediaCarouselFragment extends Fragment
+        implements Controller.NextArtifactListener, GestureDetector.OnGestureListener {
     private static class ImagesDescriptionBitmapListAdapter extends ArrayAdapter<Pair<ImageDescription, Bitmap>> {
         private static class ViewHolder {
             ProgressBar progressBar;
@@ -98,14 +102,19 @@ public class MediaCarouselFragment extends Fragment implements Controller.NextAr
         }
     }
 
-    private EntityId currentImageId;
+    private static final int SWIPE_THRESHOLD = 50;
+    private static final int SWIPE_VELOCITY_THRESHOLD = 50;
+
+    @Nullable private EntityId currentImageId;
     private final List<Pair<ImageDescription, Bitmap>> imagesDescriptionBitmapList;
     @Nullable private ImagesDescriptionBitmapListAdapter imagesDescriptionBitmapListAdapter;
+    @Nullable private GestureDetectorCompat gestureDetector;
 
     public MediaCarouselFragment() {
         this.currentImageId = null;
         this.imagesDescriptionBitmapList = new ArrayList<Pair<ImageDescription, Bitmap>>();
         this.imagesDescriptionBitmapListAdapter = null;
+        this.gestureDetector = null;
     }
 
     @Override
@@ -119,7 +128,7 @@ public class MediaCarouselFragment extends Fragment implements Controller.NextAr
 
         imagesDescriptionBitmapListAdapter = new ImagesDescriptionBitmapListAdapter(getActivity(), this.imagesDescriptionBitmapList);
 
-        ListView imageListView = (ListView)rootView.findViewById(R.id.image_list);
+        final ListView imageListView = (ListView)rootView.findViewById(R.id.image_list);
         imageListView.setEmptyView(waitingView);
         imageListView.setAdapter(imagesDescriptionBitmapListAdapter);
 
@@ -137,12 +146,18 @@ public class MediaCarouselFragment extends Fragment implements Controller.NextAr
             }
         });
 
-        ImageButton nextButton = (ImageButton)rootView.findViewById(R.id.next_button);
+        // Setup gesture handling.
+        gestureDetector = new GestureDetectorCompat(getActivity(), this);
         final MediaCarouselFragment thisForClosure = this;
-        nextButton.setOnClickListener(new View.OnClickListener() {
+        imageListView.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View nextButton) {
-            Controller.getInstance(getActivity()).getNextArtifact(thisForClosure);
+            public boolean onTouch(View v, MotionEvent e) {
+                if (thisForClosure.gestureDetector == null) {
+                    return false;
+                }
+
+                imageListView.onTouchEvent(e);
+                return thisForClosure.gestureDetector.onTouchEvent(e);
             }
         });
 
@@ -225,5 +240,54 @@ public class MediaCarouselFragment extends Fragment implements Controller.NextAr
     @Override
     public void onError(String errorDescription) {
         Log.i("ZigZag", String.format("Error %s", errorDescription));
+    }
+
+    @Override
+    public boolean onDown(MotionEvent event) {
+        Log.d("ZigZag/MediaCarouselFragment","onDown: " + event.toString());
+        return true;
+    }
+
+    @Override
+    public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY) {
+        Log.d("ZigZag/MediaCarouselFragment", "onFling: " + event1.toString()+event2.toString());
+
+        float diffY = event2.getY() - event1.getY();
+        float diffX = event2.getX() - event1.getX();
+        if (Math.abs(diffX) > Math.abs(diffY)) {
+            if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                if (diffX > 0) {
+                    // Swiping to the right.
+                    // TODO(horia141): Nothing yet to do for right swipe.
+                } else {
+                    // Swiping to the left.
+                    Controller.getInstance(getActivity()).getNextArtifact(this);
+                }
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent event) {
+        Log.d("ZigZag/MediaCarouselFragment", "onLongPress: " + event.toString());
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        Log.d("ZigZag/MediaCarouselFragment", "onScroll: " + e1.toString()+e2.toString());
+        return true;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent event) {
+        Log.d("ZigZag/MediaCarouselFragment", "onShowPress: " + event.toString());
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent event) {
+        Log.d("ZigZag/MediaCarouselFragment", "onSingleTapUp: " + event.toString());
+        return true;
     }
 }
