@@ -10,7 +10,7 @@ import rest_api.models as models
 
 
 def main():
-    logging.basicConfig(level=logging.INFO, filename='var/explorer.log')
+    logging.basicConfig(level=logging.INFO, filename=defines.EXPLORER_LOG_PATH)
 
     right_now = datetime.datetime.now(pytz.utc)
 
