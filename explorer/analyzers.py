@@ -1,11 +1,15 @@
 """Artifact sources and artifact analyzers."""
 
-import BeautifulSoup as bs
 import logging
 import urllib2
 import urlparse
 
+import BeautifulSoup as bs
+import comlink.serializer.pickle as serializer
+import comlink.transport.localipc as transport
+
 import common.defines as defines
+import fetcher
 
 
 class Error(Exception):
@@ -18,18 +22,12 @@ class Analyzer(object):
 
     def __init__(self):
         """Construct an analyzer."""
-        pass
+        ser = serializer.Serializer()
+        client = transport.Client(defines.FETCHER_PORT, ser)
+        self._fetcher = fetcher.Service.client(client)
 
     def analyze(self):
         raise Exception('Not implemented')
-
-    def _fetch_as_bot(self, page_url):
-        request = urllib2.Request(page_url, headers=defines.EXPLORER_BOT_HEADERS)
-        file_obj = urllib2.urlopen(request)
-        raw_content = file_obj.read()
-        file_obj.close()
-
-        return (raw_content, file_obj.info().gettype())
 
     @staticmethod
     def _parse_incomplete_url(incomplete_url):
@@ -56,7 +54,7 @@ class Reddit(Analyzer):
             category_url = self._category_start_page_url_pattern % category
             logging.info('Fetching main page at "%s"', category_url)
             try:
-                (category_page_raw_content, category_page_type) = self._fetch_as_bot(category_url)
+                (category_page_raw_content, category_page_type) = self._fetcher.fetch_url(category_url)
                 if category_page_type not in defines.WEBPAGE_MIMETYPES:
                     logging.warn('Main page is of wrong MIME type')
                     continue
@@ -113,7 +111,7 @@ class Reddit(Analyzer):
         try_other_analyzer = False
 
         try:
-            (image_raw_content, image_mime_type) = self._fetch_as_bot(artifact_page_url)
+            (image_raw_content, image_mime_type) = self._fetcher.fetch_url(artifact_page_url)
             if image_mime_type not in defines.IMAGE_MIMETYPES:
                 # Try to parse things with the Imgur analyzer.
                 try_other_analyzer = True
@@ -151,7 +149,7 @@ class Imgur(Analyzer):
         logging.info('Fetching main page')
 
         try:
-            (main_page_raw_content, main_page_mime_type) = self._fetch_as_bot(self._main_page_url)
+            (main_page_raw_content, main_page_mime_type) = self._fetcher.fetch_url(self._main_page_url)
             if main_page_mime_type not in defines.WEBPAGE_MIMETYPES:
                 logging.warn('Main page is of wrong MIME type')
                 return []
@@ -196,7 +194,7 @@ class Imgur(Analyzer):
         logging.info('Analyzing "%s"', artifact_page_url)
 
         try:
-            (page_raw_content, page_mime_type) = self._fetch_as_bot(artifact_page_url)
+            (page_raw_content, page_mime_type) = self._fetcher.fetch_url(artifact_page_url)
             if page_mime_type not in defines.WEBPAGE_MIMETYPES:
                 raise Error('Page is of wrong MIME type')
         except urllib2.URLError as e:
@@ -311,7 +309,7 @@ class Imgur(Analyzer):
         logging.info('Analyzing "%s"', artifact_page_url)
 
         try:
-            (page_raw_content, page_mime_type) = self._fetch_as_bot(artifact_page_url)
+            (page_raw_content, page_mime_type) = self._fetcher.fetch_url(artifact_page_url)
             if page_mime_type not in defines.WEBPAGE_MIMETYPES:
                 raise Error('Page is of wrong MIME type')
         except urllib2.URLError as e:
