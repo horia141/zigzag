@@ -14,6 +14,12 @@ BOT_HEADERS = {
     'User-Agent': 'ZigZagBot'
 }
 
+
+class _HeadRequest(urllib2.Request):
+    def get_method(self):
+        return 'HEAD'
+
+
 class Service(comlink.Service):
     @comlink.call
     def fetch_url(self, page_url):
@@ -27,6 +33,18 @@ class Service(comlink.Service):
         logging.info('Successfully fetched "%s"' % page_url)
 
         return (raw_content, file_obj.info().gettype())
+
+    @comlink.call
+    def fetch_url_mimetype(self, page_url):
+        logging.info('Trying to fetch "%s"' % page_url)
+
+        request = _HeadRequest(page_url, headers=BOT_HEADERS)
+        file_obj = urllib2.urlopen(request)
+        file_obj.close()
+
+        logging.info('Successfully fetched mimetype for "%s"' % page_url)
+
+        return file_obj.info().gettype()
 
 
 def main():
