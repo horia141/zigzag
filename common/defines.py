@@ -9,3 +9,6 @@ FETCHER_PORT = 16000
 FETCHER_LOG_PATH = 'var/fetcher.log'
 
 EXPLORER_LOG_PATH = 'var/explorer.log'
+
+PHOTO_SAVE_PORT = 16001
+PHOTO_SAVE_LOG_PATH = 'var/photo_save.log'

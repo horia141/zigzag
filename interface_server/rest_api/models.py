@@ -118,6 +118,24 @@ class Artifact(models.Model):
     title = models.CharField(max_length=100)
     images_description_coded = models.TextField()
 
+    # Schema for the image_description:
+    # images_description :: List ImageDescription
+    # type ImageDescription
+    #     subtitle String
+    #     description String
+    #     source_uri_path URI  # URI of the source
+    #     original_image_uri_path URI # URI of the system stored source image
+    #     image_data Map ScreenConfig ImageData
+    # type ImageData
+    #   ImageSet
+    #     uri_paths List Uri # List of URI into which the image was broken down.
+    #                        # Images which are too tall are broken down like into
+    #                        # multiple frames.
+    #   AnimationSet
+    #     uri_paths List Uri # GIFs and other animations are broken down as individual
+    #                        # frames and stored as such, for easier client display.
+    #     time_between_frames Double
+
     @staticmethod
     def all():
         return Artifact.objects.all().order_by('id')

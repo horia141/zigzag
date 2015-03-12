@@ -3,9 +3,13 @@ import pytz
 import logging
 import urllib2
 
+import comlink.serializer.pickle as serializer
+import comlink.transport.localipc as transport
+
 import common.defines as defines
 import common.flow_annotation as flow_annotation
 import explorer.analyzers as analyzers
+import photo_save
 import rest_api.models as models
 
 
@@ -13,6 +17,10 @@ def main():
     logging.basicConfig(level=logging.INFO, filename=defines.EXPLORER_LOG_PATH)
 
     right_now = datetime.datetime.now(pytz.utc)
+
+    ser = serializer.Serializer()
+    client = transport.Client(defines.PHOTO_SAVE_PORT, ser)
+    photo_save_client = photo_save.Service.client(client)
 
     logging.info('Starting crawl and analysis service on %s', right_now.strftime(defines.TIME_FORMAT))
 
@@ -55,10 +63,13 @@ def main():
             except models.Error as e:
                 pass
 
+            images_description = photo_save_client.process_artifact_images(
+                artifact_desc['images_description'])
+
             logging.info('Saving artifact "%s" to database', artifact_desc['title'])
             artifact = models.Artifact.add(artifact_desc['page_url'], 
                 generation, artifact_source, artifact_desc['title'],
-                artifact_desc['images_description'])
+                images_description)
 
             logging.info('Finished processing for "%s"', artifact.title)
 
