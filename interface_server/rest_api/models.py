@@ -123,7 +123,7 @@ class Artifact(models.Model):
     # type ImageDescription
     #     subtitle String
     #     description String
-    #     source_uri_path URI  # URI of the source
+    #     source_uri URI  # URI of the source
     #     original_image_uri_path URI # URI of the system stored source image
     #     image_data Map ScreenConfig ImageData
     # type ImageData
