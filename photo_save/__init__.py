@@ -91,7 +91,7 @@ class Service(comlink.Service):
 
 
 def main():
-    logging.basicConfig(level=logging.INFO) #, filename=defines.PHOTO_SAVE_LOG_PATH)
+    logging.basicConfig(level=logging.INFO, filename=defines.PHOTO_SAVE_LOG_PATH)
 
     ser = serializer.Serializer()
     photo_save_service = Service(ser)
@@ -100,6 +100,6 @@ def main():
     server.add_service(photo_save_service)
     server.start()
 
+
 if __name__ == '__main__':
     main()
-
