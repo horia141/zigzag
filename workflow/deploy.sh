@@ -42,6 +42,6 @@ EOF
 # Configure cron on the production machine.
 ssh $USER@$HOST <<'EOF'
   sed -i 's|/home/horia/Dropbox/Work/ZigZag|/home/horia141/zigzag|g' zigzag/workflow/crontab
-  sed -i 's|/home/horia/Dropbox/Work/ZigZag|/home/horia141/zigzag|g' zigzag/workflow/run_explorer_in_cron.sh
+  sed -i 's|/home/horia/Dropbox/Work/ZigZag|/home/horia141/zigzag|g' zigzag/workflow/run_exploring_in_cron.sh
   crontab zigzag/workflow/crontab
 EOF

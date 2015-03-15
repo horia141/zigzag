@@ -1,5 +1,5 @@
 #!/bin/bash
-# Run an instance of the server side components of the system.
+# Run an instance of the serving side components of the system.
 
 # Setup environment variables.
 source ./workflow/setup_env.sh
