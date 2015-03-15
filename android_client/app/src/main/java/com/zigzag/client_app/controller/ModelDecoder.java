@@ -1,10 +1,16 @@
 package com.zigzag.client_app.controller;
 
+import com.zigzag.client_app.model.AnimationSetImageData;
 import com.zigzag.client_app.model.Artifact;
 import com.zigzag.client_app.model.ArtifactSource;
 import com.zigzag.client_app.model.EntityId;
 import com.zigzag.client_app.model.Generation;
+import com.zigzag.client_app.model.ImageData;
 import com.zigzag.client_app.model.ImageDescription;
+import com.zigzag.client_app.model.ImageSetImageData;
+import com.zigzag.client_app.model.ScreenConfig;
+import com.zigzag.client_app.model.TileData;
+import com.zigzag.client_app.model.TooBigImageData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,6 +55,15 @@ public class ModelDecoder {
             String timeClosedAsString = generationJson.getString("time_closed");
             Date timeClosed = dateFormatter.parse(timeClosedAsString);
 
+            JSONObject screenConfigsJson = generationJson.getJSONObject("screen_configs");
+            Map<String, ScreenConfig> screenConfigs = new HashMap<String, ScreenConfig>();
+
+            for (Iterator<String> ii = screenConfigsJson.keys(); ii.hasNext();) {
+                String screenConfigKey = ii.next();
+                ScreenConfig screenConfig = decodeScreenConfig(screenConfigKey, screenConfigsJson.getJSONObject(screenConfigKey));
+                screenConfigs.put(screenConfigKey, screenConfig);
+            }
+
             JSONObject artifactSourcesJson = generationJson.getJSONObject("artifact_sources");
             Map<EntityId, ArtifactSource> artifactSources = new HashMap<EntityId, ArtifactSource>();
 
@@ -63,7 +78,7 @@ public class ModelDecoder {
             List<Artifact> artifacts = new ArrayList<Artifact>();
 
             for (int ii = 0; ii < artifactsJson.length(); ii++) {
-                artifacts.add(decodeArtifact(artifactsJson.getJSONObject(ii), artifactSources));
+                artifacts.add(decodeArtifact(artifactsJson.getJSONObject(ii), artifactSources, screenConfigs));
             }
 
             Generation generation = new Generation(id, timeAdded, timeClosed, artifacts);
@@ -72,6 +87,18 @@ public class ModelDecoder {
         } catch (JSONException e) {
             throw new Error(e.toString());
         } catch (ParseException e) {
+            throw new Error(e.toString());
+        }
+    }
+
+    private ScreenConfig decodeScreenConfig(String screenConfigKey, JSONObject screenConfigJson) throws Error {
+        try {
+            int width = screenConfigJson.getInt("width");
+
+            ScreenConfig screenConfig = new ScreenConfig(screenConfigKey, width);
+
+            return screenConfig;
+        } catch (JSONException e) {
             throw new Error(e.toString());
         }
     }
@@ -98,7 +125,7 @@ public class ModelDecoder {
         }
     }
 
-    private Artifact decodeArtifact(JSONObject artifactJson, Map<EntityId, ArtifactSource> artifactSources) throws Error {
+    private Artifact decodeArtifact(JSONObject artifactJson, Map<EntityId, ArtifactSource> artifactSources, Map<String, ScreenConfig> screenConfigs) throws Error {
         try {
             String idString = artifactJson.getString("id");
             EntityId id = new EntityId(idString);
@@ -121,7 +148,7 @@ public class ModelDecoder {
             List<ImageDescription> imagesDescription = new ArrayList<ImageDescription>();
 
             for (int ii = 0; ii < imagesDescriptionJson.length(); ii++) {
-                imagesDescription.add(decodeImageDescription(imagesDescriptionJson.getJSONObject(ii)));
+                imagesDescription.add(decodeImageDescription(imagesDescriptionJson.getJSONObject(ii), screenConfigs));
             }
 
             Artifact artifact = new Artifact(id, pageUrl, artifactSource, title, imagesDescription);
@@ -132,17 +159,90 @@ public class ModelDecoder {
         }
     }
 
-    private ImageDescription decodeImageDescription(JSONObject imageDescriptionJson) throws Error {
+    private ImageDescription decodeImageDescription(JSONObject imageDescriptionJson, Map<String, ScreenConfig> screenConfigs) throws Error {
         try {
             String subtitle = imageDescriptionJson.getString("subtitle");
 
             String description = imageDescriptionJson.getString("description");
 
-            String urlPath = imageDescriptionJson.getString("url_path");
+            String sourceUri = imageDescriptionJson.getString("source_uri");
 
-            ImageDescription imageDescription = new ImageDescription(subtitle, description, urlPath);
+            String originalImageUriPath = imageDescriptionJson.getString("original_image_uri_path");
+
+            JSONObject imageDataJson = imageDescriptionJson.getJSONObject("image_data");
+            Map<ScreenConfig, ImageData> imageData = new HashMap<ScreenConfig, ImageData>();
+
+            for (Iterator<String> ii = imageDataJson.keys(); ii.hasNext();) {
+                String screenConfigKey = ii.next();
+                ScreenConfig screenConfig = screenConfigs.get(screenConfigKey);
+                ImageData imageDataForScreenConfig = decodeImageData(imageDataJson.getJSONObject(screenConfigKey));
+                imageData.put(screenConfig, imageDataForScreenConfig);
+            }
+
+            ImageDescription imageDescription = new ImageDescription(subtitle, description, sourceUri, originalImageUriPath, imageData);
 
             return imageDescription;
+        } catch (JSONException e) {
+            throw new Error(e.toString());
+        }
+    }
+
+    private ImageData decodeImageData(JSONObject imageDataJson) throws Error {
+        try {
+            String type = imageDataJson.getString("type");
+
+            if (type.equals("too-large")) {
+                return new TooBigImageData();
+            } else if (type.equals("image-set")) {
+                JSONObject fullImageDescJson = imageDataJson.getJSONObject("full_image_desc");
+                TileData fullImageDesc = decodeTileData(fullImageDescJson);
+
+                JSONArray tilesDescJson = imageDataJson.getJSONArray("tiles_desc");
+                List<TileData> tilesDesc = new ArrayList<TileData>();
+
+                for (int ii = 0; ii < tilesDescJson.length(); ii++) {
+                    JSONObject tileDescJson = tilesDescJson.getJSONObject(ii);
+                    TileData tileDesc = decodeTileData(tileDescJson);
+                    tilesDesc.add(tileDesc);
+                }
+
+                ImageData imageData = new ImageSetImageData(fullImageDesc, tilesDesc);
+
+                return imageData;
+            } else if (type.equals("animation-set")) {
+                double timeBetweenFrames = imageDataJson.getDouble("time_between_frames");
+
+                JSONArray framesDescJson = imageDataJson.getJSONArray("frames_desc");
+                List<TileData> framesDesc = new ArrayList<TileData>();
+
+                for (int ii = 0; ii < framesDescJson.length(); ii++) {
+                    JSONObject tileDescJson = framesDescJson.getJSONObject(ii);
+                    TileData tileDesc = decodeTileData(tileDescJson);
+                    framesDesc.add(tileDesc);
+                }
+
+                ImageData imageData = new AnimationSetImageData(timeBetweenFrames, framesDesc);
+
+                return imageData;
+            } else {
+                throw new Error("Unrecognized image data type");
+            }
+        } catch (JSONException e) {
+            throw new Error(e.toString());
+        }
+    }
+
+    private TileData decodeTileData(JSONObject tileDataJson) throws Error {
+        try {
+            int width = tileDataJson.getInt("width");
+
+            int height = tileDataJson.getInt("height");
+
+            String uriPath = tileDataJson.getString("uri_path");
+
+            TileData tileData = new TileData(width, height, uriPath);
+
+            return tileData;
         } catch (JSONException e) {
             throw new Error(e.toString());
         }

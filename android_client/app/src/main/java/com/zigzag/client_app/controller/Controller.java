@@ -16,6 +16,8 @@ import com.zigzag.client_app.model.Artifact;
 import com.zigzag.client_app.model.EntityId;
 import com.zigzag.client_app.model.Generation;
 import com.zigzag.client_app.model.ImageDescription;
+import com.zigzag.client_app.model.ImageSetImageData;
+import com.zigzag.client_app.model.ScreenConfig;
 
 import org.json.JSONObject;
 
@@ -44,7 +46,7 @@ public final class Controller {
     }
 
     private static final String REQUESTS_TAG = "ZigZag";
-    private static final String API_NEXTGEN_URL_PATTERN = "http://horia141.com:9000/api/v1/nextgen?from=%s";
+    private static final String API_NEXTGEN_URL_PATTERN = "http://192.168.1.35:9000/api/v1/nextgen?from=%s";
     private static final int IMAGE_CACHE_SIZE = 20;
     public static final int STANDARD_IMAGE_WIDTH = 960;
     public static final int ROUNDED_CORNER_SIZE = 12;
@@ -182,7 +184,7 @@ public final class Controller {
             final int imageIdx = ii;
             final ImageDescription imageDescription = lastArtifact.getImagesDescription().get(ii);
             // TODO(horia141): these should be cancelled if that's the case.
-            imageLoader.get(imageDescription.getUrlPath(), new ImageLoader.ImageListener() {
+            imageLoader.get(((ImageSetImageData)imageDescription.getImageData().get(new ScreenConfig("800", 800))).getFullImageDesc().getUriPath(), new ImageLoader.ImageListener() {
                 @Override
                 public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
                     // Either {@link stopEverything} has been called, or the listener has changed. In either
