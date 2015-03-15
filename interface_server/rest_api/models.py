@@ -128,13 +128,15 @@ class Artifact(models.Model):
     #     image_data Map ScreenConfig ImageData
     # type ImageData
     #   ImageSet
-    #     uri_paths List Uri # List of URI into which the image was broken down.
-    #                        # Images which are too tall are broken down like into
-    #                        # multiple frames.
+    #     full_image_desc TileData # information for the full image.
+    #     tiles_desc List TileData # List of information for each tile
     #   AnimationSet
-    #     uri_paths List Uri # GIFs and other animations are broken down as individual
-    #                        # frames and stored as such, for easier client display.
     #     time_between_frames Double
+    #     frames_desc List TileData # List of information for each tile
+    # type TileData
+    #     width UInt32
+    #     height UInt32
+    #     uri_path Uri
 
     @staticmethod
     def all():
