@@ -133,6 +133,7 @@ class Artifact(models.Model):
     #   AnimationSet
     #     time_between_frames Double
     #     frames_desc List TileData # List of information for each tile
+    #   TooLarge
     # type TileData
     #     width UInt32
     #     height UInt32
