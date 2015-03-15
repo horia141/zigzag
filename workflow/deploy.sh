@@ -39,6 +39,11 @@ ssh $USER@$HOST <<EOF
   sed -i 's/localhost/horia141.com/g' zigzag/workflow/setup_env.sh
 EOF
 
+# Create a place to store photos.
+ssh $USER@$HOST <<EOF
+  mkdir -p var/photos
+EOF
+
 # Configure cron on the production machine.
 ssh $USER@$HOST <<'EOF'
   sed -i 's|/home/horia/Dropbox/Work/ZigZag|/home/horia141/zigzag|g' zigzag/workflow/crontab
