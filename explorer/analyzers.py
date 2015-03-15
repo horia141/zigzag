@@ -126,7 +126,7 @@ class Reddit(Analyzer):
                 'images_description': [{
                     'subtitle': '',
                     'description': '',
-                    'url_path': artifact_page_url
+                    'uri_path': artifact_page_url
                 }]
             }
         else:
@@ -291,7 +291,7 @@ class Imgur(Analyzer):
             images_description.append({
                 'subtitle': subtitle,
                 'description': description,
-                'url_path': url_path
+                'uri_path': url_path
             })
 
         if len(images_description) == 0:
@@ -364,7 +364,7 @@ class Imgur(Analyzer):
             images_description.append({
                 'subtitle': subtitle,
                 'description': description,
-                'url_path': url_path
+                'uri_path': url_path
             })
 
         if len(images_description) == 0:

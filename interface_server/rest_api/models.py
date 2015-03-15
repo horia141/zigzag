@@ -149,13 +149,6 @@ class Artifact(models.Model):
         assert isinstance(artifact_source, ArtifactSource)
         assert isinstance(title, basestring)
         assert isinstance(images_description, list)
-        assert all(isinstance(d, dict) for d in images_description)
-        assert all('subtitle' in d for d in images_description)
-        assert all(isinstance(d['subtitle'], basestring) for d in images_description)
-        assert all('description' in d for d in images_description)
-        assert all(isinstance(d['description'], basestring) for d in images_description)
-        assert all('url_path' for d in images_description)
-        assert all(isinstance(d['url_path'], basestring) for d in images_description)
 
         try:
             artifact = Artifact.objects.get(page_url=page_url)
