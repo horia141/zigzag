@@ -236,6 +236,13 @@ public class MediaCarouselFragment extends Fragment
         // to contain only nulls and the associated adapter and associate them with the image
         // list view.
         currentImageId = id;
+        for (int ii = 0; ii < imagesDescriptionBitmapList.size(); ii++) {
+            Pair<ImageDescription, Bitmap> info = imagesDescriptionBitmapList.get(ii);
+            if (info == null) {
+                continue;
+            }
+            imagesDescriptionBitmapList.get(ii).second.recycle();
+        }
         imagesDescriptionBitmapList.clear();
         for (int ii = 0; ii < numberOfImages; ii++) {
             imagesDescriptionBitmapList.add(null);
