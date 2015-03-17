@@ -31,7 +31,12 @@ import java.util.List;
 
 public class MediaCarouselFragment extends Fragment
         implements Controller.ArtifactListener, GestureDetector.OnGestureListener {
-    private static class ImagesDescriptionBitmapListAdapter extends ArrayAdapter<Pair<ImageDescription, Bitmap>> {
+    private static class ImageInfo {
+        ImageDescription imageDescription;
+        Bitmap bitmap;
+    }
+
+    private static class ImagesDescriptionBitmapListAdapter extends ArrayAdapter<ImageInfo> {
         private static class ViewHolder {
             ProgressBar progressBar;
             TextView subtitleTextView;
@@ -39,9 +44,9 @@ public class MediaCarouselFragment extends Fragment
             TextView descriptionTextView;
         }
 
-        private final List<Pair<ImageDescription, Bitmap>> imagesDescriptionBitmapList;
+        private final List<ImageInfo> imagesDescriptionBitmapList;
 
-        public ImagesDescriptionBitmapListAdapter(Context context, List<Pair<ImageDescription, Bitmap>> imagesDescriptionBitmapList) {
+        public ImagesDescriptionBitmapListAdapter(Context context, List<ImageInfo> imagesDescriptionBitmapList) {
             super(context, R.layout.fragment_media_carousel_one_image, imagesDescriptionBitmapList);
             this.imagesDescriptionBitmapList = imagesDescriptionBitmapList;
         }
@@ -69,16 +74,16 @@ public class MediaCarouselFragment extends Fragment
                 rowViewHolder = (ViewHolder)rowView.getTag();
             }
 
-            Pair<ImageDescription, Bitmap> pair = imagesDescriptionBitmapList.get(position);
+            ImageInfo info = imagesDescriptionBitmapList.get(position);
 
-            if (pair == null) {
+            if (info == null) {
                 rowViewHolder.progressBar.setVisibility(View.VISIBLE);
                 rowViewHolder.subtitleTextView.setVisibility(View.GONE);
                 rowViewHolder.imageView.setVisibility(View.GONE);
                 rowViewHolder.descriptionTextView.setVisibility(View.GONE);
             } else {
-                ImageDescription imageDescription = pair.first;
-                Bitmap bitmap = pair.second;
+                ImageDescription imageDescription = info.imageDescription;
+                Bitmap bitmap = info.bitmap;
 
                 rowViewHolder.progressBar.setVisibility(View.GONE);
 
@@ -108,7 +113,7 @@ public class MediaCarouselFragment extends Fragment
     private static final int SWIPE_VELOCITY_THRESHOLD = 25;
 
     @Nullable private EntityId currentImageId;
-    private final List<Pair<ImageDescription, Bitmap>> imagesDescriptionBitmapList;
+    private final List<ImageInfo> imagesDescriptionBitmapList;
     @Nullable private ImagesDescriptionBitmapListAdapter imagesDescriptionBitmapListAdapter;
     @Nullable private GestureDetectorCompat gestureDetector;
     @Nullable private String currentTitle;
@@ -116,7 +121,7 @@ public class MediaCarouselFragment extends Fragment
 
     public MediaCarouselFragment() {
         this.currentImageId = null;
-        this.imagesDescriptionBitmapList = new ArrayList<Pair<ImageDescription, Bitmap>>();
+        this.imagesDescriptionBitmapList = new ArrayList<ImageInfo>();
         this.imagesDescriptionBitmapListAdapter = null;
         this.gestureDetector = null;
         this.currentTitle = null;
@@ -237,11 +242,11 @@ public class MediaCarouselFragment extends Fragment
         // list view.
         currentImageId = id;
         for (int ii = 0; ii < imagesDescriptionBitmapList.size(); ii++) {
-            Pair<ImageDescription, Bitmap> info = imagesDescriptionBitmapList.get(ii);
+            ImageInfo info = imagesDescriptionBitmapList.get(ii);
             if (info == null) {
                 continue;
             }
-            imagesDescriptionBitmapList.get(ii).second.recycle();
+            info.bitmap.recycle();
         }
         imagesDescriptionBitmapList.clear();
         for (int ii = 0; ii < numberOfImages; ii++) {
@@ -272,7 +277,10 @@ public class MediaCarouselFragment extends Fragment
         }
 
         // Update the list of bitmaps and notify the adapter about it.
-        imagesDescriptionBitmapList.set(imageIdx, new Pair(imageDescription, image));
+        ImageInfo info = new ImageInfo();
+        info.imageDescription = imageDescription;
+        info.bitmap = image;
+        imagesDescriptionBitmapList.set(imageIdx, info);
         imagesDescriptionBitmapListAdapter.notifyDataSetChanged();
     }
 
