@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -34,7 +35,7 @@ public class MediaCarouselFragment extends Fragment
         private static class ViewHolder {
             ProgressBar progressBar;
             TextView subtitleTextView;
-            ResizableImageView imageView;
+            ImageView imageView;
             TextView descriptionTextView;
         }
 
@@ -60,7 +61,7 @@ public class MediaCarouselFragment extends Fragment
 
                 rowViewHolder.progressBar = (ProgressBar) rowView.findViewById(R.id.waiting);
                 rowViewHolder.subtitleTextView = (TextView) rowView.findViewById(R.id.subtitle);
-                rowViewHolder.imageView = (ResizableImageView) rowView.findViewById(R.id.image);
+                rowViewHolder.imageView = (ImageView) rowView.findViewById(R.id.image);
                 rowViewHolder.descriptionTextView = (TextView) rowView.findViewById(R.id.description);
 
                 rowView.setTag(rowViewHolder);
