@@ -37,4 +37,8 @@ public class ImageDescription {
     public Map<ScreenConfig, ImageData> getImageData() {
         return imageData;
     }
+
+    public ImageData getBestMatchingImageData() {
+        return imageData.get(new ScreenConfig("800", 800));
+    }
 }

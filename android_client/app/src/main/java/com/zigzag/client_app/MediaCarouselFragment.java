@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -33,14 +34,72 @@ public class MediaCarouselFragment extends Fragment
         implements Controller.ArtifactListener, GestureDetector.OnGestureListener {
     private static class ImageInfo {
         ImageDescription imageDescription;
-        Bitmap bitmap;
+        // One of these two is non-null, the other is null.
+        @Nullable List<Bitmap> tilesBitmaps;
+        @Nullable List<Bitmap> framesBitmaps;
+        TilesBitmapListAdapter tilesBitmapListAdapter;
+
+        public ImageInfo(ImageDescription imageDescription, @Nullable List<Bitmap> tilesBitmaps, @Nullable List<Bitmap> framesBitmaps, Context context) {
+            this.imageDescription = imageDescription;
+            this.tilesBitmaps = tilesBitmaps;
+            this.framesBitmaps = framesBitmaps;
+            this.tilesBitmapListAdapter = new TilesBitmapListAdapter(context, this.tilesBitmaps);
+        }
+    }
+
+    private static class TilesBitmapListAdapter extends ArrayAdapter<Bitmap> {
+        private static class ViewHolder {
+            ProgressBar progressBar;
+            ImageView imageView;
+        }
+
+        private final List<Bitmap> tilesBitmapList;
+
+        public TilesBitmapListAdapter(Context context, List<Bitmap> tilesBitmapList) {
+            super(context, R.layout.fragment_media_carousel_one_image_tile, tilesBitmapList);
+            this.tilesBitmapList = tilesBitmapList;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            LayoutInflater inflater = (LayoutInflater) getContext()
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+            View rowView = convertView;
+            ViewHolder rowViewHolder;
+
+            // Build the basic view of the element, and cache it for later use.
+            if (rowView == null) {
+                rowView = inflater.inflate(R.layout.fragment_media_carousel_one_image_tile, parent, false);
+                rowViewHolder = new ViewHolder();
+
+                rowViewHolder.progressBar = (ProgressBar) rowView.findViewById(R.id.waiting);
+                rowViewHolder.imageView = (ImageView) rowView.findViewById(R.id.image);
+
+                rowView.setTag(rowViewHolder);
+            } else {
+                rowViewHolder = (ViewHolder)rowView.getTag();
+            }
+
+            Bitmap bitmap = tilesBitmapList.get(position);
+
+            if (bitmap == null) {
+                rowViewHolder.progressBar.setVisibility(View.VISIBLE);
+                rowViewHolder.imageView.setVisibility(View.GONE);
+            } else {
+                rowViewHolder.progressBar.setVisibility(View.GONE);
+                rowViewHolder.imageView.setVisibility(View.VISIBLE);
+                rowViewHolder.imageView.setImageBitmap(bitmap);
+            }
+
+            return rowView;
+        }
     }
 
     private static class ImagesDescriptionBitmapListAdapter extends ArrayAdapter<ImageInfo> {
         private static class ViewHolder {
-            ProgressBar progressBar;
             TextView subtitleTextView;
-            ImageView imageView;
+            ListView tilesListView;
             TextView descriptionTextView;
         }
 
@@ -64,9 +123,8 @@ public class MediaCarouselFragment extends Fragment
                 rowView = inflater.inflate(R.layout.fragment_media_carousel_one_image, parent, false);
                 rowViewHolder = new ViewHolder();
 
-                rowViewHolder.progressBar = (ProgressBar) rowView.findViewById(R.id.waiting);
                 rowViewHolder.subtitleTextView = (TextView) rowView.findViewById(R.id.subtitle);
-                rowViewHolder.imageView = (ImageView) rowView.findViewById(R.id.image);
+                rowViewHolder.tilesListView = (ListView) rowView.findViewById(R.id.tiles_list);
                 rowViewHolder.descriptionTextView = (TextView) rowView.findViewById(R.id.description);
 
                 rowView.setTag(rowViewHolder);
@@ -76,29 +134,24 @@ public class MediaCarouselFragment extends Fragment
 
             ImageInfo info = imagesDescriptionBitmapList.get(position);
 
+
             if (info == null) {
-                rowViewHolder.progressBar.setVisibility(View.VISIBLE);
                 rowViewHolder.subtitleTextView.setVisibility(View.GONE);
-                rowViewHolder.imageView.setVisibility(View.GONE);
+                rowViewHolder.tilesListView.setVisibility(View.GONE);
                 rowViewHolder.descriptionTextView.setVisibility(View.GONE);
             } else {
-                ImageDescription imageDescription = info.imageDescription;
-                Bitmap bitmap = info.bitmap;
-
-                rowViewHolder.progressBar.setVisibility(View.GONE);
-
-                if (!imageDescription.getSubtitle().equals("")) {
-                    rowViewHolder.subtitleTextView.setText(imageDescription.getSubtitle());
+                if (!info.imageDescription.getSubtitle().equals("")) {
+                    rowViewHolder.subtitleTextView.setText(info.imageDescription.getSubtitle());
                     rowViewHolder.subtitleTextView.setVisibility(View.VISIBLE);
                 } else {
                     rowViewHolder.subtitleTextView.setVisibility(View.GONE);
                 }
 
-                rowViewHolder.imageView.setVisibility(View.VISIBLE);
-                rowViewHolder.imageView.setImageBitmap(bitmap);
+                rowViewHolder.tilesListView.setVisibility(View.VISIBLE);
+                rowViewHolder.tilesListView.setAdapter(info.tilesBitmapListAdapter);
 
-                if (!imageDescription.getDescription().equals("")) {
-                    rowViewHolder.descriptionTextView.setText(imageDescription.getDescription());
+                if (!info.imageDescription.getDescription().equals("")) {
+                    rowViewHolder.descriptionTextView.setText(info.imageDescription.getDescription());
                     rowViewHolder.descriptionTextView.setVisibility(View.VISIBLE);
                 } else {
                     rowViewHolder.descriptionTextView.setVisibility(View.GONE);
@@ -246,7 +299,8 @@ public class MediaCarouselFragment extends Fragment
             if (info == null) {
                 continue;
             }
-            info.bitmap.recycle();
+            // TODO(horia141): proper recycling here.
+            // info.bitmap.recycle();
         }
         imagesDescriptionBitmapList.clear();
         for (int ii = 0; ii < numberOfImages; ii++) {
@@ -277,9 +331,9 @@ public class MediaCarouselFragment extends Fragment
         }
 
         // Update the list of bitmaps and notify the adapter about it.
-        ImageInfo info = new ImageInfo();
-        info.imageDescription = imageDescription;
-        info.bitmap = image;
+        List<Bitmap> bitmapsList = new ArrayList<Bitmap>();
+        bitmapsList.add(image);
+        ImageInfo info = new ImageInfo(imageDescription, bitmapsList, null, getActivity());
         imagesDescriptionBitmapList.set(imageIdx, info);
         imagesDescriptionBitmapListAdapter.notifyDataSetChanged();
     }

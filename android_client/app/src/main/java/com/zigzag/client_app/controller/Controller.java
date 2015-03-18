@@ -15,6 +15,7 @@ import com.android.volley.toolbox.Volley;
 import com.zigzag.client_app.model.Artifact;
 import com.zigzag.client_app.model.EntityId;
 import com.zigzag.client_app.model.Generation;
+import com.zigzag.client_app.model.ImageData;
 import com.zigzag.client_app.model.ImageDescription;
 import com.zigzag.client_app.model.ImageSetImageData;
 import com.zigzag.client_app.model.ScreenConfig;
@@ -184,8 +185,8 @@ public final class Controller {
         for (int ii = 0; ii < lastArtifact.getImagesDescription().size(); ii++) {
             final int imageIdx = ii;
             final ImageDescription imageDescription = lastArtifact.getImagesDescription().get(ii);
-            // TODO(horia141): these should be cancelled if that's the case.
-            String resUrl = getResUrl(((ImageSetImageData)imageDescription.getImageData().get(new ScreenConfig("800", 800))).getFullImageDesc().getUriPath());
+            final ImageData imageData = imageDescription.getBestMatchingImageData();
+            String resUrl = getResUrl(((ImageSetImageData)imageData).getFullImageDesc().getUriPath());
             imageLoader.get(resUrl, new ImageLoader.ImageListener() {
                 @Override
                 public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
