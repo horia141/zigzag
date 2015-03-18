@@ -19,7 +19,6 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -56,7 +55,7 @@ public class ModelDecoder {
             Date timeClosed = dateFormatter.parse(timeClosedAsString);
 
             JSONObject screenConfigsJson = generationJson.getJSONObject("screen_configs");
-            Map<String, ScreenConfig> screenConfigs = new HashMap<String, ScreenConfig>();
+            Map<String, ScreenConfig> screenConfigs = new HashMap<>();
 
             for (Iterator<String> ii = screenConfigsJson.keys(); ii.hasNext();) {
                 String screenConfigKey = ii.next();
@@ -65,7 +64,7 @@ public class ModelDecoder {
             }
 
             JSONObject artifactSourcesJson = generationJson.getJSONObject("artifact_sources");
-            Map<EntityId, ArtifactSource> artifactSources = new HashMap<EntityId, ArtifactSource>();
+            Map<EntityId, ArtifactSource> artifactSources = new HashMap<>();
 
             for (Iterator<String> ii = artifactSourcesJson.keys(); ii.hasNext();) {
                 String artifactSourceId = ii.next();
@@ -75,7 +74,7 @@ public class ModelDecoder {
             }
 
             JSONArray artifactsJson = generationJson.getJSONArray("artifacts");
-            List<Artifact> artifacts = new ArrayList<Artifact>();
+            List<Artifact> artifacts = new ArrayList<>();
 
             for (int ii = 0; ii < artifactsJson.length(); ii++) {
                 artifacts.add(decodeArtifact(artifactsJson.getJSONObject(ii), artifactSources, screenConfigs));

@@ -24,8 +24,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.zigzag.client_app.controller.Controller;
+import com.zigzag.client_app.model.AnimationSetImageData;
+import com.zigzag.client_app.model.Artifact;
 import com.zigzag.client_app.model.EntityId;
+import com.zigzag.client_app.model.ImageData;
 import com.zigzag.client_app.model.ImageDescription;
+import com.zigzag.client_app.model.ImageSetImageData;
+import com.zigzag.client_app.model.TooBigImageData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,14 +40,14 @@ public class MediaCarouselFragment extends Fragment
     private static class ImageInfo {
         ImageDescription imageDescription;
         // One of these two is non-null, the other is null.
-        @Nullable List<Bitmap> tilesBitmaps;
-        @Nullable List<Bitmap> framesBitmaps;
+        List<Bitmap> tilesBitmaps;
+        List<Bitmap> framesBitmaps;
         TilesBitmapListAdapter tilesBitmapListAdapter;
 
-        public ImageInfo(ImageDescription imageDescription, @Nullable List<Bitmap> tilesBitmaps, @Nullable List<Bitmap> framesBitmaps, Context context) {
+        public ImageInfo(ImageDescription imageDescription, Context context) {
             this.imageDescription = imageDescription;
-            this.tilesBitmaps = tilesBitmaps;
-            this.framesBitmaps = framesBitmaps;
+            this.tilesBitmaps = new ArrayList<>();
+            this.framesBitmaps = new ArrayList<>();
             this.tilesBitmapListAdapter = new TilesBitmapListAdapter(context, this.tilesBitmaps);
         }
     }
@@ -165,20 +170,16 @@ public class MediaCarouselFragment extends Fragment
     private static final int SWIPE_THRESHOLD = 50;
     private static final int SWIPE_VELOCITY_THRESHOLD = 25;
 
-    @Nullable private EntityId currentImageId;
+    @Nullable private Artifact currentArtifact;
     private final List<ImageInfo> imagesDescriptionBitmapList;
     @Nullable private ImagesDescriptionBitmapListAdapter imagesDescriptionBitmapListAdapter;
     @Nullable private GestureDetectorCompat gestureDetector;
-    @Nullable private String currentTitle;
-    @Nullable private String currentPageUrl;
 
     public MediaCarouselFragment() {
-        this.currentImageId = null;
+        this.currentArtifact = null;
         this.imagesDescriptionBitmapList = new ArrayList<ImageInfo>();
         this.imagesDescriptionBitmapListAdapter = null;
         this.gestureDetector = null;
-        this.currentTitle = null;
-        this.currentPageUrl = null;
     }
 
     @Override
@@ -207,12 +208,12 @@ public class MediaCarouselFragment extends Fragment
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View shareButton) {
-                if (currentTitle == null || currentPageUrl == null) {
+                if (currentArtifact == null) {
                     return;
                 }
 
-                String subject = String.format("%s via %s", currentTitle, getActivity().getString(R.string.app_name));
-                String text = String.format("%s via %s %s", currentTitle, getActivity().getString(R.string.app_name), currentPageUrl);
+                String subject = String.format("%s via %s", currentArtifact.getTitle(), getActivity().getString(R.string.app_name));
+                String text = String.format("%s via %s %s", currentArtifact.getTitle(), getActivity().getString(R.string.app_name), currentArtifact.getPageUrl());
                 Intent i = new Intent(Intent.ACTION_SEND);
                 i.setType("text/plain");
                 i.putExtra(Intent.EXTRA_SUBJECT, subject);
@@ -272,8 +273,7 @@ public class MediaCarouselFragment extends Fragment
     }
 
     @Override
-    public void onInitialArtifactData(EntityId id, String title, String pageUrl, String sourceName, int numberOfImages) {
-        Log.i("ZigZag", String.format("Got %s %s - %d", title, sourceName, numberOfImages));
+    public void onInitialArtifactData(Artifact artifact) {
         View rootView = getView();
 
         // Sometimes this gets called when there is no view - like when an orientation change
@@ -282,39 +282,71 @@ public class MediaCarouselFragment extends Fragment
             return;
         }
 
+        currentArtifact = artifact;
+
+        // Clear the current data structures and interface. Dispose of the associated bitmaps and
+        // clear the tiles list.
+        for (int ii = 0; ii < imagesDescriptionBitmapList.size(); ii++) {
+            ImageInfo info = imagesDescriptionBitmapList.get(ii);
+            for (int jj = 0; jj < info.tilesBitmaps.size(); jj++) {
+                Bitmap bitmap = info.tilesBitmaps.get(jj);
+                if (bitmap == null) {
+                    continue;
+                }
+                bitmap.recycle();
+            }
+            info.tilesBitmaps.clear();
+            for (int jj = 0; jj < info.framesBitmaps.size(); jj++) {
+                Bitmap bitmap = info.framesBitmaps.get(jj);
+                if (bitmap == null) {
+                    continue;
+                }
+                bitmap.recycle();
+            }
+            info.framesBitmaps.clear();
+            info.tilesBitmapListAdapter.notifyDataSetChanged();
+        }
+        imagesDescriptionBitmapList.clear();
+        imagesDescriptionBitmapListAdapter.notifyDataSetChanged();
+
         // Make the master waiting progress bar invisible, since there'll be individual image
         // progress bars.
         rootView.findViewById(R.id.waiting).setVisibility(View.GONE);
 
         // Setup title for artifact.
         TextView titleView = (TextView)rootView.findViewById(R.id.title);
-        titleView.setText(String.format("%s - %s", title, sourceName));
+        titleView.setText(String.format("%s - %s", artifact.getTitle(), artifact.getArtifactSource().getName()));
 
         // Setup list view with all the images in the artifact. Reconstruct the list of bitmaps
         // to contain only nulls and the associated adapter and associate them with the image
         // list view.
-        currentImageId = id;
-        for (int ii = 0; ii < imagesDescriptionBitmapList.size(); ii++) {
-            ImageInfo info = imagesDescriptionBitmapList.get(ii);
-            if (info == null) {
+        for (int ii = 0; ii < artifact.getImagesDescription().size(); ii++) {
+            ImageDescription imageDescription = artifact.getImagesDescription().get(ii);
+            ImageData imageData = imageDescription.getBestMatchingImageData();
+            ImageInfo info = new ImageInfo(imageDescription, getActivity());
+
+            if (imageData instanceof TooBigImageData) {
                 continue;
+            } else if (imageData instanceof ImageSetImageData) {
+                ImageSetImageData imageSetImageData = (ImageSetImageData) imageData;
+                for (int jj = 0; jj < imageSetImageData.getTilesDesc().size(); jj++) {
+                    info.tilesBitmaps.add(null);
+                }
+            } else if (imageData instanceof AnimationSetImageData) {
+                AnimationSetImageData animationSetImageData = (AnimationSetImageData) imageData;
+                info.tilesBitmaps.add(null);
+                for (int jj = 0; jj < animationSetImageData.getFramesDesc().size(); jj++) {
+                    info.framesBitmaps.add(null);
+                }
             }
-            // TODO(horia141): proper recycling here.
-            // info.bitmap.recycle();
-        }
-        imagesDescriptionBitmapList.clear();
-        for (int ii = 0; ii < numberOfImages; ii++) {
-            imagesDescriptionBitmapList.add(null);
+            info.tilesBitmapListAdapter.notifyDataSetChanged();
+            imagesDescriptionBitmapList.add(info);
         }
         imagesDescriptionBitmapListAdapter.notifyDataSetChanged();
-
-        // Update global state about the image.
-        currentTitle = title;
-        currentPageUrl = pageUrl;
     }
 
     @Override
-    public void onImageForArtifact(EntityId id, int imageIdx, ImageDescription imageDescription, Bitmap image) {
+    public void onImageForArtifact(Artifact artifact, int imageIdx, Bitmap image) {
         Log.i("ZigZag", String.format("Got %d", imageIdx));
 
         if (imageIdx < 0) {
@@ -325,17 +357,15 @@ public class MediaCarouselFragment extends Fragment
             return;
         }
 
-        if (id != currentImageId) {
+        if (artifact != currentArtifact) {
             Log.e("ZigZag/MediaCarouselFragment", "Got out of sync image update");
             return;
         }
 
         // Update the list of bitmaps and notify the adapter about it.
-        List<Bitmap> bitmapsList = new ArrayList<Bitmap>();
-        bitmapsList.add(image);
-        ImageInfo info = new ImageInfo(imageDescription, bitmapsList, null, getActivity());
-        imagesDescriptionBitmapList.set(imageIdx, info);
-        imagesDescriptionBitmapListAdapter.notifyDataSetChanged();
+        ImageInfo imageDescription = imagesDescriptionBitmapList.get(imageIdx);
+        imageDescription.tilesBitmaps.set(0, image);
+        imageDescription.tilesBitmapListAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -351,7 +381,7 @@ public class MediaCarouselFragment extends Fragment
 
     @Override
     public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY) {
-        Log.d("ZigZag/MediaCarouselFragment", "onFling: " + event1.toString()+event2.toString());
+        Log.d("ZigZag/MediaCarouselFragment", "onFling: " + event1.toString() + event2.toString());
 
         float diffY = event2.getY() - event1.getY();
         float diffX = event2.getX() - event1.getX();
@@ -377,7 +407,7 @@ public class MediaCarouselFragment extends Fragment
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        Log.d("ZigZag/MediaCarouselFragment", "onScroll: " + e1.toString()+e2.toString());
+        Log.d("ZigZag/MediaCarouselFragment", "onScroll: " + e1.toString() + e2.toString());
         return true;
     }
 

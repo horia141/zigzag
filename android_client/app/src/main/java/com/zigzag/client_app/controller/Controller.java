@@ -13,12 +13,10 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.zigzag.client_app.model.Artifact;
-import com.zigzag.client_app.model.EntityId;
 import com.zigzag.client_app.model.Generation;
 import com.zigzag.client_app.model.ImageData;
 import com.zigzag.client_app.model.ImageDescription;
 import com.zigzag.client_app.model.ImageSetImageData;
-import com.zigzag.client_app.model.ScreenConfig;
 
 import org.json.JSONObject;
 
@@ -28,13 +26,13 @@ import java.util.List;
 public final class Controller {
 
     public static interface ArtifactListener {
-        void onInitialArtifactData(EntityId id, String title, String pageUrl, String sourceName, int numberOfImage);
-        void onImageForArtifact(EntityId id, int imageIdx, ImageDescription imageDescription, Bitmap image);
+        void onInitialArtifactData(Artifact artifact);
+        void onImageForArtifact(Artifact artifact, int imageIdx, Bitmap image);
         void onError(String errorDescription);
     }
 
     private static class ImageCache implements ImageLoader.ImageCache {
-        private final LruCache<String, Bitmap> cache = new LruCache<String, Bitmap>(IMAGE_CACHE_SIZE);
+        private final LruCache<String, Bitmap> cache = new LruCache<>(IMAGE_CACHE_SIZE);
 
         public void putBitmap(String url, Bitmap bitmap) {
             cache.put(url, bitmap);
@@ -50,10 +48,7 @@ public final class Controller {
     private static final String API_NEXTGEN_URL_PATTERN = "http://192.168.1.35:9000/api/v1/nextgen?from=%s";
     private static final String API_RES_URL_PATTERN = "http://192.168.1.35:9001/%s";
     private static final int IMAGE_CACHE_SIZE = 20;
-    public static final int STANDARD_IMAGE_WIDTH = 960;
-    public static final int ROUNDED_CORNER_SIZE = 12;
 
-    private final Context context;
     private final RequestQueue requestQueue;
     private final ImageLoader imageLoader;
     private final List<Generation> generations;
@@ -63,11 +58,10 @@ public final class Controller {
     private ArtifactListener listener;
 
     private Controller(Context context) {
-        this.context = context;
         this.requestQueue = Volley.newRequestQueue(context);
         this.imageLoader = new ImageLoader(this.requestQueue, new ImageCache());
-        this.generations = new ArrayList<Generation>();
-        this.artifacts = new ArrayList<Artifact>();
+        this.generations = new ArrayList<>();
+        this.artifacts = new ArrayList<>();
         this.nextArtifact = 0;
         this.modelDecoder = new ModelDecoder();
         this.listener = null;
@@ -177,9 +171,7 @@ public final class Controller {
 
     private void handleArtifact(final ArtifactListener artifactListener, final Artifact lastArtifact) {
         // Change the view to reflect new changes.
-        artifactListener.onInitialArtifactData(lastArtifact.getId(), lastArtifact.getTitle(),
-                lastArtifact.getPageUrl(), lastArtifact.getArtifactSource().getName(),
-                lastArtifact.getImagesDescription().size());
+        artifactListener.onInitialArtifactData(lastArtifact);
 
         // Trigger fetch of artifact images.
         for (int ii = 0; ii < lastArtifact.getImagesDescription().size(); ii++) {
@@ -202,8 +194,7 @@ public final class Controller {
                         return;
                     }
 
-                    artifactListener.onImageForArtifact(lastArtifact.getId(), imageIdx,
-                            imageDescription, response.getBitmap());
+                    artifactListener.onImageForArtifact(lastArtifact, imageIdx, response.getBitmap());
                 }
 
                 @Override
