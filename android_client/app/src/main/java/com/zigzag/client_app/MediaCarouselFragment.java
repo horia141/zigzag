@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -38,14 +39,16 @@ import java.util.List;
 public class MediaCarouselFragment extends Fragment
         implements Controller.ArtifactListener, GestureDetector.OnGestureListener {
     private static class ImageInfo {
-        ImageDescription imageDescription;
+        final ImageDescription imageDescription;
+        final ImageData imageData;
         // One of these two is non-null, the other is null.
-        List<Bitmap> tilesBitmaps;
-        List<Bitmap> framesBitmaps;
-        TilesBitmapListAdapter tilesBitmapListAdapter;
+        final List<Bitmap> tilesBitmaps;
+        final List<Bitmap> framesBitmaps;
+        final TilesBitmapListAdapter tilesBitmapListAdapter;
 
-        public ImageInfo(ImageDescription imageDescription, Context context) {
+        public ImageInfo(ImageDescription imageDescription, ImageData imageData, Context context) {
             this.imageDescription = imageDescription;
+            this.imageData = imageData;
             this.tilesBitmaps = new ArrayList<>();
             this.framesBitmaps = new ArrayList<>();
             this.tilesBitmapListAdapter = new TilesBitmapListAdapter(context, this.tilesBitmaps);
@@ -73,6 +76,10 @@ public class MediaCarouselFragment extends Fragment
             View rowView = convertView;
             ViewHolder rowViewHolder;
 
+            if (tilesBitmapList.size() == 2) {
+                Log.i("ZigZag/Trap", "trap");
+            }
+
             // Build the basic view of the element, and cache it for later use.
             if (rowView == null) {
                 rowView = inflater.inflate(R.layout.fragment_media_carousel_one_image_tile, parent, false);
@@ -98,6 +105,11 @@ public class MediaCarouselFragment extends Fragment
             }
 
             return rowView;
+        }
+
+        @Override
+        public int getCount() {
+            return tilesBitmapList.size();
         }
     }
 
@@ -153,7 +165,11 @@ public class MediaCarouselFragment extends Fragment
                 }
 
                 rowViewHolder.tilesListView.setVisibility(View.VISIBLE);
+                LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) rowViewHolder.tilesListView.getLayoutParams();
+                layoutParams.height = info.imageData.getTotalHeight();
+                rowViewHolder.tilesListView.setLayoutParams(layoutParams);
                 rowViewHolder.tilesListView.setAdapter(info.tilesBitmapListAdapter);
+
 
                 if (!info.imageDescription.getDescription().equals("")) {
                     rowViewHolder.descriptionTextView.setText(info.imageDescription.getDescription());
@@ -288,21 +304,7 @@ public class MediaCarouselFragment extends Fragment
         // clear the tiles list.
         for (int ii = 0; ii < imagesDescriptionBitmapList.size(); ii++) {
             ImageInfo info = imagesDescriptionBitmapList.get(ii);
-            for (int jj = 0; jj < info.tilesBitmaps.size(); jj++) {
-                Bitmap bitmap = info.tilesBitmaps.get(jj);
-                if (bitmap == null) {
-                    continue;
-                }
-                bitmap.recycle();
-            }
             info.tilesBitmaps.clear();
-            for (int jj = 0; jj < info.framesBitmaps.size(); jj++) {
-                Bitmap bitmap = info.framesBitmaps.get(jj);
-                if (bitmap == null) {
-                    continue;
-                }
-                bitmap.recycle();
-            }
             info.framesBitmaps.clear();
             info.tilesBitmapListAdapter.notifyDataSetChanged();
         }
@@ -323,7 +325,7 @@ public class MediaCarouselFragment extends Fragment
         for (int ii = 0; ii < artifact.getImagesDescription().size(); ii++) {
             ImageDescription imageDescription = artifact.getImagesDescription().get(ii);
             ImageData imageData = imageDescription.getBestMatchingImageData();
-            ImageInfo info = new ImageInfo(imageDescription, getActivity());
+            ImageInfo info = new ImageInfo(imageDescription, imageData, getActivity());
 
             if (imageData instanceof TooBigImageData) {
                 continue;
@@ -346,10 +348,16 @@ public class MediaCarouselFragment extends Fragment
     }
 
     @Override
-    public void onImageForArtifact(Artifact artifact, int imageIdx, Bitmap image) {
-        Log.i("ZigZag", String.format("Got %d", imageIdx));
+    public void onImageForArtifact(Artifact artifact, int imageIdx, int tileOrFrameIdx, Bitmap image) {
+        Log.i("ZigZag", String.format("Got %d/%d", imageIdx, tileOrFrameIdx));
+
+        if (artifact != currentArtifact) {
+            Log.e("ZigZag/MediaCarouselFragment", "Got out of sync image update");
+            return;
+        }
 
         if (imageIdx < 0) {
+            Log.e("ZigZag/MediaCarouselFragment", String.format("Got a negative image index %d", imageIdx));
             return;
         } else if (imageIdx >= imagesDescriptionBitmapList.size()) {
             Log.e("ZigZag/MediaCarouselFragment", String.format("Got an image for list index %d, but list" +
@@ -357,15 +365,40 @@ public class MediaCarouselFragment extends Fragment
             return;
         }
 
-        if (artifact != currentArtifact) {
-            Log.e("ZigZag/MediaCarouselFragment", "Got out of sync image update");
+        ImageInfo imageDescription = imagesDescriptionBitmapList.get(imageIdx);
+
+        if (imageDescription.imageData instanceof TooBigImageData) {
+            Log.e("ZigZag/MediaCarouselFragment", "Received image data for a very large image");
             return;
+        } else if (imageDescription.imageData instanceof ImageSetImageData) {
+            if (tileOrFrameIdx < 0) {
+                Log.e("ZigZag/MediaCarouselFragment", String.format("Got a negative tile index %d", tileOrFrameIdx));
+                return;
+            } else if (tileOrFrameIdx >= imageDescription.tilesBitmaps.size()) {
+                Log.e("ZigZag/MediaCarouselFragment", String.format("Got a tile image for list index %d, with tile %d but it" +
+                        " has size %d", imageIdx, tileOrFrameIdx, imageDescription.tilesBitmaps.size()));
+                return;
+            }
+
+            imageDescription.tilesBitmaps.set(tileOrFrameIdx, image);
+        } else if (imageDescription.imageData instanceof AnimationSetImageData) {
+            if (tileOrFrameIdx < 0) {
+                Log.e("ZigZag/MediaCarouselFragment", String.format("Got a negative frame index %d", tileOrFrameIdx));
+                return;
+            } else if (tileOrFrameIdx >= imageDescription.framesBitmaps.size()) {
+                Log.e("ZigZag/MediaCarouselFragment", String.format("Got a frame image for list index %d, with tile %d but it" +
+                        " has size %d", imageIdx, tileOrFrameIdx, imageDescription.tilesBitmaps.size()));
+                return;
+            }
+
+            if (tileOrFrameIdx == 0) {
+                imageDescription.tilesBitmaps.set(0, image);
+            }
+            imageDescription.framesBitmaps.set(tileOrFrameIdx, image);
         }
 
-        // Update the list of bitmaps and notify the adapter about it.
-        ImageInfo imageDescription = imagesDescriptionBitmapList.get(imageIdx);
-        imageDescription.tilesBitmaps.set(0, image);
         imageDescription.tilesBitmapListAdapter.notifyDataSetChanged();
+        imagesDescriptionBitmapListAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -375,13 +408,14 @@ public class MediaCarouselFragment extends Fragment
 
     @Override
     public boolean onDown(MotionEvent event) {
-        Log.d("ZigZag/MediaCarouselFragment","onDown: " + event.toString());
         return true;
     }
 
     @Override
-    public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY) {
-        Log.d("ZigZag/MediaCarouselFragment", "onFling: " + event1.toString() + event2.toString());
+    public boolean onFling(@Nullable MotionEvent event1, @Nullable MotionEvent event2, float velocityX, float velocityY) {
+        if (event1 == null || event2 == null) {
+            return true;
+        }
 
         float diffY = event2.getY() - event1.getY();
         float diffX = event2.getX() - event1.getX();
@@ -402,23 +436,19 @@ public class MediaCarouselFragment extends Fragment
 
     @Override
     public void onLongPress(MotionEvent event) {
-        Log.d("ZigZag/MediaCarouselFragment", "onLongPress: " + event.toString());
     }
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        Log.d("ZigZag/MediaCarouselFragment", "onScroll: " + e1.toString() + e2.toString());
         return true;
     }
 
     @Override
     public void onShowPress(MotionEvent event) {
-        Log.d("ZigZag/MediaCarouselFragment", "onShowPress: " + event.toString());
     }
 
     @Override
     public boolean onSingleTapUp(MotionEvent event) {
-        Log.d("ZigZag/MediaCarouselFragment", "onSingleTapUp: " + event.toString());
         return true;
     }
 }

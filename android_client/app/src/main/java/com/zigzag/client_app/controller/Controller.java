@@ -27,7 +27,7 @@ public final class Controller {
 
     public static interface ArtifactListener {
         void onInitialArtifactData(Artifact artifact);
-        void onImageForArtifact(Artifact artifact, int imageIdx, Bitmap image);
+        void onImageForArtifact(Artifact artifact, int imageIdx, int tileOrFrameIdx, Bitmap image);
         void onError(String errorDescription);
     }
 
@@ -178,36 +178,42 @@ public final class Controller {
             final int imageIdx = ii;
             final ImageDescription imageDescription = lastArtifact.getImagesDescription().get(ii);
             final ImageData imageData = imageDescription.getBestMatchingImageData();
-            String resUrl = getResUrl(((ImageSetImageData)imageData).getFullImageDesc().getUriPath());
-            imageLoader.get(resUrl, new ImageLoader.ImageListener() {
-                @Override
-                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                    // Either {@link stopEverything} has been called, or the listener has changed. In either
-                    // case there's no point in continuing.
-                    if (listener == null || artifactListener != listener) {
-                        return;
+            List<String> uriPathsToFetch = imageData.getUriPathsToFetch();
+
+            for (int jj = 0; jj < uriPathsToFetch.size(); jj++) {
+                final int tileOrFrameIdx = jj;
+                String resUrl = getResUrl(uriPathsToFetch.get(jj));
+
+                imageLoader.get(resUrl, new ImageLoader.ImageListener() {
+                    @Override
+                    public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                        // Either {@link stopEverything} has been called, or the listener has changed. In either
+                        // case there's no point in continuing.
+                        if (listener == null || artifactListener != listener) {
+                            return;
+                        }
+
+                        // From the ImageListener's sources: this can only happen when isImmediate is
+                        // true, and the image could not be found in the cache.
+                        if (response.getBitmap() == null) {
+                            return;
+                        }
+
+                        artifactListener.onImageForArtifact(lastArtifact, imageIdx, tileOrFrameIdx, response.getBitmap());
                     }
 
-                    // From the ImageListener's sources: this can only happen when isImmediate is
-                    // true, and the image could not be found in the cache.
-                    if (response.getBitmap() == null) {
-                        return;
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Either {@link stopEverything} has been called, or the listener has changed. In either
+                        // case there's no point in continuing.
+                        if (listener == null || artifactListener != listener) {
+                            return;
+                        }
+
+                        artifactListener.onError(error.getMessage());
                     }
-
-                    artifactListener.onImageForArtifact(lastArtifact, imageIdx, response.getBitmap());
-                }
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    // Either {@link stopEverything} has been called, or the listener has changed. In either
-                    // case there's no point in continuing.
-                    if (listener == null || artifactListener != listener) {
-                        return;
-                    }
-
-                    artifactListener.onError(error.getMessage());
-                }
-            });
+                });
+            }
         }
     }
 

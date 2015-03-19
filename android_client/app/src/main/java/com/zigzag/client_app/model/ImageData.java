@@ -1,4 +1,9 @@
 package com.zigzag.client_app.model;
 
-public class ImageData {
+import java.util.List;
+
+public abstract class ImageData {
+    public abstract List<String> getUriPathsToFetch();
+
+    public abstract int getTotalHeight();
 }
