@@ -4,13 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.media.Image;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
-import android.util.Pair;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -27,7 +26,6 @@ import android.widget.TextView;
 import com.zigzag.client_app.controller.Controller;
 import com.zigzag.client_app.model.AnimationSetImageData;
 import com.zigzag.client_app.model.Artifact;
-import com.zigzag.client_app.model.EntityId;
 import com.zigzag.client_app.model.ImageData;
 import com.zigzag.client_app.model.ImageDescription;
 import com.zigzag.client_app.model.ImageSetImageData;
@@ -45,13 +43,82 @@ public class MediaCarouselFragment extends Fragment
         final List<Bitmap> tilesBitmaps;
         final List<Bitmap> framesBitmaps;
         final TilesBitmapListAdapter tilesBitmapListAdapter;
+        // TODO(horia141): fugly.
+        final boolean isAnimation;
+        @Nullable final AnimationSetImageData animationSetImageData;
+        final int framesCount;
+        @Nullable GifAnimationTask gifAnimationTask;
 
         public ImageInfo(ImageDescription imageDescription, ImageData imageData, Context context) {
             this.imageDescription = imageDescription;
             this.imageData = imageData;
             this.tilesBitmaps = new ArrayList<>();
             this.framesBitmaps = new ArrayList<>();
-            this.tilesBitmapListAdapter = new TilesBitmapListAdapter(context, this.tilesBitmaps);
+            this.tilesBitmapListAdapter = new TilesBitmapListAdapter(context, this.tilesBitmaps, this);
+            this.isAnimation = imageData instanceof AnimationSetImageData;
+            this.animationSetImageData = this.isAnimation ? (AnimationSetImageData) imageData : null;
+            this.framesCount = this.isAnimation ? this.animationSetImageData.getFramesDesc().size() : 0;
+            this.gifAnimationTask = null;
+        }
+
+        public boolean allFramesLoaded() {
+            for (Bitmap bitmap : framesBitmaps) {
+                if (bitmap == null) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+    }
+
+    private static class GifAnimationTask extends AsyncTask<Boolean, Integer, Boolean> {
+        final ImageInfo imageInfo;
+        ImageView imageView;
+        final long timeBetweenFrames;
+        final int framesCount;
+
+        public GifAnimationTask(ImageInfo imageInfo, ImageView imageView) {
+            this.imageInfo = imageInfo;
+            this.imageView = imageView;
+            this.timeBetweenFrames = imageInfo.animationSetImageData.getTimeBetweenFrames();
+            this.framesCount = imageInfo.framesCount;
+        }
+
+        @Override
+        protected Boolean doInBackground(Boolean... unused) {
+            int framesCounter = 0;
+
+            while (true) {
+                try {
+                    Thread.sleep(timeBetweenFrames);
+
+                    // We should somehow protect access to allFramesLoaded, or rather the set of
+                    // bitmaps it scans with a lock. I don't think the complexity is warranted.
+                    // This method is read only and if it doesn't read the latest state for a
+                    // bitmap, it'll get it next time.
+                    if (!imageInfo.allFramesLoaded()) {
+                        // pass.
+                    } else {
+                        publishProgress(framesCounter);
+                        framesCounter = (framesCounter + 1) % framesCount;
+                    }
+
+                    if (isCancelled()) {
+                        break;
+                    }
+                } catch (InterruptedException e) {
+                    break;
+                }
+            }
+
+            return true;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... framesCounterParams) {
+            int framesCounter = framesCounterParams[0];
+            imageView.setImageBitmap(imageInfo.framesBitmaps.get(framesCounter));
         }
     }
 
@@ -62,10 +129,12 @@ public class MediaCarouselFragment extends Fragment
         }
 
         private final List<Bitmap> tilesBitmapList;
+        private final ImageInfo owner;
 
-        public TilesBitmapListAdapter(Context context, List<Bitmap> tilesBitmapList) {
+        public TilesBitmapListAdapter(Context context, List<Bitmap> tilesBitmapList, ImageInfo owner) {
             super(context, R.layout.fragment_media_carousel_one_image_tile, tilesBitmapList);
             this.tilesBitmapList = tilesBitmapList;
+            this.owner = owner;
         }
 
         @Override
@@ -98,10 +167,19 @@ public class MediaCarouselFragment extends Fragment
             if (bitmap == null) {
                 rowViewHolder.progressBar.setVisibility(View.VISIBLE);
                 rowViewHolder.imageView.setVisibility(View.GONE);
-            } else {
+            } else if (!owner.isAnimation) {
                 rowViewHolder.progressBar.setVisibility(View.GONE);
                 rowViewHolder.imageView.setVisibility(View.VISIBLE);
                 rowViewHolder.imageView.setImageBitmap(bitmap);
+            } else {
+                rowViewHolder.progressBar.setVisibility(View.GONE);
+                rowViewHolder.imageView.setVisibility(View.VISIBLE);
+                if (owner.gifAnimationTask == null) {
+                    owner.gifAnimationTask = new GifAnimationTask(owner, rowViewHolder.imageView);
+                    owner.gifAnimationTask.execute(true);
+                } else {
+                    owner.gifAnimationTask.imageView = rowViewHolder.imageView;
+                }
             }
 
             return rowView;
@@ -306,6 +384,9 @@ public class MediaCarouselFragment extends Fragment
             ImageInfo info = imagesDescriptionBitmapList.get(ii);
             info.tilesBitmaps.clear();
             info.framesBitmaps.clear();
+            if (info.gifAnimationTask != null) {
+                info.gifAnimationTask.cancel(true);
+            }
             info.tilesBitmapListAdapter.notifyDataSetChanged();
         }
         imagesDescriptionBitmapList.clear();

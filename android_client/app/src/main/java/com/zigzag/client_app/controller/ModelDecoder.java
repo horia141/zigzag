@@ -209,7 +209,7 @@ public class ModelDecoder {
 
                 return imageData;
             } else if (type.equals("animation-set")) {
-                double timeBetweenFrames = imageDataJson.getDouble("time_between_frames");
+                long timeBetweenFramesMs = imageDataJson.getLong("time_between_frames_ms");
 
                 JSONArray framesDescJson = imageDataJson.getJSONArray("frames_desc");
                 List<TileData> framesDesc = new ArrayList<TileData>();
@@ -220,7 +220,7 @@ public class ModelDecoder {
                     framesDesc.add(tileDesc);
                 }
 
-                ImageData imageData = new AnimationSetImageData(timeBetweenFrames, framesDesc);
+                ImageData imageData = new AnimationSetImageData(timeBetweenFramesMs, framesDesc);
 
                 return imageData;
             } else {

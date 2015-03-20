@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AnimationSetImageData extends ImageData {
-    private final double timeBetweenFrames;
+    private final long timeBetweenFrames;
     private final List<TileData> framesDesc;
 
-    public AnimationSetImageData(double timeBetweenFrames, List<TileData> framesDesc) {
+    public AnimationSetImageData(long timeBetweenFrames, List<TileData> framesDesc) {
         this.timeBetweenFrames = timeBetweenFrames;
         this.framesDesc = framesDesc;
     }
 
-    public double getTimeBetweenFrames() {
+    public long getTimeBetweenFrames() {
         return timeBetweenFrames;
     }
 
