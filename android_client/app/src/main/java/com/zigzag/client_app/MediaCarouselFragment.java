@@ -74,13 +74,13 @@ public class MediaCarouselFragment extends Fragment
 
     private static class GifAnimationTask extends AsyncTask<Boolean, Integer, Boolean> {
         final ImageInfo imageInfo;
-        ImageView imageView;
+        TilesBitmapListAdapter.ViewHolder viewHolder;
         final long timeBetweenFrames;
         final int framesCount;
 
-        public GifAnimationTask(ImageInfo imageInfo, ImageView imageView) {
+        public GifAnimationTask(ImageInfo imageInfo, TilesBitmapListAdapter.ViewHolder viewHolder) {
             this.imageInfo = imageInfo;
-            this.imageView = imageView;
+            this.viewHolder = viewHolder;
             this.timeBetweenFrames = imageInfo.animationSetImageData.getTimeBetweenFrames();
             this.framesCount = imageInfo.framesCount;
         }
@@ -98,7 +98,7 @@ public class MediaCarouselFragment extends Fragment
                     // This method is read only and if it doesn't read the latest state for a
                     // bitmap, it'll get it next time.
                     if (!imageInfo.allFramesLoaded()) {
-                        // pass.
+                        publishProgress(-1);
                     } else {
                         publishProgress(framesCounter);
                         framesCounter = (framesCounter + 1) % framesCount;
@@ -118,12 +118,19 @@ public class MediaCarouselFragment extends Fragment
         @Override
         protected void onProgressUpdate(Integer... framesCounterParams) {
             int framesCounter = framesCounterParams[0];
-            imageView.setImageBitmap(imageInfo.framesBitmaps.get(framesCounter));
+            if (framesCounter == -1) {
+                viewHolder.progressBar.setVisibility(View.VISIBLE);
+                viewHolder.imageView.setVisibility(View.GONE);
+            } else {
+                viewHolder.progressBar.setVisibility(View.GONE);
+                viewHolder.imageView.setImageBitmap(imageInfo.framesBitmaps.get(framesCounter));
+                viewHolder.imageView.setVisibility(View.VISIBLE);
+            }
         }
     }
 
     private static class TilesBitmapListAdapter extends ArrayAdapter<Bitmap> {
-        private static class ViewHolder {
+        static class ViewHolder {
             ProgressBar progressBar;
             ImageView imageView;
         }
@@ -172,13 +179,13 @@ public class MediaCarouselFragment extends Fragment
                 rowViewHolder.imageView.setVisibility(View.VISIBLE);
                 rowViewHolder.imageView.setImageBitmap(bitmap);
             } else {
-                rowViewHolder.progressBar.setVisibility(View.GONE);
-                rowViewHolder.imageView.setVisibility(View.VISIBLE);
+                rowViewHolder.progressBar.setVisibility(View.VISIBLE);
+                rowViewHolder.imageView.setVisibility(View.GONE);
                 if (owner.gifAnimationTask == null) {
-                    owner.gifAnimationTask = new GifAnimationTask(owner, rowViewHolder.imageView);
+                    owner.gifAnimationTask = new GifAnimationTask(owner, rowViewHolder);
                     owner.gifAnimationTask.execute(true);
                 } else {
-                    owner.gifAnimationTask.imageView = rowViewHolder.imageView;
+                    owner.gifAnimationTask.viewHolder = rowViewHolder;
                 }
             }
 
