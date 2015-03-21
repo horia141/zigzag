@@ -34,8 +34,7 @@ import com.zigzag.client_app.model.TooBigImageData;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MediaCarouselFragment extends Fragment
-        implements Controller.ArtifactListener, GestureDetector.OnGestureListener {
+public class MediaCarouselFragment extends Fragment implements Controller.ArtifactListener {
     private static class ImageInfo {
         final ImageDescription imageDescription;
         final ImageData imageData;
@@ -274,13 +273,11 @@ public class MediaCarouselFragment extends Fragment
     @Nullable private Artifact currentArtifact;
     private final List<ImageInfo> imagesDescriptionBitmapList;
     @Nullable private ImagesDescriptionBitmapListAdapter imagesDescriptionBitmapListAdapter;
-    @Nullable private GestureDetectorCompat gestureDetector;
 
     public MediaCarouselFragment() {
         this.currentArtifact = null;
         this.imagesDescriptionBitmapList = new ArrayList<ImageInfo>();
         this.imagesDescriptionBitmapListAdapter = null;
-        this.gestureDetector = null;
     }
 
     @Override
@@ -320,32 +317,6 @@ public class MediaCarouselFragment extends Fragment
                 i.putExtra(Intent.EXTRA_SUBJECT, subject);
                 i.putExtra(Intent.EXTRA_TEXT, text);
                 startActivity(Intent.createChooser(i, getActivity().getString(R.string.share_title)));
-            }
-        });
-
-        // Setup gesture handling.
-        gestureDetector = new GestureDetectorCompat(getActivity(), this);
-        final MediaCarouselFragment thisForClosure = this;
-        imageListView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent e) {
-                if (thisForClosure.gestureDetector == null) {
-                    return false;
-                }
-
-                imageListView.onTouchEvent(e);
-                return thisForClosure.gestureDetector.onTouchEvent(e);
-            }
-        });
-        rootView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent e) {
-                if (thisForClosure.gestureDetector == null) {
-                    return false;
-                }
-
-                rootView.onTouchEvent(e);
-                return thisForClosure.gestureDetector.onTouchEvent(e);
             }
         });
 
@@ -492,51 +463,5 @@ public class MediaCarouselFragment extends Fragment
     @Override
     public void onError(String errorDescription) {
         Log.i("ZigZag", String.format("Error %s", errorDescription));
-    }
-
-    @Override
-    public boolean onDown(MotionEvent event) {
-        return true;
-    }
-
-    @Override
-    public boolean onFling(@Nullable MotionEvent event1, @Nullable MotionEvent event2, float velocityX, float velocityY) {
-        if (event1 == null || event2 == null) {
-            return true;
-        }
-
-        float diffY = event2.getY() - event1.getY();
-        float diffX = event2.getX() - event1.getX();
-        if (Math.abs(diffX) > Math.abs(diffY)) {
-            if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
-                if (diffX > 0) {
-                    // Swiping to the right.
-                    Controller.getInstance(getActivity()).getPrevArtifact(this);
-                } else {
-                    // Swiping to the left.
-                    Controller.getInstance(getActivity()).getNextArtifact(this);
-                }
-            }
-        }
-
-        return true;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent event) {
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        return true;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent event) {
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent event) {
-        return true;
     }
 }
