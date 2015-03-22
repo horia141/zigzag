@@ -1,5 +1,6 @@
 package com.zigzag.client_app;
 
+import android.content.ContentProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -8,11 +9,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -26,6 +24,7 @@ import android.widget.TextView;
 import com.zigzag.client_app.controller.Controller;
 import com.zigzag.client_app.model.AnimationSetImageData;
 import com.zigzag.client_app.model.Artifact;
+import com.zigzag.client_app.model.EntityId;
 import com.zigzag.client_app.model.ImageData;
 import com.zigzag.client_app.model.ImageDescription;
 import com.zigzag.client_app.model.ImageSetImageData;
@@ -34,7 +33,7 @@ import com.zigzag.client_app.model.TooBigImageData;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MediaCarouselFragment extends Fragment implements Controller.ArtifactListener {
+public class MediaCarouselFragment extends Fragment implements Controller.ArtifactResourcesListener {
     private static class ImageInfo {
         final ImageDescription imageDescription;
         final ImageData imageData;
@@ -267,16 +266,13 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
         }
     }
 
-    private static final int SWIPE_THRESHOLD = 50;
-    private static final int SWIPE_VELOCITY_THRESHOLD = 25;
-
-    @Nullable private Artifact currentArtifact;
+    @Nullable private Artifact artifact;
     private final List<ImageInfo> imagesDescriptionBitmapList;
     @Nullable private ImagesDescriptionBitmapListAdapter imagesDescriptionBitmapListAdapter;
 
     public MediaCarouselFragment() {
-        this.currentArtifact = null;
-        this.imagesDescriptionBitmapList = new ArrayList<ImageInfo>();
+        this.artifact = null;
+        this.imagesDescriptionBitmapList = new ArrayList<>();
         this.imagesDescriptionBitmapListAdapter = null;
     }
 
@@ -285,9 +281,13 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
                              Bundle savedInstanceState) {
         Log.i("ZigZag/MediaCarouselFragment", "Creating view");
 
+        Bundle args = getArguments();
+        String artifactIdStr = args.getString("artifact_id");
+        artifact = Controller.getInstance(getActivity()).getArtifactById(new EntityId(artifactIdStr));
+
         final View rootView = inflater.inflate(R.layout.fragment_media_carousel, container, false);
 
-        ProgressBar waitingView = (ProgressBar)rootView.findViewById(R.id.waiting);
+        ProgressBar waitingView = (ProgressBar) rootView.findViewById(R.id.waiting);
 
         imagesDescriptionBitmapListAdapter = new ImagesDescriptionBitmapListAdapter(getActivity(), this.imagesDescriptionBitmapList);
 
@@ -306,12 +306,12 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View shareButton) {
-                if (currentArtifact == null) {
+                if (artifact == null) {
                     return;
                 }
 
-                String subject = String.format("%s via %s", currentArtifact.getTitle(), getActivity().getString(R.string.app_name));
-                String text = String.format("%s via %s %s", currentArtifact.getTitle(), getActivity().getString(R.string.app_name), currentArtifact.getPageUrl());
+                String subject = String.format("%s via %s", artifact.getTitle(), getActivity().getString(R.string.app_name));
+                String text = String.format("%s via %s %s", artifact.getTitle(), getActivity().getString(R.string.app_name), artifact.getPageUrl());
                 Intent i = new Intent(Intent.ACTION_SEND);
                 i.setType("text/plain");
                 i.putExtra(Intent.EXTRA_SUBJECT, subject);
@@ -319,42 +319,6 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
                 startActivity(Intent.createChooser(i, getActivity().getString(R.string.share_title)));
             }
         });
-
-        Controller.getInstance(getActivity()).getNextArtifact(this);
-
-        return rootView;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.i("ZigZag/MediaCarouselFragment", "Resuming");
-        Controller.getInstance(getActivity()).setListener(this);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.i("ZigZag/MediaCarouselFragment", "Pausing");
-        Controller.getInstance(getActivity()).stopEverything();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-    }
-
-    @Override
-    public void onInitialArtifactData(Artifact artifact) {
-        View rootView = getView();
-
-        // Sometimes this gets called when there is no view - like when an orientation change
-        // happens, or the parent fragment has stopped.
-        if (rootView == null) {
-            return;
-        }
-
-        currentArtifact = artifact;
 
         // Clear the current data structures and interface. Dispose of the associated bitmaps and
         // clear the tiles list.
@@ -404,13 +368,32 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
             imagesDescriptionBitmapList.add(info);
         }
         imagesDescriptionBitmapListAdapter.notifyDataSetChanged();
+
+        return rootView;
     }
 
     @Override
-    public void onImageForArtifact(Artifact artifact, int imageIdx, int tileOrFrameIdx, Bitmap image) {
+    public void onStart() {
+        super.onStart();
+        Controller.getInstance(getActivity()).fetchArtifactResources(artifact, this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Controller.getInstance(getActivity()).deregisterArtifactResources(artifact, this);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void onResourcesForArtifact(Artifact artifact, int imageIdx, int tileOrFrameIdx, Bitmap image) {
         Log.i("ZigZag", String.format("Got %d/%d", imageIdx, tileOrFrameIdx));
 
-        if (artifact != currentArtifact) {
+        if (artifact != this.artifact) {
             Log.e("ZigZag/MediaCarouselFragment", "Got out of sync image update");
             return;
         }
@@ -463,5 +446,14 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
     @Override
     public void onError(String errorDescription) {
         Log.i("ZigZag", String.format("Error %s", errorDescription));
+    }
+
+    public static MediaCarouselFragment newInstance(Artifact artifact) {
+        MediaCarouselFragment fragment = new MediaCarouselFragment();
+        Bundle args = new Bundle();
+        args.putString("artifact_id", artifact.getId().getId());
+        fragment.setArguments(args);
+
+        return fragment;
     }
 }

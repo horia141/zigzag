@@ -1,6 +1,7 @@
 package com.zigzag.client_app;
 
 import android.content.res.Configuration;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -11,25 +12,38 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.zigzag.client_app.controller.Controller;
+import com.zigzag.client_app.model.Artifact;
 
-public class MediaCarouselActivity extends ActionBarActivity {
-    ArtifactsAdapter artifactsAdapter;
-    ViewPager viewPager;
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class MediaCarouselActivity extends ActionBarActivity implements Controller.AllArtifactsListener {
+    private final List<Artifact> artifacts = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.i("ZigZag/MediaCarouselActivity", "Create");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_media_carousel);
-//        if (savedInstanceState == null) {
-//            getSupportFragmentManager().beginTransaction()
-//                    .add(R.id.container, new MediaCarouselFragment())
-//                    .commit();
-//        }
 
-        artifactsAdapter = new ArtifactsAdapter(getSupportFragmentManager());
-        viewPager = (ViewPager) findViewById(R.id.artifacts_pager);
+        ArtifactsAdapter artifactsAdapter = new ArtifactsAdapter(getSupportFragmentManager());
+        ViewPager viewPager = (ViewPager) findViewById(R.id.artifacts_pager);
         viewPager.setAdapter(artifactsAdapter);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Controller.getInstance(this).fetchArtifacts(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Controller.getInstance(this).deregisterAllArtifactsListener(this);
+        Controller.getInstance(this).stopEverything();
     }
 
     @Override
@@ -37,20 +51,31 @@ public class MediaCarouselActivity extends ActionBarActivity {
         super.onConfigurationChanged(newConfig);
     }
 
-    private static class ArtifactsAdapter extends FragmentStatePagerAdapter {
+    @Override
+    public void onNewArtifacts(List<Artifact> newArtifacts) {
+        artifacts.addAll(newArtifacts);
+    }
+
+    @Override
+    public void onError(String errorDescription) {
+        Log.e("ZigZag/MediaCarouselActivity", String.format("Error %s", errorDescription));
+    }
+
+    private class ArtifactsAdapter extends FragmentStatePagerAdapter {
         public ArtifactsAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
         }
 
         @Override
         public Fragment getItem(int i) {
-            Fragment fragment = new MediaCarouselFragment();
+            Artifact artifact = artifacts.get(i);
+            Fragment fragment = MediaCarouselFragment.newInstance(artifact);
             return fragment;
         }
 
         @Override
         public int getCount() {
-            return 10;
+            return artifacts.size();
         }
 
         @Override
