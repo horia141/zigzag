@@ -20,7 +20,10 @@ import java.util.List;
 
 
 public class MediaCarouselActivity extends ActionBarActivity implements Controller.AllArtifactsListener {
+    private static final int START_PREFETCH_BEFORE_END = 3;
+
     private final List<Artifact> artifacts = new ArrayList<>();
+    @Nullable private ArtifactsAdapter artifactsAdapter = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +31,7 @@ public class MediaCarouselActivity extends ActionBarActivity implements Controll
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_media_carousel);
 
-        ArtifactsAdapter artifactsAdapter = new ArtifactsAdapter(getSupportFragmentManager());
+        artifactsAdapter = new ArtifactsAdapter(getSupportFragmentManager());
         ViewPager viewPager = (ViewPager) findViewById(R.id.artifacts_pager);
         viewPager.setAdapter(artifactsAdapter);
     }
@@ -54,6 +57,7 @@ public class MediaCarouselActivity extends ActionBarActivity implements Controll
     @Override
     public void onNewArtifacts(List<Artifact> newArtifacts) {
         artifacts.addAll(newArtifacts);
+        artifactsAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -68,6 +72,10 @@ public class MediaCarouselActivity extends ActionBarActivity implements Controll
 
         @Override
         public Fragment getItem(int i) {
+            if (i + START_PREFETCH_BEFORE_END >= artifacts.size()) {
+                Controller.getInstance(MediaCarouselActivity.this).fetchArtifacts(MediaCarouselActivity.this);
+            }
+
             Artifact artifact = artifacts.get(i);
             Fragment fragment = MediaCarouselFragment.newInstance(artifact);
             return fragment;

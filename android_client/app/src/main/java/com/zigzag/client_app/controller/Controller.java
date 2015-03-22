@@ -23,7 +23,9 @@ import com.zigzag.client_app.model.ImageSetImageData;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public final class Controller {
 
@@ -59,18 +61,18 @@ public final class Controller {
     private final ImageLoader imageLoader;
     private final List<Generation> generations;
     private final List<Artifact> artifacts;
-    private int nextArtifact;
     private final ModelDecoder modelDecoder;
-    private @Nullable AllArtifactsListener allArtifactsListener;
+    @Nullable private AllArtifactsListener allArtifactsListener;
+    private Map<EntityId, ArtifactResourcesListener> resourcesListeners;
 
     private Controller(Context context) {
         this.requestQueue = Volley.newRequestQueue(context);
         this.imageLoader = new ImageLoader(this.requestQueue, new ImageCache());
         this.generations = new ArrayList<>();
         this.artifacts = new ArrayList<>();
-        this.nextArtifact = 0;
         this.modelDecoder = new ModelDecoder();
         this.allArtifactsListener = null;
+        this.resourcesListeners = new HashMap<>();
     }
 
     public void fetchArtifacts(final AllArtifactsListener listener) {
@@ -141,120 +143,14 @@ public final class Controller {
         allArtifactsListener = null;
     }
 
-    public void fetchArtifactResources(Artifact artifact, final ArtifactResourcesListener listener) {
+    public void fetchArtifactResources(final Artifact artifact, final ArtifactResourcesListener listener) {
+        resourcesListeners.put(artifact.getId(), listener);
 
-    }
-
-    public void deregisterArtifactResources(Artifact artifact, ArtifactResourcesListener listener) {
-
-    }
-
-    public void stopEverything() {
-        requestQueue.cancelAll(REQUESTS_TAG);
-        allArtifactsListener = null;
-    }
-
-    public void getNextArtifact(final ArtifactListener artifactListener) {
-        listener = artifactListener;
-
-        if (generations.size() == 0 || nextArtifact == artifacts.size()) {
-            String apiNextgenUrl;
-            if (generations.size() == 0) {
-                apiNextgenUrl = String.format(API_NEXTGEN_URL_PATTERN, "latest");
-            } else {
-                final Generation latestGeneration = generations.get(generations.size()-1);
-                apiNextgenUrl = String.format(API_NEXTGEN_URL_PATTERN, latestGeneration.getId().getId());
-            }
-
-            JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, apiNextgenUrl, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        // Note: Parsing the generation and updating the model happens regardless of
-                        // whether the listener has changed (see below). No point in wasting the
-                        // API call.
-
-                        Generation generation;
-
-                        try {
-                            // Parse the JSON response and obtain a new generation.
-                            generation = modelDecoder.decodeGeneration(response);
-                        } catch (ModelDecoder.Error e) {
-                            artifactListener.onError(e.toString());
-                            return;
-                        }
-
-                        // Update the "model".
-                        generations.add(generation);
-                        artifacts.addAll(generation.getArtifacts());
-
-                        if (generation.getArtifacts().size() == 0) {
-                            getNextArtifact(artifactListener);
-                            return;
-                        }
-
-                        // Either {@link stopEverything} has been called, or the listener has
-                        // changed. In either case there's no point in continuing.
-                        if (listener == null || artifactListener != listener) {
-                            return;
-                        }
-
-                        doNextArtifact(artifactListener);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // Either {@link stopEverything} has been called, or the listener has
-                        // changed. In either case there's no point in continuing.
-                        if (listener == null || artifactListener != listener) {
-                            return;
-                        }
-
-                        artifactListener.onError(error.getMessage());
-                    }
-                });
-
-            request.setTag(REQUESTS_TAG);
-            requestQueue.add(request);
-        } else {
-            doNextArtifact(artifactListener);
-        }
-    }
-
-    private void doNextArtifact(ArtifactListener artifactListener) {
-        // Either {@link stopEverything} has been called, or the listener has changed. In either
-        // case there's no point in continuing.
-        if (listener == null || artifactListener != listener) {
-            return;
-        }
-
-        // Get the next artifact to show.
-        final Artifact lastArtifact = artifacts.get(nextArtifact);
-        nextArtifact = nextArtifact + 1;
-        handleArtifact(artifactListener, lastArtifact);
-    }
-
-    public void getPrevArtifact(final ArtifactListener artifactListener) {
-        listener = artifactListener;
-
-        if (nextArtifact == 0) {
-            return;
-        }
-
-        nextArtifact = nextArtifact - 1;
-        final Artifact lastArtifact = artifacts.get(nextArtifact);
-        handleArtifact(artifactListener, lastArtifact);
-    }
-
-    private void handleArtifact(final ArtifactListener artifactListener, final Artifact lastArtifact) {
-        // Change the view to reflect new changes.
-        artifactListener.onInitialArtifactData(lastArtifact);
-
+        // Assert artifact actually exists.
         // Trigger fetch of artifact images.
-        for (int ii = 0; ii < lastArtifact.getImagesDescription().size(); ii++) {
+        for (int ii = 0; ii < artifact.getImagesDescription().size(); ii++) {
             final int imageIdx = ii;
-            final ImageDescription imageDescription = lastArtifact.getImagesDescription().get(ii);
+            final ImageDescription imageDescription = artifact.getImagesDescription().get(ii);
             final ImageData imageData = imageDescription.getBestMatchingImageData();
             List<String> uriPathsToFetch = imageData.getUriPathsToFetch();
 
@@ -267,7 +163,7 @@ public final class Controller {
                     public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
                         // Either {@link stopEverything} has been called, or the listener has changed. In either
                         // case there's no point in continuing.
-                        if (listener == null || artifactListener != listener) {
+                        if (resourcesListeners.get(artifact.getId()) == null || resourcesListeners.get(artifact.getId()) != listener) {
                             return;
                         }
 
@@ -277,22 +173,31 @@ public final class Controller {
                             return;
                         }
 
-                        artifactListener.onImageForArtifact(lastArtifact, imageIdx, tileOrFrameIdx, response.getBitmap());
+                        listener.onResourcesForArtifact(artifact, imageIdx, tileOrFrameIdx, response.getBitmap());
                     }
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // Either {@link stopEverything} has been called, or the listener has changed. In either
                         // case there's no point in continuing.
-                        if (listener == null || artifactListener != listener) {
+                        if (resourcesListeners.get(artifact.getId()) == null || resourcesListeners.get(artifact.getId()) != listener) {
                             return;
                         }
 
-                        artifactListener.onError(error.getMessage());
+                        listener.onError(error.getMessage());
                     }
                 });
             }
         }
+    }
+
+    public void deregisterArtifactResources(Artifact artifact, ArtifactResourcesListener listener) {
+        resourcesListeners.remove(artifact.getId());
+    }
+
+    public void stopEverything() {
+        requestQueue.cancelAll(REQUESTS_TAG);
+        allArtifactsListener = null;
     }
 
     @Nullable
