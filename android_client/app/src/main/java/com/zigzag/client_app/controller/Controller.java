@@ -80,7 +80,7 @@ public final class Controller {
 
         String apiNextGenUrl;
         if (generations.size() == 0) {
-            apiNextGenUrl = String.format(API_NEXTGEN_URL_PATTERN, "latest");
+            apiNextGenUrl = String.format(API_NEXTGEN_URL_PATTERN, "3");
         } else {
             final Generation latestGeneration = generations.get(generations.size()-1);
             apiNextGenUrl = String.format(API_NEXTGEN_URL_PATTERN, latestGeneration.getId().getId());

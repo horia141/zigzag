@@ -29,9 +29,12 @@ import com.zigzag.client_app.model.ImageData;
 import com.zigzag.client_app.model.ImageDescription;
 import com.zigzag.client_app.model.ImageSetImageData;
 import com.zigzag.client_app.model.TooBigImageData;
+import com.zigzag.client_app.ui.GifImageView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MediaCarouselFragment extends Fragment implements Controller.ArtifactResourcesListener {
     private static class ImageInfo {
@@ -39,91 +42,13 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
         final ImageData imageData;
         // One of these two is non-null, the other is null.
         final List<Bitmap> tilesBitmaps;
-        final List<Bitmap> framesBitmaps;
         final TilesBitmapListAdapter tilesBitmapListAdapter;
-        // TODO(horia141): fugly.
-        final boolean isAnimation;
-        @Nullable final AnimationSetImageData animationSetImageData;
-        final int framesCount;
-        @Nullable GifAnimationTask gifAnimationTask;
 
         public ImageInfo(ImageDescription imageDescription, ImageData imageData, Context context) {
             this.imageDescription = imageDescription;
             this.imageData = imageData;
             this.tilesBitmaps = new ArrayList<>();
-            this.framesBitmaps = new ArrayList<>();
             this.tilesBitmapListAdapter = new TilesBitmapListAdapter(context, this.tilesBitmaps, this);
-            this.isAnimation = imageData instanceof AnimationSetImageData;
-            this.animationSetImageData = this.isAnimation ? (AnimationSetImageData) imageData : null;
-            this.framesCount = this.isAnimation ? this.animationSetImageData.getFramesDesc().size() : 0;
-            this.gifAnimationTask = null;
-        }
-
-        public boolean allFramesLoaded() {
-            for (Bitmap bitmap : framesBitmaps) {
-                if (bitmap == null) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-    }
-
-    private static class GifAnimationTask extends AsyncTask<Boolean, Integer, Boolean> {
-        final ImageInfo imageInfo;
-        TilesBitmapListAdapter.ViewHolder viewHolder;
-        final long timeBetweenFrames;
-        final int framesCount;
-
-        public GifAnimationTask(ImageInfo imageInfo, TilesBitmapListAdapter.ViewHolder viewHolder) {
-            this.imageInfo = imageInfo;
-            this.viewHolder = viewHolder;
-            this.timeBetweenFrames = imageInfo.animationSetImageData.getTimeBetweenFrames();
-            this.framesCount = imageInfo.framesCount;
-        }
-
-        @Override
-        protected Boolean doInBackground(Boolean... unused) {
-            int framesCounter = 0;
-
-            while (true) {
-                try {
-                    Thread.sleep(timeBetweenFrames);
-
-                    // We should somehow protect access to allFramesLoaded, or rather the set of
-                    // bitmaps it scans with a lock. I don't think the complexity is warranted.
-                    // This method is read only and if it doesn't read the latest state for a
-                    // bitmap, it'll get it next time.
-                    if (!imageInfo.allFramesLoaded()) {
-                        publishProgress(-1);
-                    } else {
-                        publishProgress(framesCounter);
-                        framesCounter = (framesCounter + 1) % framesCount;
-                    }
-
-                    if (isCancelled()) {
-                        break;
-                    }
-                } catch (InterruptedException e) {
-                    break;
-                }
-            }
-
-            return true;
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... framesCounterParams) {
-            int framesCounter = framesCounterParams[0];
-            if (framesCounter == -1) {
-                viewHolder.progressBar.setVisibility(View.VISIBLE);
-                viewHolder.imageView.setVisibility(View.GONE);
-            } else {
-                viewHolder.progressBar.setVisibility(View.GONE);
-                viewHolder.imageView.setImageBitmap(imageInfo.framesBitmaps.get(framesCounter));
-                viewHolder.imageView.setVisibility(View.VISIBLE);
-            }
         }
     }
 
@@ -150,10 +75,6 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
             View rowView = convertView;
             ViewHolder rowViewHolder;
 
-            if (tilesBitmapList.size() == 2) {
-                Log.i("ZigZag/Trap", "trap");
-            }
-
             // Build the basic view of the element, and cache it for later use.
             if (rowView == null) {
                 rowView = inflater.inflate(R.layout.fragment_media_carousel_one_image_tile, parent, false);
@@ -172,19 +93,10 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
             if (bitmap == null) {
                 rowViewHolder.progressBar.setVisibility(View.VISIBLE);
                 rowViewHolder.imageView.setVisibility(View.GONE);
-            } else if (!owner.isAnimation) {
+            } else {
                 rowViewHolder.progressBar.setVisibility(View.GONE);
                 rowViewHolder.imageView.setVisibility(View.VISIBLE);
                 rowViewHolder.imageView.setImageBitmap(bitmap);
-            } else {
-                rowViewHolder.progressBar.setVisibility(View.VISIBLE);
-                rowViewHolder.imageView.setVisibility(View.GONE);
-                if (owner.gifAnimationTask == null) {
-                    owner.gifAnimationTask = new GifAnimationTask(owner, rowViewHolder);
-                    owner.gifAnimationTask.execute(true);
-                } else {
-                    owner.gifAnimationTask.viewHolder = rowViewHolder;
-                }
             }
 
             return rowView;
@@ -199,15 +111,18 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
     private static class ImagesDescriptionBitmapListAdapter extends ArrayAdapter<ImageInfo> {
         private static class ViewHolder {
             TextView subtitleTextView;
+            GifImageView gifImageView;
             ListView tilesListView;
             TextView descriptionTextView;
         }
 
         private final List<ImageInfo> imagesDescriptionBitmapList;
+        private final Map<Integer, GifImageView> gifImages;
 
-        public ImagesDescriptionBitmapListAdapter(Context context, List<ImageInfo> imagesDescriptionBitmapList) {
+        public ImagesDescriptionBitmapListAdapter(Context context, List<ImageInfo> imagesDescriptionBitmapList, Map<Integer, GifImageView> gifImages) {
             super(context, R.layout.fragment_media_carousel_one_image, imagesDescriptionBitmapList);
             this.imagesDescriptionBitmapList = imagesDescriptionBitmapList;
+            this.gifImages = gifImages;
         }
 
         @Override
@@ -224,6 +139,7 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
                 rowViewHolder = new ViewHolder();
 
                 rowViewHolder.subtitleTextView = (TextView) rowView.findViewById(R.id.subtitle);
+                rowViewHolder.gifImageView = (GifImageView) rowView.findViewById(R.id.image_gif);
                 rowViewHolder.tilesListView = (ListView) rowView.findViewById(R.id.tiles_list);
                 rowViewHolder.descriptionTextView = (TextView) rowView.findViewById(R.id.description);
 
@@ -234,9 +150,9 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
 
             ImageInfo info = imagesDescriptionBitmapList.get(position);
 
-
             if (info == null) {
                 rowViewHolder.subtitleTextView.setVisibility(View.GONE);
+                rowViewHolder.gifImageView.setVisibility(View.GONE);
                 rowViewHolder.tilesListView.setVisibility(View.GONE);
                 rowViewHolder.descriptionTextView.setVisibility(View.GONE);
             } else {
@@ -247,12 +163,29 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
                     rowViewHolder.subtitleTextView.setVisibility(View.GONE);
                 }
 
-                rowViewHolder.tilesListView.setVisibility(View.VISIBLE);
-                LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) rowViewHolder.tilesListView.getLayoutParams();
-                layoutParams.height = info.imageData.getTotalHeight();
-                rowViewHolder.tilesListView.setLayoutParams(layoutParams);
-                rowViewHolder.tilesListView.setAdapter(info.tilesBitmapListAdapter);
+                if (info.imageData instanceof TooBigImageData) {
+                    rowViewHolder.gifImageView.setVisibility(View.GONE);
+                    rowViewHolder.tilesListView.setVisibility(View.GONE);
+                } else if (info.imageData instanceof ImageSetImageData) {
+                    rowViewHolder.gifImageView.setVisibility(View.GONE);
 
+                    rowViewHolder.tilesListView.setVisibility(View.VISIBLE);
+                    LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) rowViewHolder.tilesListView.getLayoutParams();
+                    layoutParams.height = info.imageData.getTotalHeight();
+                    rowViewHolder.tilesListView.setLayoutParams(layoutParams);
+                    rowViewHolder.tilesListView.setAdapter(info.tilesBitmapListAdapter);
+                } else if (info.imageData instanceof AnimationSetImageData) {
+                    GifImageView gifImageView = gifImages.get(position);
+                    if (gifImageView != null && gifImageView != rowViewHolder.gifImageView) {
+                        // gifImageView.stopAnimation();
+                    }
+                    gifImages.put(position, rowViewHolder.gifImageView);
+                    rowViewHolder.gifImageView.setVisibility(View.VISIBLE);
+                    rowViewHolder.gifImageView.setImageData((AnimationSetImageData) info.imageData, info.tilesBitmaps);
+                    Log.e("ZigZag/MediaCarouselFragment", String.format("Loki here %d", rowViewHolder.gifImageView.hashCode()));
+
+                    rowViewHolder.tilesListView.setVisibility(View.GONE);
+                }
 
                 if (!info.imageDescription.getDescription().equals("")) {
                     rowViewHolder.descriptionTextView.setText(info.imageDescription.getDescription());
@@ -269,6 +202,7 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
     @Nullable private Artifact artifact;
     private final List<ImageInfo> imagesDescriptionBitmapList;
     @Nullable private ImagesDescriptionBitmapListAdapter imagesDescriptionBitmapListAdapter;
+    private final Map<Integer, GifImageView> gifImages = new HashMap<>();
 
     public MediaCarouselFragment() {
         this.artifact = null;
@@ -289,7 +223,7 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
 
         ProgressBar waitingView = (ProgressBar) rootView.findViewById(R.id.waiting);
 
-        imagesDescriptionBitmapListAdapter = new ImagesDescriptionBitmapListAdapter(getActivity(), this.imagesDescriptionBitmapList);
+        imagesDescriptionBitmapListAdapter = new ImagesDescriptionBitmapListAdapter(getActivity(), this.imagesDescriptionBitmapList, gifImages);
 
         final ListView imageListView = (ListView)rootView.findViewById(R.id.image_list);
         imageListView.setEmptyView(waitingView);
@@ -325,10 +259,6 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
         for (int ii = 0; ii < imagesDescriptionBitmapList.size(); ii++) {
             ImageInfo info = imagesDescriptionBitmapList.get(ii);
             info.tilesBitmaps.clear();
-            info.framesBitmaps.clear();
-            if (info.gifAnimationTask != null) {
-                info.gifAnimationTask.cancel(true);
-            }
             info.tilesBitmapListAdapter.notifyDataSetChanged();
         }
         imagesDescriptionBitmapList.clear();
@@ -359,9 +289,8 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
                 }
             } else if (imageData instanceof AnimationSetImageData) {
                 AnimationSetImageData animationSetImageData = (AnimationSetImageData) imageData;
-                info.tilesBitmaps.add(null);
                 for (int jj = 0; jj < animationSetImageData.getFramesDesc().size(); jj++) {
-                    info.framesBitmaps.add(null);
+                    info.tilesBitmaps.add(null);
                 }
             }
             info.tilesBitmapListAdapter.notifyDataSetChanged();
@@ -427,16 +356,17 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
             if (tileOrFrameIdx < 0) {
                 Log.e("ZigZag/MediaCarouselFragment", String.format("Got a negative frame index %d", tileOrFrameIdx));
                 return;
-            } else if (tileOrFrameIdx >= imageDescription.framesBitmaps.size()) {
+            } else if (tileOrFrameIdx >= imageDescription.tilesBitmaps.size()) {
                 Log.e("ZigZag/MediaCarouselFragment", String.format("Got a frame image for list index %d, with tile %d but it" +
                         " has size %d", imageIdx, tileOrFrameIdx, imageDescription.tilesBitmaps.size()));
                 return;
             }
 
-            if (tileOrFrameIdx == 0) {
-                imageDescription.tilesBitmaps.set(0, image);
+            imageDescription.tilesBitmaps.set(tileOrFrameIdx, image);
+            GifImageView gifImage = gifImages.get(tileOrFrameIdx);
+            if (gifImage != null) {
+                gifImage.setFrameBitmap(tileOrFrameIdx, image);
             }
-            imageDescription.framesBitmaps.set(tileOrFrameIdx, image);
         }
 
         imageDescription.tilesBitmapListAdapter.notifyDataSetChanged();
