@@ -43,7 +43,7 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
         final List<Bitmap> tilesBitmaps;
         final TilesBitmapAdapter tilesBitmapAdapter;
 
-        public ImageInfo(ImageDescription imageDescription, ImageData imageData, Context context) {
+        public ImageInfo(ImageDescription imageDescription, ImageData imageData) {
             this.imageDescription = imageDescription;
             this.imageData = imageData;
             this.tilesBitmaps = new ArrayList<>();
@@ -237,7 +237,7 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
         for (int ii = 0; ii < artifact.getImagesDescription().size(); ii++) {
             ImageDescription imageDescription = artifact.getImagesDescription().get(ii);
             ImageData imageData = imageDescription.getBestMatchingImageData();
-            ImageInfo info = new ImageInfo(imageDescription, imageData, getActivity());
+            ImageInfo info = new ImageInfo(imageDescription, imageData);
 
             if (imageData instanceof TooBigImageData) {
                 continue;
