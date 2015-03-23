@@ -13,45 +13,9 @@ import android.widget.ProgressBar;
 
 import com.zigzag.client_app.R;
 
-import java.util.ArrayList;
-import java.util.List;
+public class TileImageView extends LinearLayout implements BitmapSetListener {
 
-public class TileImageView extends LinearLayout {
-
-    public static abstract class Adapter {
-        private final List<TileImageView> tileImageViewList;
-
-        public Adapter() {
-            tileImageViewList = new ArrayList<>();
-        }
-
-        private void addTileImageView(TileImageView tileImageView) {
-            int tileImageViewIdx = tileImageViewList.indexOf(tileImageView);
-
-            if (tileImageViewIdx != -1) {
-                return;
-            }
-
-            tileImageViewList.add(tileImageView);
-        }
-
-        private void removeTileImageView(TileImageView tileImageView) {
-            tileImageViewList.remove(tileImageView);
-        }
-
-        public void notifyDataSetChanged() {
-            for (TileImageView tileImageView : tileImageViewList) {
-                tileImageView.notifyDataSetChanged();
-            }
-        }
-
-        @Nullable
-        public abstract Bitmap getBitmap(int position);
-
-        public abstract int getCount();
-    }
-
-    @Nullable private Adapter adapter;
+    @Nullable private BitmapSetAdapter<TileImageView> adapter;
 
     public TileImageView(Context context) {
         this(context, null);
@@ -74,23 +38,24 @@ public class TileImageView extends LinearLayout {
         super.onDetachedFromWindow();
 
         if (adapter != null) {
-            adapter.removeTileImageView(this);
+            adapter.addListener(this);
         }
 
         adapter = null;
     }
 
-    public void setAdapter(Adapter newAdapter) {
+    public void setAdapter(BitmapSetAdapter newAdapter) {
         if (adapter != null) {
-            adapter.removeTileImageView(this);
+            adapter.removeListener(this);
         }
 
         adapter = newAdapter;
-        adapter.addTileImageView(this);
+        adapter.addListener(this);
         notifyDataSetChanged();
     }
 
-    private void notifyDataSetChanged() {
+    @Override
+    public void notifyDataSetChanged() {
         drawTiles();
     }
 

@@ -13,8 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -27,6 +25,7 @@ import com.zigzag.client_app.model.ImageData;
 import com.zigzag.client_app.model.ImageDescription;
 import com.zigzag.client_app.model.ImageSetImageData;
 import com.zigzag.client_app.model.TooBigImageData;
+import com.zigzag.client_app.ui.BitmapSetAdapter;
 import com.zigzag.client_app.ui.GifImageView;
 import com.zigzag.client_app.ui.TileImageView;
 
@@ -51,7 +50,7 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
         }
     }
 
-    private static class TilesBitmapAdapter extends TileImageView.Adapter {
+    private static class TilesBitmapAdapter extends BitmapSetAdapter<TileImageView> {
         private final List<Bitmap> tilesBitmaps;
 
         public TilesBitmapAdapter(List<Bitmap> tilesBitmaps) {
