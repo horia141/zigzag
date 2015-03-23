@@ -38,13 +38,13 @@ public class TileImageView extends LinearLayout implements BitmapSetListener {
         super.onDetachedFromWindow();
 
         if (adapter != null) {
-            adapter.addListener(this);
+            adapter.removeListener(this);
         }
 
         adapter = null;
     }
 
-    public void setAdapter(BitmapSetAdapter newAdapter) {
+    public void setAdapter(BitmapSetAdapter<TileImageView> newAdapter) {
         if (adapter != null) {
             adapter.removeListener(this);
         }

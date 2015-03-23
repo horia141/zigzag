@@ -38,15 +38,36 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
     private static class ImageInfo {
         final ImageDescription imageDescription;
         final ImageData imageData;
-        // One of these two is non-null, the other is null.
         final List<Bitmap> tilesBitmaps;
         final TilesBitmapAdapter tilesBitmapAdapter;
+        final FramesBitmapAdapter framesBitmapAdapter;
 
         public ImageInfo(ImageDescription imageDescription, ImageData imageData) {
             this.imageDescription = imageDescription;
             this.imageData = imageData;
             this.tilesBitmaps = new ArrayList<>();
             this.tilesBitmapAdapter = new TilesBitmapAdapter(this.tilesBitmaps);
+            this.framesBitmapAdapter = new FramesBitmapAdapter(this.tilesBitmaps);
+        }
+    }
+
+    private static class FramesBitmapAdapter extends BitmapSetAdapter<GifImageView> {
+        private final List<Bitmap> framesBitmaps;
+
+        public FramesBitmapAdapter(List<Bitmap> framesBitmaps) {
+            super();
+            this.framesBitmaps = framesBitmaps;
+        }
+
+        @Override
+        @Nullable
+        public Bitmap getBitmap(int position) {
+            return framesBitmaps.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return framesBitmaps.size();
         }
     }
 
@@ -79,12 +100,10 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
         }
 
         private final List<ImageInfo> imagesDescriptionBitmapList;
-        private final Map<Integer, GifImageView> gifImages;
 
-        public ImagesDescriptionBitmapListAdapter(Context context, List<ImageInfo> imagesDescriptionBitmapList, Map<Integer, GifImageView> gifImages) {
+        public ImagesDescriptionBitmapListAdapter(Context context, List<ImageInfo> imagesDescriptionBitmapList) {
             super(context, R.layout.fragment_media_carousel_one_image, imagesDescriptionBitmapList);
             this.imagesDescriptionBitmapList = imagesDescriptionBitmapList;
-            this.gifImages = gifImages;
         }
 
         @Override
@@ -134,13 +153,8 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
                     rowViewHolder.tileImageView.setVisibility(View.VISIBLE);
                     rowViewHolder.tileImageView.setAdapter(info.tilesBitmapAdapter);
                 } else if (info.imageData instanceof AnimationSetImageData) {
-                    GifImageView gifImageView = gifImages.get(position);
-                    if (gifImageView != null && gifImageView != rowViewHolder.gifImageView) {
-                        // gifImageView.stopAnimation();
-                    }
-                    gifImages.put(position, rowViewHolder.gifImageView);
                     rowViewHolder.gifImageView.setVisibility(View.VISIBLE);
-                    rowViewHolder.gifImageView.setImageData((AnimationSetImageData) info.imageData, info.tilesBitmaps);
+                    rowViewHolder.gifImageView.setImageDataAndAdapter((AnimationSetImageData) info.imageData, info.framesBitmapAdapter);
 
                     rowViewHolder.tileImageView.setVisibility(View.GONE);
                 }
@@ -160,7 +174,6 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
     @Nullable private Artifact artifact;
     private final List<ImageInfo> imagesDescriptionBitmapList;
     @Nullable private ImagesDescriptionBitmapListAdapter imagesDescriptionBitmapListAdapter;
-    private final Map<Integer, GifImageView> gifImages = new HashMap<>();
 
     public MediaCarouselFragment() {
         this.artifact = null;
@@ -181,7 +194,7 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
 
         ProgressBar waitingView = (ProgressBar) rootView.findViewById(R.id.waiting);
 
-        imagesDescriptionBitmapListAdapter = new ImagesDescriptionBitmapListAdapter(getActivity(), this.imagesDescriptionBitmapList, gifImages);
+        imagesDescriptionBitmapListAdapter = new ImagesDescriptionBitmapListAdapter(getActivity(), this.imagesDescriptionBitmapList);
 
         final ListView imageListView = (ListView)rootView.findViewById(R.id.image_list);
         imageListView.setEmptyView(waitingView);
@@ -252,6 +265,7 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
                 }
             }
             info.tilesBitmapAdapter.notifyDataSetChanged();
+            info.framesBitmapAdapter.notifyDataSetChanged();
             imagesDescriptionBitmapList.add(info);
         }
         imagesDescriptionBitmapListAdapter.notifyDataSetChanged();
@@ -299,7 +313,7 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
         if (imageDescription.imageData instanceof TooBigImageData) {
             Log.e("ZigZag/MediaCarouselFragment", "Received image data for a very large image");
             return;
-        } else if (imageDescription.imageData instanceof ImageSetImageData) {
+        } else {
             if (tileOrFrameIdx < 0) {
                 Log.e("ZigZag/MediaCarouselFragment", String.format("Got a negative tile index %d", tileOrFrameIdx));
                 return;
@@ -310,24 +324,10 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
             }
 
             imageDescription.tilesBitmaps.set(tileOrFrameIdx, image);
-        } else if (imageDescription.imageData instanceof AnimationSetImageData) {
-            if (tileOrFrameIdx < 0) {
-                Log.e("ZigZag/MediaCarouselFragment", String.format("Got a negative frame index %d", tileOrFrameIdx));
-                return;
-            } else if (tileOrFrameIdx >= imageDescription.tilesBitmaps.size()) {
-                Log.e("ZigZag/MediaCarouselFragment", String.format("Got a frame image for list index %d, with tile %d but it" +
-                        " has size %d", imageIdx, tileOrFrameIdx, imageDescription.tilesBitmaps.size()));
-                return;
-            }
-
-            imageDescription.tilesBitmaps.set(tileOrFrameIdx, image);
-            GifImageView gifImage = gifImages.get(tileOrFrameIdx);
-            if (gifImage != null) {
-                gifImage.setFrameBitmap(tileOrFrameIdx, image);
-            }
         }
 
         imageDescription.tilesBitmapAdapter.notifyDataSetChanged();
+        imageDescription.framesBitmapAdapter.notifyDataSetChanged();
         imagesDescriptionBitmapListAdapter.notifyDataSetChanged();
     }
 

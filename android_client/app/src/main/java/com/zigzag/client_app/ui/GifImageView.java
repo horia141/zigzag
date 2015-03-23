@@ -15,9 +15,10 @@ import com.zigzag.client_app.model.AnimationSetImageData;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GifImageView extends ImageView {
+public class GifImageView extends ImageView implements BitmapSetListener {
+
+    @Nullable private BitmapSetAdapter<GifImageView> adapter;
     @Nullable private AnimationSetImageData imageData;
-    private final List<Bitmap> frames;
     private final List<AnimationTask> animationTasks;
 
     public GifImageView(Context context) {
@@ -26,36 +27,43 @@ public class GifImageView extends ImageView {
 
     public GifImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        adapter = null;
         imageData = null;
-        frames = new ArrayList<>();
         animationTasks = new ArrayList<>();
     }
 
-    public void setImageData(AnimationSetImageData imageData, List<Bitmap> initialFrames) {
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
+        if (adapter != null) {
+            adapter.removeListener(this);
+        }
+
+        for (AnimationTask task : animationTasks) {
+            task.cancel(true);
+        }
+    }
+
+    public void setImageDataAndAdapter(AnimationSetImageData imageData, BitmapSetAdapter<GifImageView> newAdapter) {
         this.imageData = imageData;
 
-        frames.clear();
-        for (int ii = 0; ii < imageData.getFramesDesc().size(); ii++) {
-            frames.add(initialFrames.get(ii));
+        if (adapter != null) {
+            adapter.removeListener(this);
         }
+
+        adapter = newAdapter;
+        adapter.addListener(this);
+        notifyDataSetChanged();
 
         AnimationTask animationTask = new AnimationTask();
         animationTask.execute();
         animationTasks.add(animationTask);
     }
 
-    public void setFrameBitmap(int frameIndex, Bitmap bitmap) {
-        // assert imageData != null
-        // assert 0 <= frameIndex < imageData.getFramesDesc().size()
-        frames.set(frameIndex, bitmap);
-    }
-
     @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        for (AnimationTask task : animationTasks) {
-            task.cancel(true);
-        }
+    public void notifyDataSetChanged() {
+        // Nothing to do here.
     }
 
     @Override
@@ -74,8 +82,12 @@ public class GifImageView extends ImageView {
     }
 
     public boolean allFramesLoaded() {
-        for (Bitmap frame : frames) {
-            if (frame == null) {
+        if (adapter == null) {
+            return false;
+        }
+
+        for (int ii = 0; ii < adapter.getCount(); ii++) {
+            if (adapter.getBitmap(ii) == null) {
                 return false;
             }
         }
@@ -131,7 +143,11 @@ public class GifImageView extends ImageView {
 
             Log.e("ZigZag/AnimationTask", String.format("here %d %d", GifImageView.this.hashCode(), this.hashCode()));
 
-            GifImageView.this.setImageBitmap(frames.get(framesCounter));
+            if (adapter == null) {
+                return;
+            }
+
+            GifImageView.this.setImageBitmap(adapter.getBitmap(framesCounter));
             GifImageView.this.invalidate();
         }
     }
