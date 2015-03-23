@@ -20,6 +20,10 @@ public class GifImageView extends ImageView {
     private final List<Bitmap> frames;
     private final List<AnimationTask> animationTasks;
 
+    public GifImageView(Context context) {
+        this(context, null);
+    }
+
     public GifImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
         imageData = null;
