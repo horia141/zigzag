@@ -6,16 +6,21 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.util.Log;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
+import com.zigzag.client_app.R;
 import com.zigzag.client_app.model.AnimationSetImageData;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GifImageView extends ImageView implements BitmapSetListener {
+public class GifImageView extends LinearLayout implements BitmapSetListener {
 
     @Nullable private BitmapSetAdapter adapter;
     @Nullable private AnimationSetImageData imageData;
@@ -30,6 +35,9 @@ public class GifImageView extends ImageView implements BitmapSetListener {
         adapter = null;
         imageData = null;
         animationTasks = new ArrayList<>();
+
+        setOrientation(LinearLayout.VERTICAL);
+        setGravity(Gravity.CENTER_VERTICAL);
     }
 
     @Override
@@ -63,25 +71,36 @@ public class GifImageView extends ImageView implements BitmapSetListener {
 
     @Override
     public void notifyDataSetChanged() {
-        // Nothing to do here.
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        Drawable d = getDrawable();
-
-        if (d != null) {
-            // Ceil not round - avoid thin vertical gaps along the left/right edges
-            int width = MeasureSpec.getSize(widthMeasureSpec);
-            int height = (int) Math.ceil((float) width
-                    * (float) d.getIntrinsicHeight() / (float) d.getIntrinsicWidth());
-            setMeasuredDimension(width, height);
+        if (atLeastFirstFrameLoaded()) {
+            drawFrame(0);
         } else {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            drawFrame(-1);
         }
     }
 
-    public boolean allFramesLoaded() {
+    private void drawFrame(int framesCounter) {
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        View tileView = getChildAt(0);
+
+        if (tileView == null) {
+            tileView = inflater.inflate(R.layout.tile_image_view_tile, GifImageView.this);
+        }
+
+        ProgressBar progressBar = (ProgressBar) tileView.findViewById(R.id.waiting);
+        ImageView imageView = (ImageView) tileView.findViewById(R.id.image);
+
+        if (framesCounter == -1 || adapter == null) {
+            progressBar.setVisibility(View.VISIBLE);
+            imageView.setVisibility(View.GONE);
+        } else {
+            progressBar.setVisibility(View.GONE);
+            imageView.setVisibility(View.VISIBLE);
+            imageView.setImageBitmap(adapter.getBitmap(framesCounter));
+        }
+    }
+
+    private boolean allFramesLoaded() {
         if (adapter == null) {
             return false;
         }
@@ -90,6 +109,18 @@ public class GifImageView extends ImageView implements BitmapSetListener {
             if (adapter.getBitmap(ii) == null) {
                 return false;
             }
+        }
+
+        return true;
+    }
+
+    private boolean atLeastFirstFrameLoaded() {
+        if (adapter == null) {
+            return false;
+        }
+
+        if (adapter.getBitmap(0) == null) {
+            return false;
         }
 
         return true;
@@ -120,11 +151,13 @@ public class GifImageView extends ImageView implements BitmapSetListener {
                     // bitmaps it scans with a lock. I don't think the complexity is warranted.
                     // This method is read only and if it doesn't read the latest state for a
                     // bitmap, it'll get it next time.
-                    if (!allFramesLoaded()) {
-                        publishProgress(-1);
-                    } else {
+                    if (allFramesLoaded()) {
                         publishProgress(framesCounter);
                         framesCounter = (framesCounter + 1) % framesCount;
+                    } else if (atLeastFirstFrameLoaded()) {
+                        publishProgress(0);
+                    } else {
+                        publishProgress(-1);
                     }
                 } catch (InterruptedException e) {
                     break;
@@ -137,18 +170,8 @@ public class GifImageView extends ImageView implements BitmapSetListener {
         @Override
         protected void onProgressUpdate(Integer... framesCounterParams) {
             int framesCounter = framesCounterParams[0];
-            if (framesCounter == -1) {
-                return;
-            }
-
             Log.e("ZigZag/AnimationTask", String.format("here %d %d", GifImageView.this.hashCode(), this.hashCode()));
-
-            if (adapter == null) {
-                return;
-            }
-
-            GifImageView.this.setImageBitmap(adapter.getBitmap(framesCounter));
-            GifImageView.this.invalidate();
+            drawFrame(framesCounter);
         }
     }
 }
