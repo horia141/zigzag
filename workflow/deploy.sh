@@ -41,7 +41,7 @@ EOF
 
 # Create a place to store photos.
 ssh $USER@$HOST <<EOF
-  mkdir -p var/photos
+  mkdir -p zigzag/var/photos
 EOF
 
 # Configure cron on the production machine.
