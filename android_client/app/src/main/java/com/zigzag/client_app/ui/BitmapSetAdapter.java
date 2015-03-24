@@ -6,14 +6,14 @@ import android.support.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BitmapSetAdapter<T extends BitmapSetListener> {
-    private final List<T> listeners;
+public abstract class BitmapSetAdapter {
+    private final List<BitmapSetListener> listeners;
 
     public BitmapSetAdapter() {
         listeners = new ArrayList<>();
     }
 
-    public void addListener(T listener) {
+    public void addListener(BitmapSetListener listener) {
         int idx = listeners.indexOf(listener);
 
         if (idx != -1) {
@@ -23,12 +23,12 @@ public abstract class BitmapSetAdapter<T extends BitmapSetListener> {
         listeners.add(listener);
     }
 
-    public void removeListener(T listener) {
+    public void removeListener(BitmapSetListener listener) {
         listeners.remove(listener);
     }
 
     public void notifyDataSetChanged() {
-        for (T listener : listeners) {
+        for (BitmapSetListener listener : listeners) {
             listener.notifyDataSetChanged();
         }
     }

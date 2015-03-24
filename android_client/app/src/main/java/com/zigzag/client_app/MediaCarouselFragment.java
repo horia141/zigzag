@@ -40,38 +40,16 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
         final ImageData imageData;
         final List<Bitmap> tilesBitmaps;
         final TilesBitmapAdapter tilesBitmapAdapter;
-        final FramesBitmapAdapter framesBitmapAdapter;
 
         public ImageInfo(ImageDescription imageDescription, ImageData imageData) {
             this.imageDescription = imageDescription;
             this.imageData = imageData;
             this.tilesBitmaps = new ArrayList<>();
             this.tilesBitmapAdapter = new TilesBitmapAdapter(this.tilesBitmaps);
-            this.framesBitmapAdapter = new FramesBitmapAdapter(this.tilesBitmaps);
         }
     }
 
-    private static class FramesBitmapAdapter extends BitmapSetAdapter<GifImageView> {
-        private final List<Bitmap> framesBitmaps;
-
-        public FramesBitmapAdapter(List<Bitmap> framesBitmaps) {
-            super();
-            this.framesBitmaps = framesBitmaps;
-        }
-
-        @Override
-        @Nullable
-        public Bitmap getBitmap(int position) {
-            return framesBitmaps.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return framesBitmaps.size();
-        }
-    }
-
-    private static class TilesBitmapAdapter extends BitmapSetAdapter<TileImageView> {
+    private static class TilesBitmapAdapter extends BitmapSetAdapter {
         private final List<Bitmap> tilesBitmaps;
 
         public TilesBitmapAdapter(List<Bitmap> tilesBitmaps) {
@@ -154,7 +132,7 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
                     rowViewHolder.tileImageView.setAdapter(info.tilesBitmapAdapter);
                 } else if (info.imageData instanceof AnimationSetImageData) {
                     rowViewHolder.gifImageView.setVisibility(View.VISIBLE);
-                    rowViewHolder.gifImageView.setImageDataAndAdapter((AnimationSetImageData) info.imageData, info.framesBitmapAdapter);
+                    rowViewHolder.gifImageView.setImageDataAndAdapter((AnimationSetImageData) info.imageData, info.tilesBitmapAdapter);
 
                     rowViewHolder.tileImageView.setVisibility(View.GONE);
                 }
@@ -265,7 +243,6 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
                 }
             }
             info.tilesBitmapAdapter.notifyDataSetChanged();
-            info.framesBitmapAdapter.notifyDataSetChanged();
             imagesDescriptionBitmapList.add(info);
         }
         imagesDescriptionBitmapListAdapter.notifyDataSetChanged();
@@ -327,7 +304,6 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
         }
 
         imageDescription.tilesBitmapAdapter.notifyDataSetChanged();
-        imageDescription.framesBitmapAdapter.notifyDataSetChanged();
         imagesDescriptionBitmapListAdapter.notifyDataSetChanged();
     }
 

@@ -15,7 +15,7 @@ import com.zigzag.client_app.R;
 
 public class TileImageView extends LinearLayout implements BitmapSetListener {
 
-    @Nullable private BitmapSetAdapter<TileImageView> adapter;
+    @Nullable private BitmapSetAdapter adapter;
 
     public TileImageView(Context context) {
         this(context, null);
@@ -44,7 +44,7 @@ public class TileImageView extends LinearLayout implements BitmapSetListener {
         adapter = null;
     }
 
-    public void setAdapter(BitmapSetAdapter<TileImageView> newAdapter) {
+    public void setAdapter(BitmapSetAdapter newAdapter) {
         if (adapter != null) {
             adapter.removeListener(this);
         }

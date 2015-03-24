@@ -17,7 +17,7 @@ import java.util.List;
 
 public class GifImageView extends ImageView implements BitmapSetListener {
 
-    @Nullable private BitmapSetAdapter<GifImageView> adapter;
+    @Nullable private BitmapSetAdapter adapter;
     @Nullable private AnimationSetImageData imageData;
     private final List<AnimationTask> animationTasks;
 
@@ -45,7 +45,7 @@ public class GifImageView extends ImageView implements BitmapSetListener {
         }
     }
 
-    public void setImageDataAndAdapter(AnimationSetImageData imageData, BitmapSetAdapter<GifImageView> newAdapter) {
+    public void setImageDataAndAdapter(AnimationSetImageData imageData, BitmapSetAdapter newAdapter) {
         this.imageData = imageData;
 
         if (adapter != null) {
