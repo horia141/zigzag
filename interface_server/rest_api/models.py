@@ -39,9 +39,17 @@ class Generation(models.Model):
 
     @staticmethod
     def next(from_id):
-        next_id = from_id - 1
+        # If somebody asks for the next iteration after the one with id=1, we return the first one,
+        # non-the-less. Simpler to write things this way, rather than in the query. Also, we assume
+        # the first generation is always open.
+        next_id = max(from_id, 2)
         try:
-            return Generation.objects.get(id=next_id)
+            return Generation \
+                .objects \
+                .all() \
+                .filter(id__lt=next_id, status=Generation.CLOSED) \
+                .order_by('-id') \
+                .first()
         except Generation.DoesNotExist as e:
             return Generation.latest()
 
