@@ -7,6 +7,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BitmapSetAdapter {
+    public static class TileInfo {
+        private final Bitmap bitmap;
+        private final int width;
+        private final int height;
+
+        public TileInfo(Bitmap bitmap, int width, int height) {
+            this.bitmap = bitmap;
+            this.width = width;
+            this.height = height;
+        }
+
+        public Bitmap getBitmap() {
+            return bitmap;
+        }
+
+        public int getWidth() {
+            return width;
+        }
+
+        public int getHeight() {
+            return height;
+        }
+    }
+
     private final List<BitmapSetListener> listeners;
 
     public BitmapSetAdapter() {
@@ -34,7 +58,7 @@ public abstract class BitmapSetAdapter {
     }
 
     @Nullable
-    public abstract Bitmap getBitmap(int position);
+    public abstract TileInfo getTileInfo(int position);
 
     public abstract int getCount();
 }

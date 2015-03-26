@@ -1,8 +1,6 @@
 package com.zigzag.client_app.ui;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -87,16 +85,20 @@ public class GifImageView extends LinearLayout implements BitmapSetListener {
             tileView = inflater.inflate(R.layout.tile_image_view_tile, GifImageView.this);
         }
 
-        ProgressBar progressBar = (ProgressBar) tileView.findViewById(R.id.waiting);
+        HeightAdjustedProgressBar progressBar = (HeightAdjustedProgressBar) tileView.findViewById(R.id.waiting);
         ImageView imageView = (ImageView) tileView.findViewById(R.id.image);
 
         if (framesCounter == -1 || adapter == null) {
             progressBar.setVisibility(View.VISIBLE);
+            if (adapter != null && adapter.getCount() > 0) {
+                BitmapSetAdapter.TileInfo tileInfo = adapter.getTileInfo(0);
+                progressBar.setTileWidthAndHeight(tileInfo.getWidth(), tileInfo.getHeight());
+            }
             imageView.setVisibility(View.GONE);
         } else {
             progressBar.setVisibility(View.GONE);
             imageView.setVisibility(View.VISIBLE);
-            imageView.setImageBitmap(adapter.getBitmap(framesCounter));
+            imageView.setImageBitmap(adapter.getTileInfo(framesCounter).getBitmap());
         }
     }
 
@@ -106,7 +108,7 @@ public class GifImageView extends LinearLayout implements BitmapSetListener {
         }
 
         for (int ii = 0; ii < adapter.getCount(); ii++) {
-            if (adapter.getBitmap(ii) == null) {
+            if (adapter.getTileInfo(ii).getBitmap() == null) {
                 return false;
             }
         }
@@ -119,7 +121,7 @@ public class GifImageView extends LinearLayout implements BitmapSetListener {
             return false;
         }
 
-        if (adapter.getBitmap(0) == null) {
+        if (adapter.getTileInfo(0).getBitmap() == null) {
             return false;
         }
 

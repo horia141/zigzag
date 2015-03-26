@@ -121,7 +121,7 @@ public class ImageLoader {
      * The call flow is this:
      * 1. Upon being  attached to a request, onResponse(response, true) will
      * be invoked to reflect any cached data that was already available. If the
-     * data was available, response.getBitmap() will be non-null.
+     * data was available, response.getTileInfo() will be non-null.
      *
      * 2. After a network response returns, only one of the following cases will happen:
      *   - onResponse(response, false) will be called if the image was loaded.

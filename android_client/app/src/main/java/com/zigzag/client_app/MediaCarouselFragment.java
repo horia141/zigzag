@@ -45,22 +45,38 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
             this.imageDescription = imageDescription;
             this.imageData = imageData;
             this.tilesBitmaps = new ArrayList<>();
-            this.tilesBitmapAdapter = new TilesBitmapAdapter(this.tilesBitmaps);
+            this.tilesBitmapAdapter = new TilesBitmapAdapter(imageData, this.tilesBitmaps);
         }
     }
 
     private static class TilesBitmapAdapter extends BitmapSetAdapter {
+        private final ImageData imageData;
         private final List<Bitmap> tilesBitmaps;
 
-        public TilesBitmapAdapter(List<Bitmap> tilesBitmaps) {
+        public TilesBitmapAdapter(ImageData imageData, List<Bitmap> tilesBitmaps) {
             super();
+            this.imageData = imageData;
             this.tilesBitmaps = tilesBitmaps;
         }
 
         @Override
         @Nullable
-        public Bitmap getBitmap(int position) {
-            return tilesBitmaps.get(position);
+        public TileInfo getTileInfo(int position) {
+            if (imageData instanceof ImageSetImageData) {
+                ImageSetImageData imageSetImageData = (ImageSetImageData) imageData;
+
+                return new TileInfo(tilesBitmaps.get(position),
+                        imageSetImageData.getTilesDesc().get(position).getWidth(),
+                        imageSetImageData.getTilesDesc().get(position).getHeight());
+            } else if (imageData instanceof AnimationSetImageData) {
+                AnimationSetImageData animationSetImageData = (AnimationSetImageData) imageData;
+
+                return new TileInfo(tilesBitmaps.get(position),
+                        animationSetImageData.getFramesDesc().get(position).getWidth(),
+                        animationSetImageData.getFramesDesc().get(position).getHeight());
+            } else {
+                throw new IllegalArgumentException("This codepath should not be reached");
+            }
         }
 
         @Override

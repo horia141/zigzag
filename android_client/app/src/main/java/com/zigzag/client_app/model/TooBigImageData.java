@@ -7,8 +7,4 @@ public class TooBigImageData extends ImageData {
     public List<String> getUriPathsToFetch() {
         return new ArrayList<>();
     }
-
-    public int getTotalHeight() {
-        return 0;
-    }
 }

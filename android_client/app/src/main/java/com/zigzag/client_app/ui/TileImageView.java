@@ -1,7 +1,6 @@
 package com.zigzag.client_app.ui;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -67,7 +66,7 @@ public class TileImageView extends LinearLayout implements BitmapSetListener {
         }
 
         for (int ii = 0; ii < adapter.getCount(); ii++) {
-            Bitmap bitmap = adapter.getBitmap(ii);
+            BitmapSetAdapter.TileInfo tileInfo = adapter.getTileInfo(ii);
 
             View tileView = getChildAt(ii);
 
@@ -75,15 +74,16 @@ public class TileImageView extends LinearLayout implements BitmapSetListener {
                 tileView = inflater.inflate(R.layout.tile_image_view_tile, this);
             }
 
-            ProgressBar progressBar = (ProgressBar) tileView.findViewById(R.id.waiting);
+            HeightAdjustedProgressBar progressBar = (HeightAdjustedProgressBar) tileView.findViewById(R.id.waiting);
             ImageView imageView = (ImageView) tileView.findViewById(R.id.image);
 
-            if (bitmap != null) {
+            if (tileInfo.getBitmap() != null) {
                 progressBar.setVisibility(View.GONE);
                 imageView.setVisibility(View.VISIBLE);
-                imageView.setImageBitmap(bitmap);
+                imageView.setImageBitmap(tileInfo.getBitmap());
             } else {
                 progressBar.setVisibility(View.VISIBLE);
+                progressBar.setTileWidthAndHeight(tileInfo.getWidth(), tileInfo.getHeight());
                 imageView.setVisibility(View.GONE);
             }
         }

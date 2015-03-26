@@ -4,6 +4,4 @@ import java.util.List;
 
 public abstract class ImageData {
     public abstract List<String> getUriPathsToFetch();
-
-    public abstract int getTotalHeight();
 }

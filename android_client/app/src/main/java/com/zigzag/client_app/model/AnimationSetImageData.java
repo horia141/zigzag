@@ -29,8 +29,4 @@ public class AnimationSetImageData extends ImageData {
 
         return uriPaths;
     }
-
-    public int getTotalHeight() {
-        return framesDesc.get(0).getHeight();
-    }
 }

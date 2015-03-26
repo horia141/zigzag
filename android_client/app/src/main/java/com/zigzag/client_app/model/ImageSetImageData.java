@@ -6,18 +6,10 @@ import java.util.List;
 public class ImageSetImageData extends ImageData {
     private final TileData fullImageDesc;
     private final List<TileData> tilesDesc;
-    private final int totalHeight;
 
     public ImageSetImageData(TileData fullImageDesc, List<TileData> tilesDesc) {
-        int totalHeight = 0;
-
-        for (TileData tileData : tilesDesc) {
-            totalHeight += tileData.getHeight();
-        }
-
         this.fullImageDesc = fullImageDesc;
         this.tilesDesc = tilesDesc;
-        this.totalHeight = totalHeight;
     }
 
     public TileData getFullImageDesc() {
@@ -36,9 +28,5 @@ public class ImageSetImageData extends ImageData {
         }
 
         return uriPaths;
-    }
-
-    public int getTotalHeight() {
-        return this.totalHeight;
     }
 }
