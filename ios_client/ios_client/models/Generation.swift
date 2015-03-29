@@ -2,6 +2,7 @@
  * Generation.swift
  * Created by Liviu Coman on 3/24/15.
  * Copyright (c) 2015 LiviuComan. All rights reserved.
+ * based on design by HoriaComan
  */
 
 import UIKit

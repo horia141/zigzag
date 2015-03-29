@@ -2,6 +2,7 @@
  * EntityId.swift
  * created by Liviu Coman on 3/24/15.
  * copyright (c) 2015 LiviuComan. All rights reserved.
+ * based on design by HoriaComan
  */
 
 import UIKit
