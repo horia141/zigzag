@@ -14,7 +14,7 @@ class Decoder(object):
 
         logging.info('Decoding image')
 
-        image = Image.open(StringIO.StringIO(image_raw_data))
+        image = Image.open(StringIO.StringIO(image_raw_data)).convert('RGBA')
         (width, height) = image.size
         aspect_ratio = float(height) / float(width)
 
