@@ -12,6 +12,8 @@ class Decoder(decoders.Decoder):
     def decode(self, screen_config_key, screen_config, image_raw_data, unique_image_path_fn):
         logging.info('Handling the image as an animation for screen config "%s"' % screen_config_key)
 
+        logging.info('Decoding image')
+
         image = Image.open(StringIO.StringIO(image_raw_data))
 
         (width, height) = image.size
@@ -28,6 +30,7 @@ class Decoder(decoders.Decoder):
 
         frame = 0
         frames_desc = []
+        last_frame_uri_path = None
 
         while True:
             try:
@@ -39,6 +42,7 @@ class Decoder(decoders.Decoder):
                 logging.info('Optimizing and saving full image')
                 (frame_storage_path, frame_uri_path) = unique_image_path_fn('image/jpeg')
                 image_resized_p.save(frame_storage_path, **defines.PHOTO_SAVE_JPEG_OPTIONS)
+                last_frame_uri_path = frame_uri_path
 
                 frames_desc.append({
                     'width': desired_width,
@@ -50,8 +54,19 @@ class Decoder(decoders.Decoder):
             except EOFError:
                 break
 
-        return {
-            'type': defines.IMAGE_ANIMATION_SET,
-            'time_between_frames_ms': image.info['duration'],
-            'frames_desc': frames_desc
-        }    
+        if frame > 1:
+            return {
+                'type': defines.IMAGE_ANIMATION_SET,
+                'time_between_frames_ms': image.info['duration'],
+                'frames_desc': frames_desc
+            }
+        else:
+            return {
+                'type': defines.IMAGE_IMAGE_SET,
+                'full_image_desc': {
+                    'width': desired_width,
+                    'height': desired_height,
+                    'uri_path': last_frame_uri_path
+                },
+                'tiles_desc': frames_desc
+            }

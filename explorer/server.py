@@ -3,6 +3,7 @@ import pytz
 import logging
 import urllib2
 
+import comlink
 import comlink.serializer.pickle as serializer
 import comlink.transport.localipc as transport
 
@@ -83,4 +84,11 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except Exception as e:
+        if comlink.is_remote_exception(e):
+            logging.error(comlink.format_stacktrace_for_remote_exception(e))
+        else:
+            logging.exception(e)
+        raise
