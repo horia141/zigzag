@@ -27,7 +27,7 @@ class Decoder(object):
 
         logging.info('Optimizing and saving full image')
 
-        (full_storage_path, full_uri_path) = unique_image_path_fn('image/jpeg')
+        (full_storage_path, full_uri_path) = unique_image_path_fn('image/jpeg', '0000')
         image_resized.save(full_storage_path, **defines.PHOTO_SAVE_JPEG_OPTIONS)
 
         tile_count = desired_height / defines.IMAGE_MAX_HEIGHT + 1
@@ -43,7 +43,7 @@ class Decoder(object):
             tile_height = tile_lower - tile_upper
             image_tile = image_resized.crop((0, tile_upper, desired_width, tile_lower))
             logging.info('Optimizing and saving tile')
-            (tile_storage_path, tile_uri_path) = unique_image_path_fn('image/jpeg')
+            (tile_storage_path, tile_uri_path) = unique_image_path_fn('image/jpeg', '0000')
             image_tile.save(tile_storage_path, **defines.PHOTO_SAVE_JPEG_OPTIONS)
 
             tiles_desc.append({

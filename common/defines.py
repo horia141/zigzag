@@ -4,7 +4,8 @@ TIME_FORMAT = '%B %d, %Y %I:%M:%S %p %Z'
 
 WEBPAGE_MIMETYPES = frozenset(['application/xhtml+xml', 'text/html', 'text/plain'])
 IMAGE_MIMETYPES = frozenset(['image/gif', 'image/jpeg', 'image/png'])
-IMAGE_MIMETYPES_TO_EXTENSION = dict([('image/gif', 'gif'), ('image/jpeg', 'jpg'), ('image/png', 'png')])
+IMAGE_MIMETYPES_TO_EXTENSION = dict([('image/gif', 'gif'), ('image/jpeg', 'jpg'), ('image/png', 'png'),
+                                     ('video/avi', 'avi')])
 
 FETCHER_PORT = 16000
 FETCHER_LOG_PATH = 'var/fetcher.log'
@@ -25,6 +26,9 @@ PHOTO_SAVE_JPEG_OPTIONS = {
     'optimize': True,
     'progressive': True
 }
+
+# Will result in 12 fps. A good default.
+DEFAULT_TIME_BETWEEN_FRAMES_MS = 75
 
 IMAGE_MAX_WIDTH = 2048
 IMAGE_MAX_HEIGHT = 2048

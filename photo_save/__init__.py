@@ -58,7 +58,7 @@ class Service(comlink.Service):
 
         logging.info('Saving the original locally')
 
-        (storage_path, original_image_uri_path) = self._unique_image_path(image_raw_mime_type)
+        (storage_path, original_image_uri_path) = self._unique_image_path(image_raw_mime_type, '0000')
 
         image_raw_file = open(storage_path, 'w')
         image_raw_file.write(image_raw_data)
@@ -71,7 +71,7 @@ class Service(comlink.Service):
         for (screen_config_key, screen_config) in defines.PHOTO_SAVE_SCREEN_CONFIGS.iteritems():
             image_data[screen_config_key] = self._decoders[image_raw_mime_type].decode(
                 screen_config_key, screen_config, image_raw_data,
-                lambda mime_type: self._unique_image_path(mime_type))
+                lambda mime_type, extra_pattern: self._unique_image_path(mime_type, extra_pattern))
 
         logging.info('Done')
 
@@ -83,10 +83,9 @@ class Service(comlink.Service):
             'image_data': image_data
         }
 
-    def _unique_image_path(self, mime_type):
+    def _unique_image_path(self, mime_type, extra_pattern):
         extension = defines.IMAGE_MIMETYPES_TO_EXTENSION[mime_type]
-        unique_file_name = '%s.%s' % (str(uuid.uuid4()), extension)
-
+        unique_file_name = '%s.%s.%s' % (str(uuid.uuid4()), extra_pattern, extension)
         return (defines.PHOTO_SAVE_IMAGE_STORAGE_PATH % unique_file_name, unique_file_name)
 
 
