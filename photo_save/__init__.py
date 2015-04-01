@@ -33,21 +33,7 @@ class Service(comlink.Service):
         }
 
     @comlink.call
-    def process_artifact_images(self, images_raw_description):
-        logging.info('Processing %d images, first of which is "%s"' % (
-            len(images_raw_description), images_raw_description[0]['uri_path']))
-
-        images_description = []
-        for image_raw_description in images_raw_description:
-            images_description.append(self._process_one_image(image_raw_description))
-
-        return images_description
-
-    def _process_one_image(self, image_raw_description):
-        subtitle = image_raw_description['subtitle']
-        description = image_raw_description['description']
-        source_uri = image_raw_description['uri_path']
-
+    def process_one_image(self, subtitle, description, source_uri):
         logging.info('Processing "%s"' % source_uri)
 
         logging.info('Fetching from remote source')

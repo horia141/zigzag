@@ -64,8 +64,14 @@ def main():
             except models.Error as e:
                 pass
 
-            images_description = photo_save_client.process_artifact_images(
-                artifact_desc['images_description'])
+            images_description = []
+
+            for image_raw_description in artifact_desc['images_description']:
+                subtitle = image_raw_description['subtitle']
+                description = image_raw_description['description']
+                source_uri = image_raw_description['uri_path']
+                images_description.append(photo_save_client.process_one_image(
+                    subtitle, description, source_uri))
 
             logging.info('Saving artifact "%s" to database', artifact_desc['title'])
             artifact = models.Artifact.add(artifact_desc['page_url'], 
