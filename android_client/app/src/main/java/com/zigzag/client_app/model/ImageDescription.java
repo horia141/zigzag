@@ -7,10 +7,10 @@ public class ImageDescription {
     private final String description;
     private final String sourceUri;
     private final String originalImageUriPath;
-    private final Map<ScreenConfig, ImageData> imageData;
+    private final Map<ScreenConfig, PhotoData> imageData;
 
     public ImageDescription(String subtitle, String description, String sourceUri,
-            String originalImageUriPath, Map<ScreenConfig, ImageData> imageData) {
+            String originalImageUriPath, Map<ScreenConfig, PhotoData> imageData) {
         this.subtitle = subtitle;
         this.description = description;
         this.sourceUri = sourceUri;
@@ -34,11 +34,11 @@ public class ImageDescription {
         return originalImageUriPath;
     }
 
-    public Map<ScreenConfig, ImageData> getImageData() {
+    public Map<ScreenConfig, PhotoData> getImageData() {
         return imageData;
     }
 
-    public ImageData getBestMatchingImageData() {
+    public PhotoData getBestMatchingImageData() {
         return imageData.get(new ScreenConfig("800", 800));
     }
 }

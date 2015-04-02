@@ -10,10 +10,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.util.Log;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 
 import com.zigzag.client_app.R;
-import com.zigzag.client_app.model.AnimationSetImageData;
+import com.zigzag.client_app.model.AnimationSetPhotoData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +20,7 @@ import java.util.List;
 public class GifImageView extends LinearLayout implements BitmapSetListener {
 
     @Nullable private BitmapSetAdapter adapter;
-    @Nullable private AnimationSetImageData imageData;
+    @Nullable private AnimationSetPhotoData imageData;
     private final List<AnimationTask> animationTasks;
 
     public GifImageView(Context context) {
@@ -51,7 +50,7 @@ public class GifImageView extends LinearLayout implements BitmapSetListener {
         }
     }
 
-    public void setImageDataAndAdapter(AnimationSetImageData imageData, BitmapSetAdapter newAdapter) {
+    public void setImageDataAndAdapter(AnimationSetPhotoData imageData, BitmapSetAdapter newAdapter) {
         this.imageData = imageData;
 
         if (adapter != null) {

@@ -3,11 +3,11 @@ package com.zigzag.client_app.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AnimationSetImageData extends ImageData {
+public class AnimationSetPhotoData extends PhotoData {
     private final long timeBetweenFrames;
     private final List<TileData> framesDesc;
 
-    public AnimationSetImageData(long timeBetweenFrames, List<TileData> framesDesc) {
+    public AnimationSetPhotoData(long timeBetweenFrames, List<TileData> framesDesc) {
         this.timeBetweenFrames = timeBetweenFrames;
         this.framesDesc = framesDesc;
     }

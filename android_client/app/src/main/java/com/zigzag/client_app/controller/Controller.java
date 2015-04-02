@@ -16,9 +16,8 @@ import com.android.volley.toolbox.Volley;
 import com.zigzag.client_app.model.Artifact;
 import com.zigzag.client_app.model.EntityId;
 import com.zigzag.client_app.model.Generation;
-import com.zigzag.client_app.model.ImageData;
+import com.zigzag.client_app.model.PhotoData;
 import com.zigzag.client_app.model.ImageDescription;
-import com.zigzag.client_app.model.ImageSetImageData;
 
 import org.json.JSONObject;
 
@@ -151,8 +150,8 @@ public final class Controller {
         for (int ii = 0; ii < artifact.getImagesDescription().size(); ii++) {
             final int imageIdx = ii;
             final ImageDescription imageDescription = artifact.getImagesDescription().get(ii);
-            final ImageData imageData = imageDescription.getBestMatchingImageData();
-            List<String> uriPathsToFetch = imageData.getUriPathsToFetch();
+            final PhotoData photoData = imageDescription.getBestMatchingImageData();
+            List<String> uriPathsToFetch = photoData.getUriPathsToFetch();
 
             for (int jj = 0; jj < uriPathsToFetch.size(); jj++) {
                 final int tileOrFrameIdx = jj;

@@ -18,58 +18,56 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.zigzag.client_app.controller.Controller;
-import com.zigzag.client_app.model.AnimationSetImageData;
+import com.zigzag.client_app.model.AnimationSetPhotoData;
 import com.zigzag.client_app.model.Artifact;
 import com.zigzag.client_app.model.EntityId;
-import com.zigzag.client_app.model.ImageData;
+import com.zigzag.client_app.model.ImagePhotoData;
+import com.zigzag.client_app.model.PhotoData;
 import com.zigzag.client_app.model.ImageDescription;
-import com.zigzag.client_app.model.ImageSetImageData;
-import com.zigzag.client_app.model.TooBigImageData;
+import com.zigzag.client_app.model.TooBigPhotoData;
 import com.zigzag.client_app.ui.BitmapSetAdapter;
 import com.zigzag.client_app.ui.GifImageView;
 import com.zigzag.client_app.ui.TileImageView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class MediaCarouselFragment extends Fragment implements Controller.ArtifactResourcesListener {
     private static class ImageInfo {
         final ImageDescription imageDescription;
-        final ImageData imageData;
+        final PhotoData photoData;
         final List<Bitmap> tilesBitmaps;
         final TilesBitmapAdapter tilesBitmapAdapter;
 
-        public ImageInfo(ImageDescription imageDescription, ImageData imageData) {
+        public ImageInfo(ImageDescription imageDescription, PhotoData photoData) {
             this.imageDescription = imageDescription;
-            this.imageData = imageData;
+            this.photoData = photoData;
             this.tilesBitmaps = new ArrayList<>();
-            this.tilesBitmapAdapter = new TilesBitmapAdapter(imageData, this.tilesBitmaps);
+            this.tilesBitmapAdapter = new TilesBitmapAdapter(photoData, this.tilesBitmaps);
         }
     }
 
     private static class TilesBitmapAdapter extends BitmapSetAdapter {
-        private final ImageData imageData;
+        private final PhotoData photoData;
         private final List<Bitmap> tilesBitmaps;
 
-        public TilesBitmapAdapter(ImageData imageData, List<Bitmap> tilesBitmaps) {
+        public TilesBitmapAdapter(PhotoData photoData, List<Bitmap> tilesBitmaps) {
             super();
-            this.imageData = imageData;
+            this.photoData = photoData;
             this.tilesBitmaps = tilesBitmaps;
         }
 
         @Override
         @Nullable
         public TileInfo getTileInfo(int position) {
-            if (imageData instanceof ImageSetImageData) {
-                ImageSetImageData imageSetImageData = (ImageSetImageData) imageData;
+            if (photoData instanceof ImagePhotoData) {
+                ImagePhotoData imageSetImageData = (ImagePhotoData) photoData;
 
                 return new TileInfo(tilesBitmaps.get(position),
                         imageSetImageData.getTilesDesc().get(position).getWidth(),
                         imageSetImageData.getTilesDesc().get(position).getHeight());
-            } else if (imageData instanceof AnimationSetImageData) {
-                AnimationSetImageData animationSetImageData = (AnimationSetImageData) imageData;
+            } else if (photoData instanceof AnimationSetPhotoData) {
+                AnimationSetPhotoData animationSetImageData = (AnimationSetPhotoData) photoData;
 
                 return new TileInfo(tilesBitmaps.get(position),
                         animationSetImageData.getFramesDesc().get(position).getWidth(),
@@ -138,17 +136,17 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
                     rowViewHolder.subtitleTextView.setVisibility(View.GONE);
                 }
 
-                if (info.imageData instanceof TooBigImageData) {
+                if (info.photoData instanceof TooBigPhotoData) {
                     rowViewHolder.gifImageView.setVisibility(View.GONE);
                     rowViewHolder.tileImageView.setVisibility(View.GONE);
-                } else if (info.imageData instanceof ImageSetImageData) {
+                } else if (info.photoData instanceof ImagePhotoData) {
                     rowViewHolder.gifImageView.setVisibility(View.GONE);
 
                     rowViewHolder.tileImageView.setVisibility(View.VISIBLE);
                     rowViewHolder.tileImageView.setAdapter(info.tilesBitmapAdapter);
-                } else if (info.imageData instanceof AnimationSetImageData) {
+                } else if (info.photoData instanceof AnimationSetPhotoData) {
                     rowViewHolder.gifImageView.setVisibility(View.VISIBLE);
-                    rowViewHolder.gifImageView.setImageDataAndAdapter((AnimationSetImageData) info.imageData, info.tilesBitmapAdapter);
+                    rowViewHolder.gifImageView.setImageDataAndAdapter((AnimationSetPhotoData) info.photoData, info.tilesBitmapAdapter);
 
                     rowViewHolder.tileImageView.setVisibility(View.GONE);
                 }
@@ -242,18 +240,18 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
         // list view.
         for (int ii = 0; ii < artifact.getImagesDescription().size(); ii++) {
             ImageDescription imageDescription = artifact.getImagesDescription().get(ii);
-            ImageData imageData = imageDescription.getBestMatchingImageData();
-            ImageInfo info = new ImageInfo(imageDescription, imageData);
+            PhotoData photoData = imageDescription.getBestMatchingImageData();
+            ImageInfo info = new ImageInfo(imageDescription, photoData);
 
-            if (imageData instanceof TooBigImageData) {
+            if (photoData instanceof TooBigPhotoData) {
                 continue;
-            } else if (imageData instanceof ImageSetImageData) {
-                ImageSetImageData imageSetImageData = (ImageSetImageData) imageData;
+            } else if (photoData instanceof ImagePhotoData) {
+                ImagePhotoData imageSetImageData = (ImagePhotoData) photoData;
                 for (int jj = 0; jj < imageSetImageData.getTilesDesc().size(); jj++) {
                     info.tilesBitmaps.add(null);
                 }
-            } else if (imageData instanceof AnimationSetImageData) {
-                AnimationSetImageData animationSetImageData = (AnimationSetImageData) imageData;
+            } else if (photoData instanceof AnimationSetPhotoData) {
+                AnimationSetPhotoData animationSetImageData = (AnimationSetPhotoData) photoData;
                 for (int jj = 0; jj < animationSetImageData.getFramesDesc().size(); jj++) {
                     info.tilesBitmaps.add(null);
                 }
@@ -303,7 +301,7 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
 
         ImageInfo imageDescription = imagesDescriptionBitmapList.get(imageIdx);
 
-        if (imageDescription.imageData instanceof TooBigImageData) {
+        if (imageDescription.photoData instanceof TooBigPhotoData) {
             Log.e("ZigZag/MediaCarouselFragment", "Received image data for a very large image");
             return;
         } else {

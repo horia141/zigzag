@@ -1,16 +1,16 @@
 package com.zigzag.client_app.controller;
 
-import com.zigzag.client_app.model.AnimationSetImageData;
+import com.zigzag.client_app.model.AnimationSetPhotoData;
 import com.zigzag.client_app.model.Artifact;
 import com.zigzag.client_app.model.ArtifactSource;
 import com.zigzag.client_app.model.EntityId;
 import com.zigzag.client_app.model.Generation;
-import com.zigzag.client_app.model.ImageData;
+import com.zigzag.client_app.model.ImagePhotoData;
+import com.zigzag.client_app.model.PhotoData;
 import com.zigzag.client_app.model.ImageDescription;
-import com.zigzag.client_app.model.ImageSetImageData;
 import com.zigzag.client_app.model.ScreenConfig;
 import com.zigzag.client_app.model.TileData;
-import com.zigzag.client_app.model.TooBigImageData;
+import com.zigzag.client_app.model.TooBigPhotoData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -169,13 +169,13 @@ public class ModelDecoder {
             String originalImageUriPath = imageDescriptionJson.getString("original_image_uri_path");
 
             JSONObject imageDataJson = imageDescriptionJson.getJSONObject("image_data");
-            Map<ScreenConfig, ImageData> imageData = new HashMap<ScreenConfig, ImageData>();
+            Map<ScreenConfig, PhotoData> imageData = new HashMap<ScreenConfig, PhotoData>();
 
             for (Iterator<String> ii = imageDataJson.keys(); ii.hasNext();) {
                 String screenConfigKey = ii.next();
                 ScreenConfig screenConfig = screenConfigs.get(screenConfigKey);
-                ImageData imageDataForScreenConfig = decodeImageData(imageDataJson.getJSONObject(screenConfigKey));
-                imageData.put(screenConfig, imageDataForScreenConfig);
+                PhotoData photoDataForScreenConfig = decodeImageData(imageDataJson.getJSONObject(screenConfigKey));
+                imageData.put(screenConfig, photoDataForScreenConfig);
             }
 
             ImageDescription imageDescription = new ImageDescription(subtitle, description, sourceUri, originalImageUriPath, imageData);
@@ -186,12 +186,12 @@ public class ModelDecoder {
         }
     }
 
-    private ImageData decodeImageData(JSONObject imageDataJson) throws Error {
+    private PhotoData decodeImageData(JSONObject imageDataJson) throws Error {
         try {
             String type = imageDataJson.getString("type");
 
             if (type.equals("too-large")) {
-                return new TooBigImageData();
+                return new TooBigPhotoData();
             } else if (type.equals("image-set")) {
                 JSONObject fullImageDescJson = imageDataJson.getJSONObject("full_image_desc");
                 TileData fullImageDesc = decodeTileData(fullImageDescJson);
@@ -205,9 +205,9 @@ public class ModelDecoder {
                     tilesDesc.add(tileDesc);
                 }
 
-                ImageData imageData = new ImageSetImageData(fullImageDesc, tilesDesc);
+                PhotoData photoData = new ImagePhotoData(fullImageDesc, tilesDesc);
 
-                return imageData;
+                return photoData;
             } else if (type.equals("animation-set")) {
                 long timeBetweenFramesMs = imageDataJson.getLong("time_between_frames_ms");
 
@@ -220,9 +220,9 @@ public class ModelDecoder {
                     framesDesc.add(tileDesc);
                 }
 
-                ImageData imageData = new AnimationSetImageData(timeBetweenFramesMs, framesDesc);
+                PhotoData photoData = new AnimationSetPhotoData(timeBetweenFramesMs, framesDesc);
 
-                return imageData;
+                return photoData;
             } else {
                 throw new Error("Unrecognized image data type");
             }
