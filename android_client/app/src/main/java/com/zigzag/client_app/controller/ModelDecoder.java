@@ -1,6 +1,5 @@
 package com.zigzag.client_app.controller;
 
-import com.zigzag.client_app.model.AnimationSetPhotoData;
 import com.zigzag.client_app.model.Artifact;
 import com.zigzag.client_app.model.ArtifactSource;
 import com.zigzag.client_app.model.EntityId;
@@ -11,6 +10,7 @@ import com.zigzag.client_app.model.ImageDescription;
 import com.zigzag.client_app.model.ScreenConfig;
 import com.zigzag.client_app.model.TileData;
 import com.zigzag.client_app.model.TooBigPhotoData;
+import com.zigzag.client_app.model.VideoPhotoData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -174,7 +174,7 @@ public class ModelDecoder {
             for (Iterator<String> ii = imageDataJson.keys(); ii.hasNext();) {
                 String screenConfigKey = ii.next();
                 ScreenConfig screenConfig = screenConfigs.get(screenConfigKey);
-                PhotoData photoDataForScreenConfig = decodeImageData(imageDataJson.getJSONObject(screenConfigKey));
+                PhotoData photoDataForScreenConfig = decodePhotoData(imageDataJson.getJSONObject(screenConfigKey));
                 imageData.put(screenConfig, photoDataForScreenConfig);
             }
 
@@ -186,13 +186,13 @@ public class ModelDecoder {
         }
     }
 
-    private PhotoData decodeImageData(JSONObject imageDataJson) throws Error {
+    private PhotoData decodePhotoData(JSONObject imageDataJson) throws Error {
         try {
             String type = imageDataJson.getString("type");
 
             if (type.equals("too-large")) {
                 return new TooBigPhotoData();
-            } else if (type.equals("image-set")) {
+            } else if (type.equals("image")) {
                 JSONObject fullImageDescJson = imageDataJson.getJSONObject("full_image_desc");
                 TileData fullImageDesc = decodeTileData(fullImageDescJson);
 
@@ -208,19 +208,18 @@ public class ModelDecoder {
                 PhotoData photoData = new ImagePhotoData(fullImageDesc, tilesDesc);
 
                 return photoData;
-            } else if (type.equals("animation-set")) {
-                long timeBetweenFramesMs = imageDataJson.getLong("time_between_frames_ms");
+            } else if (type.equals("video")) {
+                JSONObject firstFrameDescJson = imageDataJson.getJSONObject("first_frame_desc");
+                TileData firstFrameDesc = decodeTileData(firstFrameDescJson);
 
-                JSONArray framesDescJson = imageDataJson.getJSONArray("frames_desc");
-                List<TileData> framesDesc = new ArrayList<TileData>();
+                JSONObject videoDescJson = imageDataJson.getJSONObject("video_desc");
+                TileData videoDesc = decodeTileData(videoDescJson);
 
-                for (int ii = 0; ii < framesDescJson.length(); ii++) {
-                    JSONObject tileDescJson = framesDescJson.getJSONObject(ii);
-                    TileData tileDesc = decodeTileData(tileDescJson);
-                    framesDesc.add(tileDesc);
-                }
+                int timeBetweenFramesMs = imageDataJson.getInt("time_between_frames_ms");
 
-                PhotoData photoData = new AnimationSetPhotoData(timeBetweenFramesMs, framesDesc);
+                int framerate = imageDataJson.getInt("framerate");
+
+                PhotoData photoData = new VideoPhotoData(firstFrameDesc, videoDesc, timeBetweenFramesMs, framerate);
 
                 return photoData;
             } else {

@@ -66,7 +66,8 @@ class Generation(models.Model):
         json_dict['status'] = Generation.STATUS_CHOICES[self.status-1][1]
         json_dict['time_added'] = self.time_added.strftime(defines.TIME_FORMAT)
         json_dict['time_closed'] = self.time_closed.strftime(defines.TIME_FORMAT)
-        json_dict['screen_configs'] = defines.PHOTO_SAVE_SCREEN_CONFIGS
+        json_dict['screen_configs'] = defines.IMAGE_SAVE_SCREEN_CONFIGS.copy()
+        json_dict['screen_configs'].update(defines.VIDEO_SAVE_SCREEN_CONFIGS)
         json_dict['artifact_sources'] = {}
         json_dict['artifacts'] = []
 
