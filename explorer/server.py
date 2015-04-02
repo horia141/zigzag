@@ -70,7 +70,7 @@ def main():
                 subtitle = image_raw_description['subtitle']
                 description = image_raw_description['description']
                 source_uri = image_raw_description['uri_path']
-                images_description.append(photo_save_client.process_one_image(
+                images_description.append(photo_save_client.process_one_photo(
                     subtitle, description, source_uri))
 
             logging.info('Saving artifact "%s" to database', artifact_desc['title'])

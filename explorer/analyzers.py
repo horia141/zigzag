@@ -112,7 +112,7 @@ class Reddit(Analyzer):
 
         try:
             image_mime_type = self._fetcher.fetch_url_mimetype(artifact_page_url)
-            if image_mime_type not in defines.IMAGE_MIMETYPES:
+            if image_mime_type not in defines.PHOTO_MIMETYPES:
                 # Try to parse things with the Imgur analyzer.
                 try_other_analyzer = True
                 logging.warn('Could not fetch as image, trying with another analyzer')
