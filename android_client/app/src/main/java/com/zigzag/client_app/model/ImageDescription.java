@@ -39,6 +39,14 @@ public class ImageDescription {
     }
 
     public PhotoData getBestMatchingImageData() {
-        return imageData.get(new ScreenConfig("800", 800));
+        ScreenConfig k1 = new ScreenConfig("800", 800);
+        ScreenConfig k2 = new ScreenConfig("480", 480);
+        PhotoData v1 = imageData.get(k1);
+
+        if (v1 == null) {
+            return imageData.get(k2);
+        } else {
+            return v1;
+        }
     }
 }

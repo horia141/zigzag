@@ -166,9 +166,9 @@ public class ModelDecoder {
 
             String sourceUri = imageDescriptionJson.getString("source_uri");
 
-            String originalImageUriPath = imageDescriptionJson.getString("original_image_uri_path");
+            String originalImageUriPath = imageDescriptionJson.getString("original_photo_uri_path");
 
-            JSONObject imageDataJson = imageDescriptionJson.getJSONObject("image_data");
+            JSONObject imageDataJson = imageDescriptionJson.getJSONObject("photo_data");
             Map<ScreenConfig, PhotoData> imageData = new HashMap<ScreenConfig, PhotoData>();
 
             for (Iterator<String> ii = imageDataJson.keys(); ii.hasNext();) {

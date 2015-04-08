@@ -18,16 +18,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.zigzag.client_app.controller.Controller;
-import com.zigzag.client_app.model.AnimationSetPhotoData;
 import com.zigzag.client_app.model.Artifact;
 import com.zigzag.client_app.model.EntityId;
 import com.zigzag.client_app.model.ImagePhotoData;
 import com.zigzag.client_app.model.PhotoData;
 import com.zigzag.client_app.model.ImageDescription;
 import com.zigzag.client_app.model.TooBigPhotoData;
+import com.zigzag.client_app.model.VideoPhotoData;
 import com.zigzag.client_app.ui.BitmapSetAdapter;
-import com.zigzag.client_app.ui.GifImageView;
 import com.zigzag.client_app.ui.TileImageView;
+import com.zigzag.client_app.ui.VideoView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,12 +66,13 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
                 return new TileInfo(tilesBitmaps.get(position),
                         imageSetImageData.getTilesDesc().get(position).getWidth(),
                         imageSetImageData.getTilesDesc().get(position).getHeight());
-            } else if (photoData instanceof AnimationSetPhotoData) {
-                AnimationSetPhotoData animationSetImageData = (AnimationSetPhotoData) photoData;
+            } else if (photoData instanceof VideoPhotoData) {
+                // assert position == 0
+                VideoPhotoData videoPhotoData = (VideoPhotoData) photoData;
 
                 return new TileInfo(tilesBitmaps.get(position),
-                        animationSetImageData.getFramesDesc().get(position).getWidth(),
-                        animationSetImageData.getFramesDesc().get(position).getHeight());
+                        videoPhotoData.getFirstFrameDesc().getWidth(),
+                        videoPhotoData.getFirstFrameDesc().getHeight());
             } else {
                 throw new IllegalArgumentException("This codepath should not be reached");
             }
@@ -86,8 +87,8 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
     private static class ImagesDescriptionBitmapListAdapter extends ArrayAdapter<ImageInfo> {
         private static class ViewHolder {
             TextView subtitleTextView;
-            GifImageView gifImageView;
             TileImageView tileImageView;
+            VideoView videoView;
             TextView descriptionTextView;
         }
 
@@ -112,8 +113,8 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
                 rowViewHolder = new ViewHolder();
 
                 rowViewHolder.subtitleTextView = (TextView) rowView.findViewById(R.id.subtitle);
-                rowViewHolder.gifImageView = (GifImageView) rowView.findViewById(R.id.image_gif);
                 rowViewHolder.tileImageView = (TileImageView) rowView.findViewById(R.id.image_tile);
+                rowViewHolder.videoView = (VideoView) rowView.findViewById(R.id.video);
                 rowViewHolder.descriptionTextView = (TextView) rowView.findViewById(R.id.description);
 
                 rowView.setTag(rowViewHolder);
@@ -125,8 +126,8 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
 
             if (info == null) {
                 rowViewHolder.subtitleTextView.setVisibility(View.GONE);
-                rowViewHolder.gifImageView.setVisibility(View.GONE);
                 rowViewHolder.tileImageView.setVisibility(View.GONE);
+                rowViewHolder.videoView.setVisibility(View.GONE);
                 rowViewHolder.descriptionTextView.setVisibility(View.GONE);
             } else {
                 if (!info.imageDescription.getSubtitle().equals("")) {
@@ -137,18 +138,16 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
                 }
 
                 if (info.photoData instanceof TooBigPhotoData) {
-                    rowViewHolder.gifImageView.setVisibility(View.GONE);
                     rowViewHolder.tileImageView.setVisibility(View.GONE);
+                    rowViewHolder.videoView.setVisibility(View.GONE);
                 } else if (info.photoData instanceof ImagePhotoData) {
-                    rowViewHolder.gifImageView.setVisibility(View.GONE);
-
                     rowViewHolder.tileImageView.setVisibility(View.VISIBLE);
                     rowViewHolder.tileImageView.setAdapter(info.tilesBitmapAdapter);
-                } else if (info.photoData instanceof AnimationSetPhotoData) {
-                    rowViewHolder.gifImageView.setVisibility(View.VISIBLE);
-                    rowViewHolder.gifImageView.setImageDataAndAdapter((AnimationSetPhotoData) info.photoData, info.tilesBitmapAdapter);
-
+                    rowViewHolder.videoView.setVisibility(View.GONE);
+                } else if (info.photoData instanceof VideoPhotoData) {
                     rowViewHolder.tileImageView.setVisibility(View.GONE);
+                    rowViewHolder.videoView.setVisibility(View.VISIBLE);
+                    rowViewHolder.videoView.setAdapter(info.tilesBitmapAdapter);
                 }
 
                 if (!info.imageDescription.getDescription().equals("")) {
@@ -250,11 +249,10 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
                 for (int jj = 0; jj < imageSetImageData.getTilesDesc().size(); jj++) {
                     info.tilesBitmaps.add(null);
                 }
-            } else if (photoData instanceof AnimationSetPhotoData) {
-                AnimationSetPhotoData animationSetImageData = (AnimationSetPhotoData) photoData;
-                for (int jj = 0; jj < animationSetImageData.getFramesDesc().size(); jj++) {
-                    info.tilesBitmaps.add(null);
-                }
+            } else if (photoData instanceof VideoPhotoData) {
+                // Add a single placeholder tile info to tilesBitmap, corresponding to the first
+                // frame of the image.
+                info.tilesBitmaps.add(null);
             }
             info.tilesBitmapAdapter.notifyDataSetChanged();
             imagesDescriptionBitmapList.add(info);
