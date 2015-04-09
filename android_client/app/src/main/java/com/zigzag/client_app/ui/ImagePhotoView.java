@@ -8,19 +8,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 
 import com.zigzag.client_app.R;
 
-public class TileImageView extends LinearLayout implements BitmapSetListener {
+public class ImagePhotoView extends LinearLayout implements BitmapSetListener {
 
     @Nullable private BitmapSetAdapter adapter;
 
-    public TileImageView(Context context) {
+    public ImagePhotoView(Context context) {
         this(context, null);
     }
 
-    public TileImageView(Context context, AttributeSet attrs) {
+    public ImagePhotoView(Context context, AttributeSet attrs) {
         super(context, attrs);
         adapter = null;
 
@@ -67,10 +66,10 @@ public class TileImageView extends LinearLayout implements BitmapSetListener {
             View tileView = getChildAt(ii);
 
             if (tileView == null) {
-                tileView = inflater.inflate(R.layout.tile_image_view_tile, this);
+                tileView = inflater.inflate(R.layout.image_photo_view_tile, this);
             }
 
-            HeightAdjustedProgressBar progressBar = (HeightAdjustedProgressBar) tileView.findViewById(R.id.waiting);
+            ResizableProgressBar progressBar = (ResizableProgressBar) tileView.findViewById(R.id.waiting);
             ImageView imageView = (ImageView) tileView.findViewById(R.id.image);
 
             if (tileInfo.getBitmap() != null) {

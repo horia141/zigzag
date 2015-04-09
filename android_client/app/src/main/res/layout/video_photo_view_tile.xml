@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:baselineAligned="false">
 
-    <com.zigzag.client_app.ui.HeightAdjustedProgressBar
+    <com.zigzag.client_app.ui.ResizableProgressBar
         android:id="@+id/waiting"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -16,7 +16,7 @@
         android:paddingTop="25dp"
         android:paddingLeft="25dp"
         android:paddingRight="25dp"
-        android:paddingBottom="25dp"/>
+        android:paddingBottom="25dp" />
 
     <com.zigzag.client_app.ui.ResizableImageView
         android:layout_width="fill_parent"
@@ -25,5 +25,12 @@
         android:layout_gravity="center_horizontal"
         android:id="@+id/image"
         android:src="@drawable/just_an_image" />
+
+    <com.zigzag.client_app.ui.ResizableVideoView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/video"
+        android:visibility="gone"  />
 
 </LinearLayout>

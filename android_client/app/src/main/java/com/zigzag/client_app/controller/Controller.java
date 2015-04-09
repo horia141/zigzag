@@ -2,14 +2,20 @@ package com.zigzag.client_app.controller;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.util.LruCache;
 import android.util.Log;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.DiskBasedCache;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -18,9 +24,15 @@ import com.zigzag.client_app.model.EntityId;
 import com.zigzag.client_app.model.Generation;
 import com.zigzag.client_app.model.PhotoData;
 import com.zigzag.client_app.model.ImageDescription;
+import com.zigzag.client_app.model.VideoPhotoData;
 
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +47,7 @@ public final class Controller {
 
     public static interface ArtifactResourcesListener {
         void onResourcesForArtifact(Artifact artifact, int imageIdx, int tileOrFrameIdx, Bitmap image);
+        void onVideoResourcesForArtifact(Artifact artifact, int imageIdx, String localPathToVideo);
         void onError(String errorDescription);
     }
 
@@ -51,7 +64,51 @@ public final class Controller {
         }
     }
 
-    private static final String REQUESTS_TAG = "ZigZag";
+    private static class VideoRequest extends Request<String> {
+        private final Response.Listener<String> listener;
+
+        public VideoRequest(String url, Response.Listener<String> listener,
+                            Response.ErrorListener errorListener) {
+            super(Method.GET, url, errorListener);
+            this.listener = listener;
+        }
+
+        @Override
+        protected void deliverResponse(String localPathToVideo) {
+            listener.onResponse(localPathToVideo);
+        }
+
+        @Override
+        protected Response<String> parseNetworkResponse(NetworkResponse response) {
+            String path = Uri.parse(getUrl()).getPath();
+            File movies = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES);
+            File applicationData = new File(movies, NAME);
+            File externalCache = new File(applicationData, EXTERNAL_CACHE_PATH);
+            File video = new File(externalCache, path);
+
+            try {
+                movies.mkdirs();
+                applicationData.mkdirs();
+                externalCache.mkdirs();
+
+                if (!video.exists()) {
+                    OutputStream outputStream = new FileOutputStream(video);
+                    outputStream.write(response.data);
+                    outputStream.close();
+                }
+
+                Log.d("ZigZag/VideoRequest", video.getAbsolutePath());
+                return Response.success(video.getAbsolutePath(), HttpHeaderParser.parseCacheHeaders(response));
+            } catch (IOException error) {
+                Log.e("ZigZag/Controller", "Error processing video", error);
+                return Response.error(new VolleyError("Error saving video", error));
+            }
+        }
+    }
+
+    private static final String NAME = "ZizZag";
+    private static final String REQUESTS_TAG = NAME;
+    private static final String EXTERNAL_CACHE_PATH = "External";
     private static final String API_NEXTGEN_URL_PATTERN = "http://horia141.com:9000/api/v1/nextgen?from=%s";
     private static final String API_RES_URL_PATTERN = "http://horia141.com:9001/%s";
     private static final int IMAGE_CACHE_SIZE = 20;
@@ -155,7 +212,7 @@ public final class Controller {
 
             for (int jj = 0; jj < uriPathsToFetch.size(); jj++) {
                 final int tileOrFrameIdx = jj;
-                String resUrl = getResUrl(uriPathsToFetch.get(jj));
+                String resUrl = translateImagePath(uriPathsToFetch.get(jj));
 
                 imageLoader.get(resUrl, new ImageLoader.ImageListener() {
                     @Override
@@ -187,6 +244,26 @@ public final class Controller {
                     }
                 });
             }
+
+            if (photoData instanceof VideoPhotoData) {
+                final String resUrl = translateVideoPath(((VideoPhotoData) photoData).getVideoDesc().getUriPath());
+                final VideoRequest request = new VideoRequest(resUrl,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String localPathToVideo) {
+                                listener.onVideoResourcesForArtifact(artifact, imageIdx, localPathToVideo);
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                listener.onError(error.getMessage());
+                            }
+                        });
+
+                request.setTag(REQUESTS_TAG);
+                requestQueue.add(request);
+            }
         }
     }
 
@@ -210,7 +287,11 @@ public final class Controller {
         return null;
     }
 
-    private static String getResUrl(String urlPath) {
+    private static String translateImagePath(String urlPath) {
+        return String.format(API_RES_URL_PATTERN, urlPath);
+    }
+
+    private static String translateVideoPath(String urlPath) {
         return String.format(API_RES_URL_PATTERN, urlPath);
     }
 

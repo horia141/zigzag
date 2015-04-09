@@ -1,20 +1,19 @@
 package com.zigzag.client_app.ui;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.widget.ProgressBar;
+import android.widget.VideoView;
 
-public class HeightAdjustedProgressBar extends ProgressBar {
+public class ResizableVideoView extends VideoView {
 
     private int tileWidth;
     private int tileHeight;
 
-    public HeightAdjustedProgressBar(Context context) {
+    public ResizableVideoView(Context context) {
         this(context, null);
     }
 
-    public HeightAdjustedProgressBar(Context context, AttributeSet attrs) {
+    public ResizableVideoView(Context context, AttributeSet attrs) {
         super(context, attrs);
         tileWidth = 0;
         tileHeight = 0;
