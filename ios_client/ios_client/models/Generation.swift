@@ -15,14 +15,14 @@ class Generation: Entity {
      * Generation private members, all initialized by default to nil or
      * empty (using implicit optionals)
      */
-    private var timeAdded: NSDate! = nil
-    private var timeClosed: NSDate! = nil
+    private var timeAdded: String! = nil
+    private var timeClosed: String! = nil
     private var artifacts: [Artifact] = []
     
     /**
      * custom constructor
      */
-    init(id: EntityId, timeAdded: NSDate, timeClosed: NSDate, artifacts: [Artifact]){
+    init(id: EntityId, timeAdded: String, timeClosed: String, artifacts: [Artifact]){
         /**
          * call super class with entity ID
          */
@@ -35,11 +35,11 @@ class Generation: Entity {
     /**
      * getter methods
      */
-    func getTimeAdded() -> NSDate {
+    func getTimeAdded() -> String {
         return self.timeAdded
     }
     
-    func getTimeClosed() -> NSDate {
+    func getTimeClosed() -> String {
         return self.timeClosed
     }
     

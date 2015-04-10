@@ -13,12 +13,12 @@ class ArtifactSource: Entity {
      */
     private var startPageUrl: String! = nil
     private var name: String! = nil
-    private var timeAdded: NSDate! = nil
+    private var timeAdded: String! = nil
     
     /**
      * custom constructor
      */
-    init(id: EntityId, startPageUrl: String, name: String, timeAdded: NSDate) {
+    init(id: EntityId, startPageUrl: String, name: String, timeAdded: String) {
         super.init(id: id)
         self.startPageUrl = startPageUrl
         self.name = name
@@ -36,7 +36,7 @@ class ArtifactSource: Entity {
         return self.name;
     }
     
-    func getTimeAdded() -> NSDate {
+    func getTimeAdded() -> String {
         return self.timeAdded;
     }
 }

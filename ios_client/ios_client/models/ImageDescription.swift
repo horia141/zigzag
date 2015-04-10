@@ -17,20 +17,20 @@ class ImageDescription: NSObject {
     private var subtitle: String! = nil
     private var imgDescription: String! = nil
     private var sourceUri: String! = nil
-    private var originalImageUriPath: String! = nil
+    private var originalPhotoUriPath: String! = nil
     private var imageData: [ScreenConfig: ImageData] = [:]
     
     /**
      * custom constructor
      */
-    init(subtitle: String, imgDescription: String, sourceUri: String, originalImageUriPath: String,
+    init(subtitle: String, imgDescription: String, sourceUri: String, originalPhotoUriPath: String,
         imageData: [ScreenConfig: ImageData])
     {
         super.init()
         self.subtitle = subtitle
         self.imgDescription = imgDescription
         self.sourceUri = sourceUri
-        self.originalImageUriPath = originalImageUriPath
+        self.originalPhotoUriPath = originalPhotoUriPath
         self.imageData = imageData
     }
     
@@ -49,8 +49,8 @@ class ImageDescription: NSObject {
         return self.sourceUri
     }
     
-    func getOriginalImageUriPath() -> String {
-        return self.originalImageUriPath
+    func getOriginalPhotoUriPath() -> String {
+        return self.originalPhotoUriPath
     }
     
     func getImageData() -> [ScreenConfig: ImageData] {
