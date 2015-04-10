@@ -797,7 +797,7 @@
 
 @end
 
-@implementation Artifact
+@implementation TileData
 
 - (id) init
 {
@@ -807,152 +807,114 @@
   return self;
 }
 
-- (id) initWithId: (int64_t) id page_uri: (NSString *) page_uri title: (NSString *) title photo_descriptions: (NSMutableArray *) photo_descriptions
+- (id) initWithWidth: (int32_t) width height: (int32_t) height uri_path: (NSString *) uri_path
 {
   self = [super init];
-  __id = id;
-  __id_isset = YES;
-  __page_uri = [page_uri retain_stub];
-  __page_uri_isset = YES;
-  __title = [title retain_stub];
-  __title_isset = YES;
-  __photo_descriptions = [photo_descriptions retain_stub];
-  __photo_descriptions_isset = YES;
+  __width = width;
+  __width_isset = YES;
+  __height = height;
+  __height_isset = YES;
+  __uri_path = [uri_path retain_stub];
+  __uri_path_isset = YES;
   return self;
 }
 
 - (id) initWithCoder: (NSCoder *) decoder
 {
   self = [super init];
-  if ([decoder containsValueForKey: @"id"])
+  if ([decoder containsValueForKey: @"width"])
   {
-    __id = [decoder decodeInt64ForKey: @"id"];
-    __id_isset = YES;
+    __width = [decoder decodeInt32ForKey: @"width"];
+    __width_isset = YES;
   }
-  if ([decoder containsValueForKey: @"page_uri"])
+  if ([decoder containsValueForKey: @"height"])
   {
-    __page_uri = [[decoder decodeObjectForKey: @"page_uri"] retain_stub];
-    __page_uri_isset = YES;
+    __height = [decoder decodeInt32ForKey: @"height"];
+    __height_isset = YES;
   }
-  if ([decoder containsValueForKey: @"title"])
+  if ([decoder containsValueForKey: @"uri_path"])
   {
-    __title = [[decoder decodeObjectForKey: @"title"] retain_stub];
-    __title_isset = YES;
-  }
-  if ([decoder containsValueForKey: @"photo_descriptions"])
-  {
-    __photo_descriptions = [[decoder decodeObjectForKey: @"photo_descriptions"] retain_stub];
-    __photo_descriptions_isset = YES;
+    __uri_path = [[decoder decodeObjectForKey: @"uri_path"] retain_stub];
+    __uri_path_isset = YES;
   }
   return self;
 }
 
 - (void) encodeWithCoder: (NSCoder *) encoder
 {
-  if (__id_isset)
+  if (__width_isset)
   {
-    [encoder encodeInt64: __id forKey: @"id"];
+    [encoder encodeInt32: __width forKey: @"width"];
   }
-  if (__page_uri_isset)
+  if (__height_isset)
   {
-    [encoder encodeObject: __page_uri forKey: @"page_uri"];
+    [encoder encodeInt32: __height forKey: @"height"];
   }
-  if (__title_isset)
+  if (__uri_path_isset)
   {
-    [encoder encodeObject: __title forKey: @"title"];
-  }
-  if (__photo_descriptions_isset)
-  {
-    [encoder encodeObject: __photo_descriptions forKey: @"photo_descriptions"];
+    [encoder encodeObject: __uri_path forKey: @"uri_path"];
   }
 }
 
 - (void) dealloc
 {
-  [__page_uri release_stub];
-  [__title release_stub];
-  [__photo_descriptions release_stub];
+  [__uri_path release_stub];
   [super dealloc_stub];
 }
 
-- (int64_t) id {
-  return __id;
+- (int32_t) width {
+  return __width;
 }
 
-- (void) setId: (int64_t) id {
-  __id = id;
-  __id_isset = YES;
+- (void) setWidth: (int32_t) width {
+  __width = width;
+  __width_isset = YES;
 }
 
-- (BOOL) idIsSet {
-  return __id_isset;
+- (BOOL) widthIsSet {
+  return __width_isset;
 }
 
-- (void) unsetId {
-  __id_isset = NO;
+- (void) unsetWidth {
+  __width_isset = NO;
 }
 
-- (NSString *) page_uri {
-  return [[__page_uri retain_stub] autorelease_stub];
+- (int32_t) height {
+  return __height;
 }
 
-- (void) setPage_uri: (NSString *) page_uri {
-  [page_uri retain_stub];
-  [__page_uri release_stub];
-  __page_uri = page_uri;
-  __page_uri_isset = YES;
+- (void) setHeight: (int32_t) height {
+  __height = height;
+  __height_isset = YES;
 }
 
-- (BOOL) page_uriIsSet {
-  return __page_uri_isset;
+- (BOOL) heightIsSet {
+  return __height_isset;
 }
 
-- (void) unsetPage_uri {
-  [__page_uri release_stub];
-  __page_uri = nil;
-  __page_uri_isset = NO;
+- (void) unsetHeight {
+  __height_isset = NO;
 }
 
-- (NSString *) title {
-  return [[__title retain_stub] autorelease_stub];
+- (NSString *) uri_path {
+  return [[__uri_path retain_stub] autorelease_stub];
 }
 
-- (void) setTitle: (NSString *) title {
-  [title retain_stub];
-  [__title release_stub];
-  __title = title;
-  __title_isset = YES;
+- (void) setUri_path: (NSString *) uri_path {
+  [uri_path retain_stub];
+  [__uri_path release_stub];
+  __uri_path = uri_path;
+  __uri_path_isset = YES;
 }
 
-- (BOOL) titleIsSet {
-  return __title_isset;
+- (BOOL) uri_pathIsSet {
+  return __uri_path_isset;
 }
 
-- (void) unsetTitle {
-  [__title release_stub];
-  __title = nil;
-  __title_isset = NO;
-}
-
-- (NSMutableArray *) photo_descriptions {
-  return [[__photo_descriptions retain_stub] autorelease_stub];
-}
-
-- (void) setPhoto_descriptions: (NSMutableArray *) photo_descriptions {
-  [photo_descriptions retain_stub];
-  [__photo_descriptions release_stub];
-  __photo_descriptions = photo_descriptions;
-  __photo_descriptions_isset = YES;
-}
-
-- (BOOL) photo_descriptionsIsSet {
-  return __photo_descriptions_isset;
-}
-
-- (void) unsetPhoto_descriptions {
-  [__photo_descriptions release_stub];
-  __photo_descriptions = nil;
-  __photo_descriptions_isset = NO;
+- (void) unsetUri_path {
+  [__uri_path release_stub];
+  __uri_path = nil;
+  __uri_path_isset = NO;
 }
 
 - (void) read: (id <TProtocol>) inProtocol
@@ -971,17 +933,17 @@
     switch (fieldID)
     {
       case 1:
-        if (fieldType == TType_I64) {
-          int64_t fieldValue = [inProtocol readI64];
-          [self setId: fieldValue];
+        if (fieldType == TType_I32) {
+          int32_t fieldValue = [inProtocol readI32];
+          [self setWidth: fieldValue];
         } else { 
           [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
         }
         break;
       case 2:
-        if (fieldType == TType_STRING) {
-          NSString * fieldValue = [inProtocol readString];
-          [self setPage_uri: fieldValue];
+        if (fieldType == TType_I32) {
+          int32_t fieldValue = [inProtocol readI32];
+          [self setHeight: fieldValue];
         } else { 
           [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
         }
@@ -989,27 +951,7 @@
       case 3:
         if (fieldType == TType_STRING) {
           NSString * fieldValue = [inProtocol readString];
-          [self setTitle: fieldValue];
-        } else { 
-          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
-        }
-        break;
-      case 4:
-        if (fieldType == TType_LIST) {
-          int _size5;
-          [inProtocol readListBeginReturningElementType: NULL size: &_size5];
-          NSMutableArray * fieldValue = [[NSMutableArray alloc] initWithCapacity: _size5];
-          int _i6;
-          for (_i6 = 0; _i6 < _size5; ++_i6)
-          {
-            PhotoDescription *_elem7 = [[PhotoDescription alloc] init];
-            [_elem7 read: inProtocol];
-            [fieldValue addObject: _elem7];
-            [_elem7 release_stub];
-          }
-          [inProtocol readListEnd];
-          [self setPhoto_descriptions: fieldValue];
-          [fieldValue release_stub];
+          [self setUri_path: fieldValue];
         } else { 
           [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
         }
@@ -1024,38 +966,21 @@
 }
 
 - (void) write: (id <TProtocol>) outProtocol {
-  [outProtocol writeStructBeginWithName: @"Artifact"];
-  if (__id_isset) {
-    [outProtocol writeFieldBeginWithName: @"id" type: TType_I64 fieldID: 1];
-    [outProtocol writeI64: __id];
+  [outProtocol writeStructBeginWithName: @"TileData"];
+  if (__width_isset) {
+    [outProtocol writeFieldBeginWithName: @"width" type: TType_I32 fieldID: 1];
+    [outProtocol writeI32: __width];
     [outProtocol writeFieldEnd];
   }
-  if (__page_uri_isset) {
-    if (__page_uri != nil) {
-      [outProtocol writeFieldBeginWithName: @"page_uri" type: TType_STRING fieldID: 2];
-      [outProtocol writeString: __page_uri];
-      [outProtocol writeFieldEnd];
-    }
+  if (__height_isset) {
+    [outProtocol writeFieldBeginWithName: @"height" type: TType_I32 fieldID: 2];
+    [outProtocol writeI32: __height];
+    [outProtocol writeFieldEnd];
   }
-  if (__title_isset) {
-    if (__title != nil) {
-      [outProtocol writeFieldBeginWithName: @"title" type: TType_STRING fieldID: 3];
-      [outProtocol writeString: __title];
-      [outProtocol writeFieldEnd];
-    }
-  }
-  if (__photo_descriptions_isset) {
-    if (__photo_descriptions != nil) {
-      [outProtocol writeFieldBeginWithName: @"photo_descriptions" type: TType_LIST fieldID: 4];
-      {
-        [outProtocol writeListBeginWithElementType: TType_STRUCT size: [__photo_descriptions count]];
-        int idx9;
-        for (idx9 = 0; idx9 < [__photo_descriptions count]; idx9++)
-        {
-          [[__photo_descriptions objectAtIndex: idx9] write: outProtocol];
-        }
-        [outProtocol writeListEnd];
-      }
+  if (__uri_path_isset) {
+    if (__uri_path != nil) {
+      [outProtocol writeFieldBeginWithName: @"uri_path" type: TType_STRING fieldID: 3];
+      [outProtocol writeString: __uri_path];
       [outProtocol writeFieldEnd];
     }
   }
@@ -1065,34 +990,557 @@
 
 - (void) validate {
   // check for required fields
-  if (!__id_isset) {
+  if (!__width_isset) {
     @throw [TProtocolException exceptionWithName: @"TProtocolException"
-                               reason: @"Required field 'id' is not set."];
+                               reason: @"Required field 'width' is not set."];
   }
-  if (!__page_uri_isset) {
+  if (!__height_isset) {
     @throw [TProtocolException exceptionWithName: @"TProtocolException"
-                               reason: @"Required field 'page_uri' is not set."];
+                               reason: @"Required field 'height' is not set."];
   }
-  if (!__title_isset) {
+  if (!__uri_path_isset) {
     @throw [TProtocolException exceptionWithName: @"TProtocolException"
-                               reason: @"Required field 'title' is not set."];
-  }
-  if (!__photo_descriptions_isset) {
-    @throw [TProtocolException exceptionWithName: @"TProtocolException"
-                               reason: @"Required field 'photo_descriptions' is not set."];
+                               reason: @"Required field 'uri_path' is not set."];
   }
 }
 
 - (NSString *) description {
-  NSMutableString * ms = [NSMutableString stringWithString: @"Artifact("];
-  [ms appendString: @"id:"];
-  [ms appendFormat: @"%qi", __id];
-  [ms appendString: @",page_uri:"];
-  [ms appendFormat: @"\"%@\"", __page_uri];
-  [ms appendString: @",title:"];
-  [ms appendFormat: @"\"%@\"", __title];
-  [ms appendString: @",photo_descriptions:"];
-  [ms appendFormat: @"%@", __photo_descriptions];
+  NSMutableString * ms = [NSMutableString stringWithString: @"TileData("];
+  [ms appendString: @"width:"];
+  [ms appendFormat: @"%i", __width];
+  [ms appendString: @",height:"];
+  [ms appendFormat: @"%i", __height];
+  [ms appendString: @",uri_path:"];
+  [ms appendFormat: @"\"%@\"", __uri_path];
+  [ms appendString: @")"];
+  return [NSString stringWithString: ms];
+}
+
+@end
+
+@implementation ImagePhotoData
+
+- (id) init
+{
+  self = [super init];
+#if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
+#endif
+  return self;
+}
+
+- (id) initWithFull_image_desc: (TileData *) full_image_desc tiles_desc: (NSMutableArray *) tiles_desc screen_config_fk: (int64_t) screen_config_fk
+{
+  self = [super init];
+  __full_image_desc = [full_image_desc retain_stub];
+  __full_image_desc_isset = YES;
+  __tiles_desc = [tiles_desc retain_stub];
+  __tiles_desc_isset = YES;
+  __screen_config_fk = screen_config_fk;
+  __screen_config_fk_isset = YES;
+  return self;
+}
+
+- (id) initWithCoder: (NSCoder *) decoder
+{
+  self = [super init];
+  if ([decoder containsValueForKey: @"full_image_desc"])
+  {
+    __full_image_desc = [[decoder decodeObjectForKey: @"full_image_desc"] retain_stub];
+    __full_image_desc_isset = YES;
+  }
+  if ([decoder containsValueForKey: @"tiles_desc"])
+  {
+    __tiles_desc = [[decoder decodeObjectForKey: @"tiles_desc"] retain_stub];
+    __tiles_desc_isset = YES;
+  }
+  if ([decoder containsValueForKey: @"screen_config_fk"])
+  {
+    __screen_config_fk = [decoder decodeInt64ForKey: @"screen_config_fk"];
+    __screen_config_fk_isset = YES;
+  }
+  return self;
+}
+
+- (void) encodeWithCoder: (NSCoder *) encoder
+{
+  if (__full_image_desc_isset)
+  {
+    [encoder encodeObject: __full_image_desc forKey: @"full_image_desc"];
+  }
+  if (__tiles_desc_isset)
+  {
+    [encoder encodeObject: __tiles_desc forKey: @"tiles_desc"];
+  }
+  if (__screen_config_fk_isset)
+  {
+    [encoder encodeInt64: __screen_config_fk forKey: @"screen_config_fk"];
+  }
+}
+
+- (void) dealloc
+{
+  [__full_image_desc release_stub];
+  [__tiles_desc release_stub];
+  [super dealloc_stub];
+}
+
+- (TileData *) full_image_desc {
+  return [[__full_image_desc retain_stub] autorelease_stub];
+}
+
+- (void) setFull_image_desc: (TileData *) full_image_desc {
+  [full_image_desc retain_stub];
+  [__full_image_desc release_stub];
+  __full_image_desc = full_image_desc;
+  __full_image_desc_isset = YES;
+}
+
+- (BOOL) full_image_descIsSet {
+  return __full_image_desc_isset;
+}
+
+- (void) unsetFull_image_desc {
+  [__full_image_desc release_stub];
+  __full_image_desc = nil;
+  __full_image_desc_isset = NO;
+}
+
+- (NSMutableArray *) tiles_desc {
+  return [[__tiles_desc retain_stub] autorelease_stub];
+}
+
+- (void) setTiles_desc: (NSMutableArray *) tiles_desc {
+  [tiles_desc retain_stub];
+  [__tiles_desc release_stub];
+  __tiles_desc = tiles_desc;
+  __tiles_desc_isset = YES;
+}
+
+- (BOOL) tiles_descIsSet {
+  return __tiles_desc_isset;
+}
+
+- (void) unsetTiles_desc {
+  [__tiles_desc release_stub];
+  __tiles_desc = nil;
+  __tiles_desc_isset = NO;
+}
+
+- (int64_t) screen_config_fk {
+  return __screen_config_fk;
+}
+
+- (void) setScreen_config_fk: (int64_t) screen_config_fk {
+  __screen_config_fk = screen_config_fk;
+  __screen_config_fk_isset = YES;
+}
+
+- (BOOL) screen_config_fkIsSet {
+  return __screen_config_fk_isset;
+}
+
+- (void) unsetScreen_config_fk {
+  __screen_config_fk_isset = NO;
+}
+
+- (void) read: (id <TProtocol>) inProtocol
+{
+  NSString * fieldName;
+  int fieldType;
+  int fieldID;
+
+  [inProtocol readStructBeginReturningName: NULL];
+  while (true)
+  {
+    [inProtocol readFieldBeginReturningName: &fieldName type: &fieldType fieldID: &fieldID];
+    if (fieldType == TType_STOP) { 
+      break;
+    }
+    switch (fieldID)
+    {
+      case 1:
+        if (fieldType == TType_STRUCT) {
+          TileData *fieldValue = [[TileData alloc] init];
+          [fieldValue read: inProtocol];
+          [self setFull_image_desc: fieldValue];
+          [fieldValue release_stub];
+        } else { 
+          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
+        }
+        break;
+      case 2:
+        if (fieldType == TType_LIST) {
+          int _size5;
+          [inProtocol readListBeginReturningElementType: NULL size: &_size5];
+          NSMutableArray * fieldValue = [[NSMutableArray alloc] initWithCapacity: _size5];
+          int _i6;
+          for (_i6 = 0; _i6 < _size5; ++_i6)
+          {
+            TileData *_elem7 = [[TileData alloc] init];
+            [_elem7 read: inProtocol];
+            [fieldValue addObject: _elem7];
+            [_elem7 release_stub];
+          }
+          [inProtocol readListEnd];
+          [self setTiles_desc: fieldValue];
+          [fieldValue release_stub];
+        } else { 
+          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
+        }
+        break;
+      case 3:
+        if (fieldType == TType_I64) {
+          int64_t fieldValue = [inProtocol readI64];
+          [self setScreen_config_fk: fieldValue];
+        } else { 
+          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
+        }
+        break;
+      default:
+        [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
+        break;
+    }
+    [inProtocol readFieldEnd];
+  }
+  [inProtocol readStructEnd];
+}
+
+- (void) write: (id <TProtocol>) outProtocol {
+  [outProtocol writeStructBeginWithName: @"ImagePhotoData"];
+  if (__full_image_desc_isset) {
+    if (__full_image_desc != nil) {
+      [outProtocol writeFieldBeginWithName: @"full_image_desc" type: TType_STRUCT fieldID: 1];
+      [__full_image_desc write: outProtocol];
+      [outProtocol writeFieldEnd];
+    }
+  }
+  if (__tiles_desc_isset) {
+    if (__tiles_desc != nil) {
+      [outProtocol writeFieldBeginWithName: @"tiles_desc" type: TType_LIST fieldID: 2];
+      {
+        [outProtocol writeListBeginWithElementType: TType_STRUCT size: [__tiles_desc count]];
+        int idx9;
+        for (idx9 = 0; idx9 < [__tiles_desc count]; idx9++)
+        {
+          [[__tiles_desc objectAtIndex: idx9] write: outProtocol];
+        }
+        [outProtocol writeListEnd];
+      }
+      [outProtocol writeFieldEnd];
+    }
+  }
+  if (__screen_config_fk_isset) {
+    [outProtocol writeFieldBeginWithName: @"screen_config_fk" type: TType_I64 fieldID: 3];
+    [outProtocol writeI64: __screen_config_fk];
+    [outProtocol writeFieldEnd];
+  }
+  [outProtocol writeFieldStop];
+  [outProtocol writeStructEnd];
+}
+
+- (void) validate {
+  // check for required fields
+  if (!__full_image_desc_isset) {
+    @throw [TProtocolException exceptionWithName: @"TProtocolException"
+                               reason: @"Required field 'full_image_desc' is not set."];
+  }
+  if (!__tiles_desc_isset) {
+    @throw [TProtocolException exceptionWithName: @"TProtocolException"
+                               reason: @"Required field 'tiles_desc' is not set."];
+  }
+  if (!__screen_config_fk_isset) {
+    @throw [TProtocolException exceptionWithName: @"TProtocolException"
+                               reason: @"Required field 'screen_config_fk' is not set."];
+  }
+}
+
+- (NSString *) description {
+  NSMutableString * ms = [NSMutableString stringWithString: @"ImagePhotoData("];
+  [ms appendString: @"full_image_desc:"];
+  [ms appendFormat: @"%@", __full_image_desc];
+  [ms appendString: @",tiles_desc:"];
+  [ms appendFormat: @"%@", __tiles_desc];
+  [ms appendString: @",screen_config_fk:"];
+  [ms appendFormat: @"%qi", __screen_config_fk];
+  [ms appendString: @")"];
+  return [NSString stringWithString: ms];
+}
+
+@end
+
+@implementation VideoPhotoData
+
+- (id) init
+{
+  self = [super init];
+#if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
+#endif
+  return self;
+}
+
+- (id) initWithFirst_frame_desc: (TileData *) first_frame_desc video_desc: (TileData *) video_desc time_between_frames_ms: (int32_t) time_between_frames_ms framerate: (int32_t) framerate
+{
+  self = [super init];
+  __first_frame_desc = [first_frame_desc retain_stub];
+  __first_frame_desc_isset = YES;
+  __video_desc = [video_desc retain_stub];
+  __video_desc_isset = YES;
+  __time_between_frames_ms = time_between_frames_ms;
+  __time_between_frames_ms_isset = YES;
+  __framerate = framerate;
+  __framerate_isset = YES;
+  return self;
+}
+
+- (id) initWithCoder: (NSCoder *) decoder
+{
+  self = [super init];
+  if ([decoder containsValueForKey: @"first_frame_desc"])
+  {
+    __first_frame_desc = [[decoder decodeObjectForKey: @"first_frame_desc"] retain_stub];
+    __first_frame_desc_isset = YES;
+  }
+  if ([decoder containsValueForKey: @"video_desc"])
+  {
+    __video_desc = [[decoder decodeObjectForKey: @"video_desc"] retain_stub];
+    __video_desc_isset = YES;
+  }
+  if ([decoder containsValueForKey: @"time_between_frames_ms"])
+  {
+    __time_between_frames_ms = [decoder decodeInt32ForKey: @"time_between_frames_ms"];
+    __time_between_frames_ms_isset = YES;
+  }
+  if ([decoder containsValueForKey: @"framerate"])
+  {
+    __framerate = [decoder decodeInt32ForKey: @"framerate"];
+    __framerate_isset = YES;
+  }
+  return self;
+}
+
+- (void) encodeWithCoder: (NSCoder *) encoder
+{
+  if (__first_frame_desc_isset)
+  {
+    [encoder encodeObject: __first_frame_desc forKey: @"first_frame_desc"];
+  }
+  if (__video_desc_isset)
+  {
+    [encoder encodeObject: __video_desc forKey: @"video_desc"];
+  }
+  if (__time_between_frames_ms_isset)
+  {
+    [encoder encodeInt32: __time_between_frames_ms forKey: @"time_between_frames_ms"];
+  }
+  if (__framerate_isset)
+  {
+    [encoder encodeInt32: __framerate forKey: @"framerate"];
+  }
+}
+
+- (void) dealloc
+{
+  [__first_frame_desc release_stub];
+  [__video_desc release_stub];
+  [super dealloc_stub];
+}
+
+- (TileData *) first_frame_desc {
+  return [[__first_frame_desc retain_stub] autorelease_stub];
+}
+
+- (void) setFirst_frame_desc: (TileData *) first_frame_desc {
+  [first_frame_desc retain_stub];
+  [__first_frame_desc release_stub];
+  __first_frame_desc = first_frame_desc;
+  __first_frame_desc_isset = YES;
+}
+
+- (BOOL) first_frame_descIsSet {
+  return __first_frame_desc_isset;
+}
+
+- (void) unsetFirst_frame_desc {
+  [__first_frame_desc release_stub];
+  __first_frame_desc = nil;
+  __first_frame_desc_isset = NO;
+}
+
+- (TileData *) video_desc {
+  return [[__video_desc retain_stub] autorelease_stub];
+}
+
+- (void) setVideo_desc: (TileData *) video_desc {
+  [video_desc retain_stub];
+  [__video_desc release_stub];
+  __video_desc = video_desc;
+  __video_desc_isset = YES;
+}
+
+- (BOOL) video_descIsSet {
+  return __video_desc_isset;
+}
+
+- (void) unsetVideo_desc {
+  [__video_desc release_stub];
+  __video_desc = nil;
+  __video_desc_isset = NO;
+}
+
+- (int32_t) time_between_frames_ms {
+  return __time_between_frames_ms;
+}
+
+- (void) setTime_between_frames_ms: (int32_t) time_between_frames_ms {
+  __time_between_frames_ms = time_between_frames_ms;
+  __time_between_frames_ms_isset = YES;
+}
+
+- (BOOL) time_between_frames_msIsSet {
+  return __time_between_frames_ms_isset;
+}
+
+- (void) unsetTime_between_frames_ms {
+  __time_between_frames_ms_isset = NO;
+}
+
+- (int32_t) framerate {
+  return __framerate;
+}
+
+- (void) setFramerate: (int32_t) framerate {
+  __framerate = framerate;
+  __framerate_isset = YES;
+}
+
+- (BOOL) framerateIsSet {
+  return __framerate_isset;
+}
+
+- (void) unsetFramerate {
+  __framerate_isset = NO;
+}
+
+- (void) read: (id <TProtocol>) inProtocol
+{
+  NSString * fieldName;
+  int fieldType;
+  int fieldID;
+
+  [inProtocol readStructBeginReturningName: NULL];
+  while (true)
+  {
+    [inProtocol readFieldBeginReturningName: &fieldName type: &fieldType fieldID: &fieldID];
+    if (fieldType == TType_STOP) { 
+      break;
+    }
+    switch (fieldID)
+    {
+      case 1:
+        if (fieldType == TType_STRUCT) {
+          TileData *fieldValue = [[TileData alloc] init];
+          [fieldValue read: inProtocol];
+          [self setFirst_frame_desc: fieldValue];
+          [fieldValue release_stub];
+        } else { 
+          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
+        }
+        break;
+      case 2:
+        if (fieldType == TType_STRUCT) {
+          TileData *fieldValue = [[TileData alloc] init];
+          [fieldValue read: inProtocol];
+          [self setVideo_desc: fieldValue];
+          [fieldValue release_stub];
+        } else { 
+          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
+        }
+        break;
+      case 3:
+        if (fieldType == TType_I32) {
+          int32_t fieldValue = [inProtocol readI32];
+          [self setTime_between_frames_ms: fieldValue];
+        } else { 
+          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
+        }
+        break;
+      case 4:
+        if (fieldType == TType_I32) {
+          int32_t fieldValue = [inProtocol readI32];
+          [self setFramerate: fieldValue];
+        } else { 
+          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
+        }
+        break;
+      default:
+        [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
+        break;
+    }
+    [inProtocol readFieldEnd];
+  }
+  [inProtocol readStructEnd];
+}
+
+- (void) write: (id <TProtocol>) outProtocol {
+  [outProtocol writeStructBeginWithName: @"VideoPhotoData"];
+  if (__first_frame_desc_isset) {
+    if (__first_frame_desc != nil) {
+      [outProtocol writeFieldBeginWithName: @"first_frame_desc" type: TType_STRUCT fieldID: 1];
+      [__first_frame_desc write: outProtocol];
+      [outProtocol writeFieldEnd];
+    }
+  }
+  if (__video_desc_isset) {
+    if (__video_desc != nil) {
+      [outProtocol writeFieldBeginWithName: @"video_desc" type: TType_STRUCT fieldID: 2];
+      [__video_desc write: outProtocol];
+      [outProtocol writeFieldEnd];
+    }
+  }
+  if (__time_between_frames_ms_isset) {
+    [outProtocol writeFieldBeginWithName: @"time_between_frames_ms" type: TType_I32 fieldID: 3];
+    [outProtocol writeI32: __time_between_frames_ms];
+    [outProtocol writeFieldEnd];
+  }
+  if (__framerate_isset) {
+    [outProtocol writeFieldBeginWithName: @"framerate" type: TType_I32 fieldID: 4];
+    [outProtocol writeI32: __framerate];
+    [outProtocol writeFieldEnd];
+  }
+  [outProtocol writeFieldStop];
+  [outProtocol writeStructEnd];
+}
+
+- (void) validate {
+  // check for required fields
+  if (!__first_frame_desc_isset) {
+    @throw [TProtocolException exceptionWithName: @"TProtocolException"
+                               reason: @"Required field 'first_frame_desc' is not set."];
+  }
+  if (!__video_desc_isset) {
+    @throw [TProtocolException exceptionWithName: @"TProtocolException"
+                               reason: @"Required field 'video_desc' is not set."];
+  }
+  if (!__time_between_frames_ms_isset) {
+    @throw [TProtocolException exceptionWithName: @"TProtocolException"
+                               reason: @"Required field 'time_between_frames_ms' is not set."];
+  }
+  if (!__framerate_isset) {
+    @throw [TProtocolException exceptionWithName: @"TProtocolException"
+                               reason: @"Required field 'framerate' is not set."];
+  }
+}
+
+- (NSString *) description {
+  NSMutableString * ms = [NSMutableString stringWithString: @"VideoPhotoData("];
+  [ms appendString: @"first_frame_desc:"];
+  [ms appendFormat: @"%@", __first_frame_desc];
+  [ms appendString: @",video_desc:"];
+  [ms appendFormat: @"%@", __video_desc];
+  [ms appendString: @",time_between_frames_ms:"];
+  [ms appendFormat: @"%i", __time_between_frames_ms];
+  [ms appendString: @",framerate:"];
+  [ms appendFormat: @"%i", __framerate];
   [ms appendString: @")"];
   return [NSString stringWithString: ms];
 }
@@ -1109,7 +1557,7 @@
   return self;
 }
 
-- (id) initWithSubtitle: (NSString *) subtitle description: (NSString *) description source_uri: (NSString *) source_uri original_uri_path: (NSString *) original_uri_path image_data: (ImagePhotoData) image_data video_data: (VideoPhotoData) video_data
+- (id) initWithSubtitle: (NSString *) subtitle description: (NSString *) description source_uri: (NSString *) source_uri original_uri_path: (NSString *) original_uri_path image_data: (ImagePhotoData *) image_data video_data: (VideoPhotoData *) video_data
 {
   self = [super init];
   __subtitle = [subtitle retain_stub];
@@ -1484,7 +1932,7 @@
 
 @end
 
-@implementation ImagePhotoData
+@implementation Artifact
 
 - (id) init
 {
@@ -1494,119 +1942,152 @@
   return self;
 }
 
-- (id) initWithFull_image_desc: (TileData) full_image_desc tiles_desc: (NSMutableArray *) tiles_desc screen_config_fk: (int64_t) screen_config_fk
+- (id) initWithId: (int64_t) id page_uri: (NSString *) page_uri title: (NSString *) title photo_descriptions: (NSMutableArray *) photo_descriptions
 {
   self = [super init];
-  __full_image_desc = [full_image_desc retain_stub];
-  __full_image_desc_isset = YES;
-  __tiles_desc = [tiles_desc retain_stub];
-  __tiles_desc_isset = YES;
-  __screen_config_fk = screen_config_fk;
-  __screen_config_fk_isset = YES;
+  __id = id;
+  __id_isset = YES;
+  __page_uri = [page_uri retain_stub];
+  __page_uri_isset = YES;
+  __title = [title retain_stub];
+  __title_isset = YES;
+  __photo_descriptions = [photo_descriptions retain_stub];
+  __photo_descriptions_isset = YES;
   return self;
 }
 
 - (id) initWithCoder: (NSCoder *) decoder
 {
   self = [super init];
-  if ([decoder containsValueForKey: @"full_image_desc"])
+  if ([decoder containsValueForKey: @"id"])
   {
-    __full_image_desc = [[decoder decodeObjectForKey: @"full_image_desc"] retain_stub];
-    __full_image_desc_isset = YES;
+    __id = [decoder decodeInt64ForKey: @"id"];
+    __id_isset = YES;
   }
-  if ([decoder containsValueForKey: @"tiles_desc"])
+  if ([decoder containsValueForKey: @"page_uri"])
   {
-    __tiles_desc = [[decoder decodeObjectForKey: @"tiles_desc"] retain_stub];
-    __tiles_desc_isset = YES;
+    __page_uri = [[decoder decodeObjectForKey: @"page_uri"] retain_stub];
+    __page_uri_isset = YES;
   }
-  if ([decoder containsValueForKey: @"screen_config_fk"])
+  if ([decoder containsValueForKey: @"title"])
   {
-    __screen_config_fk = [decoder decodeInt64ForKey: @"screen_config_fk"];
-    __screen_config_fk_isset = YES;
+    __title = [[decoder decodeObjectForKey: @"title"] retain_stub];
+    __title_isset = YES;
+  }
+  if ([decoder containsValueForKey: @"photo_descriptions"])
+  {
+    __photo_descriptions = [[decoder decodeObjectForKey: @"photo_descriptions"] retain_stub];
+    __photo_descriptions_isset = YES;
   }
   return self;
 }
 
 - (void) encodeWithCoder: (NSCoder *) encoder
 {
-  if (__full_image_desc_isset)
+  if (__id_isset)
   {
-    [encoder encodeObject: __full_image_desc forKey: @"full_image_desc"];
+    [encoder encodeInt64: __id forKey: @"id"];
   }
-  if (__tiles_desc_isset)
+  if (__page_uri_isset)
   {
-    [encoder encodeObject: __tiles_desc forKey: @"tiles_desc"];
+    [encoder encodeObject: __page_uri forKey: @"page_uri"];
   }
-  if (__screen_config_fk_isset)
+  if (__title_isset)
   {
-    [encoder encodeInt64: __screen_config_fk forKey: @"screen_config_fk"];
+    [encoder encodeObject: __title forKey: @"title"];
+  }
+  if (__photo_descriptions_isset)
+  {
+    [encoder encodeObject: __photo_descriptions forKey: @"photo_descriptions"];
   }
 }
 
 - (void) dealloc
 {
-  [__full_image_desc release_stub];
-  [__tiles_desc release_stub];
+  [__page_uri release_stub];
+  [__title release_stub];
+  [__photo_descriptions release_stub];
   [super dealloc_stub];
 }
 
-- (TileData *) full_image_desc {
-  return [[__full_image_desc retain_stub] autorelease_stub];
+- (int64_t) id {
+  return __id;
 }
 
-- (void) setFull_image_desc: (TileData *) full_image_desc {
-  [full_image_desc retain_stub];
-  [__full_image_desc release_stub];
-  __full_image_desc = full_image_desc;
-  __full_image_desc_isset = YES;
+- (void) setId: (int64_t) id {
+  __id = id;
+  __id_isset = YES;
 }
 
-- (BOOL) full_image_descIsSet {
-  return __full_image_desc_isset;
+- (BOOL) idIsSet {
+  return __id_isset;
 }
 
-- (void) unsetFull_image_desc {
-  [__full_image_desc release_stub];
-  __full_image_desc = nil;
-  __full_image_desc_isset = NO;
+- (void) unsetId {
+  __id_isset = NO;
 }
 
-- (NSMutableArray *) tiles_desc {
-  return [[__tiles_desc retain_stub] autorelease_stub];
+- (NSString *) page_uri {
+  return [[__page_uri retain_stub] autorelease_stub];
 }
 
-- (void) setTiles_desc: (NSMutableArray *) tiles_desc {
-  [tiles_desc retain_stub];
-  [__tiles_desc release_stub];
-  __tiles_desc = tiles_desc;
-  __tiles_desc_isset = YES;
+- (void) setPage_uri: (NSString *) page_uri {
+  [page_uri retain_stub];
+  [__page_uri release_stub];
+  __page_uri = page_uri;
+  __page_uri_isset = YES;
 }
 
-- (BOOL) tiles_descIsSet {
-  return __tiles_desc_isset;
+- (BOOL) page_uriIsSet {
+  return __page_uri_isset;
 }
 
-- (void) unsetTiles_desc {
-  [__tiles_desc release_stub];
-  __tiles_desc = nil;
-  __tiles_desc_isset = NO;
+- (void) unsetPage_uri {
+  [__page_uri release_stub];
+  __page_uri = nil;
+  __page_uri_isset = NO;
 }
 
-- (int64_t) screen_config_fk {
-  return __screen_config_fk;
+- (NSString *) title {
+  return [[__title retain_stub] autorelease_stub];
 }
 
-- (void) setScreen_config_fk: (int64_t) screen_config_fk {
-  __screen_config_fk = screen_config_fk;
-  __screen_config_fk_isset = YES;
+- (void) setTitle: (NSString *) title {
+  [title retain_stub];
+  [__title release_stub];
+  __title = title;
+  __title_isset = YES;
 }
 
-- (BOOL) screen_config_fkIsSet {
-  return __screen_config_fk_isset;
+- (BOOL) titleIsSet {
+  return __title_isset;
 }
 
-- (void) unsetScreen_config_fk {
-  __screen_config_fk_isset = NO;
+- (void) unsetTitle {
+  [__title release_stub];
+  __title = nil;
+  __title_isset = NO;
+}
+
+- (NSMutableArray *) photo_descriptions {
+  return [[__photo_descriptions retain_stub] autorelease_stub];
+}
+
+- (void) setPhoto_descriptions: (NSMutableArray *) photo_descriptions {
+  [photo_descriptions retain_stub];
+  [__photo_descriptions release_stub];
+  __photo_descriptions = photo_descriptions;
+  __photo_descriptions_isset = YES;
+}
+
+- (BOOL) photo_descriptionsIsSet {
+  return __photo_descriptions_isset;
+}
+
+- (void) unsetPhoto_descriptions {
+  [__photo_descriptions release_stub];
+  __photo_descriptions = nil;
+  __photo_descriptions_isset = NO;
 }
 
 - (void) read: (id <TProtocol>) inProtocol
@@ -1625,541 +2106,17 @@
     switch (fieldID)
     {
       case 1:
-        if (fieldType == TType_STRUCT) {
-          TileData *fieldValue = [[TileData alloc] init];
-          [fieldValue read: inProtocol];
-          [self setFull_image_desc: fieldValue];
-          [fieldValue release_stub];
-        } else { 
-          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
-        }
-        break;
-      case 2:
-        if (fieldType == TType_LIST) {
-          int _size10;
-          [inProtocol readListBeginReturningElementType: NULL size: &_size10];
-          NSMutableArray * fieldValue = [[NSMutableArray alloc] initWithCapacity: _size10];
-          int _i11;
-          for (_i11 = 0; _i11 < _size10; ++_i11)
-          {
-            TileData *_elem12 = [[TileData alloc] init];
-            [_elem12 read: inProtocol];
-            [fieldValue addObject: _elem12];
-            [_elem12 release_stub];
-          }
-          [inProtocol readListEnd];
-          [self setTiles_desc: fieldValue];
-          [fieldValue release_stub];
-        } else { 
-          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
-        }
-        break;
-      case 3:
         if (fieldType == TType_I64) {
           int64_t fieldValue = [inProtocol readI64];
-          [self setScreen_config_fk: fieldValue];
-        } else { 
-          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
-        }
-        break;
-      default:
-        [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
-        break;
-    }
-    [inProtocol readFieldEnd];
-  }
-  [inProtocol readStructEnd];
-}
-
-- (void) write: (id <TProtocol>) outProtocol {
-  [outProtocol writeStructBeginWithName: @"ImagePhotoData"];
-  if (__full_image_desc_isset) {
-    if (__full_image_desc != nil) {
-      [outProtocol writeFieldBeginWithName: @"full_image_desc" type: TType_STRUCT fieldID: 1];
-      [__full_image_desc write: outProtocol];
-      [outProtocol writeFieldEnd];
-    }
-  }
-  if (__tiles_desc_isset) {
-    if (__tiles_desc != nil) {
-      [outProtocol writeFieldBeginWithName: @"tiles_desc" type: TType_LIST fieldID: 2];
-      {
-        [outProtocol writeListBeginWithElementType: TType_STRUCT size: [__tiles_desc count]];
-        int idx14;
-        for (idx14 = 0; idx14 < [__tiles_desc count]; idx14++)
-        {
-          [[__tiles_desc objectAtIndex: idx14] write: outProtocol];
-        }
-        [outProtocol writeListEnd];
-      }
-      [outProtocol writeFieldEnd];
-    }
-  }
-  if (__screen_config_fk_isset) {
-    [outProtocol writeFieldBeginWithName: @"screen_config_fk" type: TType_I64 fieldID: 3];
-    [outProtocol writeI64: __screen_config_fk];
-    [outProtocol writeFieldEnd];
-  }
-  [outProtocol writeFieldStop];
-  [outProtocol writeStructEnd];
-}
-
-- (void) validate {
-  // check for required fields
-  if (!__full_image_desc_isset) {
-    @throw [TProtocolException exceptionWithName: @"TProtocolException"
-                               reason: @"Required field 'full_image_desc' is not set."];
-  }
-  if (!__tiles_desc_isset) {
-    @throw [TProtocolException exceptionWithName: @"TProtocolException"
-                               reason: @"Required field 'tiles_desc' is not set."];
-  }
-  if (!__screen_config_fk_isset) {
-    @throw [TProtocolException exceptionWithName: @"TProtocolException"
-                               reason: @"Required field 'screen_config_fk' is not set."];
-  }
-}
-
-- (NSString *) description {
-  NSMutableString * ms = [NSMutableString stringWithString: @"ImagePhotoData("];
-  [ms appendString: @"full_image_desc:"];
-  [ms appendFormat: @"%@", __full_image_desc];
-  [ms appendString: @",tiles_desc:"];
-  [ms appendFormat: @"%@", __tiles_desc];
-  [ms appendString: @",screen_config_fk:"];
-  [ms appendFormat: @"%qi", __screen_config_fk];
-  [ms appendString: @")"];
-  return [NSString stringWithString: ms];
-}
-
-@end
-
-@implementation VideoPhotoData
-
-- (id) init
-{
-  self = [super init];
-#if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
-#endif
-  return self;
-}
-
-- (id) initWithFirst_frame_desc: (TileData) first_frame_desc video_desc: (TileData) video_desc time_between_frames_ms: (int32_t) time_between_frames_ms framerate: (int32_t) framerate
-{
-  self = [super init];
-  __first_frame_desc = [first_frame_desc retain_stub];
-  __first_frame_desc_isset = YES;
-  __video_desc = [video_desc retain_stub];
-  __video_desc_isset = YES;
-  __time_between_frames_ms = time_between_frames_ms;
-  __time_between_frames_ms_isset = YES;
-  __framerate = framerate;
-  __framerate_isset = YES;
-  return self;
-}
-
-- (id) initWithCoder: (NSCoder *) decoder
-{
-  self = [super init];
-  if ([decoder containsValueForKey: @"first_frame_desc"])
-  {
-    __first_frame_desc = [[decoder decodeObjectForKey: @"first_frame_desc"] retain_stub];
-    __first_frame_desc_isset = YES;
-  }
-  if ([decoder containsValueForKey: @"video_desc"])
-  {
-    __video_desc = [[decoder decodeObjectForKey: @"video_desc"] retain_stub];
-    __video_desc_isset = YES;
-  }
-  if ([decoder containsValueForKey: @"time_between_frames_ms"])
-  {
-    __time_between_frames_ms = [decoder decodeInt32ForKey: @"time_between_frames_ms"];
-    __time_between_frames_ms_isset = YES;
-  }
-  if ([decoder containsValueForKey: @"framerate"])
-  {
-    __framerate = [decoder decodeInt32ForKey: @"framerate"];
-    __framerate_isset = YES;
-  }
-  return self;
-}
-
-- (void) encodeWithCoder: (NSCoder *) encoder
-{
-  if (__first_frame_desc_isset)
-  {
-    [encoder encodeObject: __first_frame_desc forKey: @"first_frame_desc"];
-  }
-  if (__video_desc_isset)
-  {
-    [encoder encodeObject: __video_desc forKey: @"video_desc"];
-  }
-  if (__time_between_frames_ms_isset)
-  {
-    [encoder encodeInt32: __time_between_frames_ms forKey: @"time_between_frames_ms"];
-  }
-  if (__framerate_isset)
-  {
-    [encoder encodeInt32: __framerate forKey: @"framerate"];
-  }
-}
-
-- (void) dealloc
-{
-  [__first_frame_desc release_stub];
-  [__video_desc release_stub];
-  [super dealloc_stub];
-}
-
-- (TileData *) first_frame_desc {
-  return [[__first_frame_desc retain_stub] autorelease_stub];
-}
-
-- (void) setFirst_frame_desc: (TileData *) first_frame_desc {
-  [first_frame_desc retain_stub];
-  [__first_frame_desc release_stub];
-  __first_frame_desc = first_frame_desc;
-  __first_frame_desc_isset = YES;
-}
-
-- (BOOL) first_frame_descIsSet {
-  return __first_frame_desc_isset;
-}
-
-- (void) unsetFirst_frame_desc {
-  [__first_frame_desc release_stub];
-  __first_frame_desc = nil;
-  __first_frame_desc_isset = NO;
-}
-
-- (TileData *) video_desc {
-  return [[__video_desc retain_stub] autorelease_stub];
-}
-
-- (void) setVideo_desc: (TileData *) video_desc {
-  [video_desc retain_stub];
-  [__video_desc release_stub];
-  __video_desc = video_desc;
-  __video_desc_isset = YES;
-}
-
-- (BOOL) video_descIsSet {
-  return __video_desc_isset;
-}
-
-- (void) unsetVideo_desc {
-  [__video_desc release_stub];
-  __video_desc = nil;
-  __video_desc_isset = NO;
-}
-
-- (int32_t) time_between_frames_ms {
-  return __time_between_frames_ms;
-}
-
-- (void) setTime_between_frames_ms: (int32_t) time_between_frames_ms {
-  __time_between_frames_ms = time_between_frames_ms;
-  __time_between_frames_ms_isset = YES;
-}
-
-- (BOOL) time_between_frames_msIsSet {
-  return __time_between_frames_ms_isset;
-}
-
-- (void) unsetTime_between_frames_ms {
-  __time_between_frames_ms_isset = NO;
-}
-
-- (int32_t) framerate {
-  return __framerate;
-}
-
-- (void) setFramerate: (int32_t) framerate {
-  __framerate = framerate;
-  __framerate_isset = YES;
-}
-
-- (BOOL) framerateIsSet {
-  return __framerate_isset;
-}
-
-- (void) unsetFramerate {
-  __framerate_isset = NO;
-}
-
-- (void) read: (id <TProtocol>) inProtocol
-{
-  NSString * fieldName;
-  int fieldType;
-  int fieldID;
-
-  [inProtocol readStructBeginReturningName: NULL];
-  while (true)
-  {
-    [inProtocol readFieldBeginReturningName: &fieldName type: &fieldType fieldID: &fieldID];
-    if (fieldType == TType_STOP) { 
-      break;
-    }
-    switch (fieldID)
-    {
-      case 1:
-        if (fieldType == TType_STRUCT) {
-          TileData *fieldValue = [[TileData alloc] init];
-          [fieldValue read: inProtocol];
-          [self setFirst_frame_desc: fieldValue];
-          [fieldValue release_stub];
+          [self setId: fieldValue];
         } else { 
           [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
         }
         break;
       case 2:
-        if (fieldType == TType_STRUCT) {
-          TileData *fieldValue = [[TileData alloc] init];
-          [fieldValue read: inProtocol];
-          [self setVideo_desc: fieldValue];
-          [fieldValue release_stub];
-        } else { 
-          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
-        }
-        break;
-      case 3:
-        if (fieldType == TType_I32) {
-          int32_t fieldValue = [inProtocol readI32];
-          [self setTime_between_frames_ms: fieldValue];
-        } else { 
-          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
-        }
-        break;
-      case 4:
-        if (fieldType == TType_I32) {
-          int32_t fieldValue = [inProtocol readI32];
-          [self setFramerate: fieldValue];
-        } else { 
-          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
-        }
-        break;
-      default:
-        [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
-        break;
-    }
-    [inProtocol readFieldEnd];
-  }
-  [inProtocol readStructEnd];
-}
-
-- (void) write: (id <TProtocol>) outProtocol {
-  [outProtocol writeStructBeginWithName: @"VideoPhotoData"];
-  if (__first_frame_desc_isset) {
-    if (__first_frame_desc != nil) {
-      [outProtocol writeFieldBeginWithName: @"first_frame_desc" type: TType_STRUCT fieldID: 1];
-      [__first_frame_desc write: outProtocol];
-      [outProtocol writeFieldEnd];
-    }
-  }
-  if (__video_desc_isset) {
-    if (__video_desc != nil) {
-      [outProtocol writeFieldBeginWithName: @"video_desc" type: TType_STRUCT fieldID: 2];
-      [__video_desc write: outProtocol];
-      [outProtocol writeFieldEnd];
-    }
-  }
-  if (__time_between_frames_ms_isset) {
-    [outProtocol writeFieldBeginWithName: @"time_between_frames_ms" type: TType_I32 fieldID: 3];
-    [outProtocol writeI32: __time_between_frames_ms];
-    [outProtocol writeFieldEnd];
-  }
-  if (__framerate_isset) {
-    [outProtocol writeFieldBeginWithName: @"framerate" type: TType_I32 fieldID: 4];
-    [outProtocol writeI32: __framerate];
-    [outProtocol writeFieldEnd];
-  }
-  [outProtocol writeFieldStop];
-  [outProtocol writeStructEnd];
-}
-
-- (void) validate {
-  // check for required fields
-  if (!__first_frame_desc_isset) {
-    @throw [TProtocolException exceptionWithName: @"TProtocolException"
-                               reason: @"Required field 'first_frame_desc' is not set."];
-  }
-  if (!__video_desc_isset) {
-    @throw [TProtocolException exceptionWithName: @"TProtocolException"
-                               reason: @"Required field 'video_desc' is not set."];
-  }
-  if (!__time_between_frames_ms_isset) {
-    @throw [TProtocolException exceptionWithName: @"TProtocolException"
-                               reason: @"Required field 'time_between_frames_ms' is not set."];
-  }
-  if (!__framerate_isset) {
-    @throw [TProtocolException exceptionWithName: @"TProtocolException"
-                               reason: @"Required field 'framerate' is not set."];
-  }
-}
-
-- (NSString *) description {
-  NSMutableString * ms = [NSMutableString stringWithString: @"VideoPhotoData("];
-  [ms appendString: @"first_frame_desc:"];
-  [ms appendFormat: @"%@", __first_frame_desc];
-  [ms appendString: @",video_desc:"];
-  [ms appendFormat: @"%@", __video_desc];
-  [ms appendString: @",time_between_frames_ms:"];
-  [ms appendFormat: @"%i", __time_between_frames_ms];
-  [ms appendString: @",framerate:"];
-  [ms appendFormat: @"%i", __framerate];
-  [ms appendString: @")"];
-  return [NSString stringWithString: ms];
-}
-
-@end
-
-@implementation TileData
-
-- (id) init
-{
-  self = [super init];
-#if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
-#endif
-  return self;
-}
-
-- (id) initWithWidth: (int32_t) width height: (int32_t) height uri_path: (NSString *) uri_path
-{
-  self = [super init];
-  __width = width;
-  __width_isset = YES;
-  __height = height;
-  __height_isset = YES;
-  __uri_path = [uri_path retain_stub];
-  __uri_path_isset = YES;
-  return self;
-}
-
-- (id) initWithCoder: (NSCoder *) decoder
-{
-  self = [super init];
-  if ([decoder containsValueForKey: @"width"])
-  {
-    __width = [decoder decodeInt32ForKey: @"width"];
-    __width_isset = YES;
-  }
-  if ([decoder containsValueForKey: @"height"])
-  {
-    __height = [decoder decodeInt32ForKey: @"height"];
-    __height_isset = YES;
-  }
-  if ([decoder containsValueForKey: @"uri_path"])
-  {
-    __uri_path = [[decoder decodeObjectForKey: @"uri_path"] retain_stub];
-    __uri_path_isset = YES;
-  }
-  return self;
-}
-
-- (void) encodeWithCoder: (NSCoder *) encoder
-{
-  if (__width_isset)
-  {
-    [encoder encodeInt32: __width forKey: @"width"];
-  }
-  if (__height_isset)
-  {
-    [encoder encodeInt32: __height forKey: @"height"];
-  }
-  if (__uri_path_isset)
-  {
-    [encoder encodeObject: __uri_path forKey: @"uri_path"];
-  }
-}
-
-- (void) dealloc
-{
-  [__uri_path release_stub];
-  [super dealloc_stub];
-}
-
-- (int32_t) width {
-  return __width;
-}
-
-- (void) setWidth: (int32_t) width {
-  __width = width;
-  __width_isset = YES;
-}
-
-- (BOOL) widthIsSet {
-  return __width_isset;
-}
-
-- (void) unsetWidth {
-  __width_isset = NO;
-}
-
-- (int32_t) height {
-  return __height;
-}
-
-- (void) setHeight: (int32_t) height {
-  __height = height;
-  __height_isset = YES;
-}
-
-- (BOOL) heightIsSet {
-  return __height_isset;
-}
-
-- (void) unsetHeight {
-  __height_isset = NO;
-}
-
-- (NSString *) uri_path {
-  return [[__uri_path retain_stub] autorelease_stub];
-}
-
-- (void) setUri_path: (NSString *) uri_path {
-  [uri_path retain_stub];
-  [__uri_path release_stub];
-  __uri_path = uri_path;
-  __uri_path_isset = YES;
-}
-
-- (BOOL) uri_pathIsSet {
-  return __uri_path_isset;
-}
-
-- (void) unsetUri_path {
-  [__uri_path release_stub];
-  __uri_path = nil;
-  __uri_path_isset = NO;
-}
-
-- (void) read: (id <TProtocol>) inProtocol
-{
-  NSString * fieldName;
-  int fieldType;
-  int fieldID;
-
-  [inProtocol readStructBeginReturningName: NULL];
-  while (true)
-  {
-    [inProtocol readFieldBeginReturningName: &fieldName type: &fieldType fieldID: &fieldID];
-    if (fieldType == TType_STOP) { 
-      break;
-    }
-    switch (fieldID)
-    {
-      case 1:
-        if (fieldType == TType_I32) {
-          int32_t fieldValue = [inProtocol readI32];
-          [self setWidth: fieldValue];
-        } else { 
-          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
-        }
-        break;
-      case 2:
-        if (fieldType == TType_I32) {
-          int32_t fieldValue = [inProtocol readI32];
-          [self setHeight: fieldValue];
+        if (fieldType == TType_STRING) {
+          NSString * fieldValue = [inProtocol readString];
+          [self setPage_uri: fieldValue];
         } else { 
           [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
         }
@@ -2167,7 +2124,27 @@
       case 3:
         if (fieldType == TType_STRING) {
           NSString * fieldValue = [inProtocol readString];
-          [self setUri_path: fieldValue];
+          [self setTitle: fieldValue];
+        } else { 
+          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
+        }
+        break;
+      case 4:
+        if (fieldType == TType_LIST) {
+          int _size10;
+          [inProtocol readListBeginReturningElementType: NULL size: &_size10];
+          NSMutableArray * fieldValue = [[NSMutableArray alloc] initWithCapacity: _size10];
+          int _i11;
+          for (_i11 = 0; _i11 < _size10; ++_i11)
+          {
+            PhotoDescription *_elem12 = [[PhotoDescription alloc] init];
+            [_elem12 read: inProtocol];
+            [fieldValue addObject: _elem12];
+            [_elem12 release_stub];
+          }
+          [inProtocol readListEnd];
+          [self setPhoto_descriptions: fieldValue];
+          [fieldValue release_stub];
         } else { 
           [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
         }
@@ -2182,21 +2159,38 @@
 }
 
 - (void) write: (id <TProtocol>) outProtocol {
-  [outProtocol writeStructBeginWithName: @"TileData"];
-  if (__width_isset) {
-    [outProtocol writeFieldBeginWithName: @"width" type: TType_I32 fieldID: 1];
-    [outProtocol writeI32: __width];
+  [outProtocol writeStructBeginWithName: @"Artifact"];
+  if (__id_isset) {
+    [outProtocol writeFieldBeginWithName: @"id" type: TType_I64 fieldID: 1];
+    [outProtocol writeI64: __id];
     [outProtocol writeFieldEnd];
   }
-  if (__height_isset) {
-    [outProtocol writeFieldBeginWithName: @"height" type: TType_I32 fieldID: 2];
-    [outProtocol writeI32: __height];
-    [outProtocol writeFieldEnd];
+  if (__page_uri_isset) {
+    if (__page_uri != nil) {
+      [outProtocol writeFieldBeginWithName: @"page_uri" type: TType_STRING fieldID: 2];
+      [outProtocol writeString: __page_uri];
+      [outProtocol writeFieldEnd];
+    }
   }
-  if (__uri_path_isset) {
-    if (__uri_path != nil) {
-      [outProtocol writeFieldBeginWithName: @"uri_path" type: TType_STRING fieldID: 3];
-      [outProtocol writeString: __uri_path];
+  if (__title_isset) {
+    if (__title != nil) {
+      [outProtocol writeFieldBeginWithName: @"title" type: TType_STRING fieldID: 3];
+      [outProtocol writeString: __title];
+      [outProtocol writeFieldEnd];
+    }
+  }
+  if (__photo_descriptions_isset) {
+    if (__photo_descriptions != nil) {
+      [outProtocol writeFieldBeginWithName: @"photo_descriptions" type: TType_LIST fieldID: 4];
+      {
+        [outProtocol writeListBeginWithElementType: TType_STRUCT size: [__photo_descriptions count]];
+        int idx14;
+        for (idx14 = 0; idx14 < [__photo_descriptions count]; idx14++)
+        {
+          [[__photo_descriptions objectAtIndex: idx14] write: outProtocol];
+        }
+        [outProtocol writeListEnd];
+      }
       [outProtocol writeFieldEnd];
     }
   }
@@ -2206,28 +2200,34 @@
 
 - (void) validate {
   // check for required fields
-  if (!__width_isset) {
+  if (!__id_isset) {
     @throw [TProtocolException exceptionWithName: @"TProtocolException"
-                               reason: @"Required field 'width' is not set."];
+                               reason: @"Required field 'id' is not set."];
   }
-  if (!__height_isset) {
+  if (!__page_uri_isset) {
     @throw [TProtocolException exceptionWithName: @"TProtocolException"
-                               reason: @"Required field 'height' is not set."];
+                               reason: @"Required field 'page_uri' is not set."];
   }
-  if (!__uri_path_isset) {
+  if (!__title_isset) {
     @throw [TProtocolException exceptionWithName: @"TProtocolException"
-                               reason: @"Required field 'uri_path' is not set."];
+                               reason: @"Required field 'title' is not set."];
+  }
+  if (!__photo_descriptions_isset) {
+    @throw [TProtocolException exceptionWithName: @"TProtocolException"
+                               reason: @"Required field 'photo_descriptions' is not set."];
   }
 }
 
 - (NSString *) description {
-  NSMutableString * ms = [NSMutableString stringWithString: @"TileData("];
-  [ms appendString: @"width:"];
-  [ms appendFormat: @"%i", __width];
-  [ms appendString: @",height:"];
-  [ms appendFormat: @"%i", __height];
-  [ms appendString: @",uri_path:"];
-  [ms appendFormat: @"\"%@\"", __uri_path];
+  NSMutableString * ms = [NSMutableString stringWithString: @"Artifact("];
+  [ms appendString: @"id:"];
+  [ms appendFormat: @"%qi", __id];
+  [ms appendString: @",page_uri:"];
+  [ms appendFormat: @"\"%@\"", __page_uri];
+  [ms appendString: @",title:"];
+  [ms appendFormat: @"\"%@\"", __title];
+  [ms appendString: @",photo_descriptions:"];
+  [ms appendFormat: @"%@", __photo_descriptions];
   [ms appendString: @")"];
   return [NSString stringWithString: ms];
 }

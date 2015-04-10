@@ -358,28 +358,25 @@ class ScreenConfig:
   def __ne__(self, other):
     return not (self == other)
 
-class Artifact:
+class TileData:
   """
   Attributes:
-   - id
-   - page_uri
-   - title
-   - photo_descriptions
+   - width
+   - height
+   - uri_path
   """
 
   thrift_spec = (
     None, # 0
-    (1, TType.I64, 'id', None, None, ), # 1
-    (2, TType.STRING, 'page_uri', None, None, ), # 2
-    (3, TType.STRING, 'title', None, None, ), # 3
-    (4, TType.LIST, 'photo_descriptions', (TType.STRUCT,(PhotoDescription, PhotoDescription.thrift_spec)), None, ), # 4
+    (1, TType.I32, 'width', None, None, ), # 1
+    (2, TType.I32, 'height', None, None, ), # 2
+    (3, TType.STRING, 'uri_path', None, None, ), # 3
   )
 
-  def __init__(self, id=None, page_uri=None, title=None, photo_descriptions=None,):
-    self.id = id
-    self.page_uri = page_uri
-    self.title = title
-    self.photo_descriptions = photo_descriptions
+  def __init__(self, width=None, height=None, uri_path=None,):
+    self.width = width
+    self.height = height
+    self.uri_path = uri_path
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -391,29 +388,18 @@ class Artifact:
       if ftype == TType.STOP:
         break
       if fid == 1:
-        if ftype == TType.I64:
-          self.id = iprot.readI64();
+        if ftype == TType.I32:
+          self.width = iprot.readI32();
         else:
           iprot.skip(ftype)
       elif fid == 2:
-        if ftype == TType.STRING:
-          self.page_uri = iprot.readString();
+        if ftype == TType.I32:
+          self.height = iprot.readI32();
         else:
           iprot.skip(ftype)
       elif fid == 3:
         if ftype == TType.STRING:
-          self.title = iprot.readString();
-        else:
-          iprot.skip(ftype)
-      elif fid == 4:
-        if ftype == TType.LIST:
-          self.photo_descriptions = []
-          (_etype10, _size7) = iprot.readListBegin()
-          for _i11 in xrange(_size7):
-            _elem12 = PhotoDescription()
-            _elem12.read(iprot)
-            self.photo_descriptions.append(_elem12)
-          iprot.readListEnd()
+          self.uri_path = iprot.readString();
         else:
           iprot.skip(ftype)
       else:
@@ -425,183 +411,37 @@ class Artifact:
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
-    oprot.writeStructBegin('Artifact')
-    if self.id is not None:
-      oprot.writeFieldBegin('id', TType.I64, 1)
-      oprot.writeI64(self.id)
+    oprot.writeStructBegin('TileData')
+    if self.width is not None:
+      oprot.writeFieldBegin('width', TType.I32, 1)
+      oprot.writeI32(self.width)
       oprot.writeFieldEnd()
-    if self.page_uri is not None:
-      oprot.writeFieldBegin('page_uri', TType.STRING, 2)
-      oprot.writeString(self.page_uri)
+    if self.height is not None:
+      oprot.writeFieldBegin('height', TType.I32, 2)
+      oprot.writeI32(self.height)
       oprot.writeFieldEnd()
-    if self.title is not None:
-      oprot.writeFieldBegin('title', TType.STRING, 3)
-      oprot.writeString(self.title)
-      oprot.writeFieldEnd()
-    if self.photo_descriptions is not None:
-      oprot.writeFieldBegin('photo_descriptions', TType.LIST, 4)
-      oprot.writeListBegin(TType.STRUCT, len(self.photo_descriptions))
-      for iter13 in self.photo_descriptions:
-        iter13.write(oprot)
-      oprot.writeListEnd()
+    if self.uri_path is not None:
+      oprot.writeFieldBegin('uri_path', TType.STRING, 3)
+      oprot.writeString(self.uri_path)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
   def validate(self):
-    if self.id is None:
-      raise TProtocol.TProtocolException(message='Required field id is unset!')
-    if self.page_uri is None:
-      raise TProtocol.TProtocolException(message='Required field page_uri is unset!')
-    if self.title is None:
-      raise TProtocol.TProtocolException(message='Required field title is unset!')
-    if self.photo_descriptions is None:
-      raise TProtocol.TProtocolException(message='Required field photo_descriptions is unset!')
+    if self.width is None:
+      raise TProtocol.TProtocolException(message='Required field width is unset!')
+    if self.height is None:
+      raise TProtocol.TProtocolException(message='Required field height is unset!')
+    if self.uri_path is None:
+      raise TProtocol.TProtocolException(message='Required field uri_path is unset!')
     return
 
 
   def __hash__(self):
     value = 17
-    value = (value * 31) ^ hash(self.id)
-    value = (value * 31) ^ hash(self.page_uri)
-    value = (value * 31) ^ hash(self.title)
-    value = (value * 31) ^ hash(self.photo_descriptions)
-    return value
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class PhotoDescription:
-  """
-  Attributes:
-   - subtitle
-   - description
-   - source_uri
-   - original_uri_path
-   - image_data
-   - video_data
-  """
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'subtitle', None, None, ), # 1
-    (2, TType.STRING, 'description', None, None, ), # 2
-    (3, TType.STRING, 'source_uri', None, None, ), # 3
-    (4, TType.STRING, 'original_uri_path', None, None, ), # 4
-    (5, TType.STRUCT, 'image_data', (ImagePhotoData, ImagePhotoData.thrift_spec), None, ), # 5
-    (6, TType.STRUCT, 'video_data', (VideoPhotoData, VideoPhotoData.thrift_spec), None, ), # 6
-  )
-
-  def __init__(self, subtitle=None, description=None, source_uri=None, original_uri_path=None, image_data=None, video_data=None,):
-    self.subtitle = subtitle
-    self.description = description
-    self.source_uri = source_uri
-    self.original_uri_path = original_uri_path
-    self.image_data = image_data
-    self.video_data = video_data
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 1:
-        if ftype == TType.STRING:
-          self.subtitle = iprot.readString();
-        else:
-          iprot.skip(ftype)
-      elif fid == 2:
-        if ftype == TType.STRING:
-          self.description = iprot.readString();
-        else:
-          iprot.skip(ftype)
-      elif fid == 3:
-        if ftype == TType.STRING:
-          self.source_uri = iprot.readString();
-        else:
-          iprot.skip(ftype)
-      elif fid == 4:
-        if ftype == TType.STRING:
-          self.original_uri_path = iprot.readString();
-        else:
-          iprot.skip(ftype)
-      elif fid == 5:
-        if ftype == TType.STRUCT:
-          self.image_data = ImagePhotoData()
-          self.image_data.read(iprot)
-        else:
-          iprot.skip(ftype)
-      elif fid == 6:
-        if ftype == TType.STRUCT:
-          self.video_data = VideoPhotoData()
-          self.video_data.read(iprot)
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('PhotoDescription')
-    if self.subtitle is not None:
-      oprot.writeFieldBegin('subtitle', TType.STRING, 1)
-      oprot.writeString(self.subtitle)
-      oprot.writeFieldEnd()
-    if self.description is not None:
-      oprot.writeFieldBegin('description', TType.STRING, 2)
-      oprot.writeString(self.description)
-      oprot.writeFieldEnd()
-    if self.source_uri is not None:
-      oprot.writeFieldBegin('source_uri', TType.STRING, 3)
-      oprot.writeString(self.source_uri)
-      oprot.writeFieldEnd()
-    if self.original_uri_path is not None:
-      oprot.writeFieldBegin('original_uri_path', TType.STRING, 4)
-      oprot.writeString(self.original_uri_path)
-      oprot.writeFieldEnd()
-    if self.image_data is not None:
-      oprot.writeFieldBegin('image_data', TType.STRUCT, 5)
-      self.image_data.write(oprot)
-      oprot.writeFieldEnd()
-    if self.video_data is not None:
-      oprot.writeFieldBegin('video_data', TType.STRUCT, 6)
-      self.video_data.write(oprot)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    if self.source_uri is None:
-      raise TProtocol.TProtocolException(message='Required field source_uri is unset!')
-    if self.original_uri_path is None:
-      raise TProtocol.TProtocolException(message='Required field original_uri_path is unset!')
-    return
-
-
-  def __hash__(self):
-    value = 17
-    value = (value * 31) ^ hash(self.subtitle)
-    value = (value * 31) ^ hash(self.description)
-    value = (value * 31) ^ hash(self.source_uri)
-    value = (value * 31) ^ hash(self.original_uri_path)
-    value = (value * 31) ^ hash(self.image_data)
-    value = (value * 31) ^ hash(self.video_data)
+    value = (value * 31) ^ hash(self.width)
+    value = (value * 31) ^ hash(self.height)
+    value = (value * 31) ^ hash(self.uri_path)
     return value
 
   def __repr__(self):
@@ -653,11 +493,11 @@ class ImagePhotoData:
       elif fid == 2:
         if ftype == TType.LIST:
           self.tiles_desc = []
-          (_etype17, _size14) = iprot.readListBegin()
-          for _i18 in xrange(_size14):
-            _elem19 = TileData()
-            _elem19.read(iprot)
-            self.tiles_desc.append(_elem19)
+          (_etype10, _size7) = iprot.readListBegin()
+          for _i11 in xrange(_size7):
+            _elem12 = TileData()
+            _elem12.read(iprot)
+            self.tiles_desc.append(_elem12)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -683,8 +523,8 @@ class ImagePhotoData:
     if self.tiles_desc is not None:
       oprot.writeFieldBegin('tiles_desc', TType.LIST, 2)
       oprot.writeListBegin(TType.STRUCT, len(self.tiles_desc))
-      for iter20 in self.tiles_desc:
-        iter20.write(oprot)
+      for iter13 in self.tiles_desc:
+        iter13.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.screen_config_fk is not None:
@@ -836,25 +676,34 @@ class VideoPhotoData:
   def __ne__(self, other):
     return not (self == other)
 
-class TileData:
+class PhotoDescription:
   """
   Attributes:
-   - width
-   - height
-   - uri_path
+   - subtitle
+   - description
+   - source_uri
+   - original_uri_path
+   - image_data
+   - video_data
   """
 
   thrift_spec = (
     None, # 0
-    (1, TType.I32, 'width', None, None, ), # 1
-    (2, TType.I32, 'height', None, None, ), # 2
-    (3, TType.STRING, 'uri_path', None, None, ), # 3
+    (1, TType.STRING, 'subtitle', None, None, ), # 1
+    (2, TType.STRING, 'description', None, None, ), # 2
+    (3, TType.STRING, 'source_uri', None, None, ), # 3
+    (4, TType.STRING, 'original_uri_path', None, None, ), # 4
+    (5, TType.STRUCT, 'image_data', (ImagePhotoData, ImagePhotoData.thrift_spec), None, ), # 5
+    (6, TType.STRUCT, 'video_data', (VideoPhotoData, VideoPhotoData.thrift_spec), None, ), # 6
   )
 
-  def __init__(self, width=None, height=None, uri_path=None,):
-    self.width = width
-    self.height = height
-    self.uri_path = uri_path
+  def __init__(self, subtitle=None, description=None, source_uri=None, original_uri_path=None, image_data=None, video_data=None,):
+    self.subtitle = subtitle
+    self.description = description
+    self.source_uri = source_uri
+    self.original_uri_path = original_uri_path
+    self.image_data = image_data
+    self.video_data = video_data
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -866,18 +715,35 @@ class TileData:
       if ftype == TType.STOP:
         break
       if fid == 1:
-        if ftype == TType.I32:
-          self.width = iprot.readI32();
+        if ftype == TType.STRING:
+          self.subtitle = iprot.readString();
         else:
           iprot.skip(ftype)
       elif fid == 2:
-        if ftype == TType.I32:
-          self.height = iprot.readI32();
+        if ftype == TType.STRING:
+          self.description = iprot.readString();
         else:
           iprot.skip(ftype)
       elif fid == 3:
         if ftype == TType.STRING:
-          self.uri_path = iprot.readString();
+          self.source_uri = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.STRING:
+          self.original_uri_path = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 5:
+        if ftype == TType.STRUCT:
+          self.image_data = ImagePhotoData()
+          self.image_data.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 6:
+        if ftype == TType.STRUCT:
+          self.video_data = VideoPhotoData()
+          self.video_data.read(iprot)
         else:
           iprot.skip(ftype)
       else:
@@ -889,37 +755,171 @@ class TileData:
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
-    oprot.writeStructBegin('TileData')
-    if self.width is not None:
-      oprot.writeFieldBegin('width', TType.I32, 1)
-      oprot.writeI32(self.width)
+    oprot.writeStructBegin('PhotoDescription')
+    if self.subtitle is not None:
+      oprot.writeFieldBegin('subtitle', TType.STRING, 1)
+      oprot.writeString(self.subtitle)
       oprot.writeFieldEnd()
-    if self.height is not None:
-      oprot.writeFieldBegin('height', TType.I32, 2)
-      oprot.writeI32(self.height)
+    if self.description is not None:
+      oprot.writeFieldBegin('description', TType.STRING, 2)
+      oprot.writeString(self.description)
       oprot.writeFieldEnd()
-    if self.uri_path is not None:
-      oprot.writeFieldBegin('uri_path', TType.STRING, 3)
-      oprot.writeString(self.uri_path)
+    if self.source_uri is not None:
+      oprot.writeFieldBegin('source_uri', TType.STRING, 3)
+      oprot.writeString(self.source_uri)
+      oprot.writeFieldEnd()
+    if self.original_uri_path is not None:
+      oprot.writeFieldBegin('original_uri_path', TType.STRING, 4)
+      oprot.writeString(self.original_uri_path)
+      oprot.writeFieldEnd()
+    if self.image_data is not None:
+      oprot.writeFieldBegin('image_data', TType.STRUCT, 5)
+      self.image_data.write(oprot)
+      oprot.writeFieldEnd()
+    if self.video_data is not None:
+      oprot.writeFieldBegin('video_data', TType.STRUCT, 6)
+      self.video_data.write(oprot)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
   def validate(self):
-    if self.width is None:
-      raise TProtocol.TProtocolException(message='Required field width is unset!')
-    if self.height is None:
-      raise TProtocol.TProtocolException(message='Required field height is unset!')
-    if self.uri_path is None:
-      raise TProtocol.TProtocolException(message='Required field uri_path is unset!')
+    if self.source_uri is None:
+      raise TProtocol.TProtocolException(message='Required field source_uri is unset!')
+    if self.original_uri_path is None:
+      raise TProtocol.TProtocolException(message='Required field original_uri_path is unset!')
     return
 
 
   def __hash__(self):
     value = 17
-    value = (value * 31) ^ hash(self.width)
-    value = (value * 31) ^ hash(self.height)
-    value = (value * 31) ^ hash(self.uri_path)
+    value = (value * 31) ^ hash(self.subtitle)
+    value = (value * 31) ^ hash(self.description)
+    value = (value * 31) ^ hash(self.source_uri)
+    value = (value * 31) ^ hash(self.original_uri_path)
+    value = (value * 31) ^ hash(self.image_data)
+    value = (value * 31) ^ hash(self.video_data)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class Artifact:
+  """
+  Attributes:
+   - id
+   - page_uri
+   - title
+   - photo_descriptions
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I64, 'id', None, None, ), # 1
+    (2, TType.STRING, 'page_uri', None, None, ), # 2
+    (3, TType.STRING, 'title', None, None, ), # 3
+    (4, TType.LIST, 'photo_descriptions', (TType.STRUCT,(PhotoDescription, PhotoDescription.thrift_spec)), None, ), # 4
+  )
+
+  def __init__(self, id=None, page_uri=None, title=None, photo_descriptions=None,):
+    self.id = id
+    self.page_uri = page_uri
+    self.title = title
+    self.photo_descriptions = photo_descriptions
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.I64:
+          self.id = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRING:
+          self.page_uri = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.STRING:
+          self.title = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.LIST:
+          self.photo_descriptions = []
+          (_etype17, _size14) = iprot.readListBegin()
+          for _i18 in xrange(_size14):
+            _elem19 = PhotoDescription()
+            _elem19.read(iprot)
+            self.photo_descriptions.append(_elem19)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('Artifact')
+    if self.id is not None:
+      oprot.writeFieldBegin('id', TType.I64, 1)
+      oprot.writeI64(self.id)
+      oprot.writeFieldEnd()
+    if self.page_uri is not None:
+      oprot.writeFieldBegin('page_uri', TType.STRING, 2)
+      oprot.writeString(self.page_uri)
+      oprot.writeFieldEnd()
+    if self.title is not None:
+      oprot.writeFieldBegin('title', TType.STRING, 3)
+      oprot.writeString(self.title)
+      oprot.writeFieldEnd()
+    if self.photo_descriptions is not None:
+      oprot.writeFieldBegin('photo_descriptions', TType.LIST, 4)
+      oprot.writeListBegin(TType.STRUCT, len(self.photo_descriptions))
+      for iter20 in self.photo_descriptions:
+        iter20.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    if self.id is None:
+      raise TProtocol.TProtocolException(message='Required field id is unset!')
+    if self.page_uri is None:
+      raise TProtocol.TProtocolException(message='Required field page_uri is unset!')
+    if self.title is None:
+      raise TProtocol.TProtocolException(message='Required field title is unset!')
+    if self.photo_descriptions is None:
+      raise TProtocol.TProtocolException(message='Required field photo_descriptions is unset!')
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.id)
+    value = (value * 31) ^ hash(self.page_uri)
+    value = (value * 31) ^ hash(self.title)
+    value = (value * 31) ^ hash(self.photo_descriptions)
     return value
 
   def __repr__(self):

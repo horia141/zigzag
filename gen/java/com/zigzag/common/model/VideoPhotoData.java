@@ -129,9 +129,9 @@ public class VideoPhotoData implements org.apache.thrift.TBase<VideoPhotoData, V
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
     tmpMap.put(_Fields.FIRST_FRAME_DESC, new org.apache.thrift.meta_data.FieldMetaData("first_frame_desc", org.apache.thrift.TFieldRequirementType.REQUIRED, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT        , "TileData")));
+        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TileData.class)));
     tmpMap.put(_Fields.VIDEO_DESC, new org.apache.thrift.meta_data.FieldMetaData("video_desc", org.apache.thrift.TFieldRequirementType.REQUIRED, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT        , "TileData")));
+        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TileData.class)));
     tmpMap.put(_Fields.TIME_BETWEEN_FRAMES_MS, new org.apache.thrift.meta_data.FieldMetaData("time_between_frames_ms", org.apache.thrift.TFieldRequirementType.REQUIRED, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.FRAMERATE, new org.apache.thrift.meta_data.FieldMetaData("framerate", org.apache.thrift.TFieldRequirementType.REQUIRED, 
@@ -164,10 +164,10 @@ public class VideoPhotoData implements org.apache.thrift.TBase<VideoPhotoData, V
   public VideoPhotoData(VideoPhotoData other) {
     __isset_bitfield = other.__isset_bitfield;
     if (other.isSetFirst_frame_desc()) {
-      this.first_frame_desc = other.first_frame_desc;
+      this.first_frame_desc = new TileData(other.first_frame_desc);
     }
     if (other.isSetVideo_desc()) {
-      this.video_desc = other.video_desc;
+      this.video_desc = new TileData(other.video_desc);
     }
     this.time_between_frames_ms = other.time_between_frames_ms;
     this.framerate = other.framerate;
@@ -540,6 +540,12 @@ public class VideoPhotoData implements org.apache.thrift.TBase<VideoPhotoData, V
     // alas, we cannot check 'time_between_frames_ms' because it's a primitive and you chose the non-beans generator.
     // alas, we cannot check 'framerate' because it's a primitive and you chose the non-beans generator.
     // check for sub-struct validity
+    if (first_frame_desc != null) {
+      first_frame_desc.validate();
+    }
+    if (video_desc != null) {
+      video_desc.validate();
+    }
   }
 
   private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {

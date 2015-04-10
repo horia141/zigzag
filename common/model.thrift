@@ -31,24 +31,12 @@ struct ScreenConfig {
   3: required i32 width;
 }
 
-// Next id: 5
-struct Artifact {
-  1: required i64 id;
-  2: required string page_uri;
-  3: required string title;
-  4: required list<PhotoDescription> photo_descriptions;
+// Next id: 4
+struct TileData {
+  1: required i32 width;
+  2: required i32 height;
+  3: required string uri_path;
 }
-
-// Next id: 7
-struct PhotoDescription {
-  1: optional string subtitle;
-  2: optional string description;
-  3: required string source_uri;
-  4: required string original_uri_path;
-  5: optional ImagePhotoData image_data;
-  6: optional VideoPhotoData video_data;
-}
-
 // Next id: 4
 struct ImagePhotoData {
   1: required TileData full_image_desc;
@@ -64,9 +52,20 @@ struct VideoPhotoData {
   4: required i32 framerate;
 }
 
-// Next id: 4
-struct TileData {
-  1: required i32 width;
-  2: required i32 height;
-  3: required string uri_path;
+// Next id: 7
+struct PhotoDescription {
+  1: optional string subtitle;
+  2: optional string description;
+  3: required string source_uri;
+  4: required string original_uri_path;
+  5: optional ImagePhotoData image_data;
+  6: optional VideoPhotoData video_data;
+}
+
+// Next id: 5
+struct Artifact {
+  1: required i64 id;
+  2: required string page_uri;
+  3: required string title;
+  4: required list<PhotoDescription> photo_descriptions;
 }

@@ -145,9 +145,9 @@ public class PhotoDescription implements org.apache.thrift.TBase<PhotoDescriptio
     tmpMap.put(_Fields.ORIGINAL_URI_PATH, new org.apache.thrift.meta_data.FieldMetaData("original_uri_path", org.apache.thrift.TFieldRequirementType.REQUIRED, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.IMAGE_DATA, new org.apache.thrift.meta_data.FieldMetaData("image_data", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT        , "ImagePhotoData")));
+        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, ImagePhotoData.class)));
     tmpMap.put(_Fields.VIDEO_DATA, new org.apache.thrift.meta_data.FieldMetaData("video_data", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT        , "VideoPhotoData")));
+        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, VideoPhotoData.class)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(PhotoDescription.class, metaDataMap);
   }
@@ -181,10 +181,10 @@ public class PhotoDescription implements org.apache.thrift.TBase<PhotoDescriptio
       this.original_uri_path = other.original_uri_path;
     }
     if (other.isSetImage_data()) {
-      this.image_data = other.image_data;
+      this.image_data = new ImagePhotoData(other.image_data);
     }
     if (other.isSetVideo_data()) {
-      this.video_data = other.video_data;
+      this.video_data = new VideoPhotoData(other.video_data);
     }
   }
 
@@ -709,6 +709,12 @@ public class PhotoDescription implements org.apache.thrift.TBase<PhotoDescriptio
       throw new org.apache.thrift.protocol.TProtocolException("Required field 'original_uri_path' was not present! Struct: " + toString());
     }
     // check for sub-struct validity
+    if (image_data != null) {
+      image_data.validate();
+    }
+    if (video_data != null) {
+      video_data.validate();
+    }
   }
 
   private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {

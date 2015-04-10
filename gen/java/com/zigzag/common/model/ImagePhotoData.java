@@ -123,10 +123,10 @@ public class ImagePhotoData implements org.apache.thrift.TBase<ImagePhotoData, I
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
     tmpMap.put(_Fields.FULL_IMAGE_DESC, new org.apache.thrift.meta_data.FieldMetaData("full_image_desc", org.apache.thrift.TFieldRequirementType.REQUIRED, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT        , "TileData")));
+        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TileData.class)));
     tmpMap.put(_Fields.TILES_DESC, new org.apache.thrift.meta_data.FieldMetaData("tiles_desc", org.apache.thrift.TFieldRequirementType.REQUIRED, 
         new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
-            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT            , "TileData"))));
+            new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TileData.class))));
     tmpMap.put(_Fields.SCREEN_CONFIG_FK, new org.apache.thrift.meta_data.FieldMetaData("screen_config_fk", org.apache.thrift.TFieldRequirementType.REQUIRED, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
@@ -154,12 +154,12 @@ public class ImagePhotoData implements org.apache.thrift.TBase<ImagePhotoData, I
   public ImagePhotoData(ImagePhotoData other) {
     __isset_bitfield = other.__isset_bitfield;
     if (other.isSetFull_image_desc()) {
-      this.full_image_desc = other.full_image_desc;
+      this.full_image_desc = new TileData(other.full_image_desc);
     }
     if (other.isSetTiles_desc()) {
       List<TileData> __this__tiles_desc = new ArrayList<TileData>(other.tiles_desc.size());
       for (TileData other_element : other.tiles_desc) {
-        __this__tiles_desc.add(other_element);
+        __this__tiles_desc.add(new TileData(other_element));
       }
       this.tiles_desc = __this__tiles_desc;
     }
@@ -481,6 +481,9 @@ public class ImagePhotoData implements org.apache.thrift.TBase<ImagePhotoData, I
     }
     // alas, we cannot check 'screen_config_fk' because it's a primitive and you chose the non-beans generator.
     // check for sub-struct validity
+    if (full_image_desc != null) {
+      full_image_desc.validate();
+    }
   }
 
   private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
@@ -531,14 +534,14 @@ public class ImagePhotoData implements org.apache.thrift.TBase<ImagePhotoData, I
           case 2: // TILES_DESC
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list16 = iprot.readListBegin();
-                struct.tiles_desc = new ArrayList<TileData>(_list16.size);
-                TileData _elem17;
-                for (int _i18 = 0; _i18 < _list16.size; ++_i18)
+                org.apache.thrift.protocol.TList _list8 = iprot.readListBegin();
+                struct.tiles_desc = new ArrayList<TileData>(_list8.size);
+                TileData _elem9;
+                for (int _i10 = 0; _i10 < _list8.size; ++_i10)
                 {
-                  _elem17 = new TileData();
-                  _elem17.read(iprot);
-                  struct.tiles_desc.add(_elem17);
+                  _elem9 = new TileData();
+                  _elem9.read(iprot);
+                  struct.tiles_desc.add(_elem9);
                 }
                 iprot.readListEnd();
               }
@@ -582,9 +585,9 @@ public class ImagePhotoData implements org.apache.thrift.TBase<ImagePhotoData, I
         oprot.writeFieldBegin(TILES_DESC_FIELD_DESC);
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.tiles_desc.size()));
-          for (TileData _iter19 : struct.tiles_desc)
+          for (TileData _iter11 : struct.tiles_desc)
           {
-            _iter19.write(oprot);
+            _iter11.write(oprot);
           }
           oprot.writeListEnd();
         }
@@ -613,9 +616,9 @@ public class ImagePhotoData implements org.apache.thrift.TBase<ImagePhotoData, I
       struct.full_image_desc.write(oprot);
       {
         oprot.writeI32(struct.tiles_desc.size());
-        for (TileData _iter20 : struct.tiles_desc)
+        for (TileData _iter12 : struct.tiles_desc)
         {
-          _iter20.write(oprot);
+          _iter12.write(oprot);
         }
       }
       oprot.writeI64(struct.screen_config_fk);
@@ -628,14 +631,14 @@ public class ImagePhotoData implements org.apache.thrift.TBase<ImagePhotoData, I
       struct.full_image_desc.read(iprot);
       struct.setFull_image_descIsSet(true);
       {
-        org.apache.thrift.protocol.TList _list21 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-        struct.tiles_desc = new ArrayList<TileData>(_list21.size);
-        TileData _elem22;
-        for (int _i23 = 0; _i23 < _list21.size; ++_i23)
+        org.apache.thrift.protocol.TList _list13 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+        struct.tiles_desc = new ArrayList<TileData>(_list13.size);
+        TileData _elem14;
+        for (int _i15 = 0; _i15 < _list13.size; ++_i15)
         {
-          _elem22 = new TileData();
-          _elem22.read(iprot);
-          struct.tiles_desc.add(_elem22);
+          _elem14 = new TileData();
+          _elem14.read(iprot);
+          struct.tiles_desc.add(_elem14);
         }
       }
       struct.setTiles_descIsSet(true);
