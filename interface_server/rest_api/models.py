@@ -3,13 +3,63 @@ import json
 
 from django.db import models
 
-import common.defines as defines
-import common.flow_annotation as flow_annotation
+import common.defines.constants as defines
+import common.model.ttypes as model
 
 
 class Error(Exception):
     """Error raised by model objects."""
     pass
+
+
+def new_generation(date_started, date_ended=None):
+    assert isinstance(date_started, datetime.datetime)
+    assert isinstance(date_ended, (datetime.datetime, None))
+
+    generation = mode.Generation()
+    generation.status = model.GenerationStatus.IN_PROGRESS
+    generation.date_started_ts = date_started.millis()
+
+    return generation
+
+def save_generation(generation):
+    assert isinstance(generation, model.Generation)
+
+    try:
+        generation = Generation.objects.get(id=generation.id)
+    except Generation.DoesNotExist as e:
+        generation = Generation()
+
+    generation.status = 
+
+
+def latest_generation():
+    pass
+
+
+def next_generation():
+    pass
+
+
+def add_artifact_source():
+    pass
+
+
+def all_artifacts():
+    pass
+
+
+def add_artifact():
+    pass
+
+def get_artifact_by_page_url(artifact_page_url):
+    pass
+
+
+class Generation(models.Model):
+    status = models.IntegerField(default=model.GenerationStatus.IN_PROGRESS)
+    generation_ser = models.BinaryField()
+
 
 class Generation(models.Model):
     IN_PROGRESS = 1
@@ -85,12 +135,10 @@ class ArtifactSource(models.Model):
     time_added = models.DateTimeField()
 
     @staticmethod
-    @flow_annotation.crawl_artifact_sources
     def all():
         return ArtifactSource.objects.all().order_by('id')
 
     @staticmethod
-    @flow_annotation.populate_database
     def add(start_page_url, name, right_now):
         assert isinstance(start_page_url, basestring)
         assert isinstance(name, basestring)

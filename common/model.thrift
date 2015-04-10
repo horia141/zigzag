@@ -4,31 +4,28 @@ namespace py common.model
 namespace java com.zigzag.common.model
 
 enum GenerationStatus {
-    OPENED = 1,
+    IN_PROGRESS = 1,
     CLOSED = 2
 }
 
-// Next id: 5
+// Next id: 4
 struct Generation {
-  1: required i64 id;
-  2: required GenerationStatus status;
-  3: required i32 date_started_ts;
-  4: required i32 date_ended_ts;
-}
-
-// Next id: 5
-struct ArtifactSource {
-  1: required i64 id;
-  2: required string name;
-  3: required string start_page_uri;
-  4: optional set<string> subdomains;
+  1: required GenerationStatus status;
+  2: required i32 date_started_ts;
+  3: optional i32 date_ended_ts;
 }
 
 // Next id: 4
+struct ArtifactSource {
+  1: required string name;
+  2: required string start_page_uri;
+  3: optional set<string> subdomains;
+}
+
+// Next id: 3
 struct ScreenConfig {
-  1: required i64 id;
-  2: required string name;
-  3: required i32 width;
+  1: required string name;
+  2: required i32 width;
 }
 
 // Next id: 4
@@ -62,10 +59,26 @@ struct PhotoDescription {
   6: optional VideoPhotoData video_data;
 }
 
-// Next id: 5
+// Next id: 4
 struct Artifact {
-  1: required i64 id;
-  2: required string page_uri;
-  3: required string title;
-  4: required list<PhotoDescription> photo_descriptions;
+  1: required string page_uri;
+  2: required string title;
+  3: required list<PhotoDescription> photo_descriptions;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
