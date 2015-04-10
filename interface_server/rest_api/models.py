@@ -12,6 +12,9 @@ class Error(Exception):
     pass
 
 
+def
+
+
 def new_generation(date_started, date_ended=None):
     assert isinstance(date_started, datetime.datetime)
     assert isinstance(date_ended, (datetime.datetime, None))
