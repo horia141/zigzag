@@ -23,7 +23,7 @@ static NSString * common.definesTIME_FORMAT = @"%B %d, %Y %I:%M:%S %p %Z";
 static NSMutableSet * common.definesWEBPAGE_MIMETYPES;
 static NSMutableSet * common.definesPHOTO_MIMETYPES;
 static NSMutableDictionary * common.definesPHOTO_MIMETYPES_TO_EXTENSION;
-static NSMutableArray * common.definesARTIFACT_SOURCES;
+static NSMutableDictionary * common.definesARTIFACT_SOURCES;
 static int32_t common.definesAPI_SERVING_PORT = 9000;
 static NSString * common.definesAPI_SERVING_LOG_PATH = @"var/api_serving.log";
 static int32_t common.definesRES_SERVING_PORT = 9001;
@@ -65,23 +65,23 @@ static int32_t common.definesPHOTO_MAX_HEIGHT = 2048;
   [common.definesPHOTO_MIMETYPES_TO_EXTENSION setObject:@"mp4" forKey:@"video/mp4"];
 
 ;
-  common.definesARTIFACT_SOURCES = [[NSMutableArray alloc] initWithCapacity:2];
+  common.definesARTIFACT_SOURCES = [[NSMutableDictionary alloc] initWithCapacity:2]; 
   common.modelArtifactSource * tmp0 = [[[common.modelArtifactSource alloc] init] autorelease_stub];
   [tmp0 setId:1];
   [tmp0 setName:@"Reddit"];
-  [tmp0 setStart_page_uri:@"http://reddit.com"];
+  [tmp0 setStart_page_uri:@"http://reddit.com/r/%s"];
   NSMutableSet *tmp1 = [[[NSMutableSet alloc] initWithCapacity:1] autorelease_stub];
   [tmp1 addObject:@"pics"];
 
   [tmp0 setSubdomains:tmp1];
 
-  [common.definesARTIFACT_SOURCES addObject:tmp0];
+  [common.definesARTIFACT_SOURCES setObject:tmp0 forKey:@"Reddit"];
   common.modelArtifactSource * tmp2 = [[[common.modelArtifactSource alloc] init] autorelease_stub];
   [tmp2 setId:2];
   [tmp2 setName:@"Imgur"];
   [tmp2 setStart_page_uri:@"http://imgur.com"];
 
-  [common.definesARTIFACT_SOURCES addObject:tmp2];
+  [common.definesARTIFACT_SOURCES setObject:tmp2 forKey:@"Imgur"];
 
 ;
   common.definesVIDEO_SCREEN_CONFIG = [[NSMutableDictionary alloc] initWithCapacity:2]; 
@@ -127,7 +127,7 @@ static int32_t common.definesPHOTO_MAX_HEIGHT = 2048;
 + (NSMutableDictionary *) PHOTO_MIMETYPES_TO_EXTENSION{
   return common.definesPHOTO_MIMETYPES_TO_EXTENSION;
 }
-+ (NSMutableArray *) ARTIFACT_SOURCES{
++ (NSMutableDictionary *) ARTIFACT_SOURCES{
   return common.definesARTIFACT_SOURCES;
 }
 + (int32_t) API_SERVING_PORT{

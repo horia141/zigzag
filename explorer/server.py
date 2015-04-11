@@ -7,8 +7,7 @@ import comlink
 import comlink.serializer.pickle as serializer
 import comlink.transport.localipc as transport
 
-import common.defines as defines
-import common.flow_annotation as flow_annotation
+import common.defines.constants as defines
 import explorer.analyzers as analyzers
 import explorer.analyzers.reddit as reddit
 import explorer.analyzers.imgur as imgur
@@ -30,8 +29,8 @@ def main():
     logging.info('Building analyzers')
 
     all_analyzers = {
-        'Reddit': reddit.Analyzer(),
-        'Imgur': imgur.Analyzer(),
+        'Reddit': reddit.Analyzer(defines.ARTIFACT_SOURCES['Reddit']),
+        'Imgur': imgur.Analyzer(defines.ARTIFACT_SOURCES['Imgur']),
     }
 
     logging.info('Creating new generation')
@@ -40,20 +39,13 @@ def main():
 
     logging.info('Analyzing sources')
 
-    for artifact_source in models.ArtifactSource.all():
-        logging.info('Analyzing artifact source "%s"', artifact_source.name)
-
-        try:
-            analyzer = all_analyzers[artifact_source.name]
-            logging.info('Found analyzer for artifact source')
-        except KeyError as e:
-            logging.warn('Could not analyze - analyzer does not exist')
-            continue
+    for analyzer_name, analyzer in all_analyzers.iteritems():
+        logging.info('Analyzing artifact source "%s"', analyzer_name)
 
         try:
             artifact_descs = analyzer.analyze()
         except analyzers.Error as e:
-            logging.warn('Could not analyze "%s" - %s', artifact_source.name, str(e))
+            logging.warn('Could not analyze "%s" - %s', analyzer_name, str(e))
             continue
 
         logging.info('Have %d possibly new artifacts', len(artifact_descs))
@@ -85,12 +77,12 @@ def main():
 
             logging.info('Saving artifact "%s" to database', artifact_desc['title'])
             artifact = models.Artifact.add(artifact_desc['page_url'], 
-                generation, artifact_source, artifact_desc['title'],
+                generation, models.ArtifactSource.objects.get(id=analyzer.source.id), artifact_desc['title'],
                 images_description)
 
             logging.info('Finished processing for "%s"', artifact.title)
 
-        logging.info('Finished processing for "%s"', artifact_source.name)
+        logging.info('Finished processing for "%s"', analyzer_name)
 
     right_now_2 = datetime.datetime.now(pytz.utc)
 

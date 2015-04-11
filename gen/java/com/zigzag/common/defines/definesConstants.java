@@ -60,24 +60,24 @@ public class definesConstants {
     PHOTO_MIMETYPES_TO_EXTENSION.put("video/mp4", "mp4");
   }
 
-  public static final List<com.zigzag.common.model.ArtifactSource> ARTIFACT_SOURCES = new ArrayList<com.zigzag.common.model.ArtifactSource>();
+  public static final Map<String,com.zigzag.common.model.ArtifactSource> ARTIFACT_SOURCES = new HashMap<String,com.zigzag.common.model.ArtifactSource>();
   static {
     com.zigzag.common.model.ArtifactSource tmp0 = new com.zigzag.common.model.ArtifactSource();
     tmp0.setId(1L);
     tmp0.setName("Reddit");
-    tmp0.setStart_page_uri("http://reddit.com");
+    tmp0.setStart_page_uri("http://reddit.com/r/%s");
     Set<String> tmp1 = new HashSet<String>();
     tmp1.add("pics");
 
     tmp0.setSubdomains(tmp1);
 
-    ARTIFACT_SOURCES.add(tmp0);
+    ARTIFACT_SOURCES.put("Reddit", tmp0);
     com.zigzag.common.model.ArtifactSource tmp2 = new com.zigzag.common.model.ArtifactSource();
     tmp2.setId(2L);
     tmp2.setName("Imgur");
     tmp2.setStart_page_uri("http://imgur.com");
 
-    ARTIFACT_SOURCES.add(tmp2);
+    ARTIFACT_SOURCES.put("Imgur", tmp2);
   }
 
   public static final int API_SERVING_PORT = 9000;

@@ -6,17 +6,15 @@ import urlparse
 
 import BeautifulSoup as bs
 
-import common.defines as defines
+import common.defines.constants as defines
 import explorer.analyzers as analyzers
 
 
 class Analyzer(analyzers.Analyzer):
     """Class for performing analysis of the Imgur artifact source."""
 
-    def __init__(self):
-        super(Analyzer, self).__init__()
-
-        self._main_page_url = 'http://imgur.com'
+    def __init__(self, source):
+        super(Analyzer, self).__init__(source)
 
     def analyze(self):
         logging.info('Analyzing Imgur')
@@ -26,7 +24,7 @@ class Analyzer(analyzers.Analyzer):
         logging.info('Fetching main page')
 
         try:
-            (main_page_raw_content, main_page_mime_type) = self._fetcher.fetch_url(self._main_page_url)
+            (main_page_raw_content, main_page_mime_type) = self._fetcher.fetch_url(self.source.start_page_uri)
             if main_page_mime_type not in defines.WEBPAGE_MIMETYPES:
                 logging.warn('Main page is of wrong MIME type')
                 return []
@@ -50,7 +48,7 @@ class Analyzer(analyzers.Analyzer):
             if possible_artifact_url_path is None:
                 continue
             possible_artifact_url = urlparse.urljoin(
-                self._main_page_url, possible_artifact_url_path)
+                self.source.start_page_uri, possible_artifact_url_path)
             initial_artifact_links.append(possible_artifact_url)
 
         logging.info('Found %d possible artifact URLs', len(initial_artifact_links))

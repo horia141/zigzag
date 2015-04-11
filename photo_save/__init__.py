@@ -9,7 +9,7 @@ import comlink.serializer.pickle as serializer
 import comlink.transport.localipc as transport
 from PIL import Image
 
-import common.defines as defines
+import common.defines.constants as defines
 import fetcher
 import photo_save.decoders.gif
 import photo_save.decoders.generic_image
@@ -61,13 +61,13 @@ class Service(comlink.Service):
 
         if self._is_video(photo):
             logging.info('Detected animation')
-            for (screen_config_key, screen_config) in defines.VIDEO_SAVE_SCREEN_CONFIGS.iteritems():
+            for (screen_config_key, screen_config) in defines.VIDEO_SCREEN_CONFIG.iteritems():
                 photo_data[screen_config_key] = self._video_decoders[photo_raw_mime_type].decode(
                     screen_config_key, screen_config, photo, storage_path,
                     lambda mime_type: self._unique_photo_path(mime_type))
         else:
             logging.info('Detected regular')
-            for (screen_config_key, screen_config) in defines.IMAGE_SAVE_SCREEN_CONFIGS.iteritems():
+            for (screen_config_key, screen_config) in defines.IMAGE_SCREEN_CONFIG.iteritems():
                 photo_data[screen_config_key] = self._image_decoders[photo_raw_mime_type].decode(
                     screen_config_key, screen_config, photo, storage_path,
                     lambda mime_type: self._unique_photo_path(mime_type))

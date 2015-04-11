@@ -7,7 +7,7 @@ import comlink
 import comlink.serializer.pickle as serializer
 import comlink.transport.localipc as transport
 
-import common.defines as defines
+import common.defines.constants as defines
 
 
 BOT_HEADERS = {

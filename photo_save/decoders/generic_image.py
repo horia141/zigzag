@@ -3,7 +3,7 @@
 import logging
 import cStringIO as StringIO
 
-import common.defines as defines
+import common.defines.constants as defines
 import photo_save.decoders as decoders
 from PIL import Image
 
@@ -18,7 +18,7 @@ class Decoder(object):
 
         logging.info('Resizing to screen config width')
 
-        desired_width = screen_config['width']
+        desired_width = screen_config.width
         assert desired_width <= defines.PHOTO_MAX_WIDTH
         desired_height = int(aspect_ratio * desired_width)
         image_resized = image_rgba.resize((desired_width, desired_height), Image.ANTIALIAS)
@@ -26,7 +26,9 @@ class Decoder(object):
         logging.info('Optimizing and saving full image')
 
         (full_storage_path, full_uri_path) = unique_photo_path_fn('image/jpeg')
-        image_resized.save(full_storage_path, **defines.IMAGE_SAVE_JPEG_OPTIONS)
+        image_resized.save(full_storage_path, quality=defines.IMAGE_SAVE_JPEG_OPTIONS_QUALITY,
+                           optimize=defines.IMAGE_SAVE_JPEG_OPTIONS_OPTIMIZE,
+                           progressive=defines.IMAGE_SAVE_JPEG_OPTIONS_PROGRESSIVE)
 
         tile_count = desired_height / defines.PHOTO_MAX_HEIGHT + 1
         tiles_desc = []
@@ -42,7 +44,9 @@ class Decoder(object):
             image_tile = image_resized.crop((0, tile_upper, desired_width, tile_lower))
             logging.info('Optimizing and saving tile')
             (tile_storage_path, tile_uri_path) = unique_photo_path_fn('image/jpeg')
-            image_tile.save(tile_storage_path, **defines.IMAGE_SAVE_JPEG_OPTIONS)
+            image_tile.save(tile_storage_path, quality=defines.IMAGE_SAVE_JPEG_OPTIONS_QUALITY,
+                           optimize=defines.IMAGE_SAVE_JPEG_OPTIONS_OPTIMIZE,
+                           progressive=defines.IMAGE_SAVE_JPEG_OPTIONS_PROGRESSIVE)
 
             tiles_desc.append({
                 'width': desired_width,
@@ -51,7 +55,7 @@ class Decoder(object):
             })
 
         return {
-            'type': defines.PHOTO_IMAGE,
+            'type': 'image',
             'full_image_desc': {
                 'width': desired_width,
                 'height': desired_height,

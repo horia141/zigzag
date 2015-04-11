@@ -23,7 +23,7 @@
 + (NSMutableSet *) WEBPAGE_MIMETYPES;
 + (NSMutableSet *) PHOTO_MIMETYPES;
 + (NSMutableDictionary *) PHOTO_MIMETYPES_TO_EXTENSION;
-+ (NSMutableArray *) ARTIFACT_SOURCES;
++ (NSMutableDictionary *) ARTIFACT_SOURCES;
 + (int32_t) API_SERVING_PORT;
 + (NSString *) API_SERVING_LOG_PATH;
 + (int32_t) RES_SERVING_PORT;

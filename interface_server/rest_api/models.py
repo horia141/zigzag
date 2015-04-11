@@ -3,65 +3,9 @@ import json
 
 from django.db import models
 
-import common.defines.constants as defines
-import common.model.ttypes as model
-
 
 class Error(Exception):
-    """Error raised by model objects."""
     pass
-
-
-def
-
-
-def new_generation(date_started, date_ended=None):
-    assert isinstance(date_started, datetime.datetime)
-    assert isinstance(date_ended, (datetime.datetime, None))
-
-    generation = mode.Generation()
-    generation.status = model.GenerationStatus.IN_PROGRESS
-    generation.date_started_ts = date_started.millis()
-
-    return generation
-
-def save_generation(generation):
-    assert isinstance(generation, model.Generation)
-
-    try:
-        generation = Generation.objects.get(id=generation.id)
-    except Generation.DoesNotExist as e:
-        generation = Generation()
-
-    generation.status = 
-
-
-def latest_generation():
-    pass
-
-
-def next_generation():
-    pass
-
-
-def add_artifact_source():
-    pass
-
-
-def all_artifacts():
-    pass
-
-
-def add_artifact():
-    pass
-
-def get_artifact_by_page_url(artifact_page_url):
-    pass
-
-
-class Generation(models.Model):
-    status = models.IntegerField(default=model.GenerationStatus.IN_PROGRESS)
-    generation_ser = models.BinaryField()
 
 
 class Generation(models.Model):
@@ -119,8 +63,8 @@ class Generation(models.Model):
         json_dict['status'] = Generation.STATUS_CHOICES[self.status-1][1]
         json_dict['time_added'] = self.time_added.strftime(defines.TIME_FORMAT)
         json_dict['time_closed'] = self.time_closed.strftime(defines.TIME_FORMAT)
-        json_dict['screen_configs'] = defines.IMAGE_SAVE_SCREEN_CONFIGS.copy()
-        json_dict['screen_configs'].update(defines.VIDEO_SAVE_SCREEN_CONFIGS)
+        # json_dict['screen_configs'] = defines.IMAGE_SAVE_SCREEN_CONFIGS.copy()
+        # json_dict['screen_configs'].update(defines.VIDEO_SAVE_SCREEN_CONFIGS)
         json_dict['artifact_sources'] = {}
         json_dict['artifacts'] = []
 

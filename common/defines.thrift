@@ -11,11 +11,19 @@ const set<string> WEBPAGE_MIMETYPES = ['application/xhtml+xml', 'text/html', 'te
 const set<string> PHOTO_MIMETYPES = ['image/gif', 'image/jpeg', 'image/png'];
 const map<string, string> PHOTO_MIMETYPES_TO_EXTENSION = {'image/gif': 'gif', 'image/jpeg': 'jpg', 'image/png': 'png', 'video/mp4': 'mp4'};
 
-const list<model.ArtifactSource> ARTIFACT_SOURCES = [
-    {'id': 1, 'name': 'Reddit', 'start_page_uri': 'http://reddit.com',
-        'subdomains': ['pics']},
-    {'id': 2, 'name': 'Imgur', 'start_page_uri': 'http://imgur.com'}
-]
+const map<string, model.ArtifactSource> ARTIFACT_SOURCES = {
+    'Reddit': {
+        'id': 1,
+	'name': 'Reddit',
+	'start_page_uri': 'http://reddit.com/r/%s',
+        'subdomains': ['pics']
+    },
+    'Imgur': {
+        'id': 2,
+        'name': 'Imgur',
+        'start_page_uri': 'http://imgur.com'
+    }
+}
 
 const i32 API_SERVING_PORT = 9000;
 const string API_SERVING_LOG_PATH = 'var/api_serving.log';

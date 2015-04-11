@@ -5,7 +5,7 @@ import logging
 import math
 import subprocess
 
-import common.defines as defines
+import common.defines.constants as defines
 import photo_save.decoders as decoders
 from PIL import Image
 
@@ -17,7 +17,7 @@ class Decoder(decoders.Decoder):
         (width, height) = video.size
         aspect_ratio = float(height) / float(width)
 
-        desired_width = screen_config['width']
+        desired_width = screen_config.width
         assert desired_width <= defines.PHOTO_MAX_WIDTH
         desired_height = int(aspect_ratio * desired_width)
 
@@ -29,7 +29,9 @@ class Decoder(decoders.Decoder):
         logging.info('Saving first frame')
         (first_frame_storage_path, first_frame_uri_path) = unique_video_path_fn('image/jpeg')
         first_frame = video.convert('RGBA').resize((desired_width, desired_height), Image.ANTIALIAS)
-        first_frame.save(first_frame_storage_path, **defines.IMAGE_SAVE_JPEG_OPTIONS)
+        first_frame.save(first_frame_storage_path, quality=defines.IMAGE_SAVE_JPEG_OPTIONS_QUALITY,
+                           optimize=defines.IMAGE_SAVE_JPEG_OPTIONS_OPTIMIZE,
+                           progressive=defines.IMAGE_SAVE_JPEG_OPTIONS_PROGRESSIVE)
 
         logging.info('Converting image sequence to video')
         (video_storage_path, video_uri_path) = unique_video_path_fn('video/mp4')
@@ -43,7 +45,7 @@ class Decoder(decoders.Decoder):
                                  video_storage_path])
 
         return {
-            'type': defines.PHOTO_VIDEO,
+            'type': 'video',
             'first_frame_desc': {
                 'width': desired_width,
                 'height': desired_height,

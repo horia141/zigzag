@@ -26,21 +26,21 @@ PHOTO_MIMETYPES_TO_EXTENSION = {
   "image/png" : "png",
   "video/mp4" : "mp4",
 }
-ARTIFACT_SOURCES = [
-  common.model.ttypes.ArtifactSource(**{
+ARTIFACT_SOURCES = {
+  "Reddit" : common.model.ttypes.ArtifactSource(**{
     "id" : 1,
     "name" : "Reddit",
-    "start_page_uri" : "http://reddit.com",
+    "start_page_uri" : "http://reddit.com/r/%s",
     "subdomains" : set([
       "pics",
     ]),
   }),
-  common.model.ttypes.ArtifactSource(**{
+  "Imgur" : common.model.ttypes.ArtifactSource(**{
     "id" : 2,
     "name" : "Imgur",
     "start_page_uri" : "http://imgur.com",
   }),
-]
+}
 API_SERVING_PORT = 9000
 API_SERVING_LOG_PATH = "var/api_serving.log"
 RES_SERVING_PORT = 9001

@@ -5,7 +5,7 @@ import urllib2
 
 import BeautifulSoup as bs
 
-import common.defines as defines
+import common.defines.constants as defines
 import explorer.analyzers as analyzers
 import explorer.analyzers.imgur as imgur
 
@@ -13,22 +13,19 @@ import explorer.analyzers.imgur as imgur
 class Analyzer(analyzers.Analyzer):
     """Class for performing analysis of the Reddit artifact source."""
 
-    def __init__(self):
-        super(Analyzer, self).__init__()
-
-        self._category_start_page_url_pattern = 'http://reddit.com/r/%s'
-        self._categories = ('pics',)
-        self._imgur_analyzer = imgur.Analyzer()
+    def __init__(self, source):
+        super(Analyzer, self).__init__(source)
+        self._imgur_analyzer = imgur.Analyzer(defines.ARTIFACT_SOURCES['Imgur'])
 
     def analyze(self):
         logging.info('Analyzing Reddit')
 
         initial_artifact_links = []
 
-        for category in self._categories:
+        for category in self.source.subdomains:
             logging.info('Analyzing category "%s"', category)
 
-            category_url = self._category_start_page_url_pattern % category
+            category_url = self.source.start_page_uri % category
             logging.info('Fetching main page at "%s"', category_url)
             try:
                 (category_page_raw_content, category_page_type) = self._fetcher.fetch_url(category_url)
