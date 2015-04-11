@@ -10,6 +10,8 @@ import comlink.transport.localipc as transport
 import common.defines as defines
 import common.flow_annotation as flow_annotation
 import explorer.analyzers as analyzers
+import explorer.analyzers.reddit as reddit
+import explorer.analyzers.imgur as imgur
 import photo_save
 import rest_api.models as models
 
@@ -28,8 +30,8 @@ def main():
     logging.info('Building analyzers')
 
     all_analyzers = {
-        'Reddit': analyzers.Reddit(),
-        'Imgur': analyzers.Imgur(),
+        'Reddit': reddit.Analyzer(),
+        'Imgur': imgur.Analyzer(),
     }
 
     logging.info('Creating new generation')
