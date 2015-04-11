@@ -13,7 +13,7 @@ const map<string, string> PHOTO_MIMETYPES_TO_EXTENSION = {'image/gif': 'gif', 'i
 
 const list<model.ArtifactSource> ARTIFACT_SOURCES = [
     {'id': 1, 'name': 'Reddit', 'start_page_uri': 'http://reddit.com',
-    'subdomains': ['pics']},
+        'subdomains': ['pics']},
     {'id': 2, 'name': 'Imgur', 'start_page_uri': 'http://imgur.com'}
 ]
 
