@@ -10,6 +10,8 @@ import comlink.transport.localipc as transport
 import common.defines as defines
 import common.flow_annotation as flow_annotation
 import explorer.analyzers as analyzers
+import explorer.analyzers.reddit as reddit
+import explorer.analyzers.imgur as imgur
 import photo_save
 import rest_api.models as models
 
@@ -28,8 +30,8 @@ def main():
     logging.info('Building analyzers')
 
     all_analyzers = {
-        'Reddit': analyzers.Reddit(),
-        'Imgur': analyzers.Imgur(),
+        'Reddit': reddit.Analyzer(),
+        'Imgur': imgur.Analyzer(),
     }
 
     logging.info('Creating new generation')
@@ -66,12 +68,20 @@ def main():
 
             images_description = []
 
-            for image_raw_description in artifact_desc['images_description']:
-                subtitle = image_raw_description['subtitle']
-                description = image_raw_description['description']
-                source_uri = image_raw_description['uri_path']
-                images_description.append(photo_save_client.process_one_photo(
-                    subtitle, description, source_uri))
+            try:
+                for image_raw_description in artifact_desc['images_description']:
+                    subtitle = image_raw_description['subtitle']
+                    description = image_raw_description['description']
+                    source_uri = image_raw_description['uri_path']
+                    images_description.append(photo_save_client.process_one_photo(
+                        subtitle, description, source_uri))
+            except Exception as e:
+                logging.error('Encountered an error in processing artifact "%s"', artifact_desc['title'])
+                if comlink.is_remote_exception(e):
+                    logging.error(comlink.format_stacktrace_for_remote_exception(e))
+                else:
+                    logging.exception(e)
+                continue
 
             logging.info('Saving artifact "%s" to database', artifact_desc['title'])
             artifact = models.Artifact.add(artifact_desc['page_url'], 
