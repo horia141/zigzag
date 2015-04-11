@@ -1,0 +1,110 @@
+"""The Reddit analyzer."""
+
+import logging
+import urllib2
+
+import BeautifulSoup as bs
+
+import common.defines as defines
+import explorer.analyzers as analyzers
+import explorer.analyzers.imgur as imgur
+
+
+class Analyzer(analyzers.Analyzer):
+    """Class for performing analysis of the Reddit artifact source."""
+
+    def __init__(self):
+        super(Analyzer, self).__init__()
+
+        self._category_start_page_url_pattern = 'http://reddit.com/r/%s'
+        self._categories = ('pics',)
+        self._imgur_analyzer = imgur.Analyzer()
+
+    def analyze(self):
+        logging.info('Analyzing Reddit')
+
+        initial_artifact_links = []
+
+        for category in self._categories:
+            logging.info('Analyzing category "%s"', category)
+
+            category_url = self._category_start_page_url_pattern % category
+            logging.info('Fetching main page at "%s"', category_url)
+            try:
+                (category_page_raw_content, category_page_type) = self._fetcher.fetch_url(category_url)
+                if category_page_type not in defines.WEBPAGE_MIMETYPES:
+                    logging.warn('Main page is of wrong MIME type')
+                    continue
+            except urllib2.URLError as e:
+                logging.warn('Could not fetch - %s', str(e))
+                continue
+
+            logging.info('Parse structure')
+            soup = bs.BeautifulSoup(category_page_raw_content, convertEntities=bs.BeautifulSoup.HTML_ENTITIES)
+
+            if soup is None:
+                raise analyzers.Error('Could not parse structure')
+
+            site_table = soup.find(id='siteTable')
+            if site_table is None:
+                raise analyzers.Error('Could not find links information')
+
+            possible_artifacts_things = site_table.findAll('div', 'thing')
+
+            num_possible_artifact_urls = 0
+
+            for possible_thing in possible_artifacts_things:
+                rank = possible_thing.find('span', 'rank')
+                if rank.string is None:
+                    # This is a sticky / unranked element
+                    continue
+                link = possible_thing.find('a', 'title')
+                possible_artifact_url = link.get('href')
+                title = link.text
+                if possible_artifact_url is None:
+                    continue
+                num_possible_artifact_urls += 1
+                initial_artifact_links.append((title, possible_artifact_url))
+
+            logging.info('Found %d possible artifact URLs', num_possible_artifact_urls)
+
+        logging.info('Found %d possible artifact URLs', len(initial_artifact_links))
+
+        artifact_descs = []
+
+        for (title, possible_artifact_url) in initial_artifact_links:
+            try:
+                artifact_desc = self._analyze_artifact_link(title, possible_artifact_url)
+            except analyzers.Error as e:
+                logging.warn('Could not analyze "%s" - %s', possible_artifact_url, str(e))
+                continue
+            artifact_descs.append(artifact_desc)
+
+        return artifact_descs
+
+    def _analyze_artifact_link(self, title, artifact_page_url):
+        logging.info('Analyzing "%s"', artifact_page_url)
+
+        try_other_analyzer = False
+
+        try:
+            image_mime_type = self._fetcher.fetch_url_mimetype(artifact_page_url)
+            if image_mime_type not in defines.PHOTO_MIMETYPES:
+                # Try to parse things with the Imgur analyzer.
+                try_other_analyzer = True
+                logging.warn('Could not fetch as image, trying with another analyzer')
+        except urllib2.URLError as e:
+            raise analyzers.Error('Could not fetch - %s' % str(e))
+
+        if not try_other_analyzer:
+            return {
+                'page_url': artifact_page_url,
+                'title': title,
+                'images_description': [{
+                    'subtitle': '',
+                    'description': '',
+                    'uri_path': artifact_page_url
+                }]
+            }
+        else:
+            return self._imgur_analyzer._analyze_artifact_link(artifact_page_url)
