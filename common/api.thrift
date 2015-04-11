@@ -4,10 +4,9 @@ include "model.thrift"
 
 namespace py common.api
 namespace java com.zigzag.common.api
+namespace cocoa common.api
 
 struct NextGenResponse {
   1: required model.Generation generation;
-  2: required map<i64, model.ScreenConfig> screen_configs;
-  3: required map<i64, model.ArtifactSource> artifact_sources;
-  4: required list<model.Artifact> artifacts;
+  2: required bool bandwidth_alert;
 }

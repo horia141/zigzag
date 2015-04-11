@@ -17,13 +17,17 @@
 
 #import "model.h"
 
-@interface definesConstants : NSObject {
+@interface common.definesdefinesConstants : NSObject {
 }
 + (NSString *) TIME_FORMAT;
 + (NSMutableSet *) WEBPAGE_MIMETYPES;
 + (NSMutableSet *) PHOTO_MIMETYPES;
 + (NSMutableDictionary *) PHOTO_MIMETYPES_TO_EXTENSION;
 + (NSMutableArray *) ARTIFACT_SOURCES;
++ (int32_t) API_SERVING_PORT;
++ (NSString *) API_SERVING_LOG_PATH;
++ (int32_t) RES_SERVING_PORT;
++ (NSString *) RES_SERVING_LOG_PATH;
 + (int32_t) FETCHER_PORT;
 + (NSString *) FETCHER_LOG_PATH;
 + (NSString *) EXPLORER_LOG_PATH;
@@ -39,7 +43,4 @@
 + (int32_t) DEFAULT_TIME_BETWEEN_FRAMES_MS;
 + (int32_t) PHOTO_MAX_WIDTH;
 + (int32_t) PHOTO_MAX_HEIGHT;
-+ (NSString *) PHOTO_TOO_LARGE;
-+ (NSString *) PHOTO_IMAGE;
-+ (NSString *) PHOTO_VIDEO;
 @end

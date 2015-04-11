@@ -41,6 +41,10 @@ ARTIFACT_SOURCES = [
     "start_page_uri" : "http://imgur.com",
   }),
 ]
+API_SERVING_PORT = 9000
+API_SERVING_LOG_PATH = "var/api_serving.log"
+RES_SERVING_PORT = 9001
+RES_SERVING_LOG_PATH = "var/res_serving.log"
 FETCHER_PORT = 16000
 FETCHER_LOG_PATH = "var/fetcher.log"
 EXPLORER_LOG_PATH = "var/explorer.log"
@@ -78,6 +82,3 @@ VIDEO_SAVE_BITRATE = "512k"
 DEFAULT_TIME_BETWEEN_FRAMES_MS = 75
 PHOTO_MAX_WIDTH = 2048
 PHOTO_MAX_HEIGHT = 2048
-PHOTO_TOO_LARGE = "too-large"
-PHOTO_IMAGE = "image"
-PHOTO_VIDEO = "video"

@@ -16,162 +16,9 @@
 #import "TBase.h"
 
 
-enum GenerationStatus {
-  GenerationStatus_OPENED = 1,
-  GenerationStatus_CLOSED = 2
-};
+typedef int64_t common.modelEntityId;
 
-@interface Generation : NSObject <TBase, NSCoding> {
-  int64_t __id;
-  int __status;
-  int32_t __date_started_ts;
-  int32_t __date_ended_ts;
-
-  BOOL __id_isset;
-  BOOL __status_isset;
-  BOOL __date_started_ts_isset;
-  BOOL __date_ended_ts_isset;
-}
-
-#if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
-@property (nonatomic, getter=id, setter=setId:) int64_t id;
-@property (nonatomic, getter=status, setter=setStatus:) int status;
-@property (nonatomic, getter=date_started_ts, setter=setDate_started_ts:) int32_t date_started_ts;
-@property (nonatomic, getter=date_ended_ts, setter=setDate_ended_ts:) int32_t date_ended_ts;
-#endif
-
-- (id) init;
-- (id) initWithId: (int64_t) id status: (int) status date_started_ts: (int32_t) date_started_ts date_ended_ts: (int32_t) date_ended_ts;
-
-- (void) read: (id <TProtocol>) inProtocol;
-- (void) write: (id <TProtocol>) outProtocol;
-
-- (void) validate;
-
-#if !__has_feature(objc_arc)
-- (int64_t) id;
-- (void) setId: (int64_t) id;
-#endif
-- (BOOL) idIsSet;
-
-#if !__has_feature(objc_arc)
-- (int) status;
-- (void) setStatus: (int) status;
-#endif
-- (BOOL) statusIsSet;
-
-#if !__has_feature(objc_arc)
-- (int32_t) date_started_ts;
-- (void) setDate_started_ts: (int32_t) date_started_ts;
-#endif
-- (BOOL) date_started_tsIsSet;
-
-#if !__has_feature(objc_arc)
-- (int32_t) date_ended_ts;
-- (void) setDate_ended_ts: (int32_t) date_ended_ts;
-#endif
-- (BOOL) date_ended_tsIsSet;
-
-@end
-
-@interface ArtifactSource : NSObject <TBase, NSCoding> {
-  int64_t __id;
-  NSString * __name;
-  NSString * __start_page_uri;
-  NSMutableSet * __subdomains;
-
-  BOOL __id_isset;
-  BOOL __name_isset;
-  BOOL __start_page_uri_isset;
-  BOOL __subdomains_isset;
-}
-
-#if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
-@property (nonatomic, getter=id, setter=setId:) int64_t id;
-@property (nonatomic, retain, getter=name, setter=setName:) NSString * name;
-@property (nonatomic, retain, getter=start_page_uri, setter=setStart_page_uri:) NSString * start_page_uri;
-@property (nonatomic, retain, getter=subdomains, setter=setSubdomains:) NSMutableSet * subdomains;
-#endif
-
-- (id) init;
-- (id) initWithId: (int64_t) id name: (NSString *) name start_page_uri: (NSString *) start_page_uri subdomains: (NSMutableSet *) subdomains;
-
-- (void) read: (id <TProtocol>) inProtocol;
-- (void) write: (id <TProtocol>) outProtocol;
-
-- (void) validate;
-
-#if !__has_feature(objc_arc)
-- (int64_t) id;
-- (void) setId: (int64_t) id;
-#endif
-- (BOOL) idIsSet;
-
-#if !__has_feature(objc_arc)
-- (NSString *) name;
-- (void) setName: (NSString *) name;
-#endif
-- (BOOL) nameIsSet;
-
-#if !__has_feature(objc_arc)
-- (NSString *) start_page_uri;
-- (void) setStart_page_uri: (NSString *) start_page_uri;
-#endif
-- (BOOL) start_page_uriIsSet;
-
-#if !__has_feature(objc_arc)
-- (NSMutableSet *) subdomains;
-- (void) setSubdomains: (NSMutableSet *) subdomains;
-#endif
-- (BOOL) subdomainsIsSet;
-
-@end
-
-@interface ScreenConfig : NSObject <TBase, NSCoding> {
-  int64_t __id;
-  NSString * __name;
-  int32_t __width;
-
-  BOOL __id_isset;
-  BOOL __name_isset;
-  BOOL __width_isset;
-}
-
-#if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
-@property (nonatomic, getter=id, setter=setId:) int64_t id;
-@property (nonatomic, retain, getter=name, setter=setName:) NSString * name;
-@property (nonatomic, getter=width, setter=setWidth:) int32_t width;
-#endif
-
-- (id) init;
-- (id) initWithId: (int64_t) id name: (NSString *) name width: (int32_t) width;
-
-- (void) read: (id <TProtocol>) inProtocol;
-- (void) write: (id <TProtocol>) outProtocol;
-
-- (void) validate;
-
-#if !__has_feature(objc_arc)
-- (int64_t) id;
-- (void) setId: (int64_t) id;
-#endif
-- (BOOL) idIsSet;
-
-#if !__has_feature(objc_arc)
-- (NSString *) name;
-- (void) setName: (NSString *) name;
-#endif
-- (BOOL) nameIsSet;
-
-#if !__has_feature(objc_arc)
-- (int32_t) width;
-- (void) setWidth: (int32_t) width;
-#endif
-- (BOOL) widthIsSet;
-
-@end
-
-@interface TileData : NSObject <TBase, NSCoding> {
+@interface common.modelTileData : NSObject <TBase, NSCoding> {
   int32_t __width;
   int32_t __height;
   NSString * __uri_path;
@@ -215,24 +62,21 @@ enum GenerationStatus {
 
 @end
 
-@interface ImagePhotoData : NSObject <TBase, NSCoding> {
-  TileData * __full_image_desc;
-  NSMutableArray * __tiles_desc;
-  int64_t __screen_config_fk;
+@interface common.modelImagePhotoData : NSObject <TBase, NSCoding> {
+  common.modelTileData * __full_image;
+  NSMutableArray * __tiles;
 
-  BOOL __full_image_desc_isset;
-  BOOL __tiles_desc_isset;
-  BOOL __screen_config_fk_isset;
+  BOOL __full_image_isset;
+  BOOL __tiles_isset;
 }
 
 #if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
-@property (nonatomic, retain, getter=full_image_desc, setter=setFull_image_desc:) TileData * full_image_desc;
-@property (nonatomic, retain, getter=tiles_desc, setter=setTiles_desc:) NSMutableArray * tiles_desc;
-@property (nonatomic, getter=screen_config_fk, setter=setScreen_config_fk:) int64_t screen_config_fk;
+@property (nonatomic, retain, getter=full_image, setter=setFull_image:) common.modelTileData * full_image;
+@property (nonatomic, retain, getter=tiles, setter=setTiles:) NSMutableArray * tiles;
 #endif
 
 - (id) init;
-- (id) initWithFull_image_desc: (TileData *) full_image_desc tiles_desc: (NSMutableArray *) tiles_desc screen_config_fk: (int64_t) screen_config_fk;
+- (id) initWithFull_image: (common.modelTileData *) full_image tiles: (NSMutableArray *) tiles;
 
 - (void) read: (id <TProtocol>) inProtocol;
 - (void) write: (id <TProtocol>) outProtocol;
@@ -240,46 +84,43 @@ enum GenerationStatus {
 - (void) validate;
 
 #if !__has_feature(objc_arc)
-- (TileData *) full_image_desc;
-- (void) setFull_image_desc: (TileData *) full_image_desc;
+- (common.modelTileData *) full_image;
+- (void) setFull_image: (common.modelTileData *) full_image;
 #endif
-- (BOOL) full_image_descIsSet;
+- (BOOL) full_imageIsSet;
 
 #if !__has_feature(objc_arc)
-- (NSMutableArray *) tiles_desc;
-- (void) setTiles_desc: (NSMutableArray *) tiles_desc;
+- (NSMutableArray *) tiles;
+- (void) setTiles: (NSMutableArray *) tiles;
 #endif
-- (BOOL) tiles_descIsSet;
-
-#if !__has_feature(objc_arc)
-- (int64_t) screen_config_fk;
-- (void) setScreen_config_fk: (int64_t) screen_config_fk;
-#endif
-- (BOOL) screen_config_fkIsSet;
+- (BOOL) tilesIsSet;
 
 @end
 
-@interface VideoPhotoData : NSObject <TBase, NSCoding> {
-  TileData * __first_frame_desc;
-  TileData * __video_desc;
+@interface common.modelVideoPhotoData : NSObject <TBase, NSCoding> {
+  common.modelTileData * __first_frame;
+  common.modelTileData * __video;
+  int32_t __frame_count;
+  int32_t __frames_per_sec;
   int32_t __time_between_frames_ms;
-  int32_t __framerate;
 
-  BOOL __first_frame_desc_isset;
-  BOOL __video_desc_isset;
+  BOOL __first_frame_isset;
+  BOOL __video_isset;
+  BOOL __frame_count_isset;
+  BOOL __frames_per_sec_isset;
   BOOL __time_between_frames_ms_isset;
-  BOOL __framerate_isset;
 }
 
 #if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
-@property (nonatomic, retain, getter=first_frame_desc, setter=setFirst_frame_desc:) TileData * first_frame_desc;
-@property (nonatomic, retain, getter=video_desc, setter=setVideo_desc:) TileData * video_desc;
+@property (nonatomic, retain, getter=first_frame, setter=setFirst_frame:) common.modelTileData * first_frame;
+@property (nonatomic, retain, getter=video, setter=setVideo:) common.modelTileData * video;
+@property (nonatomic, getter=frame_count, setter=setFrame_count:) int32_t frame_count;
+@property (nonatomic, getter=frames_per_sec, setter=setFrames_per_sec:) int32_t frames_per_sec;
 @property (nonatomic, getter=time_between_frames_ms, setter=setTime_between_frames_ms:) int32_t time_between_frames_ms;
-@property (nonatomic, getter=framerate, setter=setFramerate:) int32_t framerate;
 #endif
 
 - (id) init;
-- (id) initWithFirst_frame_desc: (TileData *) first_frame_desc video_desc: (TileData *) video_desc time_between_frames_ms: (int32_t) time_between_frames_ms framerate: (int32_t) framerate;
+- (id) initWithFirst_frame: (common.modelTileData *) first_frame video: (common.modelTileData *) video frame_count: (int32_t) frame_count frames_per_sec: (int32_t) frames_per_sec time_between_frames_ms: (int32_t) time_between_frames_ms;
 
 - (void) read: (id <TProtocol>) inProtocol;
 - (void) write: (id <TProtocol>) outProtocol;
@@ -287,16 +128,28 @@ enum GenerationStatus {
 - (void) validate;
 
 #if !__has_feature(objc_arc)
-- (TileData *) first_frame_desc;
-- (void) setFirst_frame_desc: (TileData *) first_frame_desc;
+- (common.modelTileData *) first_frame;
+- (void) setFirst_frame: (common.modelTileData *) first_frame;
 #endif
-- (BOOL) first_frame_descIsSet;
+- (BOOL) first_frameIsSet;
 
 #if !__has_feature(objc_arc)
-- (TileData *) video_desc;
-- (void) setVideo_desc: (TileData *) video_desc;
+- (common.modelTileData *) video;
+- (void) setVideo: (common.modelTileData *) video;
 #endif
-- (BOOL) video_descIsSet;
+- (BOOL) videoIsSet;
+
+#if !__has_feature(objc_arc)
+- (int32_t) frame_count;
+- (void) setFrame_count: (int32_t) frame_count;
+#endif
+- (BOOL) frame_countIsSet;
+
+#if !__has_feature(objc_arc)
+- (int32_t) frames_per_sec;
+- (void) setFrames_per_sec: (int32_t) frames_per_sec;
+#endif
+- (BOOL) frames_per_secIsSet;
 
 #if !__has_feature(objc_arc)
 - (int32_t) time_between_frames_ms;
@@ -304,21 +157,15 @@ enum GenerationStatus {
 #endif
 - (BOOL) time_between_frames_msIsSet;
 
-#if !__has_feature(objc_arc)
-- (int32_t) framerate;
-- (void) setFramerate: (int32_t) framerate;
-#endif
-- (BOOL) framerateIsSet;
-
 @end
 
-@interface PhotoDescription : NSObject <TBase, NSCoding> {
+@interface common.modelPhotoDescription : NSObject <TBase, NSCoding> {
   NSString * __subtitle;
   NSString * __description;
   NSString * __source_uri;
   NSString * __original_uri_path;
-  ImagePhotoData * __image_data;
-  VideoPhotoData * __video_data;
+  NSMutableDictionary * __image_data;
+  NSMutableDictionary * __video_data;
 
   BOOL __subtitle_isset;
   BOOL __description_isset;
@@ -333,12 +180,12 @@ enum GenerationStatus {
 @property (nonatomic, retain, getter=description, setter=setDescription:) NSString * description;
 @property (nonatomic, retain, getter=source_uri, setter=setSource_uri:) NSString * source_uri;
 @property (nonatomic, retain, getter=original_uri_path, setter=setOriginal_uri_path:) NSString * original_uri_path;
-@property (nonatomic, retain, getter=image_data, setter=setImage_data:) ImagePhotoData * image_data;
-@property (nonatomic, retain, getter=video_data, setter=setVideo_data:) VideoPhotoData * video_data;
+@property (nonatomic, retain, getter=image_data, setter=setImage_data:) NSMutableDictionary * image_data;
+@property (nonatomic, retain, getter=video_data, setter=setVideo_data:) NSMutableDictionary * video_data;
 #endif
 
 - (id) init;
-- (id) initWithSubtitle: (NSString *) subtitle description: (NSString *) description source_uri: (NSString *) source_uri original_uri_path: (NSString *) original_uri_path image_data: (ImagePhotoData *) image_data video_data: (VideoPhotoData *) video_data;
+- (id) initWithSubtitle: (NSString *) subtitle description: (NSString *) description source_uri: (NSString *) source_uri original_uri_path: (NSString *) original_uri_path image_data: (NSMutableDictionary *) image_data video_data: (NSMutableDictionary *) video_data;
 
 - (void) read: (id <TProtocol>) inProtocol;
 - (void) write: (id <TProtocol>) outProtocol;
@@ -370,40 +217,40 @@ enum GenerationStatus {
 - (BOOL) original_uri_pathIsSet;
 
 #if !__has_feature(objc_arc)
-- (ImagePhotoData *) image_data;
-- (void) setImage_data: (ImagePhotoData *) image_data;
+- (NSMutableDictionary *) image_data;
+- (void) setImage_data: (NSMutableDictionary *) image_data;
 #endif
 - (BOOL) image_dataIsSet;
 
 #if !__has_feature(objc_arc)
-- (VideoPhotoData *) video_data;
-- (void) setVideo_data: (VideoPhotoData *) video_data;
+- (NSMutableDictionary *) video_data;
+- (void) setVideo_data: (NSMutableDictionary *) video_data;
 #endif
 - (BOOL) video_dataIsSet;
 
 @end
 
-@interface Artifact : NSObject <TBase, NSCoding> {
-  int64_t __id;
-  NSString * __page_uri;
-  NSString * __title;
-  NSMutableArray * __photo_descriptions;
+@interface common.modelArtifactSource : NSObject <TBase, NSCoding> {
+  common.modelEntityId __id;
+  NSString * __name;
+  NSString * __start_page_uri;
+  NSMutableSet * __subdomains;
 
   BOOL __id_isset;
-  BOOL __page_uri_isset;
-  BOOL __title_isset;
-  BOOL __photo_descriptions_isset;
+  BOOL __name_isset;
+  BOOL __start_page_uri_isset;
+  BOOL __subdomains_isset;
 }
 
 #if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
-@property (nonatomic, getter=id, setter=setId:) int64_t id;
-@property (nonatomic, retain, getter=page_uri, setter=setPage_uri:) NSString * page_uri;
-@property (nonatomic, retain, getter=title, setter=setTitle:) NSString * title;
-@property (nonatomic, retain, getter=photo_descriptions, setter=setPhoto_descriptions:) NSMutableArray * photo_descriptions;
+@property (nonatomic, getter=id, setter=setId:) common.modelEntityId id;
+@property (nonatomic, retain, getter=name, setter=setName:) NSString * name;
+@property (nonatomic, retain, getter=start_page_uri, setter=setStart_page_uri:) NSString * start_page_uri;
+@property (nonatomic, retain, getter=subdomains, setter=setSubdomains:) NSMutableSet * subdomains;
 #endif
 
 - (id) init;
-- (id) initWithId: (int64_t) id page_uri: (NSString *) page_uri title: (NSString *) title photo_descriptions: (NSMutableArray *) photo_descriptions;
+- (id) initWithId: (common.modelEntityId) id name: (NSString *) name start_page_uri: (NSString *) start_page_uri subdomains: (NSMutableSet *) subdomains;
 
 - (void) read: (id <TProtocol>) inProtocol;
 - (void) write: (id <TProtocol>) outProtocol;
@@ -411,10 +258,98 @@ enum GenerationStatus {
 - (void) validate;
 
 #if !__has_feature(objc_arc)
-- (int64_t) id;
-- (void) setId: (int64_t) id;
+- (common.modelEntityId) id;
+- (void) setId: (common.modelEntityId) id;
 #endif
 - (BOOL) idIsSet;
+
+#if !__has_feature(objc_arc)
+- (NSString *) name;
+- (void) setName: (NSString *) name;
+#endif
+- (BOOL) nameIsSet;
+
+#if !__has_feature(objc_arc)
+- (NSString *) start_page_uri;
+- (void) setStart_page_uri: (NSString *) start_page_uri;
+#endif
+- (BOOL) start_page_uriIsSet;
+
+#if !__has_feature(objc_arc)
+- (NSMutableSet *) subdomains;
+- (void) setSubdomains: (NSMutableSet *) subdomains;
+#endif
+- (BOOL) subdomainsIsSet;
+
+@end
+
+@interface common.modelScreenConfig : NSObject <TBase, NSCoding> {
+  common.modelEntityId __id;
+  NSString * __name;
+  int32_t __width;
+
+  BOOL __id_isset;
+  BOOL __name_isset;
+  BOOL __width_isset;
+}
+
+#if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
+@property (nonatomic, getter=id, setter=setId:) common.modelEntityId id;
+@property (nonatomic, retain, getter=name, setter=setName:) NSString * name;
+@property (nonatomic, getter=width, setter=setWidth:) int32_t width;
+#endif
+
+- (id) init;
+- (id) initWithId: (common.modelEntityId) id name: (NSString *) name width: (int32_t) width;
+
+- (void) read: (id <TProtocol>) inProtocol;
+- (void) write: (id <TProtocol>) outProtocol;
+
+- (void) validate;
+
+#if !__has_feature(objc_arc)
+- (common.modelEntityId) id;
+- (void) setId: (common.modelEntityId) id;
+#endif
+- (BOOL) idIsSet;
+
+#if !__has_feature(objc_arc)
+- (NSString *) name;
+- (void) setName: (NSString *) name;
+#endif
+- (BOOL) nameIsSet;
+
+#if !__has_feature(objc_arc)
+- (int32_t) width;
+- (void) setWidth: (int32_t) width;
+#endif
+- (BOOL) widthIsSet;
+
+@end
+
+@interface common.modelArtifact : NSObject <TBase, NSCoding> {
+  NSString * __page_uri;
+  NSString * __title;
+  NSMutableArray * __photo_descriptions;
+
+  BOOL __page_uri_isset;
+  BOOL __title_isset;
+  BOOL __photo_descriptions_isset;
+}
+
+#if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
+@property (nonatomic, retain, getter=page_uri, setter=setPage_uri:) NSString * page_uri;
+@property (nonatomic, retain, getter=title, setter=setTitle:) NSString * title;
+@property (nonatomic, retain, getter=photo_descriptions, setter=setPhoto_descriptions:) NSMutableArray * photo_descriptions;
+#endif
+
+- (id) init;
+- (id) initWithPage_uri: (NSString *) page_uri title: (NSString *) title photo_descriptions: (NSMutableArray *) photo_descriptions;
+
+- (void) read: (id <TProtocol>) inProtocol;
+- (void) write: (id <TProtocol>) outProtocol;
+
+- (void) validate;
 
 #if !__has_feature(objc_arc)
 - (NSString *) page_uri;
@@ -436,6 +371,77 @@ enum GenerationStatus {
 
 @end
 
-@interface modelConstants : NSObject {
+@interface common.modelGeneration : NSObject <TBase, NSCoding> {
+  common.modelEntityId __id;
+  int32_t __date_started_ts;
+  int32_t __date_ended_ts;
+  NSMutableDictionary * __artifact_sources;
+  NSMutableDictionary * __screen_configs;
+  NSMutableArray * __artifacts;
+
+  BOOL __id_isset;
+  BOOL __date_started_ts_isset;
+  BOOL __date_ended_ts_isset;
+  BOOL __artifact_sources_isset;
+  BOOL __screen_configs_isset;
+  BOOL __artifacts_isset;
+}
+
+#if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
+@property (nonatomic, getter=id, setter=setId:) common.modelEntityId id;
+@property (nonatomic, getter=date_started_ts, setter=setDate_started_ts:) int32_t date_started_ts;
+@property (nonatomic, getter=date_ended_ts, setter=setDate_ended_ts:) int32_t date_ended_ts;
+@property (nonatomic, retain, getter=artifact_sources, setter=setArtifact_sources:) NSMutableDictionary * artifact_sources;
+@property (nonatomic, retain, getter=screen_configs, setter=setScreen_configs:) NSMutableDictionary * screen_configs;
+@property (nonatomic, retain, getter=artifacts, setter=setArtifacts:) NSMutableArray * artifacts;
+#endif
+
+- (id) init;
+- (id) initWithId: (common.modelEntityId) id date_started_ts: (int32_t) date_started_ts date_ended_ts: (int32_t) date_ended_ts artifact_sources: (NSMutableDictionary *) artifact_sources screen_configs: (NSMutableDictionary *) screen_configs artifacts: (NSMutableArray *) artifacts;
+
+- (void) read: (id <TProtocol>) inProtocol;
+- (void) write: (id <TProtocol>) outProtocol;
+
+- (void) validate;
+
+#if !__has_feature(objc_arc)
+- (common.modelEntityId) id;
+- (void) setId: (common.modelEntityId) id;
+#endif
+- (BOOL) idIsSet;
+
+#if !__has_feature(objc_arc)
+- (int32_t) date_started_ts;
+- (void) setDate_started_ts: (int32_t) date_started_ts;
+#endif
+- (BOOL) date_started_tsIsSet;
+
+#if !__has_feature(objc_arc)
+- (int32_t) date_ended_ts;
+- (void) setDate_ended_ts: (int32_t) date_ended_ts;
+#endif
+- (BOOL) date_ended_tsIsSet;
+
+#if !__has_feature(objc_arc)
+- (NSMutableDictionary *) artifact_sources;
+- (void) setArtifact_sources: (NSMutableDictionary *) artifact_sources;
+#endif
+- (BOOL) artifact_sourcesIsSet;
+
+#if !__has_feature(objc_arc)
+- (NSMutableDictionary *) screen_configs;
+- (void) setScreen_configs: (NSMutableDictionary *) screen_configs;
+#endif
+- (BOOL) screen_configsIsSet;
+
+#if !__has_feature(objc_arc)
+- (NSMutableArray *) artifacts;
+- (void) setArtifacts: (NSMutableArray *) artifacts;
+#endif
+- (BOOL) artifactsIsSet;
+
+@end
+
+@interface common.modelmodelConstants : NSObject {
 }
 @end

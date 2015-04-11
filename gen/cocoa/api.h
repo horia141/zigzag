@@ -17,27 +17,21 @@
 
 #import "model.h"
 
-@interface NextGenResponse : NSObject <TBase, NSCoding> {
-  Generation * __generation;
-  NSMutableDictionary * __screen_configs;
-  NSMutableDictionary * __artifact_sources;
-  NSMutableArray * __artifacts;
+@interface common.apiNextGenResponse : NSObject <TBase, NSCoding> {
+  common.modelGeneration * __generation;
+  BOOL __bandwidth_alert;
 
   BOOL __generation_isset;
-  BOOL __screen_configs_isset;
-  BOOL __artifact_sources_isset;
-  BOOL __artifacts_isset;
+  BOOL __bandwidth_alert_isset;
 }
 
 #if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
-@property (nonatomic, retain, getter=generation, setter=setGeneration:) Generation * generation;
-@property (nonatomic, retain, getter=screen_configs, setter=setScreen_configs:) NSMutableDictionary * screen_configs;
-@property (nonatomic, retain, getter=artifact_sources, setter=setArtifact_sources:) NSMutableDictionary * artifact_sources;
-@property (nonatomic, retain, getter=artifacts, setter=setArtifacts:) NSMutableArray * artifacts;
+@property (nonatomic, retain, getter=generation, setter=setGeneration:) common.modelGeneration * generation;
+@property (nonatomic, getter=bandwidth_alert, setter=setBandwidth_alert:) BOOL bandwidth_alert;
 #endif
 
 - (id) init;
-- (id) initWithGeneration: (Generation *) generation screen_configs: (NSMutableDictionary *) screen_configs artifact_sources: (NSMutableDictionary *) artifact_sources artifacts: (NSMutableArray *) artifacts;
+- (id) initWithGeneration: (common.modelGeneration *) generation bandwidth_alert: (BOOL) bandwidth_alert;
 
 - (void) read: (id <TProtocol>) inProtocol;
 - (void) write: (id <TProtocol>) outProtocol;
@@ -45,31 +39,19 @@
 - (void) validate;
 
 #if !__has_feature(objc_arc)
-- (Generation *) generation;
-- (void) setGeneration: (Generation *) generation;
+- (common.modelGeneration *) generation;
+- (void) setGeneration: (common.modelGeneration *) generation;
 #endif
 - (BOOL) generationIsSet;
 
 #if !__has_feature(objc_arc)
-- (NSMutableDictionary *) screen_configs;
-- (void) setScreen_configs: (NSMutableDictionary *) screen_configs;
+- (BOOL) bandwidth_alert;
+- (void) setBandwidth_alert: (BOOL) bandwidth_alert;
 #endif
-- (BOOL) screen_configsIsSet;
-
-#if !__has_feature(objc_arc)
-- (NSMutableDictionary *) artifact_sources;
-- (void) setArtifact_sources: (NSMutableDictionary *) artifact_sources;
-#endif
-- (BOOL) artifact_sourcesIsSet;
-
-#if !__has_feature(objc_arc)
-- (NSMutableArray *) artifacts;
-- (void) setArtifacts: (NSMutableArray *) artifacts;
-#endif
-- (BOOL) artifactsIsSet;
+- (BOOL) bandwidth_alertIsSet;
 
 @end
 
-@interface apiConstants : NSObject {
+@interface common.apiapiConstants : NSObject {
 }
 @end

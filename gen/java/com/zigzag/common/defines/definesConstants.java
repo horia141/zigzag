@@ -80,6 +80,14 @@ public class definesConstants {
     ARTIFACT_SOURCES.add(tmp2);
   }
 
+  public static final int API_SERVING_PORT = 9000;
+
+  public static final String API_SERVING_LOG_PATH = "var/api_serving.log";
+
+  public static final int RES_SERVING_PORT = 9001;
+
+  public static final String RES_SERVING_LOG_PATH = "var/res_serving.log";
+
   public static final int FETCHER_PORT = 16000;
 
   public static final String FETCHER_LOG_PATH = "var/fetcher.log";
@@ -137,11 +145,5 @@ public class definesConstants {
   public static final int PHOTO_MAX_WIDTH = 2048;
 
   public static final int PHOTO_MAX_HEIGHT = 2048;
-
-  public static final String PHOTO_TOO_LARGE = "too-large";
-
-  public static final String PHOTO_IMAGE = "image";
-
-  public static final String PHOTO_VIDEO = "video";
 
 }

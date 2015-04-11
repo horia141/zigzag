@@ -19,7 +19,7 @@
 
 #import "api.h"
 
-@implementation NextGenResponse
+@implementation common.apiNextGenResponse
 
 - (id) init
 {
@@ -29,17 +29,13 @@
   return self;
 }
 
-- (id) initWithGeneration: (Generation *) generation screen_configs: (NSMutableDictionary *) screen_configs artifact_sources: (NSMutableDictionary *) artifact_sources artifacts: (NSMutableArray *) artifacts
+- (id) initWithGeneration: (common.modelGeneration *) generation bandwidth_alert: (BOOL) bandwidth_alert
 {
   self = [super init];
   __generation = [generation retain_stub];
   __generation_isset = YES;
-  __screen_configs = [screen_configs retain_stub];
-  __screen_configs_isset = YES;
-  __artifact_sources = [artifact_sources retain_stub];
-  __artifact_sources_isset = YES;
-  __artifacts = [artifacts retain_stub];
-  __artifacts_isset = YES;
+  __bandwidth_alert = bandwidth_alert;
+  __bandwidth_alert_isset = YES;
   return self;
 }
 
@@ -51,20 +47,10 @@
     __generation = [[decoder decodeObjectForKey: @"generation"] retain_stub];
     __generation_isset = YES;
   }
-  if ([decoder containsValueForKey: @"screen_configs"])
+  if ([decoder containsValueForKey: @"bandwidth_alert"])
   {
-    __screen_configs = [[decoder decodeObjectForKey: @"screen_configs"] retain_stub];
-    __screen_configs_isset = YES;
-  }
-  if ([decoder containsValueForKey: @"artifact_sources"])
-  {
-    __artifact_sources = [[decoder decodeObjectForKey: @"artifact_sources"] retain_stub];
-    __artifact_sources_isset = YES;
-  }
-  if ([decoder containsValueForKey: @"artifacts"])
-  {
-    __artifacts = [[decoder decodeObjectForKey: @"artifacts"] retain_stub];
-    __artifacts_isset = YES;
+    __bandwidth_alert = [decoder decodeBoolForKey: @"bandwidth_alert"];
+    __bandwidth_alert_isset = YES;
   }
   return self;
 }
@@ -75,34 +61,23 @@
   {
     [encoder encodeObject: __generation forKey: @"generation"];
   }
-  if (__screen_configs_isset)
+  if (__bandwidth_alert_isset)
   {
-    [encoder encodeObject: __screen_configs forKey: @"screen_configs"];
-  }
-  if (__artifact_sources_isset)
-  {
-    [encoder encodeObject: __artifact_sources forKey: @"artifact_sources"];
-  }
-  if (__artifacts_isset)
-  {
-    [encoder encodeObject: __artifacts forKey: @"artifacts"];
+    [encoder encodeBool: __bandwidth_alert forKey: @"bandwidth_alert"];
   }
 }
 
 - (void) dealloc
 {
   [__generation release_stub];
-  [__screen_configs release_stub];
-  [__artifact_sources release_stub];
-  [__artifacts release_stub];
   [super dealloc_stub];
 }
 
-- (Generation *) generation {
+- (common.modelGeneration *) generation {
   return [[__generation retain_stub] autorelease_stub];
 }
 
-- (void) setGeneration: (Generation *) generation {
+- (void) setGeneration: (common.modelGeneration *) generation {
   [generation retain_stub];
   [__generation release_stub];
   __generation = generation;
@@ -119,67 +94,21 @@
   __generation_isset = NO;
 }
 
-- (NSMutableDictionary *) screen_configs {
-  return [[__screen_configs retain_stub] autorelease_stub];
+- (BOOL) bandwidth_alert {
+  return __bandwidth_alert;
 }
 
-- (void) setScreen_configs: (NSMutableDictionary *) screen_configs {
-  [screen_configs retain_stub];
-  [__screen_configs release_stub];
-  __screen_configs = screen_configs;
-  __screen_configs_isset = YES;
+- (void) setBandwidth_alert: (BOOL) bandwidth_alert {
+  __bandwidth_alert = bandwidth_alert;
+  __bandwidth_alert_isset = YES;
 }
 
-- (BOOL) screen_configsIsSet {
-  return __screen_configs_isset;
+- (BOOL) bandwidth_alertIsSet {
+  return __bandwidth_alert_isset;
 }
 
-- (void) unsetScreen_configs {
-  [__screen_configs release_stub];
-  __screen_configs = nil;
-  __screen_configs_isset = NO;
-}
-
-- (NSMutableDictionary *) artifact_sources {
-  return [[__artifact_sources retain_stub] autorelease_stub];
-}
-
-- (void) setArtifact_sources: (NSMutableDictionary *) artifact_sources {
-  [artifact_sources retain_stub];
-  [__artifact_sources release_stub];
-  __artifact_sources = artifact_sources;
-  __artifact_sources_isset = YES;
-}
-
-- (BOOL) artifact_sourcesIsSet {
-  return __artifact_sources_isset;
-}
-
-- (void) unsetArtifact_sources {
-  [__artifact_sources release_stub];
-  __artifact_sources = nil;
-  __artifact_sources_isset = NO;
-}
-
-- (NSMutableArray *) artifacts {
-  return [[__artifacts retain_stub] autorelease_stub];
-}
-
-- (void) setArtifacts: (NSMutableArray *) artifacts {
-  [artifacts retain_stub];
-  [__artifacts release_stub];
-  __artifacts = artifacts;
-  __artifacts_isset = YES;
-}
-
-- (BOOL) artifactsIsSet {
-  return __artifacts_isset;
-}
-
-- (void) unsetArtifacts {
-  [__artifacts release_stub];
-  __artifacts = nil;
-  __artifacts_isset = NO;
+- (void) unsetBandwidth_alert {
+  __bandwidth_alert_isset = NO;
 }
 
 - (void) read: (id <TProtocol>) inProtocol
@@ -199,7 +128,7 @@
     {
       case 1:
         if (fieldType == TType_STRUCT) {
-          Generation *fieldValue = [[Generation alloc] init];
+          common.modelGeneration *fieldValue = [[common.modelGeneration alloc] init];
           [fieldValue read: inProtocol];
           [self setGeneration: fieldValue];
           [fieldValue release_stub];
@@ -208,63 +137,9 @@
         }
         break;
       case 2:
-        if (fieldType == TType_MAP) {
-          int _size0;
-          [inProtocol readMapBeginReturningKeyType: NULL valueType: NULL size: &_size0];
-          NSMutableDictionary * fieldValue = [[NSMutableDictionary alloc] initWithCapacity: _size0];
-          int _i1;
-          for (_i1 = 0; _i1 < _size0; ++_i1)
-          {
-            int64_t _key2 = [inProtocol readI64];
-            ScreenConfig *_val3 = [[ScreenConfig alloc] init];
-            [_val3 read: inProtocol];
-            [fieldValue setObject: _val3 forKey: [NSNumber numberWithLongLong: _key2]];
-            [_val3 release_stub];
-          }
-          [inProtocol readMapEnd];
-          [self setScreen_configs: fieldValue];
-          [fieldValue release_stub];
-        } else { 
-          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
-        }
-        break;
-      case 3:
-        if (fieldType == TType_MAP) {
-          int _size4;
-          [inProtocol readMapBeginReturningKeyType: NULL valueType: NULL size: &_size4];
-          NSMutableDictionary * fieldValue = [[NSMutableDictionary alloc] initWithCapacity: _size4];
-          int _i5;
-          for (_i5 = 0; _i5 < _size4; ++_i5)
-          {
-            int64_t _key6 = [inProtocol readI64];
-            ArtifactSource *_val7 = [[ArtifactSource alloc] init];
-            [_val7 read: inProtocol];
-            [fieldValue setObject: _val7 forKey: [NSNumber numberWithLongLong: _key6]];
-            [_val7 release_stub];
-          }
-          [inProtocol readMapEnd];
-          [self setArtifact_sources: fieldValue];
-          [fieldValue release_stub];
-        } else { 
-          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
-        }
-        break;
-      case 4:
-        if (fieldType == TType_LIST) {
-          int _size8;
-          [inProtocol readListBeginReturningElementType: NULL size: &_size8];
-          NSMutableArray * fieldValue = [[NSMutableArray alloc] initWithCapacity: _size8];
-          int _i9;
-          for (_i9 = 0; _i9 < _size8; ++_i9)
-          {
-            Artifact *_elem10 = [[Artifact alloc] init];
-            [_elem10 read: inProtocol];
-            [fieldValue addObject: _elem10];
-            [_elem10 release_stub];
-          }
-          [inProtocol readListEnd];
-          [self setArtifacts: fieldValue];
-          [fieldValue release_stub];
+        if (fieldType == TType_BOOL) {
+          BOOL fieldValue = [inProtocol readBool];
+          [self setBandwidth_alert: fieldValue];
         } else { 
           [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
         }
@@ -287,54 +162,10 @@
       [outProtocol writeFieldEnd];
     }
   }
-  if (__screen_configs_isset) {
-    if (__screen_configs != nil) {
-      [outProtocol writeFieldBeginWithName: @"screen_configs" type: TType_MAP fieldID: 2];
-      {
-        [outProtocol writeMapBeginWithKeyType: TType_I64 valueType: TType_STRUCT size: [__screen_configs count]];
-        NSEnumerator * _iter11 = [__screen_configs keyEnumerator];
-        id key12;
-        while ((key12 = [_iter11 nextObject]))
-        {
-          [outProtocol writeI64: [key12 longLongValue]];
-          [[__screen_configs objectForKey: key12] write: outProtocol];
-        }
-        [outProtocol writeMapEnd];
-      }
-      [outProtocol writeFieldEnd];
-    }
-  }
-  if (__artifact_sources_isset) {
-    if (__artifact_sources != nil) {
-      [outProtocol writeFieldBeginWithName: @"artifact_sources" type: TType_MAP fieldID: 3];
-      {
-        [outProtocol writeMapBeginWithKeyType: TType_I64 valueType: TType_STRUCT size: [__artifact_sources count]];
-        NSEnumerator * _iter13 = [__artifact_sources keyEnumerator];
-        id key14;
-        while ((key14 = [_iter13 nextObject]))
-        {
-          [outProtocol writeI64: [key14 longLongValue]];
-          [[__artifact_sources objectForKey: key14] write: outProtocol];
-        }
-        [outProtocol writeMapEnd];
-      }
-      [outProtocol writeFieldEnd];
-    }
-  }
-  if (__artifacts_isset) {
-    if (__artifacts != nil) {
-      [outProtocol writeFieldBeginWithName: @"artifacts" type: TType_LIST fieldID: 4];
-      {
-        [outProtocol writeListBeginWithElementType: TType_STRUCT size: [__artifacts count]];
-        int idx16;
-        for (idx16 = 0; idx16 < [__artifacts count]; idx16++)
-        {
-          [[__artifacts objectAtIndex: idx16] write: outProtocol];
-        }
-        [outProtocol writeListEnd];
-      }
-      [outProtocol writeFieldEnd];
-    }
+  if (__bandwidth_alert_isset) {
+    [outProtocol writeFieldBeginWithName: @"bandwidth_alert" type: TType_BOOL fieldID: 2];
+    [outProtocol writeBool: __bandwidth_alert];
+    [outProtocol writeFieldEnd];
   }
   [outProtocol writeFieldStop];
   [outProtocol writeStructEnd];
@@ -346,30 +177,18 @@
     @throw [TProtocolException exceptionWithName: @"TProtocolException"
                                reason: @"Required field 'generation' is not set."];
   }
-  if (!__screen_configs_isset) {
+  if (!__bandwidth_alert_isset) {
     @throw [TProtocolException exceptionWithName: @"TProtocolException"
-                               reason: @"Required field 'screen_configs' is not set."];
-  }
-  if (!__artifact_sources_isset) {
-    @throw [TProtocolException exceptionWithName: @"TProtocolException"
-                               reason: @"Required field 'artifact_sources' is not set."];
-  }
-  if (!__artifacts_isset) {
-    @throw [TProtocolException exceptionWithName: @"TProtocolException"
-                               reason: @"Required field 'artifacts' is not set."];
+                               reason: @"Required field 'bandwidth_alert' is not set."];
   }
 }
 
 - (NSString *) description {
-  NSMutableString * ms = [NSMutableString stringWithString: @"NextGenResponse("];
+  NSMutableString * ms = [NSMutableString stringWithString: @"common.apiNextGenResponse("];
   [ms appendString: @"generation:"];
   [ms appendFormat: @"%@", __generation];
-  [ms appendString: @",screen_configs:"];
-  [ms appendFormat: @"%@", __screen_configs];
-  [ms appendString: @",artifact_sources:"];
-  [ms appendFormat: @"%@", __artifact_sources];
-  [ms appendString: @",artifacts:"];
-  [ms appendFormat: @"%@", __artifacts];
+  [ms appendString: @",bandwidth_alert:"];
+  [ms appendFormat: @"%i", __bandwidth_alert];
   [ms appendString: @")"];
   return [NSString stringWithString: ms];
 }
@@ -377,7 +196,7 @@
 @end
 
 
-@implementation apiConstants
+@implementation common.apiapiConstants
 + (void) initialize {
 }
 @end

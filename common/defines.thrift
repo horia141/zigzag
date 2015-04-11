@@ -3,6 +3,7 @@ include "model.thrift"
 
 namespace py common.defines
 namespace java com.zigzag.common.defines
+namespace cocoa common.defines
 
 const string TIME_FORMAT = '%B %d, %Y %I:%M:%S %p %Z';
 
@@ -15,6 +16,12 @@ const list<model.ArtifactSource> ARTIFACT_SOURCES = [
     'subdomains': ['pics']},
     {'id': 2, 'name': 'Imgur', 'start_page_uri': 'http://imgur.com'}
 ]
+
+const i32 API_SERVING_PORT = 9000;
+const string API_SERVING_LOG_PATH = 'var/api_serving.log';
+
+const i32 RES_SERVING_PORT = 9001;
+const string RES_SERVING_LOG_PATH = 'var/res_serving.log';
 
 const i32 FETCHER_PORT = 16000;
 const string FETCHER_LOG_PATH = 'var/fetcher.log';
@@ -46,7 +53,3 @@ const i32 DEFAULT_TIME_BETWEEN_FRAMES_MS = 75;
 
 const i32 PHOTO_MAX_WIDTH = 2048;
 const i32 PHOTO_MAX_HEIGHT = 2048;
-
-const string PHOTO_TOO_LARGE = 'too-large';
-const string PHOTO_IMAGE = 'image';
-const string PHOTO_VIDEO = 'video';
