@@ -114,6 +114,52 @@ class TileData(object):
   def __ne__(self, other):
     return not (self == other)
 
+class TooBigPhotoData(object):
+
+  thrift_spec = (
+  )
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('TooBigPhotoData')
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
 class ImagePhotoData(object):
   """
   Attributes:
@@ -211,7 +257,6 @@ class VideoPhotoData(object):
   Attributes:
    - first_frame
    - video
-   - frame_count
    - frames_per_sec
    - time_between_frames_ms
   """
@@ -220,15 +265,13 @@ class VideoPhotoData(object):
     None, # 0
     (1, TType.STRUCT, 'first_frame', (TileData, TileData.thrift_spec), None, ), # 1
     (2, TType.STRUCT, 'video', (TileData, TileData.thrift_spec), None, ), # 2
-    (3, TType.I32, 'frame_count', None, None, ), # 3
-    (4, TType.I32, 'frames_per_sec', None, None, ), # 4
-    (5, TType.I32, 'time_between_frames_ms', None, None, ), # 5
+    (3, TType.I32, 'frames_per_sec', None, None, ), # 3
+    (4, TType.I32, 'time_between_frames_ms', None, None, ), # 4
   )
 
-  def __init__(self, first_frame=None, video=None, frame_count=None, frames_per_sec=None, time_between_frames_ms=None,):
+  def __init__(self, first_frame=None, video=None, frames_per_sec=None, time_between_frames_ms=None,):
     self.first_frame = first_frame
     self.video = video
-    self.frame_count = frame_count
     self.frames_per_sec = frames_per_sec
     self.time_between_frames_ms = time_between_frames_ms
 
@@ -255,15 +298,10 @@ class VideoPhotoData(object):
           iprot.skip(ftype)
       elif fid == 3:
         if ftype == TType.I32:
-          self.frame_count = iprot.readI32();
-        else:
-          iprot.skip(ftype)
-      elif fid == 4:
-        if ftype == TType.I32:
           self.frames_per_sec = iprot.readI32();
         else:
           iprot.skip(ftype)
-      elif fid == 5:
+      elif fid == 4:
         if ftype == TType.I32:
           self.time_between_frames_ms = iprot.readI32();
         else:
@@ -286,16 +324,12 @@ class VideoPhotoData(object):
       oprot.writeFieldBegin('video', TType.STRUCT, 2)
       self.video.write(oprot)
       oprot.writeFieldEnd()
-    if self.frame_count is not None:
-      oprot.writeFieldBegin('frame_count', TType.I32, 3)
-      oprot.writeI32(self.frame_count)
-      oprot.writeFieldEnd()
     if self.frames_per_sec is not None:
-      oprot.writeFieldBegin('frames_per_sec', TType.I32, 4)
+      oprot.writeFieldBegin('frames_per_sec', TType.I32, 3)
       oprot.writeI32(self.frames_per_sec)
       oprot.writeFieldEnd()
     if self.time_between_frames_ms is not None:
-      oprot.writeFieldBegin('time_between_frames_ms', TType.I32, 5)
+      oprot.writeFieldBegin('time_between_frames_ms', TType.I32, 4)
       oprot.writeI32(self.time_between_frames_ms)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -306,8 +340,6 @@ class VideoPhotoData(object):
       raise TProtocol.TProtocolException(message='Required field first_frame is unset!')
     if self.video is None:
       raise TProtocol.TProtocolException(message='Required field video is unset!')
-    if self.frame_count is None:
-      raise TProtocol.TProtocolException(message='Required field frame_count is unset!')
     if self.frames_per_sec is None:
       raise TProtocol.TProtocolException(message='Required field frames_per_sec is unset!')
     if self.time_between_frames_ms is None:
@@ -319,9 +351,102 @@ class VideoPhotoData(object):
     value = 17
     value = (value * 31) ^ hash(self.first_frame)
     value = (value * 31) ^ hash(self.video)
-    value = (value * 31) ^ hash(self.frame_count)
     value = (value * 31) ^ hash(self.frames_per_sec)
     value = (value * 31) ^ hash(self.time_between_frames_ms)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class PhotoData(object):
+  """
+  Attributes:
+   - too_big_photo_data
+   - image_photo_data
+   - video_photo_data
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'too_big_photo_data', (TooBigPhotoData, TooBigPhotoData.thrift_spec), None, ), # 1
+    (2, TType.STRUCT, 'image_photo_data', (ImagePhotoData, ImagePhotoData.thrift_spec), None, ), # 2
+    (3, TType.STRUCT, 'video_photo_data', (VideoPhotoData, VideoPhotoData.thrift_spec), None, ), # 3
+  )
+
+  def __init__(self, too_big_photo_data=None, image_photo_data=None, video_photo_data=None,):
+    self.too_big_photo_data = too_big_photo_data
+    self.image_photo_data = image_photo_data
+    self.video_photo_data = video_photo_data
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRUCT:
+          self.too_big_photo_data = TooBigPhotoData()
+          self.too_big_photo_data.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRUCT:
+          self.image_photo_data = ImagePhotoData()
+          self.image_photo_data.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.STRUCT:
+          self.video_photo_data = VideoPhotoData()
+          self.video_photo_data.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('PhotoData')
+    if self.too_big_photo_data is not None:
+      oprot.writeFieldBegin('too_big_photo_data', TType.STRUCT, 1)
+      self.too_big_photo_data.write(oprot)
+      oprot.writeFieldEnd()
+    if self.image_photo_data is not None:
+      oprot.writeFieldBegin('image_photo_data', TType.STRUCT, 2)
+      self.image_photo_data.write(oprot)
+      oprot.writeFieldEnd()
+    if self.video_photo_data is not None:
+      oprot.writeFieldBegin('video_photo_data', TType.STRUCT, 3)
+      self.video_photo_data.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.too_big_photo_data)
+    value = (value * 31) ^ hash(self.image_photo_data)
+    value = (value * 31) ^ hash(self.video_photo_data)
     return value
 
   def __repr__(self):
@@ -342,8 +467,7 @@ class PhotoDescription(object):
    - description
    - source_uri
    - original_uri_path
-   - image_data
-   - video_data
+   - photo_data
   """
 
   thrift_spec = (
@@ -352,17 +476,15 @@ class PhotoDescription(object):
     (2, TType.STRING, 'description', None, None, ), # 2
     (3, TType.STRING, 'source_uri', None, None, ), # 3
     (4, TType.STRING, 'original_uri_path', None, None, ), # 4
-    (5, TType.MAP, 'image_data', (TType.I64,None,TType.STRUCT,(ImagePhotoData, ImagePhotoData.thrift_spec)), None, ), # 5
-    (6, TType.MAP, 'video_data', (TType.I64,None,TType.STRUCT,(VideoPhotoData, VideoPhotoData.thrift_spec)), None, ), # 6
+    (5, TType.MAP, 'photo_data', (TType.I64,None,TType.STRUCT,(PhotoData, PhotoData.thrift_spec)), None, ), # 5
   )
 
-  def __init__(self, subtitle=None, description=None, source_uri=None, original_uri_path=None, image_data=None, video_data=None,):
+  def __init__(self, subtitle=None, description=None, source_uri=None, original_uri_path=None, photo_data=None,):
     self.subtitle = subtitle
     self.description = description
     self.source_uri = source_uri
     self.original_uri_path = original_uri_path
-    self.image_data = image_data
-    self.video_data = video_data
+    self.photo_data = photo_data
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -395,25 +517,13 @@ class PhotoDescription(object):
           iprot.skip(ftype)
       elif fid == 5:
         if ftype == TType.MAP:
-          self.image_data = {}
+          self.photo_data = {}
           (_ktype8, _vtype9, _size7 ) = iprot.readMapBegin()
           for _i11 in xrange(_size7):
             _key12 = iprot.readI64();
-            _val13 = ImagePhotoData()
+            _val13 = PhotoData()
             _val13.read(iprot)
-            self.image_data[_key12] = _val13
-          iprot.readMapEnd()
-        else:
-          iprot.skip(ftype)
-      elif fid == 6:
-        if ftype == TType.MAP:
-          self.video_data = {}
-          (_ktype15, _vtype16, _size14 ) = iprot.readMapBegin()
-          for _i18 in xrange(_size14):
-            _key19 = iprot.readI64();
-            _val20 = VideoPhotoData()
-            _val20.read(iprot)
-            self.video_data[_key19] = _val20
+            self.photo_data[_key12] = _val13
           iprot.readMapEnd()
         else:
           iprot.skip(ftype)
@@ -443,20 +553,12 @@ class PhotoDescription(object):
       oprot.writeFieldBegin('original_uri_path', TType.STRING, 4)
       oprot.writeString(self.original_uri_path)
       oprot.writeFieldEnd()
-    if self.image_data is not None:
-      oprot.writeFieldBegin('image_data', TType.MAP, 5)
-      oprot.writeMapBegin(TType.I64, TType.STRUCT, len(self.image_data))
-      for kiter21,viter22 in self.image_data.items():
-        oprot.writeI64(kiter21)
-        viter22.write(oprot)
-      oprot.writeMapEnd()
-      oprot.writeFieldEnd()
-    if self.video_data is not None:
-      oprot.writeFieldBegin('video_data', TType.MAP, 6)
-      oprot.writeMapBegin(TType.I64, TType.STRUCT, len(self.video_data))
-      for kiter23,viter24 in self.video_data.items():
-        oprot.writeI64(kiter23)
-        viter24.write(oprot)
+    if self.photo_data is not None:
+      oprot.writeFieldBegin('photo_data', TType.MAP, 5)
+      oprot.writeMapBegin(TType.I64, TType.STRUCT, len(self.photo_data))
+      for kiter14,viter15 in self.photo_data.items():
+        oprot.writeI64(kiter14)
+        viter15.write(oprot)
       oprot.writeMapEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -476,8 +578,7 @@ class PhotoDescription(object):
     value = (value * 31) ^ hash(self.description)
     value = (value * 31) ^ hash(self.source_uri)
     value = (value * 31) ^ hash(self.original_uri_path)
-    value = (value * 31) ^ hash(self.image_data)
-    value = (value * 31) ^ hash(self.video_data)
+    value = (value * 31) ^ hash(self.photo_data)
     return value
 
   def __repr__(self):
@@ -541,10 +642,10 @@ class ArtifactSource(object):
       elif fid == 4:
         if ftype == TType.SET:
           self.subdomains = set()
-          (_etype28, _size25) = iprot.readSetBegin()
-          for _i29 in xrange(_size25):
-            _elem30 = iprot.readString();
-            self.subdomains.add(_elem30)
+          (_etype19, _size16) = iprot.readSetBegin()
+          for _i20 in xrange(_size16):
+            _elem21 = iprot.readString();
+            self.subdomains.add(_elem21)
           iprot.readSetEnd()
         else:
           iprot.skip(ftype)
@@ -573,8 +674,8 @@ class ArtifactSource(object):
     if self.subdomains is not None:
       oprot.writeFieldBegin('subdomains', TType.SET, 4)
       oprot.writeSetBegin(TType.STRING, len(self.subdomains))
-      for iter31 in self.subdomains:
-        oprot.writeString(iter31)
+      for iter22 in self.subdomains:
+        oprot.writeString(iter22)
       oprot.writeSetEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -748,11 +849,11 @@ class Artifact(object):
       elif fid == 3:
         if ftype == TType.LIST:
           self.photo_descriptions = []
-          (_etype35, _size32) = iprot.readListBegin()
-          for _i36 in xrange(_size32):
-            _elem37 = PhotoDescription()
-            _elem37.read(iprot)
-            self.photo_descriptions.append(_elem37)
+          (_etype26, _size23) = iprot.readListBegin()
+          for _i27 in xrange(_size23):
+            _elem28 = PhotoDescription()
+            _elem28.read(iprot)
+            self.photo_descriptions.append(_elem28)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -777,8 +878,8 @@ class Artifact(object):
     if self.photo_descriptions is not None:
       oprot.writeFieldBegin('photo_descriptions', TType.LIST, 3)
       oprot.writeListBegin(TType.STRUCT, len(self.photo_descriptions))
-      for iter38 in self.photo_descriptions:
-        iter38.write(oprot)
+      for iter29 in self.photo_descriptions:
+        iter29.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -868,35 +969,35 @@ class Generation(object):
       elif fid == 4:
         if ftype == TType.MAP:
           self.artifact_sources = {}
-          (_ktype40, _vtype41, _size39 ) = iprot.readMapBegin()
-          for _i43 in xrange(_size39):
-            _key44 = iprot.readI64();
-            _val45 = ArtifactSource()
-            _val45.read(iprot)
-            self.artifact_sources[_key44] = _val45
+          (_ktype31, _vtype32, _size30 ) = iprot.readMapBegin()
+          for _i34 in xrange(_size30):
+            _key35 = iprot.readI64();
+            _val36 = ArtifactSource()
+            _val36.read(iprot)
+            self.artifact_sources[_key35] = _val36
           iprot.readMapEnd()
         else:
           iprot.skip(ftype)
       elif fid == 5:
         if ftype == TType.MAP:
           self.screen_configs = {}
-          (_ktype47, _vtype48, _size46 ) = iprot.readMapBegin()
-          for _i50 in xrange(_size46):
-            _key51 = iprot.readI64();
-            _val52 = ScreenConfig()
-            _val52.read(iprot)
-            self.screen_configs[_key51] = _val52
+          (_ktype38, _vtype39, _size37 ) = iprot.readMapBegin()
+          for _i41 in xrange(_size37):
+            _key42 = iprot.readI64();
+            _val43 = ScreenConfig()
+            _val43.read(iprot)
+            self.screen_configs[_key42] = _val43
           iprot.readMapEnd()
         else:
           iprot.skip(ftype)
       elif fid == 6:
         if ftype == TType.LIST:
           self.artifacts = []
-          (_etype56, _size53) = iprot.readListBegin()
-          for _i57 in xrange(_size53):
-            _elem58 = Artifact()
-            _elem58.read(iprot)
-            self.artifacts.append(_elem58)
+          (_etype47, _size44) = iprot.readListBegin()
+          for _i48 in xrange(_size44):
+            _elem49 = Artifact()
+            _elem49.read(iprot)
+            self.artifacts.append(_elem49)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -925,24 +1026,24 @@ class Generation(object):
     if self.artifact_sources is not None:
       oprot.writeFieldBegin('artifact_sources', TType.MAP, 4)
       oprot.writeMapBegin(TType.I64, TType.STRUCT, len(self.artifact_sources))
-      for kiter59,viter60 in self.artifact_sources.items():
-        oprot.writeI64(kiter59)
-        viter60.write(oprot)
+      for kiter50,viter51 in self.artifact_sources.items():
+        oprot.writeI64(kiter50)
+        viter51.write(oprot)
       oprot.writeMapEnd()
       oprot.writeFieldEnd()
     if self.screen_configs is not None:
       oprot.writeFieldBegin('screen_configs', TType.MAP, 5)
       oprot.writeMapBegin(TType.I64, TType.STRUCT, len(self.screen_configs))
-      for kiter61,viter62 in self.screen_configs.items():
-        oprot.writeI64(kiter61)
-        viter62.write(oprot)
+      for kiter52,viter53 in self.screen_configs.items():
+        oprot.writeI64(kiter52)
+        viter53.write(oprot)
       oprot.writeMapEnd()
       oprot.writeFieldEnd()
     if self.artifacts is not None:
       oprot.writeFieldBegin('artifacts', TType.LIST, 6)
       oprot.writeListBegin(TType.STRUCT, len(self.artifacts))
-      for iter63 in self.artifacts:
-        iter63.write(oprot)
+      for iter54 in self.artifacts:
+        iter54.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()

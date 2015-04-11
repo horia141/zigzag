@@ -6,6 +6,8 @@ import urllib2
 import comlink
 import comlink.serializer.pickle as serializer
 import comlink.transport.localipc as transport
+from thrift.protocol import TJSONProtocol
+from thrift.transport import TTransport
 
 import common.defines.constants as defines
 import explorer.analyzers as analyzers
@@ -75,10 +77,16 @@ def main():
                     logging.exception(e)
                 continue
 
+            ttransport = TTransport.TMemoryBuffer()
+            tprotocol = TJSONProtocol.TJSONProtocol(ttransport)
+            for image_description in images_description:
+                image_description.write(tprotocol)
+            images_description_coded = ttransport.getvalue()
+
             logging.info('Saving artifact "%s" to database', artifact_desc['title'])
             artifact = models.Artifact.add(artifact_desc['page_url'], 
                 generation, models.ArtifactSource.objects.get(id=analyzer.source.id), artifact_desc['title'],
-                images_description)
+                images_description_coded)
 
             logging.info('Finished processing for "%s"', artifact.title)
 

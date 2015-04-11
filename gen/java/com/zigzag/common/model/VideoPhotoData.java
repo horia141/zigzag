@@ -40,9 +40,8 @@ public class VideoPhotoData implements org.apache.thrift.TBase<VideoPhotoData, V
 
   private static final org.apache.thrift.protocol.TField FIRST_FRAME_FIELD_DESC = new org.apache.thrift.protocol.TField("first_frame", org.apache.thrift.protocol.TType.STRUCT, (short)1);
   private static final org.apache.thrift.protocol.TField VIDEO_FIELD_DESC = new org.apache.thrift.protocol.TField("video", org.apache.thrift.protocol.TType.STRUCT, (short)2);
-  private static final org.apache.thrift.protocol.TField FRAME_COUNT_FIELD_DESC = new org.apache.thrift.protocol.TField("frame_count", org.apache.thrift.protocol.TType.I32, (short)3);
-  private static final org.apache.thrift.protocol.TField FRAMES_PER_SEC_FIELD_DESC = new org.apache.thrift.protocol.TField("frames_per_sec", org.apache.thrift.protocol.TType.I32, (short)4);
-  private static final org.apache.thrift.protocol.TField TIME_BETWEEN_FRAMES_MS_FIELD_DESC = new org.apache.thrift.protocol.TField("time_between_frames_ms", org.apache.thrift.protocol.TType.I32, (short)5);
+  private static final org.apache.thrift.protocol.TField FRAMES_PER_SEC_FIELD_DESC = new org.apache.thrift.protocol.TField("frames_per_sec", org.apache.thrift.protocol.TType.I32, (short)3);
+  private static final org.apache.thrift.protocol.TField TIME_BETWEEN_FRAMES_MS_FIELD_DESC = new org.apache.thrift.protocol.TField("time_between_frames_ms", org.apache.thrift.protocol.TType.I32, (short)4);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -52,7 +51,6 @@ public class VideoPhotoData implements org.apache.thrift.TBase<VideoPhotoData, V
 
   public TileData first_frame; // required
   public TileData video; // required
-  public int frame_count; // required
   public int frames_per_sec; // required
   public int time_between_frames_ms; // required
 
@@ -60,9 +58,8 @@ public class VideoPhotoData implements org.apache.thrift.TBase<VideoPhotoData, V
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
     FIRST_FRAME((short)1, "first_frame"),
     VIDEO((short)2, "video"),
-    FRAME_COUNT((short)3, "frame_count"),
-    FRAMES_PER_SEC((short)4, "frames_per_sec"),
-    TIME_BETWEEN_FRAMES_MS((short)5, "time_between_frames_ms");
+    FRAMES_PER_SEC((short)3, "frames_per_sec"),
+    TIME_BETWEEN_FRAMES_MS((short)4, "time_between_frames_ms");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -81,11 +78,9 @@ public class VideoPhotoData implements org.apache.thrift.TBase<VideoPhotoData, V
           return FIRST_FRAME;
         case 2: // VIDEO
           return VIDEO;
-        case 3: // FRAME_COUNT
-          return FRAME_COUNT;
-        case 4: // FRAMES_PER_SEC
+        case 3: // FRAMES_PER_SEC
           return FRAMES_PER_SEC;
-        case 5: // TIME_BETWEEN_FRAMES_MS
+        case 4: // TIME_BETWEEN_FRAMES_MS
           return TIME_BETWEEN_FRAMES_MS;
         default:
           return null;
@@ -127,9 +122,8 @@ public class VideoPhotoData implements org.apache.thrift.TBase<VideoPhotoData, V
   }
 
   // isset id assignments
-  private static final int __FRAME_COUNT_ISSET_ID = 0;
-  private static final int __FRAMES_PER_SEC_ISSET_ID = 1;
-  private static final int __TIME_BETWEEN_FRAMES_MS_ISSET_ID = 2;
+  private static final int __FRAMES_PER_SEC_ISSET_ID = 0;
+  private static final int __TIME_BETWEEN_FRAMES_MS_ISSET_ID = 1;
   private byte __isset_bitfield = 0;
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
@@ -138,8 +132,6 @@ public class VideoPhotoData implements org.apache.thrift.TBase<VideoPhotoData, V
         new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TileData.class)));
     tmpMap.put(_Fields.VIDEO, new org.apache.thrift.meta_data.FieldMetaData("video", org.apache.thrift.TFieldRequirementType.REQUIRED, 
         new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TileData.class)));
-    tmpMap.put(_Fields.FRAME_COUNT, new org.apache.thrift.meta_data.FieldMetaData("frame_count", org.apache.thrift.TFieldRequirementType.REQUIRED, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.FRAMES_PER_SEC, new org.apache.thrift.meta_data.FieldMetaData("frames_per_sec", org.apache.thrift.TFieldRequirementType.REQUIRED, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.TIME_BETWEEN_FRAMES_MS, new org.apache.thrift.meta_data.FieldMetaData("time_between_frames_ms", org.apache.thrift.TFieldRequirementType.REQUIRED, 
@@ -154,15 +146,12 @@ public class VideoPhotoData implements org.apache.thrift.TBase<VideoPhotoData, V
   public VideoPhotoData(
     TileData first_frame,
     TileData video,
-    int frame_count,
     int frames_per_sec,
     int time_between_frames_ms)
   {
     this();
     this.first_frame = first_frame;
     this.video = video;
-    this.frame_count = frame_count;
-    setFrame_countIsSet(true);
     this.frames_per_sec = frames_per_sec;
     setFrames_per_secIsSet(true);
     this.time_between_frames_ms = time_between_frames_ms;
@@ -180,7 +169,6 @@ public class VideoPhotoData implements org.apache.thrift.TBase<VideoPhotoData, V
     if (other.isSetVideo()) {
       this.video = new TileData(other.video);
     }
-    this.frame_count = other.frame_count;
     this.frames_per_sec = other.frames_per_sec;
     this.time_between_frames_ms = other.time_between_frames_ms;
   }
@@ -193,8 +181,6 @@ public class VideoPhotoData implements org.apache.thrift.TBase<VideoPhotoData, V
   public void clear() {
     this.first_frame = null;
     this.video = null;
-    setFrame_countIsSet(false);
-    this.frame_count = 0;
     setFrames_per_secIsSet(false);
     this.frames_per_sec = 0;
     setTime_between_frames_msIsSet(false);
@@ -247,29 +233,6 @@ public class VideoPhotoData implements org.apache.thrift.TBase<VideoPhotoData, V
     if (!value) {
       this.video = null;
     }
-  }
-
-  public int getFrame_count() {
-    return this.frame_count;
-  }
-
-  public VideoPhotoData setFrame_count(int frame_count) {
-    this.frame_count = frame_count;
-    setFrame_countIsSet(true);
-    return this;
-  }
-
-  public void unsetFrame_count() {
-    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __FRAME_COUNT_ISSET_ID);
-  }
-
-  /** Returns true if field frame_count is set (has been assigned a value) and false otherwise */
-  public boolean isSetFrame_count() {
-    return EncodingUtils.testBit(__isset_bitfield, __FRAME_COUNT_ISSET_ID);
-  }
-
-  public void setFrame_countIsSet(boolean value) {
-    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __FRAME_COUNT_ISSET_ID, value);
   }
 
   public int getFrames_per_sec() {
@@ -336,14 +299,6 @@ public class VideoPhotoData implements org.apache.thrift.TBase<VideoPhotoData, V
       }
       break;
 
-    case FRAME_COUNT:
-      if (value == null) {
-        unsetFrame_count();
-      } else {
-        setFrame_count((Integer)value);
-      }
-      break;
-
     case FRAMES_PER_SEC:
       if (value == null) {
         unsetFrames_per_sec();
@@ -371,9 +326,6 @@ public class VideoPhotoData implements org.apache.thrift.TBase<VideoPhotoData, V
     case VIDEO:
       return getVideo();
 
-    case FRAME_COUNT:
-      return Integer.valueOf(getFrame_count());
-
     case FRAMES_PER_SEC:
       return Integer.valueOf(getFrames_per_sec());
 
@@ -395,8 +347,6 @@ public class VideoPhotoData implements org.apache.thrift.TBase<VideoPhotoData, V
       return isSetFirst_frame();
     case VIDEO:
       return isSetVideo();
-    case FRAME_COUNT:
-      return isSetFrame_count();
     case FRAMES_PER_SEC:
       return isSetFrames_per_sec();
     case TIME_BETWEEN_FRAMES_MS:
@@ -436,15 +386,6 @@ public class VideoPhotoData implements org.apache.thrift.TBase<VideoPhotoData, V
         return false;
     }
 
-    boolean this_present_frame_count = true;
-    boolean that_present_frame_count = true;
-    if (this_present_frame_count || that_present_frame_count) {
-      if (!(this_present_frame_count && that_present_frame_count))
-        return false;
-      if (this.frame_count != that.frame_count)
-        return false;
-    }
-
     boolean this_present_frames_per_sec = true;
     boolean that_present_frames_per_sec = true;
     if (this_present_frames_per_sec || that_present_frames_per_sec) {
@@ -479,11 +420,6 @@ public class VideoPhotoData implements org.apache.thrift.TBase<VideoPhotoData, V
     list.add(present_video);
     if (present_video)
       list.add(video);
-
-    boolean present_frame_count = true;
-    list.add(present_frame_count);
-    if (present_frame_count)
-      list.add(frame_count);
 
     boolean present_frames_per_sec = true;
     list.add(present_frames_per_sec);
@@ -522,16 +458,6 @@ public class VideoPhotoData implements org.apache.thrift.TBase<VideoPhotoData, V
     }
     if (isSetVideo()) {
       lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.video, other.video);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
-    lastComparison = Boolean.valueOf(isSetFrame_count()).compareTo(other.isSetFrame_count());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetFrame_count()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.frame_count, other.frame_count);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -592,10 +518,6 @@ public class VideoPhotoData implements org.apache.thrift.TBase<VideoPhotoData, V
     }
     first = false;
     if (!first) sb.append(", ");
-    sb.append("frame_count:");
-    sb.append(this.frame_count);
-    first = false;
-    if (!first) sb.append(", ");
     sb.append("frames_per_sec:");
     sb.append(this.frames_per_sec);
     first = false;
@@ -615,7 +537,6 @@ public class VideoPhotoData implements org.apache.thrift.TBase<VideoPhotoData, V
     if (video == null) {
       throw new org.apache.thrift.protocol.TProtocolException("Required field 'video' was not present! Struct: " + toString());
     }
-    // alas, we cannot check 'frame_count' because it's a primitive and you chose the non-beans generator.
     // alas, we cannot check 'frames_per_sec' because it's a primitive and you chose the non-beans generator.
     // alas, we cannot check 'time_between_frames_ms' because it's a primitive and you chose the non-beans generator.
     // check for sub-struct validity
@@ -681,15 +602,7 @@ public class VideoPhotoData implements org.apache.thrift.TBase<VideoPhotoData, V
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 3: // FRAME_COUNT
-            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.frame_count = iprot.readI32();
-              struct.setFrame_countIsSet(true);
-            } else { 
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-            }
-            break;
-          case 4: // FRAMES_PER_SEC
+          case 3: // FRAMES_PER_SEC
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.frames_per_sec = iprot.readI32();
               struct.setFrames_per_secIsSet(true);
@@ -697,7 +610,7 @@ public class VideoPhotoData implements org.apache.thrift.TBase<VideoPhotoData, V
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 5: // TIME_BETWEEN_FRAMES_MS
+          case 4: // TIME_BETWEEN_FRAMES_MS
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.time_between_frames_ms = iprot.readI32();
               struct.setTime_between_frames_msIsSet(true);
@@ -713,9 +626,6 @@ public class VideoPhotoData implements org.apache.thrift.TBase<VideoPhotoData, V
       iprot.readStructEnd();
 
       // check for required fields of primitive type, which can't be checked in the validate method
-      if (!struct.isSetFrame_count()) {
-        throw new org.apache.thrift.protocol.TProtocolException("Required field 'frame_count' was not found in serialized data! Struct: " + toString());
-      }
       if (!struct.isSetFrames_per_sec()) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'frames_per_sec' was not found in serialized data! Struct: " + toString());
       }
@@ -739,9 +649,6 @@ public class VideoPhotoData implements org.apache.thrift.TBase<VideoPhotoData, V
         struct.video.write(oprot);
         oprot.writeFieldEnd();
       }
-      oprot.writeFieldBegin(FRAME_COUNT_FIELD_DESC);
-      oprot.writeI32(struct.frame_count);
-      oprot.writeFieldEnd();
       oprot.writeFieldBegin(FRAMES_PER_SEC_FIELD_DESC);
       oprot.writeI32(struct.frames_per_sec);
       oprot.writeFieldEnd();
@@ -767,7 +674,6 @@ public class VideoPhotoData implements org.apache.thrift.TBase<VideoPhotoData, V
       TTupleProtocol oprot = (TTupleProtocol) prot;
       struct.first_frame.write(oprot);
       struct.video.write(oprot);
-      oprot.writeI32(struct.frame_count);
       oprot.writeI32(struct.frames_per_sec);
       oprot.writeI32(struct.time_between_frames_ms);
     }
@@ -781,8 +687,6 @@ public class VideoPhotoData implements org.apache.thrift.TBase<VideoPhotoData, V
       struct.video = new TileData();
       struct.video.read(iprot);
       struct.setVideoIsSet(true);
-      struct.frame_count = iprot.readI32();
-      struct.setFrame_countIsSet(true);
       struct.frames_per_sec = iprot.readI32();
       struct.setFrames_per_secIsSet(true);
       struct.time_between_frames_ms = iprot.readI32();

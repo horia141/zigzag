@@ -626,13 +626,13 @@ public class ArtifactSource implements org.apache.thrift.TBase<ArtifactSource, A
           case 4: // SUBDOMAINS
             if (schemeField.type == org.apache.thrift.protocol.TType.SET) {
               {
-                org.apache.thrift.protocol.TSet _set28 = iprot.readSetBegin();
-                struct.subdomains = new HashSet<String>(2*_set28.size);
-                String _elem29;
-                for (int _i30 = 0; _i30 < _set28.size; ++_i30)
+                org.apache.thrift.protocol.TSet _set18 = iprot.readSetBegin();
+                struct.subdomains = new HashSet<String>(2*_set18.size);
+                String _elem19;
+                for (int _i20 = 0; _i20 < _set18.size; ++_i20)
                 {
-                  _elem29 = iprot.readString();
-                  struct.subdomains.add(_elem29);
+                  _elem19 = iprot.readString();
+                  struct.subdomains.add(_elem19);
                 }
                 iprot.readSetEnd();
               }
@@ -677,9 +677,9 @@ public class ArtifactSource implements org.apache.thrift.TBase<ArtifactSource, A
           oprot.writeFieldBegin(SUBDOMAINS_FIELD_DESC);
           {
             oprot.writeSetBegin(new org.apache.thrift.protocol.TSet(org.apache.thrift.protocol.TType.STRING, struct.subdomains.size()));
-            for (String _iter31 : struct.subdomains)
+            for (String _iter21 : struct.subdomains)
             {
-              oprot.writeString(_iter31);
+              oprot.writeString(_iter21);
             }
             oprot.writeSetEnd();
           }
@@ -714,9 +714,9 @@ public class ArtifactSource implements org.apache.thrift.TBase<ArtifactSource, A
       if (struct.isSetSubdomains()) {
         {
           oprot.writeI32(struct.subdomains.size());
-          for (String _iter32 : struct.subdomains)
+          for (String _iter22 : struct.subdomains)
           {
-            oprot.writeString(_iter32);
+            oprot.writeString(_iter22);
           }
         }
       }
@@ -734,13 +734,13 @@ public class ArtifactSource implements org.apache.thrift.TBase<ArtifactSource, A
       BitSet incoming = iprot.readBitSet(1);
       if (incoming.get(0)) {
         {
-          org.apache.thrift.protocol.TSet _set33 = new org.apache.thrift.protocol.TSet(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-          struct.subdomains = new HashSet<String>(2*_set33.size);
-          String _elem34;
-          for (int _i35 = 0; _i35 < _set33.size; ++_i35)
+          org.apache.thrift.protocol.TSet _set23 = new org.apache.thrift.protocol.TSet(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+          struct.subdomains = new HashSet<String>(2*_set23.size);
+          String _elem24;
+          for (int _i25 = 0; _i25 < _set23.size; ++_i25)
           {
-            _elem34 = iprot.readString();
-            struct.subdomains.add(_elem34);
+            _elem24 = iprot.readString();
+            struct.subdomains.add(_elem24);
           }
         }
         struct.setSubdomainsIsSet(true);

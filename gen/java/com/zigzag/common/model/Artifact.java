@@ -540,14 +540,14 @@ public class Artifact implements org.apache.thrift.TBase<Artifact, Artifact._Fie
           case 3: // PHOTO_DESCRIPTIONS
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list36 = iprot.readListBegin();
-                struct.photo_descriptions = new ArrayList<PhotoDescription>(_list36.size);
-                PhotoDescription _elem37;
-                for (int _i38 = 0; _i38 < _list36.size; ++_i38)
+                org.apache.thrift.protocol.TList _list26 = iprot.readListBegin();
+                struct.photo_descriptions = new ArrayList<PhotoDescription>(_list26.size);
+                PhotoDescription _elem27;
+                for (int _i28 = 0; _i28 < _list26.size; ++_i28)
                 {
-                  _elem37 = new PhotoDescription();
-                  _elem37.read(iprot);
-                  struct.photo_descriptions.add(_elem37);
+                  _elem27 = new PhotoDescription();
+                  _elem27.read(iprot);
+                  struct.photo_descriptions.add(_elem27);
                 }
                 iprot.readListEnd();
               }
@@ -585,9 +585,9 @@ public class Artifact implements org.apache.thrift.TBase<Artifact, Artifact._Fie
         oprot.writeFieldBegin(PHOTO_DESCRIPTIONS_FIELD_DESC);
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.photo_descriptions.size()));
-          for (PhotoDescription _iter39 : struct.photo_descriptions)
+          for (PhotoDescription _iter29 : struct.photo_descriptions)
           {
-            _iter39.write(oprot);
+            _iter29.write(oprot);
           }
           oprot.writeListEnd();
         }
@@ -614,9 +614,9 @@ public class Artifact implements org.apache.thrift.TBase<Artifact, Artifact._Fie
       oprot.writeString(struct.title);
       {
         oprot.writeI32(struct.photo_descriptions.size());
-        for (PhotoDescription _iter40 : struct.photo_descriptions)
+        for (PhotoDescription _iter30 : struct.photo_descriptions)
         {
-          _iter40.write(oprot);
+          _iter30.write(oprot);
         }
       }
     }
@@ -629,14 +629,14 @@ public class Artifact implements org.apache.thrift.TBase<Artifact, Artifact._Fie
       struct.title = iprot.readString();
       struct.setTitleIsSet(true);
       {
-        org.apache.thrift.protocol.TList _list41 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-        struct.photo_descriptions = new ArrayList<PhotoDescription>(_list41.size);
-        PhotoDescription _elem42;
-        for (int _i43 = 0; _i43 < _list41.size; ++_i43)
+        org.apache.thrift.protocol.TList _list31 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+        struct.photo_descriptions = new ArrayList<PhotoDescription>(_list31.size);
+        PhotoDescription _elem32;
+        for (int _i33 = 0; _i33 < _list31.size; ++_i33)
         {
-          _elem42 = new PhotoDescription();
-          _elem42.read(iprot);
-          struct.photo_descriptions.add(_elem42);
+          _elem32 = new PhotoDescription();
+          _elem32.read(iprot);
+          struct.photo_descriptions.add(_elem32);
         }
       }
       struct.setPhoto_descriptionsIsSet(true);

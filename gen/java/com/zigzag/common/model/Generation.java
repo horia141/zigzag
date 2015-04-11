@@ -837,16 +837,16 @@ public class Generation implements org.apache.thrift.TBase<Generation, Generatio
           case 4: // ARTIFACT_SOURCES
             if (schemeField.type == org.apache.thrift.protocol.TType.MAP) {
               {
-                org.apache.thrift.protocol.TMap _map44 = iprot.readMapBegin();
-                struct.artifact_sources = new HashMap<Long,ArtifactSource>(2*_map44.size);
-                long _key45;
-                ArtifactSource _val46;
-                for (int _i47 = 0; _i47 < _map44.size; ++_i47)
+                org.apache.thrift.protocol.TMap _map34 = iprot.readMapBegin();
+                struct.artifact_sources = new HashMap<Long,ArtifactSource>(2*_map34.size);
+                long _key35;
+                ArtifactSource _val36;
+                for (int _i37 = 0; _i37 < _map34.size; ++_i37)
                 {
-                  _key45 = iprot.readI64();
-                  _val46 = new ArtifactSource();
-                  _val46.read(iprot);
-                  struct.artifact_sources.put(_key45, _val46);
+                  _key35 = iprot.readI64();
+                  _val36 = new ArtifactSource();
+                  _val36.read(iprot);
+                  struct.artifact_sources.put(_key35, _val36);
                 }
                 iprot.readMapEnd();
               }
@@ -858,16 +858,16 @@ public class Generation implements org.apache.thrift.TBase<Generation, Generatio
           case 5: // SCREEN_CONFIGS
             if (schemeField.type == org.apache.thrift.protocol.TType.MAP) {
               {
-                org.apache.thrift.protocol.TMap _map48 = iprot.readMapBegin();
-                struct.screen_configs = new HashMap<Long,ScreenConfig>(2*_map48.size);
-                long _key49;
-                ScreenConfig _val50;
-                for (int _i51 = 0; _i51 < _map48.size; ++_i51)
+                org.apache.thrift.protocol.TMap _map38 = iprot.readMapBegin();
+                struct.screen_configs = new HashMap<Long,ScreenConfig>(2*_map38.size);
+                long _key39;
+                ScreenConfig _val40;
+                for (int _i41 = 0; _i41 < _map38.size; ++_i41)
                 {
-                  _key49 = iprot.readI64();
-                  _val50 = new ScreenConfig();
-                  _val50.read(iprot);
-                  struct.screen_configs.put(_key49, _val50);
+                  _key39 = iprot.readI64();
+                  _val40 = new ScreenConfig();
+                  _val40.read(iprot);
+                  struct.screen_configs.put(_key39, _val40);
                 }
                 iprot.readMapEnd();
               }
@@ -879,14 +879,14 @@ public class Generation implements org.apache.thrift.TBase<Generation, Generatio
           case 6: // ARTIFACTS
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list52 = iprot.readListBegin();
-                struct.artifacts = new ArrayList<Artifact>(_list52.size);
-                Artifact _elem53;
-                for (int _i54 = 0; _i54 < _list52.size; ++_i54)
+                org.apache.thrift.protocol.TList _list42 = iprot.readListBegin();
+                struct.artifacts = new ArrayList<Artifact>(_list42.size);
+                Artifact _elem43;
+                for (int _i44 = 0; _i44 < _list42.size; ++_i44)
                 {
-                  _elem53 = new Artifact();
-                  _elem53.read(iprot);
-                  struct.artifacts.add(_elem53);
+                  _elem43 = new Artifact();
+                  _elem43.read(iprot);
+                  struct.artifacts.add(_elem43);
                 }
                 iprot.readListEnd();
               }
@@ -932,10 +932,10 @@ public class Generation implements org.apache.thrift.TBase<Generation, Generatio
         oprot.writeFieldBegin(ARTIFACT_SOURCES_FIELD_DESC);
         {
           oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.I64, org.apache.thrift.protocol.TType.STRUCT, struct.artifact_sources.size()));
-          for (Map.Entry<Long, ArtifactSource> _iter55 : struct.artifact_sources.entrySet())
+          for (Map.Entry<Long, ArtifactSource> _iter45 : struct.artifact_sources.entrySet())
           {
-            oprot.writeI64(_iter55.getKey());
-            _iter55.getValue().write(oprot);
+            oprot.writeI64(_iter45.getKey());
+            _iter45.getValue().write(oprot);
           }
           oprot.writeMapEnd();
         }
@@ -945,10 +945,10 @@ public class Generation implements org.apache.thrift.TBase<Generation, Generatio
         oprot.writeFieldBegin(SCREEN_CONFIGS_FIELD_DESC);
         {
           oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.I64, org.apache.thrift.protocol.TType.STRUCT, struct.screen_configs.size()));
-          for (Map.Entry<Long, ScreenConfig> _iter56 : struct.screen_configs.entrySet())
+          for (Map.Entry<Long, ScreenConfig> _iter46 : struct.screen_configs.entrySet())
           {
-            oprot.writeI64(_iter56.getKey());
-            _iter56.getValue().write(oprot);
+            oprot.writeI64(_iter46.getKey());
+            _iter46.getValue().write(oprot);
           }
           oprot.writeMapEnd();
         }
@@ -959,9 +959,9 @@ public class Generation implements org.apache.thrift.TBase<Generation, Generatio
           oprot.writeFieldBegin(ARTIFACTS_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.artifacts.size()));
-            for (Artifact _iter57 : struct.artifacts)
+            for (Artifact _iter47 : struct.artifacts)
             {
-              _iter57.write(oprot);
+              _iter47.write(oprot);
             }
             oprot.writeListEnd();
           }
@@ -990,18 +990,18 @@ public class Generation implements org.apache.thrift.TBase<Generation, Generatio
       oprot.writeI32(struct.date_ended_ts);
       {
         oprot.writeI32(struct.artifact_sources.size());
-        for (Map.Entry<Long, ArtifactSource> _iter58 : struct.artifact_sources.entrySet())
+        for (Map.Entry<Long, ArtifactSource> _iter48 : struct.artifact_sources.entrySet())
         {
-          oprot.writeI64(_iter58.getKey());
-          _iter58.getValue().write(oprot);
+          oprot.writeI64(_iter48.getKey());
+          _iter48.getValue().write(oprot);
         }
       }
       {
         oprot.writeI32(struct.screen_configs.size());
-        for (Map.Entry<Long, ScreenConfig> _iter59 : struct.screen_configs.entrySet())
+        for (Map.Entry<Long, ScreenConfig> _iter49 : struct.screen_configs.entrySet())
         {
-          oprot.writeI64(_iter59.getKey());
-          _iter59.getValue().write(oprot);
+          oprot.writeI64(_iter49.getKey());
+          _iter49.getValue().write(oprot);
         }
       }
       BitSet optionals = new BitSet();
@@ -1012,9 +1012,9 @@ public class Generation implements org.apache.thrift.TBase<Generation, Generatio
       if (struct.isSetArtifacts()) {
         {
           oprot.writeI32(struct.artifacts.size());
-          for (Artifact _iter60 : struct.artifacts)
+          for (Artifact _iter50 : struct.artifacts)
           {
-            _iter60.write(oprot);
+            _iter50.write(oprot);
           }
         }
       }
@@ -1030,44 +1030,44 @@ public class Generation implements org.apache.thrift.TBase<Generation, Generatio
       struct.date_ended_ts = iprot.readI32();
       struct.setDate_ended_tsIsSet(true);
       {
-        org.apache.thrift.protocol.TMap _map61 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.I64, org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-        struct.artifact_sources = new HashMap<Long,ArtifactSource>(2*_map61.size);
-        long _key62;
-        ArtifactSource _val63;
-        for (int _i64 = 0; _i64 < _map61.size; ++_i64)
+        org.apache.thrift.protocol.TMap _map51 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.I64, org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+        struct.artifact_sources = new HashMap<Long,ArtifactSource>(2*_map51.size);
+        long _key52;
+        ArtifactSource _val53;
+        for (int _i54 = 0; _i54 < _map51.size; ++_i54)
         {
-          _key62 = iprot.readI64();
-          _val63 = new ArtifactSource();
-          _val63.read(iprot);
-          struct.artifact_sources.put(_key62, _val63);
+          _key52 = iprot.readI64();
+          _val53 = new ArtifactSource();
+          _val53.read(iprot);
+          struct.artifact_sources.put(_key52, _val53);
         }
       }
       struct.setArtifact_sourcesIsSet(true);
       {
-        org.apache.thrift.protocol.TMap _map65 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.I64, org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-        struct.screen_configs = new HashMap<Long,ScreenConfig>(2*_map65.size);
-        long _key66;
-        ScreenConfig _val67;
-        for (int _i68 = 0; _i68 < _map65.size; ++_i68)
+        org.apache.thrift.protocol.TMap _map55 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.I64, org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+        struct.screen_configs = new HashMap<Long,ScreenConfig>(2*_map55.size);
+        long _key56;
+        ScreenConfig _val57;
+        for (int _i58 = 0; _i58 < _map55.size; ++_i58)
         {
-          _key66 = iprot.readI64();
-          _val67 = new ScreenConfig();
-          _val67.read(iprot);
-          struct.screen_configs.put(_key66, _val67);
+          _key56 = iprot.readI64();
+          _val57 = new ScreenConfig();
+          _val57.read(iprot);
+          struct.screen_configs.put(_key56, _val57);
         }
       }
       struct.setScreen_configsIsSet(true);
       BitSet incoming = iprot.readBitSet(1);
       if (incoming.get(0)) {
         {
-          org.apache.thrift.protocol.TList _list69 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-          struct.artifacts = new ArrayList<Artifact>(_list69.size);
-          Artifact _elem70;
-          for (int _i71 = 0; _i71 < _list69.size; ++_i71)
+          org.apache.thrift.protocol.TList _list59 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+          struct.artifacts = new ArrayList<Artifact>(_list59.size);
+          Artifact _elem60;
+          for (int _i61 = 0; _i61 < _list59.size; ++_i61)
           {
-            _elem70 = new Artifact();
-            _elem70.read(iprot);
-            struct.artifacts.add(_elem70);
+            _elem60 = new Artifact();
+            _elem60.read(iprot);
+            struct.artifacts.add(_elem60);
           }
         }
         struct.setArtifactsIsSet(true);

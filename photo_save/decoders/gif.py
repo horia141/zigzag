@@ -6,6 +6,7 @@ import math
 import subprocess
 
 import common.defines.constants as defines
+import common.model.ttypes as model
 import photo_save.decoders as decoders
 from PIL import Image
 
@@ -22,9 +23,7 @@ class Decoder(decoders.Decoder):
         desired_height = int(aspect_ratio * desired_width)
 
         if desired_height > defines.PHOTO_MAX_HEIGHT:
-            return {
-                'type': defines.PHOTO_TOO_LARGE
-            }
+            return model.PhotoData(too_big_photo_data=model.TooBigPhotoData())
 
         logging.info('Saving first frame')
         (first_frame_storage_path, first_frame_uri_path) = unique_video_path_fn('image/jpeg')
@@ -39,23 +38,12 @@ class Decoder(decoders.Decoder):
             time_between_frames_ms = video.info['duration']
         else:
             time_between_frames_ms = defines.DEFAULT_TIME_BETWEEN_FRAMES_MS
-        framerate = math.ceil(1000.0 / time_between_frames_ms)
-        subprocess.check_output(['photo_save/decoders/gif_to_mp4.sh', video_path, '%d' % framerate,
+        frames_per_sc = math.ceil(1000.0 / time_between_frames_ms)
+        subprocess.check_output(['photo_save/decoders/gif_to_mp4.sh', video_path, '%d' % frames_per_sc,
                                  '%d' % desired_width, '%d' % desired_height, defines.VIDEO_SAVE_BITRATE,
                                  video_storage_path])
 
-        return {
-            'type': 'video',
-            'first_frame_desc': {
-                'width': desired_width,
-                'height': desired_height,
-                'uri_path': first_frame_uri_path
-            },
-            'video_desc': {
-                'width': desired_width,
-                'height': desired_height,
-                'uri_path': video_uri_path
-            },
-            'time_between_frames_ms': time_between_frames_ms,
-            'framerate': framerate
-        }
+        first_frame = model.TileData(desired_width, desired_height, first_frame_uri_path)
+        video = model.TileData(deisred_width, desired_height, video_uri_path)
+        return model.PhotoData(video_photo_data=model.VideoPhotoData(first_frame, video,
+            frames_per_sec, time_between_frames_ms))

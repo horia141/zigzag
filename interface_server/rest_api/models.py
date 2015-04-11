@@ -149,12 +149,12 @@ class Artifact(models.Model):
         return Artifact.objects.all().order_by('id')
 
     @staticmethod
-    def add(page_url, generation, artifact_source, title, images_description):
+    def add(page_url, generation, artifact_source, title, images_description_coded):
         assert isinstance(page_url, basestring)
         assert isinstance(generation, Generation)
         assert isinstance(artifact_source, ArtifactSource)
         assert isinstance(title, basestring)
-        assert isinstance(images_description, list)
+        assert isinstance(images_description_coded, basestring)
 
         try:
             artifact = Artifact.objects.get(page_url=page_url)
@@ -167,8 +167,8 @@ class Artifact(models.Model):
         artifact.generation = generation
         artifact.artifact_source = artifact_source
         artifact.title = title
-        artifact.images_description = images_description
-        artifact.images_description_coded = json.dumps(images_description)
+        # artifact.images_description = images_description
+        artifact.images_description_coded = images_description_coded
         artifact.save()
 
         return artifact
@@ -184,10 +184,10 @@ class Artifact(models.Model):
 
         return artifact
 
-    def __init__(self, *args, **kwargs):
-        super(Artifact, self).__init__(*args, **kwargs)
-        if self.images_description_coded:
-            self.images_description = json.loads(self.images_description_coded)
+    # def __init__(self, *args, **kwargs):
+    #     super(Artifact, self).__init__(*args, **kwargs)
+    #     if self.images_description_coded:
+    #         self.images_description = json.loads(self.images_description_coded)
 
     def to_json_dict(self):
         json_dict = {}
@@ -196,6 +196,6 @@ class Artifact(models.Model):
         json_dict['page_url'] = self.page_url
         json_dict['artifact_source_id'] = str(self.artifact_source.id)
         json_dict['title'] = self.title
-        json_dict['images_description'] = self.images_description
+        # json_dict['images_description'] = self.images_description
 
         return json_dict

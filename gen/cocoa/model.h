@@ -62,6 +62,18 @@ typedef int64_t common.modelEntityId;
 
 @end
 
+@interface common.modelTooBigPhotoData : NSObject <TBase, NSCoding> {
+}
+
+- (id) init;
+
+- (void) read: (id <TProtocol>) inProtocol;
+- (void) write: (id <TProtocol>) outProtocol;
+
+- (void) validate;
+
+@end
+
 @interface common.modelImagePhotoData : NSObject <TBase, NSCoding> {
   common.modelTileData * __full_image;
   NSMutableArray * __tiles;
@@ -100,13 +112,11 @@ typedef int64_t common.modelEntityId;
 @interface common.modelVideoPhotoData : NSObject <TBase, NSCoding> {
   common.modelTileData * __first_frame;
   common.modelTileData * __video;
-  int32_t __frame_count;
   int32_t __frames_per_sec;
   int32_t __time_between_frames_ms;
 
   BOOL __first_frame_isset;
   BOOL __video_isset;
-  BOOL __frame_count_isset;
   BOOL __frames_per_sec_isset;
   BOOL __time_between_frames_ms_isset;
 }
@@ -114,13 +124,12 @@ typedef int64_t common.modelEntityId;
 #if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
 @property (nonatomic, retain, getter=first_frame, setter=setFirst_frame:) common.modelTileData * first_frame;
 @property (nonatomic, retain, getter=video, setter=setVideo:) common.modelTileData * video;
-@property (nonatomic, getter=frame_count, setter=setFrame_count:) int32_t frame_count;
 @property (nonatomic, getter=frames_per_sec, setter=setFrames_per_sec:) int32_t frames_per_sec;
 @property (nonatomic, getter=time_between_frames_ms, setter=setTime_between_frames_ms:) int32_t time_between_frames_ms;
 #endif
 
 - (id) init;
-- (id) initWithFirst_frame: (common.modelTileData *) first_frame video: (common.modelTileData *) video frame_count: (int32_t) frame_count frames_per_sec: (int32_t) frames_per_sec time_between_frames_ms: (int32_t) time_between_frames_ms;
+- (id) initWithFirst_frame: (common.modelTileData *) first_frame video: (common.modelTileData *) video frames_per_sec: (int32_t) frames_per_sec time_between_frames_ms: (int32_t) time_between_frames_ms;
 
 - (void) read: (id <TProtocol>) inProtocol;
 - (void) write: (id <TProtocol>) outProtocol;
@@ -140,12 +149,6 @@ typedef int64_t common.modelEntityId;
 - (BOOL) videoIsSet;
 
 #if !__has_feature(objc_arc)
-- (int32_t) frame_count;
-- (void) setFrame_count: (int32_t) frame_count;
-#endif
-- (BOOL) frame_countIsSet;
-
-#if !__has_feature(objc_arc)
 - (int32_t) frames_per_sec;
 - (void) setFrames_per_sec: (int32_t) frames_per_sec;
 #endif
@@ -159,20 +162,62 @@ typedef int64_t common.modelEntityId;
 
 @end
 
+@interface common.modelPhotoData : NSObject <TBase, NSCoding> {
+  common.modelTooBigPhotoData * __too_big_photo_data;
+  common.modelImagePhotoData * __image_photo_data;
+  common.modelVideoPhotoData * __video_photo_data;
+
+  BOOL __too_big_photo_data_isset;
+  BOOL __image_photo_data_isset;
+  BOOL __video_photo_data_isset;
+}
+
+#if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
+@property (nonatomic, retain, getter=too_big_photo_data, setter=setToo_big_photo_data:) common.modelTooBigPhotoData * too_big_photo_data;
+@property (nonatomic, retain, getter=image_photo_data, setter=setImage_photo_data:) common.modelImagePhotoData * image_photo_data;
+@property (nonatomic, retain, getter=video_photo_data, setter=setVideo_photo_data:) common.modelVideoPhotoData * video_photo_data;
+#endif
+
+- (id) init;
+- (id) initWithToo_big_photo_data: (common.modelTooBigPhotoData *) too_big_photo_data image_photo_data: (common.modelImagePhotoData *) image_photo_data video_photo_data: (common.modelVideoPhotoData *) video_photo_data;
+
+- (void) read: (id <TProtocol>) inProtocol;
+- (void) write: (id <TProtocol>) outProtocol;
+
+- (void) validate;
+
+#if !__has_feature(objc_arc)
+- (common.modelTooBigPhotoData *) too_big_photo_data;
+- (void) setToo_big_photo_data: (common.modelTooBigPhotoData *) too_big_photo_data;
+#endif
+- (BOOL) too_big_photo_dataIsSet;
+
+#if !__has_feature(objc_arc)
+- (common.modelImagePhotoData *) image_photo_data;
+- (void) setImage_photo_data: (common.modelImagePhotoData *) image_photo_data;
+#endif
+- (BOOL) image_photo_dataIsSet;
+
+#if !__has_feature(objc_arc)
+- (common.modelVideoPhotoData *) video_photo_data;
+- (void) setVideo_photo_data: (common.modelVideoPhotoData *) video_photo_data;
+#endif
+- (BOOL) video_photo_dataIsSet;
+
+@end
+
 @interface common.modelPhotoDescription : NSObject <TBase, NSCoding> {
   NSString * __subtitle;
   NSString * __description;
   NSString * __source_uri;
   NSString * __original_uri_path;
-  NSMutableDictionary * __image_data;
-  NSMutableDictionary * __video_data;
+  NSMutableDictionary * __photo_data;
 
   BOOL __subtitle_isset;
   BOOL __description_isset;
   BOOL __source_uri_isset;
   BOOL __original_uri_path_isset;
-  BOOL __image_data_isset;
-  BOOL __video_data_isset;
+  BOOL __photo_data_isset;
 }
 
 #if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
@@ -180,12 +225,11 @@ typedef int64_t common.modelEntityId;
 @property (nonatomic, retain, getter=description, setter=setDescription:) NSString * description;
 @property (nonatomic, retain, getter=source_uri, setter=setSource_uri:) NSString * source_uri;
 @property (nonatomic, retain, getter=original_uri_path, setter=setOriginal_uri_path:) NSString * original_uri_path;
-@property (nonatomic, retain, getter=image_data, setter=setImage_data:) NSMutableDictionary * image_data;
-@property (nonatomic, retain, getter=video_data, setter=setVideo_data:) NSMutableDictionary * video_data;
+@property (nonatomic, retain, getter=photo_data, setter=setPhoto_data:) NSMutableDictionary * photo_data;
 #endif
 
 - (id) init;
-- (id) initWithSubtitle: (NSString *) subtitle description: (NSString *) description source_uri: (NSString *) source_uri original_uri_path: (NSString *) original_uri_path image_data: (NSMutableDictionary *) image_data video_data: (NSMutableDictionary *) video_data;
+- (id) initWithSubtitle: (NSString *) subtitle description: (NSString *) description source_uri: (NSString *) source_uri original_uri_path: (NSString *) original_uri_path photo_data: (NSMutableDictionary *) photo_data;
 
 - (void) read: (id <TProtocol>) inProtocol;
 - (void) write: (id <TProtocol>) outProtocol;
@@ -217,16 +261,10 @@ typedef int64_t common.modelEntityId;
 - (BOOL) original_uri_pathIsSet;
 
 #if !__has_feature(objc_arc)
-- (NSMutableDictionary *) image_data;
-- (void) setImage_data: (NSMutableDictionary *) image_data;
+- (NSMutableDictionary *) photo_data;
+- (void) setPhoto_data: (NSMutableDictionary *) photo_data;
 #endif
-- (BOOL) image_dataIsSet;
-
-#if !__has_feature(objc_arc)
-- (NSMutableDictionary *) video_data;
-- (void) setVideo_data: (NSMutableDictionary *) video_data;
-#endif
-- (BOOL) video_dataIsSet;
+- (BOOL) photo_dataIsSet;
 
 @end
 

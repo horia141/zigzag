@@ -70,9 +70,9 @@ IMAGE_SCREEN_CONFIG = {
     "width" : 800,
   }),
   "1200" : common.model.ttypes.ScreenConfig(**{
+    "width" : 1200,
     "id" : 2,
     "name" : "1200",
-    "width" : 1200,
   }),
 }
 IMAGE_SAVE_JPEG_OPTIONS_QUALITY = 50

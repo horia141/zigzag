@@ -107,9 +107,9 @@ static int32_t common.definesPHOTO_MAX_HEIGHT = 2048;
 
   [common.definesIMAGE_SCREEN_CONFIG setObject:tmp5 forKey:@"800"];
   common.modelScreenConfig * tmp6 = [[[common.modelScreenConfig alloc] init] autorelease_stub];
+  [tmp6 setWidth:1200];
   [tmp6 setId:2];
   [tmp6 setName:@"1200"];
-  [tmp6 setWidth:1200];
 
   [common.definesIMAGE_SCREEN_CONFIG setObject:tmp6 forKey:@"1200"];
 

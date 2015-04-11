@@ -42,8 +42,7 @@ public class PhotoDescription implements org.apache.thrift.TBase<PhotoDescriptio
   private static final org.apache.thrift.protocol.TField DESCRIPTION_FIELD_DESC = new org.apache.thrift.protocol.TField("description", org.apache.thrift.protocol.TType.STRING, (short)2);
   private static final org.apache.thrift.protocol.TField SOURCE_URI_FIELD_DESC = new org.apache.thrift.protocol.TField("source_uri", org.apache.thrift.protocol.TType.STRING, (short)3);
   private static final org.apache.thrift.protocol.TField ORIGINAL_URI_PATH_FIELD_DESC = new org.apache.thrift.protocol.TField("original_uri_path", org.apache.thrift.protocol.TType.STRING, (short)4);
-  private static final org.apache.thrift.protocol.TField IMAGE_DATA_FIELD_DESC = new org.apache.thrift.protocol.TField("image_data", org.apache.thrift.protocol.TType.MAP, (short)5);
-  private static final org.apache.thrift.protocol.TField VIDEO_DATA_FIELD_DESC = new org.apache.thrift.protocol.TField("video_data", org.apache.thrift.protocol.TType.MAP, (short)6);
+  private static final org.apache.thrift.protocol.TField PHOTO_DATA_FIELD_DESC = new org.apache.thrift.protocol.TField("photo_data", org.apache.thrift.protocol.TType.MAP, (short)5);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -55,8 +54,7 @@ public class PhotoDescription implements org.apache.thrift.TBase<PhotoDescriptio
   public String description; // optional
   public String source_uri; // required
   public String original_uri_path; // required
-  public Map<Long,ImagePhotoData> image_data; // optional
-  public Map<Long,VideoPhotoData> video_data; // optional
+  public Map<Long,PhotoData> photo_data; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -64,8 +62,7 @@ public class PhotoDescription implements org.apache.thrift.TBase<PhotoDescriptio
     DESCRIPTION((short)2, "description"),
     SOURCE_URI((short)3, "source_uri"),
     ORIGINAL_URI_PATH((short)4, "original_uri_path"),
-    IMAGE_DATA((short)5, "image_data"),
-    VIDEO_DATA((short)6, "video_data");
+    PHOTO_DATA((short)5, "photo_data");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -88,10 +85,8 @@ public class PhotoDescription implements org.apache.thrift.TBase<PhotoDescriptio
           return SOURCE_URI;
         case 4: // ORIGINAL_URI_PATH
           return ORIGINAL_URI_PATH;
-        case 5: // IMAGE_DATA
-          return IMAGE_DATA;
-        case 6: // VIDEO_DATA
-          return VIDEO_DATA;
+        case 5: // PHOTO_DATA
+          return PHOTO_DATA;
         default:
           return null;
       }
@@ -132,7 +127,7 @@ public class PhotoDescription implements org.apache.thrift.TBase<PhotoDescriptio
   }
 
   // isset id assignments
-  private static final _Fields optionals[] = {_Fields.SUBTITLE,_Fields.DESCRIPTION,_Fields.IMAGE_DATA,_Fields.VIDEO_DATA};
+  private static final _Fields optionals[] = {_Fields.SUBTITLE,_Fields.DESCRIPTION,_Fields.PHOTO_DATA};
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -144,14 +139,10 @@ public class PhotoDescription implements org.apache.thrift.TBase<PhotoDescriptio
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.ORIGINAL_URI_PATH, new org.apache.thrift.meta_data.FieldMetaData("original_uri_path", org.apache.thrift.TFieldRequirementType.REQUIRED, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.IMAGE_DATA, new org.apache.thrift.meta_data.FieldMetaData("image_data", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+    tmpMap.put(_Fields.PHOTO_DATA, new org.apache.thrift.meta_data.FieldMetaData("photo_data", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.MapMetaData(org.apache.thrift.protocol.TType.MAP, 
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64            , "EntityId"), 
-            new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, ImagePhotoData.class))));
-    tmpMap.put(_Fields.VIDEO_DATA, new org.apache.thrift.meta_data.FieldMetaData("video_data", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.MapMetaData(org.apache.thrift.protocol.TType.MAP, 
-            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64            , "EntityId"), 
-            new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, VideoPhotoData.class))));
+            new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, PhotoData.class))));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(PhotoDescription.class, metaDataMap);
   }
@@ -184,35 +175,20 @@ public class PhotoDescription implements org.apache.thrift.TBase<PhotoDescriptio
     if (other.isSetOriginal_uri_path()) {
       this.original_uri_path = other.original_uri_path;
     }
-    if (other.isSetImage_data()) {
-      Map<Long,ImagePhotoData> __this__image_data = new HashMap<Long,ImagePhotoData>(other.image_data.size());
-      for (Map.Entry<Long, ImagePhotoData> other_element : other.image_data.entrySet()) {
+    if (other.isSetPhoto_data()) {
+      Map<Long,PhotoData> __this__photo_data = new HashMap<Long,PhotoData>(other.photo_data.size());
+      for (Map.Entry<Long, PhotoData> other_element : other.photo_data.entrySet()) {
 
         Long other_element_key = other_element.getKey();
-        ImagePhotoData other_element_value = other_element.getValue();
+        PhotoData other_element_value = other_element.getValue();
 
-        Long __this__image_data_copy_key = other_element_key;
+        Long __this__photo_data_copy_key = other_element_key;
 
-        ImagePhotoData __this__image_data_copy_value = new ImagePhotoData(other_element_value);
+        PhotoData __this__photo_data_copy_value = new PhotoData(other_element_value);
 
-        __this__image_data.put(__this__image_data_copy_key, __this__image_data_copy_value);
+        __this__photo_data.put(__this__photo_data_copy_key, __this__photo_data_copy_value);
       }
-      this.image_data = __this__image_data;
-    }
-    if (other.isSetVideo_data()) {
-      Map<Long,VideoPhotoData> __this__video_data = new HashMap<Long,VideoPhotoData>(other.video_data.size());
-      for (Map.Entry<Long, VideoPhotoData> other_element : other.video_data.entrySet()) {
-
-        Long other_element_key = other_element.getKey();
-        VideoPhotoData other_element_value = other_element.getValue();
-
-        Long __this__video_data_copy_key = other_element_key;
-
-        VideoPhotoData __this__video_data_copy_value = new VideoPhotoData(other_element_value);
-
-        __this__video_data.put(__this__video_data_copy_key, __this__video_data_copy_value);
-      }
-      this.video_data = __this__video_data;
+      this.photo_data = __this__photo_data;
     }
   }
 
@@ -226,8 +202,7 @@ public class PhotoDescription implements org.apache.thrift.TBase<PhotoDescriptio
     this.description = null;
     this.source_uri = null;
     this.original_uri_path = null;
-    this.image_data = null;
-    this.video_data = null;
+    this.photo_data = null;
   }
 
   public String getSubtitle() {
@@ -326,73 +301,38 @@ public class PhotoDescription implements org.apache.thrift.TBase<PhotoDescriptio
     }
   }
 
-  public int getImage_dataSize() {
-    return (this.image_data == null) ? 0 : this.image_data.size();
+  public int getPhoto_dataSize() {
+    return (this.photo_data == null) ? 0 : this.photo_data.size();
   }
 
-  public void putToImage_data(long key, ImagePhotoData val) {
-    if (this.image_data == null) {
-      this.image_data = new HashMap<Long,ImagePhotoData>();
+  public void putToPhoto_data(long key, PhotoData val) {
+    if (this.photo_data == null) {
+      this.photo_data = new HashMap<Long,PhotoData>();
     }
-    this.image_data.put(key, val);
+    this.photo_data.put(key, val);
   }
 
-  public Map<Long,ImagePhotoData> getImage_data() {
-    return this.image_data;
+  public Map<Long,PhotoData> getPhoto_data() {
+    return this.photo_data;
   }
 
-  public PhotoDescription setImage_data(Map<Long,ImagePhotoData> image_data) {
-    this.image_data = image_data;
+  public PhotoDescription setPhoto_data(Map<Long,PhotoData> photo_data) {
+    this.photo_data = photo_data;
     return this;
   }
 
-  public void unsetImage_data() {
-    this.image_data = null;
+  public void unsetPhoto_data() {
+    this.photo_data = null;
   }
 
-  /** Returns true if field image_data is set (has been assigned a value) and false otherwise */
-  public boolean isSetImage_data() {
-    return this.image_data != null;
+  /** Returns true if field photo_data is set (has been assigned a value) and false otherwise */
+  public boolean isSetPhoto_data() {
+    return this.photo_data != null;
   }
 
-  public void setImage_dataIsSet(boolean value) {
+  public void setPhoto_dataIsSet(boolean value) {
     if (!value) {
-      this.image_data = null;
-    }
-  }
-
-  public int getVideo_dataSize() {
-    return (this.video_data == null) ? 0 : this.video_data.size();
-  }
-
-  public void putToVideo_data(long key, VideoPhotoData val) {
-    if (this.video_data == null) {
-      this.video_data = new HashMap<Long,VideoPhotoData>();
-    }
-    this.video_data.put(key, val);
-  }
-
-  public Map<Long,VideoPhotoData> getVideo_data() {
-    return this.video_data;
-  }
-
-  public PhotoDescription setVideo_data(Map<Long,VideoPhotoData> video_data) {
-    this.video_data = video_data;
-    return this;
-  }
-
-  public void unsetVideo_data() {
-    this.video_data = null;
-  }
-
-  /** Returns true if field video_data is set (has been assigned a value) and false otherwise */
-  public boolean isSetVideo_data() {
-    return this.video_data != null;
-  }
-
-  public void setVideo_dataIsSet(boolean value) {
-    if (!value) {
-      this.video_data = null;
+      this.photo_data = null;
     }
   }
 
@@ -430,19 +370,11 @@ public class PhotoDescription implements org.apache.thrift.TBase<PhotoDescriptio
       }
       break;
 
-    case IMAGE_DATA:
+    case PHOTO_DATA:
       if (value == null) {
-        unsetImage_data();
+        unsetPhoto_data();
       } else {
-        setImage_data((Map<Long,ImagePhotoData>)value);
-      }
-      break;
-
-    case VIDEO_DATA:
-      if (value == null) {
-        unsetVideo_data();
-      } else {
-        setVideo_data((Map<Long,VideoPhotoData>)value);
+        setPhoto_data((Map<Long,PhotoData>)value);
       }
       break;
 
@@ -463,11 +395,8 @@ public class PhotoDescription implements org.apache.thrift.TBase<PhotoDescriptio
     case ORIGINAL_URI_PATH:
       return getOriginal_uri_path();
 
-    case IMAGE_DATA:
-      return getImage_data();
-
-    case VIDEO_DATA:
-      return getVideo_data();
+    case PHOTO_DATA:
+      return getPhoto_data();
 
     }
     throw new IllegalStateException();
@@ -488,10 +417,8 @@ public class PhotoDescription implements org.apache.thrift.TBase<PhotoDescriptio
       return isSetSource_uri();
     case ORIGINAL_URI_PATH:
       return isSetOriginal_uri_path();
-    case IMAGE_DATA:
-      return isSetImage_data();
-    case VIDEO_DATA:
-      return isSetVideo_data();
+    case PHOTO_DATA:
+      return isSetPhoto_data();
     }
     throw new IllegalStateException();
   }
@@ -545,21 +472,12 @@ public class PhotoDescription implements org.apache.thrift.TBase<PhotoDescriptio
         return false;
     }
 
-    boolean this_present_image_data = true && this.isSetImage_data();
-    boolean that_present_image_data = true && that.isSetImage_data();
-    if (this_present_image_data || that_present_image_data) {
-      if (!(this_present_image_data && that_present_image_data))
+    boolean this_present_photo_data = true && this.isSetPhoto_data();
+    boolean that_present_photo_data = true && that.isSetPhoto_data();
+    if (this_present_photo_data || that_present_photo_data) {
+      if (!(this_present_photo_data && that_present_photo_data))
         return false;
-      if (!this.image_data.equals(that.image_data))
-        return false;
-    }
-
-    boolean this_present_video_data = true && this.isSetVideo_data();
-    boolean that_present_video_data = true && that.isSetVideo_data();
-    if (this_present_video_data || that_present_video_data) {
-      if (!(this_present_video_data && that_present_video_data))
-        return false;
-      if (!this.video_data.equals(that.video_data))
+      if (!this.photo_data.equals(that.photo_data))
         return false;
     }
 
@@ -590,15 +508,10 @@ public class PhotoDescription implements org.apache.thrift.TBase<PhotoDescriptio
     if (present_original_uri_path)
       list.add(original_uri_path);
 
-    boolean present_image_data = true && (isSetImage_data());
-    list.add(present_image_data);
-    if (present_image_data)
-      list.add(image_data);
-
-    boolean present_video_data = true && (isSetVideo_data());
-    list.add(present_video_data);
-    if (present_video_data)
-      list.add(video_data);
+    boolean present_photo_data = true && (isSetPhoto_data());
+    list.add(present_photo_data);
+    if (present_photo_data)
+      list.add(photo_data);
 
     return list.hashCode();
   }
@@ -651,22 +564,12 @@ public class PhotoDescription implements org.apache.thrift.TBase<PhotoDescriptio
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetImage_data()).compareTo(other.isSetImage_data());
+    lastComparison = Boolean.valueOf(isSetPhoto_data()).compareTo(other.isSetPhoto_data());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetImage_data()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.image_data, other.image_data);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
-    lastComparison = Boolean.valueOf(isSetVideo_data()).compareTo(other.isSetVideo_data());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetVideo_data()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.video_data, other.video_data);
+    if (isSetPhoto_data()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.photo_data, other.photo_data);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -726,23 +629,13 @@ public class PhotoDescription implements org.apache.thrift.TBase<PhotoDescriptio
       sb.append(this.original_uri_path);
     }
     first = false;
-    if (isSetImage_data()) {
+    if (isSetPhoto_data()) {
       if (!first) sb.append(", ");
-      sb.append("image_data:");
-      if (this.image_data == null) {
+      sb.append("photo_data:");
+      if (this.photo_data == null) {
         sb.append("null");
       } else {
-        sb.append(this.image_data);
-      }
-      first = false;
-    }
-    if (isSetVideo_data()) {
-      if (!first) sb.append(", ");
-      sb.append("video_data:");
-      if (this.video_data == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.video_data);
+        sb.append(this.photo_data);
       }
       first = false;
     }
@@ -827,44 +720,23 @@ public class PhotoDescription implements org.apache.thrift.TBase<PhotoDescriptio
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 5: // IMAGE_DATA
+          case 5: // PHOTO_DATA
             if (schemeField.type == org.apache.thrift.protocol.TType.MAP) {
               {
                 org.apache.thrift.protocol.TMap _map8 = iprot.readMapBegin();
-                struct.image_data = new HashMap<Long,ImagePhotoData>(2*_map8.size);
+                struct.photo_data = new HashMap<Long,PhotoData>(2*_map8.size);
                 long _key9;
-                ImagePhotoData _val10;
+                PhotoData _val10;
                 for (int _i11 = 0; _i11 < _map8.size; ++_i11)
                 {
                   _key9 = iprot.readI64();
-                  _val10 = new ImagePhotoData();
+                  _val10 = new PhotoData();
                   _val10.read(iprot);
-                  struct.image_data.put(_key9, _val10);
+                  struct.photo_data.put(_key9, _val10);
                 }
                 iprot.readMapEnd();
               }
-              struct.setImage_dataIsSet(true);
-            } else { 
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-            }
-            break;
-          case 6: // VIDEO_DATA
-            if (schemeField.type == org.apache.thrift.protocol.TType.MAP) {
-              {
-                org.apache.thrift.protocol.TMap _map12 = iprot.readMapBegin();
-                struct.video_data = new HashMap<Long,VideoPhotoData>(2*_map12.size);
-                long _key13;
-                VideoPhotoData _val14;
-                for (int _i15 = 0; _i15 < _map12.size; ++_i15)
-                {
-                  _key13 = iprot.readI64();
-                  _val14 = new VideoPhotoData();
-                  _val14.read(iprot);
-                  struct.video_data.put(_key13, _val14);
-                }
-                iprot.readMapEnd();
-              }
-              struct.setVideo_dataIsSet(true);
+              struct.setPhoto_dataIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -908,30 +780,15 @@ public class PhotoDescription implements org.apache.thrift.TBase<PhotoDescriptio
         oprot.writeString(struct.original_uri_path);
         oprot.writeFieldEnd();
       }
-      if (struct.image_data != null) {
-        if (struct.isSetImage_data()) {
-          oprot.writeFieldBegin(IMAGE_DATA_FIELD_DESC);
+      if (struct.photo_data != null) {
+        if (struct.isSetPhoto_data()) {
+          oprot.writeFieldBegin(PHOTO_DATA_FIELD_DESC);
           {
-            oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.I64, org.apache.thrift.protocol.TType.STRUCT, struct.image_data.size()));
-            for (Map.Entry<Long, ImagePhotoData> _iter16 : struct.image_data.entrySet())
+            oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.I64, org.apache.thrift.protocol.TType.STRUCT, struct.photo_data.size()));
+            for (Map.Entry<Long, PhotoData> _iter12 : struct.photo_data.entrySet())
             {
-              oprot.writeI64(_iter16.getKey());
-              _iter16.getValue().write(oprot);
-            }
-            oprot.writeMapEnd();
-          }
-          oprot.writeFieldEnd();
-        }
-      }
-      if (struct.video_data != null) {
-        if (struct.isSetVideo_data()) {
-          oprot.writeFieldBegin(VIDEO_DATA_FIELD_DESC);
-          {
-            oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.I64, org.apache.thrift.protocol.TType.STRUCT, struct.video_data.size()));
-            for (Map.Entry<Long, VideoPhotoData> _iter17 : struct.video_data.entrySet())
-            {
-              oprot.writeI64(_iter17.getKey());
-              _iter17.getValue().write(oprot);
+              oprot.writeI64(_iter12.getKey());
+              _iter12.getValue().write(oprot);
             }
             oprot.writeMapEnd();
           }
@@ -964,36 +821,23 @@ public class PhotoDescription implements org.apache.thrift.TBase<PhotoDescriptio
       if (struct.isSetDescription()) {
         optionals.set(1);
       }
-      if (struct.isSetImage_data()) {
+      if (struct.isSetPhoto_data()) {
         optionals.set(2);
       }
-      if (struct.isSetVideo_data()) {
-        optionals.set(3);
-      }
-      oprot.writeBitSet(optionals, 4);
+      oprot.writeBitSet(optionals, 3);
       if (struct.isSetSubtitle()) {
         oprot.writeString(struct.subtitle);
       }
       if (struct.isSetDescription()) {
         oprot.writeString(struct.description);
       }
-      if (struct.isSetImage_data()) {
+      if (struct.isSetPhoto_data()) {
         {
-          oprot.writeI32(struct.image_data.size());
-          for (Map.Entry<Long, ImagePhotoData> _iter18 : struct.image_data.entrySet())
+          oprot.writeI32(struct.photo_data.size());
+          for (Map.Entry<Long, PhotoData> _iter13 : struct.photo_data.entrySet())
           {
-            oprot.writeI64(_iter18.getKey());
-            _iter18.getValue().write(oprot);
-          }
-        }
-      }
-      if (struct.isSetVideo_data()) {
-        {
-          oprot.writeI32(struct.video_data.size());
-          for (Map.Entry<Long, VideoPhotoData> _iter19 : struct.video_data.entrySet())
-          {
-            oprot.writeI64(_iter19.getKey());
-            _iter19.getValue().write(oprot);
+            oprot.writeI64(_iter13.getKey());
+            _iter13.getValue().write(oprot);
           }
         }
       }
@@ -1006,7 +850,7 @@ public class PhotoDescription implements org.apache.thrift.TBase<PhotoDescriptio
       struct.setSource_uriIsSet(true);
       struct.original_uri_path = iprot.readString();
       struct.setOriginal_uri_pathIsSet(true);
-      BitSet incoming = iprot.readBitSet(4);
+      BitSet incoming = iprot.readBitSet(3);
       if (incoming.get(0)) {
         struct.subtitle = iprot.readString();
         struct.setSubtitleIsSet(true);
@@ -1017,35 +861,19 @@ public class PhotoDescription implements org.apache.thrift.TBase<PhotoDescriptio
       }
       if (incoming.get(2)) {
         {
-          org.apache.thrift.protocol.TMap _map20 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.I64, org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-          struct.image_data = new HashMap<Long,ImagePhotoData>(2*_map20.size);
-          long _key21;
-          ImagePhotoData _val22;
-          for (int _i23 = 0; _i23 < _map20.size; ++_i23)
+          org.apache.thrift.protocol.TMap _map14 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.I64, org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+          struct.photo_data = new HashMap<Long,PhotoData>(2*_map14.size);
+          long _key15;
+          PhotoData _val16;
+          for (int _i17 = 0; _i17 < _map14.size; ++_i17)
           {
-            _key21 = iprot.readI64();
-            _val22 = new ImagePhotoData();
-            _val22.read(iprot);
-            struct.image_data.put(_key21, _val22);
+            _key15 = iprot.readI64();
+            _val16 = new PhotoData();
+            _val16.read(iprot);
+            struct.photo_data.put(_key15, _val16);
           }
         }
-        struct.setImage_dataIsSet(true);
-      }
-      if (incoming.get(3)) {
-        {
-          org.apache.thrift.protocol.TMap _map24 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.I64, org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-          struct.video_data = new HashMap<Long,VideoPhotoData>(2*_map24.size);
-          long _key25;
-          VideoPhotoData _val26;
-          for (int _i27 = 0; _i27 < _map24.size; ++_i27)
-          {
-            _key25 = iprot.readI64();
-            _val26 = new VideoPhotoData();
-            _val26.read(iprot);
-            struct.video_data.put(_key25, _val26);
-          }
-        }
-        struct.setVideo_dataIsSet(true);
+        struct.setPhoto_dataIsSet(true);
       }
     }
   }

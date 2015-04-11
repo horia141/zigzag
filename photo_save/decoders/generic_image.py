@@ -4,6 +4,7 @@ import logging
 import cStringIO as StringIO
 
 import common.defines.constants as defines
+import common.model.ttypes as model
 import photo_save.decoders as decoders
 from PIL import Image
 
@@ -31,7 +32,7 @@ class Decoder(object):
                            progressive=defines.IMAGE_SAVE_JPEG_OPTIONS_PROGRESSIVE)
 
         tile_count = desired_height / defines.PHOTO_MAX_HEIGHT + 1
-        tiles_desc = []
+        tiles = []
 
         logging.info('Extracting %d tiles' % tile_count)
 
@@ -48,18 +49,7 @@ class Decoder(object):
                            optimize=defines.IMAGE_SAVE_JPEG_OPTIONS_OPTIMIZE,
                            progressive=defines.IMAGE_SAVE_JPEG_OPTIONS_PROGRESSIVE)
 
-            tiles_desc.append({
-                'width': desired_width,
-                'height': tile_height,
-                'uri_path': tile_uri_path
-            })
+            tiles.append(model.TileData(desired_width, tile_height, tile_uri_path))
 
-        return {
-            'type': 'image',
-            'full_image_desc': {
-                'width': desired_width,
-                'height': desired_height,
-                'uri_path': full_uri_path
-            },
-            'tiles_desc': tiles_desc
-        }
+        full_image = model.TileData(desired_width, desired_height, full_uri_path)
+        return model.PhotoData(image_photo_data=model.ImagePhotoData(full_image, tiles))

@@ -10,6 +10,7 @@ import comlink.transport.localipc as transport
 from PIL import Image
 
 import common.defines.constants as defines
+import common.model.ttypes as model
 import fetcher
 import photo_save.decoders.gif
 import photo_save.decoders.generic_image
@@ -62,25 +63,19 @@ class Service(comlink.Service):
         if self._is_video(photo):
             logging.info('Detected animation')
             for (screen_config_key, screen_config) in defines.VIDEO_SCREEN_CONFIG.iteritems():
-                photo_data[screen_config_key] = self._video_decoders[photo_raw_mime_type].decode(
+                photo_data[screen_config.id] = self._video_decoders[photo_raw_mime_type].decode(
                     screen_config_key, screen_config, photo, storage_path,
                     lambda mime_type: self._unique_photo_path(mime_type))
         else:
             logging.info('Detected regular')
             for (screen_config_key, screen_config) in defines.IMAGE_SCREEN_CONFIG.iteritems():
-                photo_data[screen_config_key] = self._image_decoders[photo_raw_mime_type].decode(
+                photo_data[screen_config.id] = self._image_decoders[photo_raw_mime_type].decode(
                     screen_config_key, screen_config, photo, storage_path,
                     lambda mime_type: self._unique_photo_path(mime_type))
 
         logging.info('Done')
-
-        return {
-            'subtitle': subtitle,
-            'description': description,
-            'source_uri': source_uri,
-            'original_photo_uri_path': original_photo_uri_path,
-            'photo_data': photo_data
-        }
+        return model.PhotoDescription(subtitle, description, source_uri,
+            original_photo_uri_path, photo_data)
 
     def _unique_photo_path(self, mime_type):
         extension = defines.PHOTO_MIMETYPES_TO_EXTENSION[mime_type]

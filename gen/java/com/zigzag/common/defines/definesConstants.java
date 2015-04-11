@@ -125,9 +125,9 @@ public class definesConstants {
 
     IMAGE_SCREEN_CONFIG.put("800", tmp5);
     com.zigzag.common.model.ScreenConfig tmp6 = new com.zigzag.common.model.ScreenConfig();
+    tmp6.setWidth(1200);
     tmp6.setId(2L);
     tmp6.setName("1200");
-    tmp6.setWidth(1200);
 
     IMAGE_SCREEN_CONFIG.put("1200", tmp6);
   }
