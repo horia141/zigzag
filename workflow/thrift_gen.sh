@@ -16,6 +16,11 @@ do
 
   for defn in ${DEFINITIONS[*]}
   do
-    thrift -out gen/$lang --gen $lang $defn
+    if [ "$lang" = "py" ]
+    then
+      thrift -out gen/$lang --gen py:new_style $defn
+    else
+      thrift -out gen/$lang --gen $lang $defn
+    fi
   done
 done

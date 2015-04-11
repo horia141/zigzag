@@ -3,7 +3,7 @@
 #
 # DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
 #
-#  options string: py
+#  options string: py:new_style
 #
 
 from thrift.Thrift import TType, TMessageType, TException, TApplicationException
@@ -17,7 +17,7 @@ except:
 
 
 
-class TileData:
+class TileData(object):
   """
   Attributes:
    - width
@@ -114,7 +114,7 @@ class TileData:
   def __ne__(self, other):
     return not (self == other)
 
-class ImagePhotoData:
+class ImagePhotoData(object):
   """
   Attributes:
    - full_image
@@ -206,7 +206,7 @@ class ImagePhotoData:
   def __ne__(self, other):
     return not (self == other)
 
-class VideoPhotoData:
+class VideoPhotoData(object):
   """
   Attributes:
    - first_frame
@@ -335,7 +335,7 @@ class VideoPhotoData:
   def __ne__(self, other):
     return not (self == other)
 
-class PhotoDescription:
+class PhotoDescription(object):
   """
   Attributes:
    - subtitle
@@ -491,7 +491,7 @@ class PhotoDescription:
   def __ne__(self, other):
     return not (self == other)
 
-class ArtifactSource:
+class ArtifactSource(object):
   """
   Attributes:
    - id
@@ -609,7 +609,7 @@ class ArtifactSource:
   def __ne__(self, other):
     return not (self == other)
 
-class ScreenConfig:
+class ScreenConfig(object):
   """
   Attributes:
    - id
@@ -706,7 +706,7 @@ class ScreenConfig:
   def __ne__(self, other):
     return not (self == other)
 
-class Artifact:
+class Artifact(object):
   """
   Attributes:
    - page_uri
@@ -812,7 +812,7 @@ class Artifact:
   def __ne__(self, other):
     return not (self == other)
 
-class Generation:
+class Generation(object):
   """
   Attributes:
    - id
