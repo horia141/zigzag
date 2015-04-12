@@ -368,21 +368,24 @@ typedef int64_t common.modelEntityId;
 @interface common.modelArtifact : NSObject <TBase, NSCoding> {
   NSString * __page_uri;
   NSString * __title;
+  common.modelEntityId __artifact_source_pk;
   NSMutableArray * __photo_descriptions;
 
   BOOL __page_uri_isset;
   BOOL __title_isset;
+  BOOL __artifact_source_pk_isset;
   BOOL __photo_descriptions_isset;
 }
 
 #if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
 @property (nonatomic, retain, getter=page_uri, setter=setPage_uri:) NSString * page_uri;
 @property (nonatomic, retain, getter=title, setter=setTitle:) NSString * title;
+@property (nonatomic, getter=artifact_source_pk, setter=setArtifact_source_pk:) common.modelEntityId artifact_source_pk;
 @property (nonatomic, retain, getter=photo_descriptions, setter=setPhoto_descriptions:) NSMutableArray * photo_descriptions;
 #endif
 
 - (id) init;
-- (id) initWithPage_uri: (NSString *) page_uri title: (NSString *) title photo_descriptions: (NSMutableArray *) photo_descriptions;
+- (id) initWithPage_uri: (NSString *) page_uri title: (NSString *) title artifact_source_pk: (common.modelEntityId) artifact_source_pk photo_descriptions: (NSMutableArray *) photo_descriptions;
 
 - (void) read: (id <TProtocol>) inProtocol;
 - (void) write: (id <TProtocol>) outProtocol;
@@ -402,6 +405,12 @@ typedef int64_t common.modelEntityId;
 - (BOOL) titleIsSet;
 
 #if !__has_feature(objc_arc)
+- (common.modelEntityId) artifact_source_pk;
+- (void) setArtifact_source_pk: (common.modelEntityId) artifact_source_pk;
+#endif
+- (BOOL) artifact_source_pkIsSet;
+
+#if !__has_feature(objc_arc)
 - (NSMutableArray *) photo_descriptions;
 - (void) setPhoto_descriptions: (NSMutableArray *) photo_descriptions;
 #endif
@@ -411,15 +420,15 @@ typedef int64_t common.modelEntityId;
 
 @interface common.modelGeneration : NSObject <TBase, NSCoding> {
   common.modelEntityId __id;
-  int32_t __date_started_ts;
-  int32_t __date_ended_ts;
+  int32_t __datetime_started_ts;
+  int32_t __datetime_ended_ts;
   NSMutableDictionary * __artifact_sources;
   NSMutableDictionary * __screen_configs;
   NSMutableArray * __artifacts;
 
   BOOL __id_isset;
-  BOOL __date_started_ts_isset;
-  BOOL __date_ended_ts_isset;
+  BOOL __datetime_started_ts_isset;
+  BOOL __datetime_ended_ts_isset;
   BOOL __artifact_sources_isset;
   BOOL __screen_configs_isset;
   BOOL __artifacts_isset;
@@ -427,15 +436,15 @@ typedef int64_t common.modelEntityId;
 
 #if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
 @property (nonatomic, getter=id, setter=setId:) common.modelEntityId id;
-@property (nonatomic, getter=date_started_ts, setter=setDate_started_ts:) int32_t date_started_ts;
-@property (nonatomic, getter=date_ended_ts, setter=setDate_ended_ts:) int32_t date_ended_ts;
+@property (nonatomic, getter=datetime_started_ts, setter=setDatetime_started_ts:) int32_t datetime_started_ts;
+@property (nonatomic, getter=datetime_ended_ts, setter=setDatetime_ended_ts:) int32_t datetime_ended_ts;
 @property (nonatomic, retain, getter=artifact_sources, setter=setArtifact_sources:) NSMutableDictionary * artifact_sources;
 @property (nonatomic, retain, getter=screen_configs, setter=setScreen_configs:) NSMutableDictionary * screen_configs;
 @property (nonatomic, retain, getter=artifacts, setter=setArtifacts:) NSMutableArray * artifacts;
 #endif
 
 - (id) init;
-- (id) initWithId: (common.modelEntityId) id date_started_ts: (int32_t) date_started_ts date_ended_ts: (int32_t) date_ended_ts artifact_sources: (NSMutableDictionary *) artifact_sources screen_configs: (NSMutableDictionary *) screen_configs artifacts: (NSMutableArray *) artifacts;
+- (id) initWithId: (common.modelEntityId) id datetime_started_ts: (int32_t) datetime_started_ts datetime_ended_ts: (int32_t) datetime_ended_ts artifact_sources: (NSMutableDictionary *) artifact_sources screen_configs: (NSMutableDictionary *) screen_configs artifacts: (NSMutableArray *) artifacts;
 
 - (void) read: (id <TProtocol>) inProtocol;
 - (void) write: (id <TProtocol>) outProtocol;
@@ -449,16 +458,16 @@ typedef int64_t common.modelEntityId;
 - (BOOL) idIsSet;
 
 #if !__has_feature(objc_arc)
-- (int32_t) date_started_ts;
-- (void) setDate_started_ts: (int32_t) date_started_ts;
+- (int32_t) datetime_started_ts;
+- (void) setDatetime_started_ts: (int32_t) datetime_started_ts;
 #endif
-- (BOOL) date_started_tsIsSet;
+- (BOOL) datetime_started_tsIsSet;
 
 #if !__has_feature(objc_arc)
-- (int32_t) date_ended_ts;
-- (void) setDate_ended_ts: (int32_t) date_ended_ts;
+- (int32_t) datetime_ended_ts;
+- (void) setDatetime_ended_ts: (int32_t) datetime_ended_ts;
 #endif
-- (BOOL) date_ended_tsIsSet;
+- (BOOL) datetime_ended_tsIsSet;
 
 #if !__has_feature(objc_arc)
 - (NSMutableDictionary *) artifact_sources;

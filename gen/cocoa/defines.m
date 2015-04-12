@@ -75,13 +75,13 @@ static int32_t common.definesPHOTO_MAX_HEIGHT = 2048;
 
   [tmp0 setSubdomains:tmp1];
 
-  [common.definesARTIFACT_SOURCES setObject:tmp0 forKey:@"Reddit"];
+  [common.definesARTIFACT_SOURCES setObject:tmp0 forKey:[NSNumber numberWithLongLong: 1]];
   common.modelArtifactSource * tmp2 = [[[common.modelArtifactSource alloc] init] autorelease_stub];
   [tmp2 setId:2];
   [tmp2 setName:@"Imgur"];
   [tmp2 setStart_page_uri:@"http://imgur.com"];
 
-  [common.definesARTIFACT_SOURCES setObject:tmp2 forKey:@"Imgur"];
+  [common.definesARTIFACT_SOURCES setObject:tmp2 forKey:[NSNumber numberWithLongLong: 2]];
 
 ;
   common.definesVIDEO_SCREEN_CONFIG = [[NSMutableDictionary alloc] initWithCapacity:2]; 
@@ -90,28 +90,28 @@ static int32_t common.definesPHOTO_MAX_HEIGHT = 2048;
   [tmp3 setName:@"480"];
   [tmp3 setWidth:480];
 
-  [common.definesVIDEO_SCREEN_CONFIG setObject:tmp3 forKey:@"480"];
+  [common.definesVIDEO_SCREEN_CONFIG setObject:tmp3 forKey:[NSNumber numberWithLongLong: 1]];
   common.modelScreenConfig * tmp4 = [[[common.modelScreenConfig alloc] init] autorelease_stub];
   [tmp4 setId:2];
   [tmp4 setName:@"720p"];
   [tmp4 setWidth:1280];
 
-  [common.definesVIDEO_SCREEN_CONFIG setObject:tmp4 forKey:@"720p"];
+  [common.definesVIDEO_SCREEN_CONFIG setObject:tmp4 forKey:[NSNumber numberWithLongLong: 2]];
 
 ;
   common.definesIMAGE_SCREEN_CONFIG = [[NSMutableDictionary alloc] initWithCapacity:2]; 
   common.modelScreenConfig * tmp5 = [[[common.modelScreenConfig alloc] init] autorelease_stub];
-  [tmp5 setId:1];
+  [tmp5 setId:3];
   [tmp5 setName:@"800"];
   [tmp5 setWidth:800];
 
-  [common.definesIMAGE_SCREEN_CONFIG setObject:tmp5 forKey:@"800"];
+  [common.definesIMAGE_SCREEN_CONFIG setObject:tmp5 forKey:[NSNumber numberWithLongLong: 3]];
   common.modelScreenConfig * tmp6 = [[[common.modelScreenConfig alloc] init] autorelease_stub];
-  [tmp6 setWidth:1200];
-  [tmp6 setId:2];
+  [tmp6 setId:4];
   [tmp6 setName:@"1200"];
+  [tmp6 setWidth:1200];
 
-  [common.definesIMAGE_SCREEN_CONFIG setObject:tmp6 forKey:@"1200"];
+  [common.definesIMAGE_SCREEN_CONFIG setObject:tmp6 forKey:[NSNumber numberWithLongLong: 4]];
 
 ;
 }

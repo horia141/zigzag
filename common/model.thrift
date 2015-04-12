@@ -66,14 +66,15 @@ struct ScreenConfig {
 struct Artifact {
   1: required string page_uri;
   2: required string title;
-  3: required list<PhotoDescription> photo_descriptions;
+  3: required EntityId artifact_source_pk;
+  4: required list<PhotoDescription> photo_descriptions;
 }
 
 // Next id: 7
 struct Generation {
   1: required EntityId id;
-  2: required i32 date_started_ts;
-  3: required i32 date_ended_ts;
+  2: required i32 datetime_started_ts;
+  3: required i32 datetime_ended_ts;
   4: required map<EntityId, ArtifactSource> artifact_sources;
   5: required map<EntityId, ScreenConfig> screen_configs;
   6: optional list<Artifact> artifacts;

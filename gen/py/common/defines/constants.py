@@ -27,7 +27,7 @@ PHOTO_MIMETYPES_TO_EXTENSION = {
   "video/mp4" : "mp4",
 }
 ARTIFACT_SOURCES = {
-  "Reddit" : common.model.ttypes.ArtifactSource(**{
+  1 : common.model.ttypes.ArtifactSource(**{
     "id" : 1,
     "name" : "Reddit",
     "start_page_uri" : "http://reddit.com/r/%s",
@@ -35,7 +35,7 @@ ARTIFACT_SOURCES = {
       "pics",
     ]),
   }),
-  "Imgur" : common.model.ttypes.ArtifactSource(**{
+  2 : common.model.ttypes.ArtifactSource(**{
     "id" : 2,
     "name" : "Imgur",
     "start_page_uri" : "http://imgur.com",
@@ -52,27 +52,27 @@ PHOTO_SAVE_PORT = 16001
 PHOTO_SAVE_LOG_PATH = "var/photo_save.log"
 PHOTO_SAVE_STORAGE_PATH = "var/photos/%s"
 VIDEO_SCREEN_CONFIG = {
-  "480" : common.model.ttypes.ScreenConfig(**{
+  1 : common.model.ttypes.ScreenConfig(**{
     "id" : 1,
     "name" : "480",
     "width" : 480,
   }),
-  "720p" : common.model.ttypes.ScreenConfig(**{
+  2 : common.model.ttypes.ScreenConfig(**{
     "id" : 2,
     "name" : "720p",
     "width" : 1280,
   }),
 }
 IMAGE_SCREEN_CONFIG = {
-  "800" : common.model.ttypes.ScreenConfig(**{
-    "id" : 1,
+  3 : common.model.ttypes.ScreenConfig(**{
+    "id" : 3,
     "name" : "800",
     "width" : 800,
   }),
-  "1200" : common.model.ttypes.ScreenConfig(**{
-    "width" : 1200,
-    "id" : 2,
+  4 : common.model.ttypes.ScreenConfig(**{
+    "id" : 4,
     "name" : "1200",
+    "width" : 1200,
   }),
 }
 IMAGE_SAVE_JPEG_OPTIONS_QUALITY = 50

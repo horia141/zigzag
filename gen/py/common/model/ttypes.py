@@ -812,6 +812,7 @@ class Artifact(object):
   Attributes:
    - page_uri
    - title
+   - artifact_source_pk
    - photo_descriptions
   """
 
@@ -819,12 +820,14 @@ class Artifact(object):
     None, # 0
     (1, TType.STRING, 'page_uri', None, None, ), # 1
     (2, TType.STRING, 'title', None, None, ), # 2
-    (3, TType.LIST, 'photo_descriptions', (TType.STRUCT,(PhotoDescription, PhotoDescription.thrift_spec)), None, ), # 3
+    (3, TType.I64, 'artifact_source_pk', None, None, ), # 3
+    (4, TType.LIST, 'photo_descriptions', (TType.STRUCT,(PhotoDescription, PhotoDescription.thrift_spec)), None, ), # 4
   )
 
-  def __init__(self, page_uri=None, title=None, photo_descriptions=None,):
+  def __init__(self, page_uri=None, title=None, artifact_source_pk=None, photo_descriptions=None,):
     self.page_uri = page_uri
     self.title = title
+    self.artifact_source_pk = artifact_source_pk
     self.photo_descriptions = photo_descriptions
 
   def read(self, iprot):
@@ -847,6 +850,11 @@ class Artifact(object):
         else:
           iprot.skip(ftype)
       elif fid == 3:
+        if ftype == TType.I64:
+          self.artifact_source_pk = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 4:
         if ftype == TType.LIST:
           self.photo_descriptions = []
           (_etype26, _size23) = iprot.readListBegin()
@@ -875,8 +883,12 @@ class Artifact(object):
       oprot.writeFieldBegin('title', TType.STRING, 2)
       oprot.writeString(self.title)
       oprot.writeFieldEnd()
+    if self.artifact_source_pk is not None:
+      oprot.writeFieldBegin('artifact_source_pk', TType.I64, 3)
+      oprot.writeI64(self.artifact_source_pk)
+      oprot.writeFieldEnd()
     if self.photo_descriptions is not None:
-      oprot.writeFieldBegin('photo_descriptions', TType.LIST, 3)
+      oprot.writeFieldBegin('photo_descriptions', TType.LIST, 4)
       oprot.writeListBegin(TType.STRUCT, len(self.photo_descriptions))
       for iter29 in self.photo_descriptions:
         iter29.write(oprot)
@@ -890,6 +902,8 @@ class Artifact(object):
       raise TProtocol.TProtocolException(message='Required field page_uri is unset!')
     if self.title is None:
       raise TProtocol.TProtocolException(message='Required field title is unset!')
+    if self.artifact_source_pk is None:
+      raise TProtocol.TProtocolException(message='Required field artifact_source_pk is unset!')
     if self.photo_descriptions is None:
       raise TProtocol.TProtocolException(message='Required field photo_descriptions is unset!')
     return
@@ -899,6 +913,7 @@ class Artifact(object):
     value = 17
     value = (value * 31) ^ hash(self.page_uri)
     value = (value * 31) ^ hash(self.title)
+    value = (value * 31) ^ hash(self.artifact_source_pk)
     value = (value * 31) ^ hash(self.photo_descriptions)
     return value
 
@@ -917,8 +932,8 @@ class Generation(object):
   """
   Attributes:
    - id
-   - date_started_ts
-   - date_ended_ts
+   - datetime_started_ts
+   - datetime_ended_ts
    - artifact_sources
    - screen_configs
    - artifacts
@@ -927,17 +942,17 @@ class Generation(object):
   thrift_spec = (
     None, # 0
     (1, TType.I64, 'id', None, None, ), # 1
-    (2, TType.I32, 'date_started_ts', None, None, ), # 2
-    (3, TType.I32, 'date_ended_ts', None, None, ), # 3
+    (2, TType.I32, 'datetime_started_ts', None, None, ), # 2
+    (3, TType.I32, 'datetime_ended_ts', None, None, ), # 3
     (4, TType.MAP, 'artifact_sources', (TType.I64,None,TType.STRUCT,(ArtifactSource, ArtifactSource.thrift_spec)), None, ), # 4
     (5, TType.MAP, 'screen_configs', (TType.I64,None,TType.STRUCT,(ScreenConfig, ScreenConfig.thrift_spec)), None, ), # 5
     (6, TType.LIST, 'artifacts', (TType.STRUCT,(Artifact, Artifact.thrift_spec)), None, ), # 6
   )
 
-  def __init__(self, id=None, date_started_ts=None, date_ended_ts=None, artifact_sources=None, screen_configs=None, artifacts=None,):
+  def __init__(self, id=None, datetime_started_ts=None, datetime_ended_ts=None, artifact_sources=None, screen_configs=None, artifacts=None,):
     self.id = id
-    self.date_started_ts = date_started_ts
-    self.date_ended_ts = date_ended_ts
+    self.datetime_started_ts = datetime_started_ts
+    self.datetime_ended_ts = datetime_ended_ts
     self.artifact_sources = artifact_sources
     self.screen_configs = screen_configs
     self.artifacts = artifacts
@@ -958,12 +973,12 @@ class Generation(object):
           iprot.skip(ftype)
       elif fid == 2:
         if ftype == TType.I32:
-          self.date_started_ts = iprot.readI32();
+          self.datetime_started_ts = iprot.readI32();
         else:
           iprot.skip(ftype)
       elif fid == 3:
         if ftype == TType.I32:
-          self.date_ended_ts = iprot.readI32();
+          self.datetime_ended_ts = iprot.readI32();
         else:
           iprot.skip(ftype)
       elif fid == 4:
@@ -1015,13 +1030,13 @@ class Generation(object):
       oprot.writeFieldBegin('id', TType.I64, 1)
       oprot.writeI64(self.id)
       oprot.writeFieldEnd()
-    if self.date_started_ts is not None:
-      oprot.writeFieldBegin('date_started_ts', TType.I32, 2)
-      oprot.writeI32(self.date_started_ts)
+    if self.datetime_started_ts is not None:
+      oprot.writeFieldBegin('datetime_started_ts', TType.I32, 2)
+      oprot.writeI32(self.datetime_started_ts)
       oprot.writeFieldEnd()
-    if self.date_ended_ts is not None:
-      oprot.writeFieldBegin('date_ended_ts', TType.I32, 3)
-      oprot.writeI32(self.date_ended_ts)
+    if self.datetime_ended_ts is not None:
+      oprot.writeFieldBegin('datetime_ended_ts', TType.I32, 3)
+      oprot.writeI32(self.datetime_ended_ts)
       oprot.writeFieldEnd()
     if self.artifact_sources is not None:
       oprot.writeFieldBegin('artifact_sources', TType.MAP, 4)
@@ -1052,10 +1067,10 @@ class Generation(object):
   def validate(self):
     if self.id is None:
       raise TProtocol.TProtocolException(message='Required field id is unset!')
-    if self.date_started_ts is None:
-      raise TProtocol.TProtocolException(message='Required field date_started_ts is unset!')
-    if self.date_ended_ts is None:
-      raise TProtocol.TProtocolException(message='Required field date_ended_ts is unset!')
+    if self.datetime_started_ts is None:
+      raise TProtocol.TProtocolException(message='Required field datetime_started_ts is unset!')
+    if self.datetime_ended_ts is None:
+      raise TProtocol.TProtocolException(message='Required field datetime_ended_ts is unset!')
     if self.artifact_sources is None:
       raise TProtocol.TProtocolException(message='Required field artifact_sources is unset!')
     if self.screen_configs is None:
@@ -1066,8 +1081,8 @@ class Generation(object):
   def __hash__(self):
     value = 17
     value = (value * 31) ^ hash(self.id)
-    value = (value * 31) ^ hash(self.date_started_ts)
-    value = (value * 31) ^ hash(self.date_ended_ts)
+    value = (value * 31) ^ hash(self.datetime_started_ts)
+    value = (value * 31) ^ hash(self.datetime_ended_ts)
     value = (value * 31) ^ hash(self.artifact_sources)
     value = (value * 31) ^ hash(self.screen_configs)
     value = (value * 31) ^ hash(self.artifacts)

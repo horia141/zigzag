@@ -11,14 +11,14 @@ const set<string> WEBPAGE_MIMETYPES = ['application/xhtml+xml', 'text/html', 'te
 const set<string> PHOTO_MIMETYPES = ['image/gif', 'image/jpeg', 'image/png'];
 const map<string, string> PHOTO_MIMETYPES_TO_EXTENSION = {'image/gif': 'gif', 'image/jpeg': 'jpg', 'image/png': 'png', 'video/mp4': 'mp4'};
 
-const map<string, model.ArtifactSource> ARTIFACT_SOURCES = {
-    'Reddit': {
+const map<i64, model.ArtifactSource> ARTIFACT_SOURCES = {
+    1: {
         'id': 1,
 	'name': 'Reddit',
 	'start_page_uri': 'http://reddit.com/r/%s',
         'subdomains': ['pics']
     },
-    'Imgur': {
+    2: {
         'id': 2,
         'name': 'Imgur',
         'start_page_uri': 'http://imgur.com'
@@ -40,14 +40,14 @@ const i32 PHOTO_SAVE_PORT = 16001;
 const string PHOTO_SAVE_LOG_PATH = 'var/photo_save.log';
 const string PHOTO_SAVE_STORAGE_PATH = 'var/photos/%s';
 
-const map<string, model.ScreenConfig> VIDEO_SCREEN_CONFIG = {
-    '480': {'id': 1, 'name': '480', 'width': 480},
-    '720p': {'id': 2, 'name': '720p', 'width': 1280}
+const map<i64, model.ScreenConfig> VIDEO_SCREEN_CONFIG = {
+    1: {'id': 1, 'name': '480', 'width': 480},
+    2: {'id': 2, 'name': '720p', 'width': 1280}
 };
 
-const map<string, model.ScreenConfig> IMAGE_SCREEN_CONFIG = {
-    '800': {'id': 1, 'name': '800', 'width': 800},
-    '1200': {'id': 2, 'name': '1200', 'width': 1200}
+const map<i64, model.ScreenConfig> IMAGE_SCREEN_CONFIG = {
+    3: {'id': 3, 'name': '800', 'width': 800},
+    4: {'id': 4, 'name': '1200', 'width': 1200}
 };
 
 const i32 IMAGE_SAVE_JPEG_OPTIONS_QUALITY = 50;

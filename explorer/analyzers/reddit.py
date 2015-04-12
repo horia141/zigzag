@@ -15,7 +15,7 @@ class Analyzer(analyzers.Analyzer):
 
     def __init__(self, source):
         super(Analyzer, self).__init__(source)
-        self._imgur_analyzer = imgur.Analyzer(defines.ARTIFACT_SOURCES['Imgur'])
+        self._imgur_analyzer = imgur.Analyzer(defines.ARTIFACT_SOURCES[2])
 
     def analyze(self):
         logging.info('Analyzing Reddit')
@@ -95,9 +95,9 @@ class Analyzer(analyzers.Analyzer):
 
         if not try_other_analyzer:
             return {
-                'page_url': artifact_page_url,
+                'page_uri': artifact_page_url,
                 'title': title,
-                'images_description': [{
+                'photo_description': [{
                     'subtitle': '',
                     'description': '',
                     'uri_path': artifact_page_url

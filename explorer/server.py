@@ -1,6 +1,7 @@
 import datetime
 import pytz
 import logging
+import time
 import urllib2
 
 import comlink
@@ -10,36 +11,35 @@ from thrift.protocol import TJSONProtocol
 from thrift.transport import TTransport
 
 import common.defines.constants as defines
+import common.model.ttypes as model
 import explorer.analyzers as analyzers
 import explorer.analyzers.reddit as reddit
 import explorer.analyzers.imgur as imgur
 import photo_save
-import rest_api.models as models
+import rest_api.models as datastore
 
 
 def main():
     logging.basicConfig(level=logging.INFO, filename=defines.EXPLORER_LOG_PATH)
 
-    right_now = datetime.datetime.now(pytz.utc)
+    right_now_1 = datetime.datetime.now(pytz.utc)
 
     ser = serializer.Serializer()
     client = transport.Client(defines.PHOTO_SAVE_PORT, ser)
     photo_save_client = photo_save.Service.client(client)
 
-    logging.info('Starting crawl and analysis service on %s', right_now.strftime(defines.TIME_FORMAT))
+    logging.info('Starting crawl and analysis service on %s', right_now_1.strftime(defines.TIME_FORMAT))
 
     logging.info('Building analyzers')
 
     all_analyzers = {
-        'Reddit': reddit.Analyzer(defines.ARTIFACT_SOURCES['Reddit']),
-        'Imgur': imgur.Analyzer(defines.ARTIFACT_SOURCES['Imgur']),
+        'Reddit': reddit.Analyzer(defines.ARTIFACT_SOURCES[1]),
+        'Imgur': imgur.Analyzer(defines.ARTIFACT_SOURCES[2]),
     }
 
-    logging.info('Creating new generation')
-
-    generation = models.Generation.add(right_now)
-
     logging.info('Analyzing sources')
+
+    artifacts = []
 
     for analyzer_name, analyzer in all_analyzers.iteritems():
         logging.info('Analyzing artifact source "%s"', analyzer_name)
@@ -53,21 +53,18 @@ def main():
         logging.info('Have %d possibly new artifacts', len(artifact_descs))
 
         for artifact_desc in artifact_descs:
-            try:
-                artifact = models.Artifact.get_by_page_url(artifact_desc['page_url'])
+            if datastore.artifact_exists_by_page_uri(artifact_desc['page_uri']):
                 logging.info('Found already existing artifact "%s"', artifact.title)
                 continue
-            except models.Error as e:
-                pass
 
-            images_description = []
+            photo_description = []
 
             try:
-                for image_raw_description in artifact_desc['images_description']:
+                for image_raw_description in artifact_desc['photo_description']:
                     subtitle = image_raw_description['subtitle']
                     description = image_raw_description['description']
                     source_uri = image_raw_description['uri_path']
-                    images_description.append(photo_save_client.process_one_photo(
+                    photo_description.append(photo_save_client.process_one_photo(
                         subtitle, description, source_uri))
             except Exception as e:
                 logging.error('Encountered an error in processing artifact "%s"', artifact_desc['title'])
@@ -77,16 +74,10 @@ def main():
                     logging.exception(e)
                 continue
 
-            ttransport = TTransport.TMemoryBuffer()
-            tprotocol = TJSONProtocol.TJSONProtocol(ttransport)
-            for image_description in images_description:
-                image_description.write(tprotocol)
-            images_description_coded = ttransport.getvalue()
-
             logging.info('Saving artifact "%s" to database', artifact_desc['title'])
-            artifact = models.Artifact.add(artifact_desc['page_url'], 
-                generation, models.ArtifactSource.objects.get(id=analyzer.source.id), artifact_desc['title'],
-                images_description_coded)
+            artifact = model.Artifact(artifact_desc['page_uri'], artifact_desc['title'].encode('utf-8'),
+                analyzer.source.id, photo_description)
+            artifacts.append(artifact)
 
             logging.info('Finished processing for "%s"', artifact.title)
 
@@ -94,9 +85,22 @@ def main():
 
     right_now_2 = datetime.datetime.now(pytz.utc)
 
+    datetime_started_ts = long(time.mktime(right_now_1.timetuple()))
+    datetime_ended_ts = long(time.mktime(right_now_2.timetuple()))
+    screen_configs = defines.IMAGE_SCREEN_CONFIG.copy()
+    screen_configs.update(defines.VIDEO_SCREEN_CONFIG)
+    generation = model.Generation(-1, datetime_started_ts, datetime_ended_ts,
+        defines.ARTIFACT_SOURCES, screen_configs, artifacts)
+    # Datastore operations might need to be wrapped in a transaction, so we should be certain that
+    # both the generation and all the artifacts could properly be marked as added. If an error 
+    # occurs in the latter stage, we might end up with duplicate artifacts, because not all
+    # artifacts in generation might properly be marked.
+    # TODO(horia141): use a transaction here or something else to mark a properly closed generation.
+    datastore.save_generation(generation)
+    for artifact in artifacts:
+        datastore.mark_artifact_as_existing(generation, artifact)
+
     logging.info('Closing generation')
-    generation.close(right_now_2)
-    generation.save()
 
 
 if __name__ == '__main__':

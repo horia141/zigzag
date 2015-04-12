@@ -119,7 +119,7 @@ class Analyzer(analyzers.Analyzer):
             # Sometimes, a single image is present, and that is "image".
             actual_images = [image]
 
-        images_description = []
+        photo_description = []
 
         for actual_image in actual_images:
             subtitle_raw = actual_image.find('h2', {'class': 'image-title small-margin-bottom'})
@@ -137,21 +137,21 @@ class Analyzer(analyzers.Analyzer):
                 continue
             url_path = self._parse_incomplete_url(url_path_raw.get('src'))
 
-            images_description.append({
+            photo_description.append({
                 'subtitle': subtitle,
                 'description': description,
                 'uri_path': url_path
             })
 
-        if len(images_description) == 0:
+        if len(photo_description) == 0:
             raise analyzers.Error('Could not find images')
 
-        logging.info('Found title and %d images', len(images_description))
+        logging.info('Found title and %d images', len(photo_description))
 
         return {
-            'page_url': artifact_page_url,
+            'page_uri': artifact_page_url,
             'title': title,
-            'images_description': images_description
+            'photo_description': photo_description
         }
 
     def _analyze_artifact_link_as_album(self, artifact_page_url):
@@ -188,7 +188,7 @@ class Analyzer(analyzers.Analyzer):
             raise analyzers.Error('Could not find set of images')
 
         actual_images = main_image.findAll('div', {'class': 'image'})
-        images_description = []
+        photo_description = []
 
         for actual_image in actual_images:
             subtitle_raw = actual_image.find('h2', {'class': 'first'})
@@ -210,19 +210,19 @@ class Analyzer(analyzers.Analyzer):
                 continue
             url_path = self._parse_incomplete_url(url_path_raw.get('href'))
 
-            images_description.append({
+            photo_description.append({
                 'subtitle': subtitle,
                 'description': description,
                 'uri_path': url_path
             })
 
-        if len(images_description) == 0:
+        if len(photo_description) == 0:
             raise analyzers.Error('Could not find images')
 
-        logging.info('Found title and %d images', len(images_description))
+        logging.info('Found title and %d images', len(photo_description))
 
         return {
-            'page_url': artifact_page_url,
+            'page_uri': artifact_page_url,
             'title': title,
-            'images_description': images_description
+            'photo_description': photo_description
         }

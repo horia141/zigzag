@@ -1892,13 +1892,15 @@
   return self;
 }
 
-- (id) initWithPage_uri: (NSString *) page_uri title: (NSString *) title photo_descriptions: (NSMutableArray *) photo_descriptions
+- (id) initWithPage_uri: (NSString *) page_uri title: (NSString *) title artifact_source_pk: (common.modelEntityId) artifact_source_pk photo_descriptions: (NSMutableArray *) photo_descriptions
 {
   self = [super init];
   __page_uri = [page_uri retain_stub];
   __page_uri_isset = YES;
   __title = [title retain_stub];
   __title_isset = YES;
+  __artifact_source_pk = artifact_source_pk;
+  __artifact_source_pk_isset = YES;
   __photo_descriptions = [photo_descriptions retain_stub];
   __photo_descriptions_isset = YES;
   return self;
@@ -1917,6 +1919,11 @@
     __title = [[decoder decodeObjectForKey: @"title"] retain_stub];
     __title_isset = YES;
   }
+  if ([decoder containsValueForKey: @"artifact_source_pk"])
+  {
+    __artifact_source_pk = [decoder decodeInt64ForKey: @"artifact_source_pk"];
+    __artifact_source_pk_isset = YES;
+  }
   if ([decoder containsValueForKey: @"photo_descriptions"])
   {
     __photo_descriptions = [[decoder decodeObjectForKey: @"photo_descriptions"] retain_stub];
@@ -1934,6 +1941,10 @@
   if (__title_isset)
   {
     [encoder encodeObject: __title forKey: @"title"];
+  }
+  if (__artifact_source_pk_isset)
+  {
+    [encoder encodeInt64: __artifact_source_pk forKey: @"artifact_source_pk"];
   }
   if (__photo_descriptions_isset)
   {
@@ -1991,6 +2002,23 @@
   __title_isset = NO;
 }
 
+- (int64_t) artifact_source_pk {
+  return __artifact_source_pk;
+}
+
+- (void) setArtifact_source_pk: (int64_t) artifact_source_pk {
+  __artifact_source_pk = artifact_source_pk;
+  __artifact_source_pk_isset = YES;
+}
+
+- (BOOL) artifact_source_pkIsSet {
+  return __artifact_source_pk_isset;
+}
+
+- (void) unsetArtifact_source_pk {
+  __artifact_source_pk_isset = NO;
+}
+
 - (NSMutableArray *) photo_descriptions {
   return [[__photo_descriptions retain_stub] autorelease_stub];
 }
@@ -2044,6 +2072,14 @@
         }
         break;
       case 3:
+        if (fieldType == TType_I64) {
+          int64_t fieldValue = [inProtocol readI64];
+          [self setArtifact_source_pk: fieldValue];
+        } else { 
+          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
+        }
+        break;
+      case 4:
         if (fieldType == TType_LIST) {
           int _size16;
           [inProtocol readListBeginReturningElementType: NULL size: &_size16];
@@ -2088,9 +2124,14 @@
       [outProtocol writeFieldEnd];
     }
   }
+  if (__artifact_source_pk_isset) {
+    [outProtocol writeFieldBeginWithName: @"artifact_source_pk" type: TType_I64 fieldID: 3];
+    [outProtocol writeI64: __artifact_source_pk];
+    [outProtocol writeFieldEnd];
+  }
   if (__photo_descriptions_isset) {
     if (__photo_descriptions != nil) {
-      [outProtocol writeFieldBeginWithName: @"photo_descriptions" type: TType_LIST fieldID: 3];
+      [outProtocol writeFieldBeginWithName: @"photo_descriptions" type: TType_LIST fieldID: 4];
       {
         [outProtocol writeListBeginWithElementType: TType_STRUCT size: [__photo_descriptions count]];
         int idx20;
@@ -2117,6 +2158,10 @@
     @throw [TProtocolException exceptionWithName: @"TProtocolException"
                                reason: @"Required field 'title' is not set."];
   }
+  if (!__artifact_source_pk_isset) {
+    @throw [TProtocolException exceptionWithName: @"TProtocolException"
+                               reason: @"Required field 'artifact_source_pk' is not set."];
+  }
   if (!__photo_descriptions_isset) {
     @throw [TProtocolException exceptionWithName: @"TProtocolException"
                                reason: @"Required field 'photo_descriptions' is not set."];
@@ -2129,6 +2174,8 @@
   [ms appendFormat: @"\"%@\"", __page_uri];
   [ms appendString: @",title:"];
   [ms appendFormat: @"\"%@\"", __title];
+  [ms appendString: @",artifact_source_pk:"];
+  [ms appendFormat: @"%qi", __artifact_source_pk];
   [ms appendString: @",photo_descriptions:"];
   [ms appendFormat: @"%@", __photo_descriptions];
   [ms appendString: @")"];
@@ -2147,15 +2194,15 @@
   return self;
 }
 
-- (id) initWithId: (common.modelEntityId) id date_started_ts: (int32_t) date_started_ts date_ended_ts: (int32_t) date_ended_ts artifact_sources: (NSMutableDictionary *) artifact_sources screen_configs: (NSMutableDictionary *) screen_configs artifacts: (NSMutableArray *) artifacts
+- (id) initWithId: (common.modelEntityId) id datetime_started_ts: (int32_t) datetime_started_ts datetime_ended_ts: (int32_t) datetime_ended_ts artifact_sources: (NSMutableDictionary *) artifact_sources screen_configs: (NSMutableDictionary *) screen_configs artifacts: (NSMutableArray *) artifacts
 {
   self = [super init];
   __id = id;
   __id_isset = YES;
-  __date_started_ts = date_started_ts;
-  __date_started_ts_isset = YES;
-  __date_ended_ts = date_ended_ts;
-  __date_ended_ts_isset = YES;
+  __datetime_started_ts = datetime_started_ts;
+  __datetime_started_ts_isset = YES;
+  __datetime_ended_ts = datetime_ended_ts;
+  __datetime_ended_ts_isset = YES;
   __artifact_sources = [artifact_sources retain_stub];
   __artifact_sources_isset = YES;
   __screen_configs = [screen_configs retain_stub];
@@ -2173,15 +2220,15 @@
     __id = [decoder decodeInt64ForKey: @"id"];
     __id_isset = YES;
   }
-  if ([decoder containsValueForKey: @"date_started_ts"])
+  if ([decoder containsValueForKey: @"datetime_started_ts"])
   {
-    __date_started_ts = [decoder decodeInt32ForKey: @"date_started_ts"];
-    __date_started_ts_isset = YES;
+    __datetime_started_ts = [decoder decodeInt32ForKey: @"datetime_started_ts"];
+    __datetime_started_ts_isset = YES;
   }
-  if ([decoder containsValueForKey: @"date_ended_ts"])
+  if ([decoder containsValueForKey: @"datetime_ended_ts"])
   {
-    __date_ended_ts = [decoder decodeInt32ForKey: @"date_ended_ts"];
-    __date_ended_ts_isset = YES;
+    __datetime_ended_ts = [decoder decodeInt32ForKey: @"datetime_ended_ts"];
+    __datetime_ended_ts_isset = YES;
   }
   if ([decoder containsValueForKey: @"artifact_sources"])
   {
@@ -2207,13 +2254,13 @@
   {
     [encoder encodeInt64: __id forKey: @"id"];
   }
-  if (__date_started_ts_isset)
+  if (__datetime_started_ts_isset)
   {
-    [encoder encodeInt32: __date_started_ts forKey: @"date_started_ts"];
+    [encoder encodeInt32: __datetime_started_ts forKey: @"datetime_started_ts"];
   }
-  if (__date_ended_ts_isset)
+  if (__datetime_ended_ts_isset)
   {
-    [encoder encodeInt32: __date_ended_ts forKey: @"date_ended_ts"];
+    [encoder encodeInt32: __datetime_ended_ts forKey: @"datetime_ended_ts"];
   }
   if (__artifact_sources_isset)
   {
@@ -2254,38 +2301,38 @@
   __id_isset = NO;
 }
 
-- (int32_t) date_started_ts {
-  return __date_started_ts;
+- (int32_t) datetime_started_ts {
+  return __datetime_started_ts;
 }
 
-- (void) setDate_started_ts: (int32_t) date_started_ts {
-  __date_started_ts = date_started_ts;
-  __date_started_ts_isset = YES;
+- (void) setDatetime_started_ts: (int32_t) datetime_started_ts {
+  __datetime_started_ts = datetime_started_ts;
+  __datetime_started_ts_isset = YES;
 }
 
-- (BOOL) date_started_tsIsSet {
-  return __date_started_ts_isset;
+- (BOOL) datetime_started_tsIsSet {
+  return __datetime_started_ts_isset;
 }
 
-- (void) unsetDate_started_ts {
-  __date_started_ts_isset = NO;
+- (void) unsetDatetime_started_ts {
+  __datetime_started_ts_isset = NO;
 }
 
-- (int32_t) date_ended_ts {
-  return __date_ended_ts;
+- (int32_t) datetime_ended_ts {
+  return __datetime_ended_ts;
 }
 
-- (void) setDate_ended_ts: (int32_t) date_ended_ts {
-  __date_ended_ts = date_ended_ts;
-  __date_ended_ts_isset = YES;
+- (void) setDatetime_ended_ts: (int32_t) datetime_ended_ts {
+  __datetime_ended_ts = datetime_ended_ts;
+  __datetime_ended_ts_isset = YES;
 }
 
-- (BOOL) date_ended_tsIsSet {
-  return __date_ended_ts_isset;
+- (BOOL) datetime_ended_tsIsSet {
+  return __datetime_ended_ts_isset;
 }
 
-- (void) unsetDate_ended_ts {
-  __date_ended_ts_isset = NO;
+- (void) unsetDatetime_ended_ts {
+  __datetime_ended_ts_isset = NO;
 }
 
 - (NSMutableDictionary *) artifact_sources {
@@ -2377,7 +2424,7 @@
       case 2:
         if (fieldType == TType_I32) {
           int32_t fieldValue = [inProtocol readI32];
-          [self setDate_started_ts: fieldValue];
+          [self setDatetime_started_ts: fieldValue];
         } else { 
           [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
         }
@@ -2385,7 +2432,7 @@
       case 3:
         if (fieldType == TType_I32) {
           int32_t fieldValue = [inProtocol readI32];
-          [self setDate_ended_ts: fieldValue];
+          [self setDatetime_ended_ts: fieldValue];
         } else { 
           [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
         }
@@ -2468,14 +2515,14 @@
     [outProtocol writeI64: __id];
     [outProtocol writeFieldEnd];
   }
-  if (__date_started_ts_isset) {
-    [outProtocol writeFieldBeginWithName: @"date_started_ts" type: TType_I32 fieldID: 2];
-    [outProtocol writeI32: __date_started_ts];
+  if (__datetime_started_ts_isset) {
+    [outProtocol writeFieldBeginWithName: @"datetime_started_ts" type: TType_I32 fieldID: 2];
+    [outProtocol writeI32: __datetime_started_ts];
     [outProtocol writeFieldEnd];
   }
-  if (__date_ended_ts_isset) {
-    [outProtocol writeFieldBeginWithName: @"date_ended_ts" type: TType_I32 fieldID: 3];
-    [outProtocol writeI32: __date_ended_ts];
+  if (__datetime_ended_ts_isset) {
+    [outProtocol writeFieldBeginWithName: @"datetime_ended_ts" type: TType_I32 fieldID: 3];
+    [outProtocol writeI32: __datetime_ended_ts];
     [outProtocol writeFieldEnd];
   }
   if (__artifact_sources_isset) {
@@ -2537,13 +2584,13 @@
     @throw [TProtocolException exceptionWithName: @"TProtocolException"
                                reason: @"Required field 'id' is not set."];
   }
-  if (!__date_started_ts_isset) {
+  if (!__datetime_started_ts_isset) {
     @throw [TProtocolException exceptionWithName: @"TProtocolException"
-                               reason: @"Required field 'date_started_ts' is not set."];
+                               reason: @"Required field 'datetime_started_ts' is not set."];
   }
-  if (!__date_ended_ts_isset) {
+  if (!__datetime_ended_ts_isset) {
     @throw [TProtocolException exceptionWithName: @"TProtocolException"
-                               reason: @"Required field 'date_ended_ts' is not set."];
+                               reason: @"Required field 'datetime_ended_ts' is not set."];
   }
   if (!__artifact_sources_isset) {
     @throw [TProtocolException exceptionWithName: @"TProtocolException"
@@ -2559,10 +2606,10 @@
   NSMutableString * ms = [NSMutableString stringWithString: @"common.modelGeneration("];
   [ms appendString: @"id:"];
   [ms appendFormat: @"%qi", __id];
-  [ms appendString: @",date_started_ts:"];
-  [ms appendFormat: @"%i", __date_started_ts];
-  [ms appendString: @",date_ended_ts:"];
-  [ms appendFormat: @"%i", __date_ended_ts];
+  [ms appendString: @",datetime_started_ts:"];
+  [ms appendFormat: @"%i", __datetime_started_ts];
+  [ms appendString: @",datetime_ended_ts:"];
+  [ms appendFormat: @"%i", __datetime_ended_ts];
   [ms appendString: @",artifact_sources:"];
   [ms appendFormat: @"%@", __artifact_sources];
   [ms appendString: @",screen_configs:"];

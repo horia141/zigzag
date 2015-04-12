@@ -60,7 +60,7 @@ public class definesConstants {
     PHOTO_MIMETYPES_TO_EXTENSION.put("video/mp4", "mp4");
   }
 
-  public static final Map<String,com.zigzag.common.model.ArtifactSource> ARTIFACT_SOURCES = new HashMap<String,com.zigzag.common.model.ArtifactSource>();
+  public static final Map<Long,com.zigzag.common.model.ArtifactSource> ARTIFACT_SOURCES = new HashMap<Long,com.zigzag.common.model.ArtifactSource>();
   static {
     com.zigzag.common.model.ArtifactSource tmp0 = new com.zigzag.common.model.ArtifactSource();
     tmp0.setId(1L);
@@ -71,13 +71,13 @@ public class definesConstants {
 
     tmp0.setSubdomains(tmp1);
 
-    ARTIFACT_SOURCES.put("Reddit", tmp0);
+    ARTIFACT_SOURCES.put(1L, tmp0);
     com.zigzag.common.model.ArtifactSource tmp2 = new com.zigzag.common.model.ArtifactSource();
     tmp2.setId(2L);
     tmp2.setName("Imgur");
     tmp2.setStart_page_uri("http://imgur.com");
 
-    ARTIFACT_SOURCES.put("Imgur", tmp2);
+    ARTIFACT_SOURCES.put(2L, tmp2);
   }
 
   public static final int API_SERVING_PORT = 9000;
@@ -100,36 +100,36 @@ public class definesConstants {
 
   public static final String PHOTO_SAVE_STORAGE_PATH = "var/photos/%s";
 
-  public static final Map<String,com.zigzag.common.model.ScreenConfig> VIDEO_SCREEN_CONFIG = new HashMap<String,com.zigzag.common.model.ScreenConfig>();
+  public static final Map<Long,com.zigzag.common.model.ScreenConfig> VIDEO_SCREEN_CONFIG = new HashMap<Long,com.zigzag.common.model.ScreenConfig>();
   static {
     com.zigzag.common.model.ScreenConfig tmp3 = new com.zigzag.common.model.ScreenConfig();
     tmp3.setId(1L);
     tmp3.setName("480");
     tmp3.setWidth(480);
 
-    VIDEO_SCREEN_CONFIG.put("480", tmp3);
+    VIDEO_SCREEN_CONFIG.put(1L, tmp3);
     com.zigzag.common.model.ScreenConfig tmp4 = new com.zigzag.common.model.ScreenConfig();
     tmp4.setId(2L);
     tmp4.setName("720p");
     tmp4.setWidth(1280);
 
-    VIDEO_SCREEN_CONFIG.put("720p", tmp4);
+    VIDEO_SCREEN_CONFIG.put(2L, tmp4);
   }
 
-  public static final Map<String,com.zigzag.common.model.ScreenConfig> IMAGE_SCREEN_CONFIG = new HashMap<String,com.zigzag.common.model.ScreenConfig>();
+  public static final Map<Long,com.zigzag.common.model.ScreenConfig> IMAGE_SCREEN_CONFIG = new HashMap<Long,com.zigzag.common.model.ScreenConfig>();
   static {
     com.zigzag.common.model.ScreenConfig tmp5 = new com.zigzag.common.model.ScreenConfig();
-    tmp5.setId(1L);
+    tmp5.setId(3L);
     tmp5.setName("800");
     tmp5.setWidth(800);
 
-    IMAGE_SCREEN_CONFIG.put("800", tmp5);
+    IMAGE_SCREEN_CONFIG.put(3L, tmp5);
     com.zigzag.common.model.ScreenConfig tmp6 = new com.zigzag.common.model.ScreenConfig();
-    tmp6.setWidth(1200);
-    tmp6.setId(2L);
+    tmp6.setId(4L);
     tmp6.setName("1200");
+    tmp6.setWidth(1200);
 
-    IMAGE_SCREEN_CONFIG.put("1200", tmp6);
+    IMAGE_SCREEN_CONFIG.put(4L, tmp6);
   }
 
   public static final int IMAGE_SAVE_JPEG_OPTIONS_QUALITY = 50;
