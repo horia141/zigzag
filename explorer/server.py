@@ -54,7 +54,7 @@ def main():
 
         for artifact_desc in artifact_descs:
             if datastore.artifact_exists_by_page_uri(artifact_desc['page_uri']):
-                logging.info('Found already existing artifact "%s"', artifact.title)
+                logging.info('Found already existing artifact "%s"', artifact_desc['page_uri'])
                 continue
 
             photo_description = []
