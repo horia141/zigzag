@@ -28,6 +28,7 @@ def canonical_uri(uri):
     rev_domain = '.'.join(reversed(res.hostname.split('.')))
     return urlparse.urlunparse(('', rev_domain, res.path, res.params, res.query, res.fragment))[2:]
 
+
 def artifact_exists_by_page_uri(page_uri):
     try:
         ArtifactUrlQuery.objects.get(page_uri=canonical_uri(page_uri))
@@ -51,21 +52,36 @@ def mark_artifact_as_existing(generation, artifact):
 
     return url_query
 
-def save_generation(generation):
-    assert generation.id == -1
 
+def serialize_generation(generation):
     ttransport = TTransport.TMemoryBuffer()
     tprotocol = TBinaryProtocol.TBinaryProtocol(ttransport)
     generation.write(tprotocol)
     generation_ser = ttransport.getvalue()
 
+    return generation_ser
+
+
+def parse_generation(generation_ser):
+    ttransport = TTransport.TMemoryBuffer(generation_ser)
+    tprotocol = TBinaryProtocol.TBinaryProtocol(ttransport)
+    generation = model.Generation()
+    generation.read(tprotocol)
+
+    return generation
+
+
+def save_generation(generation):
+    assert generation.id == -1
+
     generation_store = GenerationStore()
-    generation_store.generation_ser = generation_ser
+    generation_store.generation_ser = serialize_generation(generation)
     generation_store.save()
 
     generation.id = generation_store.id
 
     return generation
+
 
 def load_generation(id):
     try:
@@ -73,10 +89,27 @@ def load_generation(id):
     except GenerationStore.DoesNotExist as e:
         raise Error(str(e))
 
-    ttransport = TTransport.TMemoryBuffer(generation_store.generation_ser)
-    tprotocol = TBinaryProtocol.TBinaryProtocol(ttransport)
-    generation = model.Generation()
-    generation.read(tprotocol)
+    generation = parse_generation(generation_store.generation_ser)
+    generation.id = generation_store.id
+
+    return generation
+
+
+def load_latest_generation():
+    generation_store = GenerationStore.objects.all().order_by('-id').first()
+    generation = parse_generation(generation_store.generation_ser)
+    generation.id = generation_store.id
+
+    return generation
+
+
+def load_next_generation(next_id):
+    generation_store = GenerationStore.objects.all().filter(id__lt=next_id).order_by('-id').first()
+
+    if generation_store is None:
+        return load_latest_generation()
+
+    generation = parse_generation(generation_store.generation_ser)
     generation.id = generation_store.id
 
     return generation

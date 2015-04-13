@@ -7,9 +7,8 @@ from django.http import HttpResponseBadRequest
 from django.http import HttpResponseNotAllowed
 from django.shortcuts import render
 
-import rest_api.models as models
 import common.defines as defines
-import common.flow_annotation as flow_annotation
+import rest_api.models as datastore
 
 # Create your views here.
 
@@ -54,17 +53,16 @@ def nextgen(request):
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
 
-    right_now = datetime.datetime.now(pytz.utc)
-
     from_id = request.GET.get('from', '')
 
     if from_id == 'latest':
-        generation = models.Generation.latest()
+        generation = datastore.load_latest_generation()
     else:
         try:
             from_id_nr = int(from_id, 10)
-            generation = models.Generation.next(from_id_nr)
+            generation = datastore.load_next_generation(from_id_nr)
         except ValueError as e:
             return HttpResponseBadRequest('Invalid "from" parameter')
 
-    return JsonResponse(generation, status=200)
+    generation_ser = datastore.serialize_generation(generation)
+    return HttpResponse(generation_ser, status=200, content_type='application/x-thrift')
