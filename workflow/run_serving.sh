@@ -7,10 +7,8 @@ source ./workflow/setup_env.sh
 echo 'Running ZigZag server application!'
 
 # Start resource serving public visible task.
-cd var/photos
-python -m SimpleHTTPServer $RES_PORT &>../res_serving.log &
-RES_SERVER_PID="$!"
-cd ../..
+lighttpd -D -f ./config/res_serving.lighttpd &
+RES_SERVER_PID=`cat ./var/res_serving.pid`
 
 # If the application exist, all these tasks must be killed as well.
 trap "kill $RES_SERVER_PID" EXIT INT

@@ -1,0 +1,31 @@
+server.modules = (
+  "mod_access",
+  "mod_accesslog",
+  "mod_expire"
+)
+
+server.document-root = "./var/photos/"
+
+server.port = 9001
+
+# server.username = "horia" 
+# server.groupname = "horia"
+server.errorlog = "./var/res_serving.error.log"
+server.pid-file = "./var/res_serving.pid"
+accesslog.filename = "./var/res_serving.access.log"
+
+mimetype.assign = (
+  ".jpg" => "image/jpeg",
+  ".mp4" => "video/mp4" 
+)
+
+static-file.exclude-extensions = ( ".fcgi", ".php", ".rb", "~", ".inc" )
+index-file.names = ()
+
+# Do not allow access to non-jpg or non-mp4 files.
+$HTTP["url"] !~ "\.(jpg|mp4)$" {
+  url.access-deny = ("")
+}
+
+# Setup caching.
+expire.url = ( "/" => "access plus 1 months" )
