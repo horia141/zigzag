@@ -6,17 +6,15 @@ import urlparse
 
 import BeautifulSoup as bs
 
-import common.defines as defines
+import common.defines.constants as defines
 import explorer.analyzers as analyzers
 
 
 class Analyzer(analyzers.Analyzer):
     """Class for performing analysis of the Imgur artifact source."""
 
-    def __init__(self):
-        super(Analyzer, self).__init__()
-
-        self._main_page_url = 'http://imgur.com'
+    def __init__(self, source):
+        super(Analyzer, self).__init__(source)
 
     def analyze(self):
         logging.info('Analyzing Imgur')
@@ -26,7 +24,7 @@ class Analyzer(analyzers.Analyzer):
         logging.info('Fetching main page')
 
         try:
-            (main_page_raw_content, main_page_mime_type) = self._fetcher.fetch_url(self._main_page_url)
+            (main_page_raw_content, main_page_mime_type) = self._fetcher.fetch_url(self.source.start_page_uri)
             if main_page_mime_type not in defines.WEBPAGE_MIMETYPES:
                 logging.warn('Main page is of wrong MIME type')
                 return []
@@ -50,7 +48,7 @@ class Analyzer(analyzers.Analyzer):
             if possible_artifact_url_path is None:
                 continue
             possible_artifact_url = urlparse.urljoin(
-                self._main_page_url, possible_artifact_url_path)
+                self.source.start_page_uri, possible_artifact_url_path)
             initial_artifact_links.append(possible_artifact_url)
 
         logging.info('Found %d possible artifact URLs', len(initial_artifact_links))
@@ -121,7 +119,7 @@ class Analyzer(analyzers.Analyzer):
             # Sometimes, a single image is present, and that is "image".
             actual_images = [image]
 
-        images_description = []
+        photo_description = []
 
         for actual_image in actual_images:
             subtitle_raw = actual_image.find('h2', {'class': 'image-title small-margin-bottom'})
@@ -139,21 +137,21 @@ class Analyzer(analyzers.Analyzer):
                 continue
             url_path = self._parse_incomplete_url(url_path_raw.get('src'))
 
-            images_description.append({
+            photo_description.append({
                 'subtitle': subtitle,
                 'description': description,
                 'uri_path': url_path
             })
 
-        if len(images_description) == 0:
+        if len(photo_description) == 0:
             raise analyzers.Error('Could not find images')
 
-        logging.info('Found title and %d images', len(images_description))
+        logging.info('Found title and %d images', len(photo_description))
 
         return {
-            'page_url': artifact_page_url,
+            'page_uri': artifact_page_url,
             'title': title,
-            'images_description': images_description
+            'photo_description': photo_description
         }
 
     def _analyze_artifact_link_as_album(self, artifact_page_url):
@@ -190,7 +188,7 @@ class Analyzer(analyzers.Analyzer):
             raise analyzers.Error('Could not find set of images')
 
         actual_images = main_image.findAll('div', {'class': 'image'})
-        images_description = []
+        photo_description = []
 
         for actual_image in actual_images:
             subtitle_raw = actual_image.find('h2', {'class': 'first'})
@@ -212,19 +210,19 @@ class Analyzer(analyzers.Analyzer):
                 continue
             url_path = self._parse_incomplete_url(url_path_raw.get('href'))
 
-            images_description.append({
+            photo_description.append({
                 'subtitle': subtitle,
                 'description': description,
                 'uri_path': url_path
             })
 
-        if len(images_description) == 0:
+        if len(photo_description) == 0:
             raise analyzers.Error('Could not find images')
 
-        logging.info('Found title and %d images', len(images_description))
+        logging.info('Found title and %d images', len(photo_description))
 
         return {
-            'page_url': artifact_page_url,
+            'page_uri': artifact_page_url,
             'title': title,
-            'images_description': images_description
+            'photo_description': photo_description
         }
