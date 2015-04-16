@@ -11,7 +11,8 @@ lighttpd -D -f ./config/res_serving.lighttpd &
 RES_SERVER_PID="$!"
 
 # Start the REST API server.
-python ./interface_server/manage.py runfcgi method=threaded host=127.0.0.1 port=9002 outlog=./var/interface_server.out.log errlog=./var/interface_server.error.log umask=0
+python ./interface_server/manage.py runfcgi method=threaded host=127.0.0.1 port=9002
+# python ./interface_server/manage.py runfcgi method=threaded host=127.0.0.1 port=9002 outlog=./var/interface_server.out.log errlog=./var/interface_server.error.log umask=0
 # python ./interface_server/manage.py runfcgi protocol=fcgi demonize=false host=127.0.0.1 port=9002 pidfile=./var/interface_server.pid > ./var/interface_server.log &
 INTERFACE_SERVER_PID="$!"
 
