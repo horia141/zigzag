@@ -8,25 +8,20 @@ import android.support.annotation.Nullable;
 import android.support.v4.util.LruCache;
 import android.util.Log;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.zigzag.client_app.model.Artifact;
-import com.zigzag.client_app.model.EntityId;
-import com.zigzag.client_app.model.Generation;
-import com.zigzag.client_app.model.PhotoData;
-import com.zigzag.client_app.model.ImageDescription;
-import com.zigzag.client_app.model.VideoPhotoData;
-
-import org.json.JSONObject;
+import com.zigzag.common.api.NextGenResponse;
+import com.zigzag.common.model.Artifact;
+import com.zigzag.common.model.Generation;
+import com.zigzag.common.model.PhotoData;
+import com.zigzag.common.model.PhotoDescription;
+import com.zigzag.common.model.TileData;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -61,6 +56,27 @@ public final class Controller {
 
         public Bitmap getBitmap(String url) {
             return cache.get(url);
+        }
+    }
+
+    private static class ThriftRequest extends Request<ByteBuffer> {
+        private final Response.Listener<ByteBuffer> listener;
+
+        public ThriftRequest(String url, Response.Listener<ByteBuffer> listener,
+                             Response.ErrorListener errorListener) {
+            super(Method.GET, url, errorListener);
+            this.listener = listener;
+        }
+
+        @Override
+        protected void deliverResponse(ByteBuffer serializedThriftData) {
+            listener.onResponse(serializedThriftData);
+        }
+
+        @Override
+        protected Response<ByteBuffer> parseNetworkResponse(NetworkResponse response) {
+            ByteBuffer serializedThriftData = ByteBuffer.wrap(response.data);
+            return Response.success(serializedThriftData, HttpHeaderParser.parseCacheHeaders(response));
         }
     }
 
@@ -109,8 +125,8 @@ public final class Controller {
     private static final String NAME = "ZizZag";
     private static final String REQUESTS_TAG = NAME;
     private static final String EXTERNAL_CACHE_PATH = "External";
-    private static final String API_NEXTGEN_URL_PATTERN = "http://horia141.com:9000/api/v1/nextgen?from=%s";
-    private static final String API_RES_URL_PATTERN = "http://horia141.com:9001/%s";
+    private static final String API_NEXTGEN_URL_PATTERN = "http://192.168.1.35:9000/api/v1/nextgen?from=%s";
+    private static final String API_RES_URL_PATTERN = "http://192.168.1.35:9001/%s";
     private static final int IMAGE_CACHE_SIZE = 20;
 
     private final RequestQueue requestQueue;
@@ -119,7 +135,7 @@ public final class Controller {
     private final List<Artifact> artifacts;
     private final ModelDecoder modelDecoder;
     @Nullable private AllArtifactsListener allArtifactsListener;
-    private Map<EntityId, ArtifactResourcesListener> resourcesListeners;
+    private Map<String, ArtifactResourcesListener> resourcesListeners;
 
     private Controller(Context context) {
         this.requestQueue = Volley.newRequestQueue(context);
@@ -139,44 +155,46 @@ public final class Controller {
             apiNextGenUrl = String.format(API_NEXTGEN_URL_PATTERN, "latest");
         } else {
             final Generation latestGeneration = generations.get(generations.size()-1);
-            apiNextGenUrl = String.format(API_NEXTGEN_URL_PATTERN, latestGeneration.getId().getId());
+            apiNextGenUrl = String.format(API_NEXTGEN_URL_PATTERN, latestGeneration.getId());
         }
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, apiNextGenUrl, null,
-            new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        // Note: Parsing the generation and updating the model happens regardless of
-                        // whether the listener has changed (see below). No point in wasting the
-                        // API call.
+        ThriftRequest request = new ThriftRequest(apiNextGenUrl,
+            new Response.Listener<ByteBuffer>() {
+                @Override
+                public void onResponse(ByteBuffer serializedThriftData) {
+                    // Note: Parsing the generation and updating the model happens regardless of
+                    // whether the listener has changed (see below). No point in wasting the
+                    // API call.
 
-                        Generation generation;
+                    NextGenResponse nextGenResponse;
 
-                        try {
-                            // Parse the JSON response and obtain a new generation.
-                            generation = modelDecoder.decodeGeneration(response);
-                        } catch (ModelDecoder.Error e) {
-                            listener.onError(e.toString());
-                            return;
-                        }
-
-                        // Update the "model".
-                        generations.add(generation);
-                        artifacts.addAll(generation.getArtifacts());
-
-                        if (generation.getArtifacts().size() == 0) {
-                            fetchArtifacts(listener);
-                            return;
-                        }
-
-                        // Either {@link stopEverything} has been called, or the listener has
-                        // changed. In either case there's no point in continuing.
-                        if (allArtifactsListener == null || allArtifactsListener != listener) {
-                            return;
-                        }
-
-                        listener.onNewArtifacts(generation.getArtifacts());
+                    try {
+                        // Parse the JSON response and obtain a new generation.
+                        nextGenResponse = modelDecoder.decodeNextGenResponse(serializedThriftData);
+                    } catch (ModelDecoder.Error e) {
+                        listener.onError(e.toString());
+                        return;
                     }
+
+                    Generation generation = nextGenResponse.getGeneration();
+
+                    // Update the "model".
+                    generations.add(generation);
+                    artifacts.addAll(generation.getArtifacts());
+
+                    if (generation.getArtifacts().size() == 0) {
+                        fetchArtifacts(listener);
+                        return;
+                    }
+
+                    // Either {@link stopEverything} has been called, or the listener has
+                    // changed. In either case there's no point in continuing.
+                    if (allArtifactsListener == null || allArtifactsListener != listener) {
+                        return;
+                    }
+
+                    listener.onNewArtifacts(generation.getArtifacts());
+                }
             },
             new Response.ErrorListener() {
                 @Override
@@ -200,15 +218,15 @@ public final class Controller {
     }
 
     public void fetchArtifactResources(final Artifact artifact, final ArtifactResourcesListener listener) {
-        resourcesListeners.put(artifact.getId(), listener);
+        resourcesListeners.put(artifact.getPage_uri(), listener);
 
         // Assert artifact actually exists.
         // Trigger fetch of artifact images.
-        for (int ii = 0; ii < artifact.getImagesDescription().size(); ii++) {
+        for (int ii = 0; ii < artifact.getPhoto_descriptionsSize(); ii++) {
             final int imageIdx = ii;
-            final ImageDescription imageDescription = artifact.getImagesDescription().get(ii);
-            final PhotoData photoData = imageDescription.getBestMatchingImageData();
-            List<String> uriPathsToFetch = photoData.getUriPathsToFetch();
+            final PhotoDescription photoDescription = artifact.getPhoto_descriptions().get(ii);
+            final PhotoData photoData = getBestMatchingPhotoData(photoDescription);
+            List<String> uriPathsToFetch = getUriPathsToFetch(photoData);
 
             for (int jj = 0; jj < uriPathsToFetch.size(); jj++) {
                 final int tileOrFrameIdx = jj;
@@ -219,7 +237,7 @@ public final class Controller {
                     public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
                         // Either {@link stopEverything} has been called, or the listener has changed. In either
                         // case there's no point in continuing.
-                        if (resourcesListeners.get(artifact.getId()) == null || resourcesListeners.get(artifact.getId()) != listener) {
+                        if (resourcesListeners.get(artifact.getPage_uri()) == null || resourcesListeners.get(artifact.getPage_uri()) != listener) {
                             return;
                         }
 
@@ -236,7 +254,7 @@ public final class Controller {
                     public void onErrorResponse(VolleyError error) {
                         // Either {@link stopEverything} has been called, or the listener has changed. In either
                         // case there's no point in continuing.
-                        if (resourcesListeners.get(artifact.getId()) == null || resourcesListeners.get(artifact.getId()) != listener) {
+                        if (resourcesListeners.get(artifact.getPage_uri()) == null || resourcesListeners.get(artifact.getPage_uri()) != listener) {
                             return;
                         }
 
@@ -245,8 +263,8 @@ public final class Controller {
                 });
             }
 
-            if (photoData instanceof VideoPhotoData) {
-                final String resUrl = translateVideoPath(((VideoPhotoData) photoData).getVideoDesc().getUriPath());
+            if (photoData.isSetVideo_photo_data()) {
+                final String resUrl = translateVideoPath(photoData.getVideo_photo_data().getVideo().getUri_path());
                 final VideoRequest request = new VideoRequest(resUrl,
                         new Response.Listener<String>() {
                             @Override
@@ -268,7 +286,7 @@ public final class Controller {
     }
 
     public void deregisterArtifactResources(Artifact artifact, ArtifactResourcesListener listener) {
-        resourcesListeners.remove(artifact.getId());
+        resourcesListeners.remove(artifact.getPage_uri());
     }
 
     public void stopEverything() {
@@ -277,9 +295,9 @@ public final class Controller {
     }
 
     @Nullable
-    public Artifact getArtifactById(EntityId id) {
+    public Artifact getArtifactByPageUri(String pageUri) {
         for (Artifact artifact : artifacts) {
-            if (artifact.getId().equals(id)) {
+            if (artifact.getPage_uri().equals(pageUri)) {
                 return artifact;
             }
         }
@@ -293,6 +311,36 @@ public final class Controller {
 
     private static String translateVideoPath(String urlPath) {
         return String.format(API_RES_URL_PATTERN, urlPath);
+    }
+
+    public static PhotoData getBestMatchingPhotoData(PhotoDescription photoDescription) {
+        if (photoDescription.getPhoto_data().containsKey(3L)) {
+            // From common/defines.thrift, 3 is the ID of the "800" screen config.
+            return photoDescription.getPhoto_data().get(3L);
+        } else if (photoDescription.getPhoto_data().containsKey(1L)) {
+            // From common/defines.thrift, 1 is the ID of the "480" screen config.
+            return photoDescription.getPhoto_data().get(1L);
+        } else {
+            throw new RuntimeException("Cannot find good photo data");
+        }
+    }
+
+    private static List<String> getUriPathsToFetch(PhotoData photoData) {
+        if (photoData.isSetToo_big_photo_data()) {
+            return new ArrayList<>();
+        } else if (photoData.isSetImage_photo_data()) {
+            List<String> uriPathsToFetch = new ArrayList<>(photoData.getImage_photo_data().getTilesSize());
+            for (TileData tileData : photoData.getImage_photo_data().getTiles()) {
+                uriPathsToFetch.add(tileData.getUri_path());
+            }
+            return uriPathsToFetch;
+        } else if (photoData.isSetVideo_photo_data()) {
+            List<String> uriPathsToFetch = new ArrayList<>(1);
+            uriPathsToFetch.add(photoData.getVideo_photo_data().getFirst_frame().getUri_path());
+            return uriPathsToFetch;
+        } else {
+            throw new RuntimeException("Invalid photoData object");
+        }
     }
 
     // Singleton interface.

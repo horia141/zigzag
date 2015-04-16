@@ -20,31 +20,30 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.zigzag.client_app.controller.Controller;
-import com.zigzag.client_app.model.Artifact;
-import com.zigzag.client_app.model.EntityId;
-import com.zigzag.client_app.model.ImagePhotoData;
-import com.zigzag.client_app.model.PhotoData;
-import com.zigzag.client_app.model.ImageDescription;
-import com.zigzag.client_app.model.TooBigPhotoData;
-import com.zigzag.client_app.model.VideoPhotoData;
 import com.zigzag.client_app.ui.BitmapSetAdapter;
 import com.zigzag.client_app.ui.ImagePhotoView;
 import com.zigzag.client_app.ui.VideoPhotoView;
+import com.zigzag.common.model.Artifact;
+import com.zigzag.common.model.ImagePhotoData;
+import com.zigzag.common.model.PhotoData;
+import com.zigzag.common.model.PhotoDescription;
+import com.zigzag.common.model.TooBigPhotoData;
+import com.zigzag.common.model.VideoPhotoData;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MediaCarouselFragment extends Fragment implements Controller.ArtifactResourcesListener {
     private static class ImageInfo {
-        final ImageDescription imageDescription;
+        final PhotoDescription photoDescription;
         final PhotoData photoData;
         final List<Bitmap> tilesBitmaps;
         final TilesBitmapAdapter tilesBitmapAdapter;
         String localPathToVideo;
         int viewTreeObserverHash;
 
-        public ImageInfo(ImageDescription imageDescription, PhotoData photoData) {
-            this.imageDescription = imageDescription;
+        public ImageInfo(PhotoDescription photoDescription, PhotoData photoData) {
+            this.photoDescription = photoDescription;
             this.photoData = photoData;
             this.tilesBitmaps = new ArrayList<>();
             this.tilesBitmapAdapter = new TilesBitmapAdapter(photoData, this.tilesBitmaps);
@@ -66,19 +65,19 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
         @Override
         @Nullable
         public TileInfo getTileInfo(int position) {
-            if (photoData instanceof ImagePhotoData) {
-                ImagePhotoData imageSetImageData = (ImagePhotoData) photoData;
+            if (photoData.isSetImage_photo_data()) {
+                ImagePhotoData imageSetImageData = photoData.getImage_photo_data();
 
                 return new TileInfo(tilesBitmaps.get(position),
-                        imageSetImageData.getTilesDesc().get(position).getWidth(),
-                        imageSetImageData.getTilesDesc().get(position).getHeight());
-            } else if (photoData instanceof VideoPhotoData) {
+                        imageSetImageData.getTiles().get(position).getWidth(),
+                        imageSetImageData.getTiles().get(position).getHeight());
+            } else if (photoData.isSetVideo_photo_data()) {
                 // assert position == 0
-                VideoPhotoData videoPhotoData = (VideoPhotoData) photoData;
+                VideoPhotoData videoPhotoData = photoData.getVideo_photo_data();
 
                 return new TileInfo(tilesBitmaps.get(position),
-                        videoPhotoData.getFirstFrameDesc().getWidth(),
-                        videoPhotoData.getFirstFrameDesc().getHeight());
+                        videoPhotoData.getFirst_frame().getWidth(),
+                        videoPhotoData.getFirst_frame().getHeight());
             } else {
                 throw new IllegalArgumentException("This codepath should not be reached");
             }
@@ -136,24 +135,24 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
                 rowViewHolder.videoPhotoView.setVisibility(View.GONE);
                 rowViewHolder.descriptionTextView.setVisibility(View.GONE);
             } else {
-                if (!info.imageDescription.getSubtitle().equals("")) {
-                    rowViewHolder.subtitleTextView.setText(info.imageDescription.getSubtitle());
+                if (!info.photoDescription.getSubtitle().equals("")) {
+                    rowViewHolder.subtitleTextView.setText(info.photoDescription.getSubtitle());
                     rowViewHolder.subtitleTextView.setVisibility(View.VISIBLE);
                 } else {
                     rowViewHolder.subtitleTextView.setVisibility(View.GONE);
                 }
 
-                if (info.photoData instanceof TooBigPhotoData) {
+                if (info.photoData.isSetToo_big_photo_data()) {
                     rowViewHolder.tileImageView.setVisibility(View.GONE);
                     rowViewHolder.videoPhotoView.setVisibility(View.GONE);
-                } else if (info.photoData instanceof ImagePhotoData) {
+                } else if (info.photoData.isSetImage_photo_data()) {
                     rowViewHolder.tileImageView.setVisibility(View.VISIBLE);
                     rowViewHolder.tileImageView.setAdapter(info.tilesBitmapAdapter);
                     rowViewHolder.videoPhotoView.setVisibility(View.GONE);
-                } else if (info.photoData instanceof VideoPhotoData) {
+                } else if (info.photoData.isSetVideo_photo_data()) {
                     rowViewHolder.tileImageView.setVisibility(View.GONE);
                     rowViewHolder.videoPhotoView.setVisibility(View.VISIBLE);
-                    rowViewHolder.videoPhotoView.setAdapter(info.tilesBitmapAdapter, (VideoPhotoData) info.photoData, info.localPathToVideo);
+                    rowViewHolder.videoPhotoView.setAdapter(info.tilesBitmapAdapter, info.photoData.getVideo_photo_data(), info.localPathToVideo);
 
                     final ViewHolder localRowViewHolder = rowViewHolder;
                     ViewTreeObserver viewTreeObserver = rowView.getViewTreeObserver();
@@ -175,8 +174,8 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
                     }
                 }
 
-                if (!info.imageDescription.getDescription().equals("")) {
-                    rowViewHolder.descriptionTextView.setText(info.imageDescription.getDescription());
+                if (!info.photoDescription.getDescription().equals("")) {
+                    rowViewHolder.descriptionTextView.setText(info.photoDescription.getDescription());
                     rowViewHolder.descriptionTextView.setVisibility(View.VISIBLE);
                 } else {
                     rowViewHolder.descriptionTextView.setVisibility(View.GONE);
@@ -203,8 +202,8 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
         Log.i("ZigZag/MediaCarouselFragment", "Creating view");
 
         Bundle args = getArguments();
-        String artifactIdStr = args.getString("artifact_id");
-        artifact = Controller.getInstance(getActivity()).getArtifactById(new EntityId(artifactIdStr));
+        String artifactPageUri = args.getString("artifact_id");
+        artifact = Controller.getInstance(getActivity()).getArtifactByPageUri(artifactPageUri);
 
         final View rootView = inflater.inflate(R.layout.fragment_media_carousel, container, false);
 
@@ -232,7 +231,7 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
                 }
 
                 String subject = String.format("%s via %s", artifact.getTitle(), getActivity().getString(R.string.app_name));
-                String text = String.format("%s via %s %s", artifact.getTitle(), getActivity().getString(R.string.app_name), artifact.getPageUrl());
+                String text = String.format("%s via %s %s", artifact.getTitle(), getActivity().getString(R.string.app_name), artifact.getPage_uri());
                 Intent i = new Intent(Intent.ACTION_SEND);
                 i.setType("text/plain");
                 i.putExtra(Intent.EXTRA_SUBJECT, subject);
@@ -257,24 +256,23 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
 
         // Setup title for artifact.
         TextView titleView = (TextView)rootView.findViewById(R.id.title);
-        titleView.setText(String.format("%s - %s", artifact.getTitle(), artifact.getArtifactSource().getName()));
+        titleView.setText(String.format("%s", artifact.getTitle()));
 
         // Setup list view with all the images in the artifact. Reconstruct the list of bitmaps
         // to contain only nulls and the associated adapter and associate them with the image
         // list view.
-        for (int ii = 0; ii < artifact.getImagesDescription().size(); ii++) {
-            ImageDescription imageDescription = artifact.getImagesDescription().get(ii);
-            PhotoData photoData = imageDescription.getBestMatchingImageData();
-            ImageInfo info = new ImageInfo(imageDescription, photoData);
+        for (PhotoDescription photoDescription : artifact.getPhoto_descriptions()) {
+            PhotoData photoData = Controller.getInstance(getActivity()).getBestMatchingPhotoData(photoDescription);
+            ImageInfo info = new ImageInfo(photoDescription, photoData);
 
-            if (photoData instanceof TooBigPhotoData) {
+            if (photoData.isSetToo_big_photo_data()) {
                 continue;
-            } else if (photoData instanceof ImagePhotoData) {
-                ImagePhotoData imageSetImageData = (ImagePhotoData) photoData;
-                for (int jj = 0; jj < imageSetImageData.getTilesDesc().size(); jj++) {
+            } else if (photoData.isSetImage_photo_data()) {
+                ImagePhotoData imageSetImageData = photoData.getImage_photo_data();
+                for (int jj = 0; jj < imageSetImageData.getTilesSize(); jj++) {
                     info.tilesBitmaps.add(null);
                 }
-            } else if (photoData instanceof VideoPhotoData) {
+            } else if (photoData.isSetVideo_photo_data()) {
                 // Add a single placeholder tile info to tilesBitmap, corresponding to the first
                 // frame of the image.
                 info.tilesBitmaps.add(null);
@@ -324,7 +322,7 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
 
         ImageInfo imageDescription = imagesDescriptionBitmapList.get(imageIdx);
 
-        if (imageDescription.photoData instanceof TooBigPhotoData) {
+        if (imageDescription.photoData.isSetToo_big_photo_data()) {
             Log.e("ZigZag/MediaCarouselFragment", "Received image data for a very large image");
             return;
         } else {
@@ -364,7 +362,7 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
 
         ImageInfo imageDescription = imagesDescriptionBitmapList.get(imageIdx);
 
-        if (!(imageDescription.photoData instanceof VideoPhotoData)) {
+        if (!imageDescription.photoData.isSetVideo_photo_data()) {
             Log.e("ZigZag/MediaCarouselFragment", "Received video update for something which is not a video");
             return;
         }
@@ -382,7 +380,7 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
     public static MediaCarouselFragment newInstance(Artifact artifact) {
         MediaCarouselFragment fragment = new MediaCarouselFragment();
         Bundle args = new Bundle();
-        args.putString("artifact_id", artifact.getId().getId());
+        args.putString("artifact_id", artifact.getPage_uri());
         fragment.setArguments(args);
 
         return fragment;

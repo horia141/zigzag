@@ -13,7 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.zigzag.client_app.controller.Controller;
-import com.zigzag.client_app.model.Artifact;
+import com.zigzag.common.model.Artifact;
 
 import java.util.ArrayList;
 import java.util.List;

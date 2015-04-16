@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.zigzag.client_app.R;
-import com.zigzag.client_app.model.VideoPhotoData;
+import com.zigzag.common.model.VideoPhotoData;
 
 public class VideoPhotoView extends LinearLayout implements BitmapSetListener {
 
@@ -156,7 +156,7 @@ public class VideoPhotoView extends LinearLayout implements BitmapSetListener {
                 if (videoEnabled) {
                     imageView.setVisibility(View.GONE);
                     videoView.setVisibility(View.VISIBLE);
-                    videoView.setTileWidthAndHeight(videoPhotoData.getVideoDesc().getWidth(), videoPhotoData.getVideoDesc().getHeight());
+                    videoView.setTileWidthAndHeight(videoPhotoData.getVideo().getWidth(), videoPhotoData.getVideo().getHeight());
                 } else {
                     imageView.setVisibility(View.VISIBLE);
                     imageView.setImageBitmap(tileInfo3.getBitmap());
