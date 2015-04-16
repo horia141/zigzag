@@ -1,0 +1,28 @@
+server.modules = (
+  "mod_access",
+  "mod_fastcgi",
+  "mod_accesslog",
+)
+
+server.document-root = "./var/"
+
+server.port = 9000
+
+# server.username = "horia" 
+# server.groupname = "horia"
+server.errorlog = "./var/api_serving.error.log"
+server.pid-file = "./var/api_serving.pid"
+accesslog.filename = "./var/api_serving.access.log"
+
+fastcgi.server = (
+  "/api" => (
+    "main" => (
+      "host" => "127.0.0.1",
+      "port" => 9002,
+      "check-local" => "disable"
+    )
+  )
+)
+
+static-file.exclude-extensions = ( ".fcgi", ".php", ".rb", "~", ".inc" )
+index-file.names = ()

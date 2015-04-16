@@ -8,14 +8,19 @@ echo 'Running ZigZag server application!'
 
 # Start resource serving public visible task.
 lighttpd -D -f ./config/res_serving.lighttpd &
-RES_SERVER_PID=`cat ./var/res_serving.pid`
+RES_SERVER_PID="$!"
+
+# Start the REST API server.
+python ./interface_server/manage.py runfcgi method=threaded host=127.0.0.1 port=9002 outlog=./var/interface_server.out.log errlog=./var/interface_server.error.log umask=0
+# python ./interface_server/manage.py runfcgi protocol=fcgi demonize=false host=127.0.0.1 port=9002 pidfile=./var/interface_server.pid > ./var/interface_server.log &
+INTERFACE_SERVER_PID="$!"
 
 # If the application exist, all these tasks must be killed as well.
-trap "kill $RES_SERVER_PID" EXIT INT
+trap "kill $RES_SERVER_PID $INTERFACE_SERVER_PID" EXIT INT
 
 # Start REST API public visible task.
-python ./interface_server/manage.py runserver $HOST:$API_PORT &>./var/api_serving.log
+lighttpd -D -f ./config/api_serving.lighttpd
 
 # Kill all tasks if the last one somehow stops.
 echo 'Killing all started jobs'
-kill $RES_SERVER_PID
+kill $RES_SERVER_PID $INTERFACE_SERVER_PID $API_SERVER_PID

@@ -12,6 +12,8 @@ import com.zigzag.client_app.model.TileData;
 import com.zigzag.client_app.model.TooBigPhotoData;
 import com.zigzag.client_app.model.VideoPhotoData;
 
+import org.apache.thrift.protocol.TBinaryProtocol;
+import org.apache.thrift.transport.TMemoryBuffer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

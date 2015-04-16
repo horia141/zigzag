@@ -192,7 +192,10 @@ class Artifact(models.Model):
     def __init__(self, *args, **kwargs):
         super(Artifact, self).__init__(*args, **kwargs)
         if self.images_description_coded:
-            self.images_description = json.loads(self.images_description_coded)
+            try:
+                self.images_description = json.loads(self.images_description_coded)
+            except Exception as e:
+                self.images_description = None
 
     def to_json_dict(self):
         json_dict = {}
@@ -201,6 +204,7 @@ class Artifact(models.Model):
         json_dict['page_url'] = self.page_url
         json_dict['artifact_source_id'] = str(self.artifact_source.id)
         json_dict['title'] = self.title
-        json_dict['images_description'] = self.images_description
+        if self.images_description is not None:
+            json_dict['images_description'] = self.images_description
 
         return json_dict
