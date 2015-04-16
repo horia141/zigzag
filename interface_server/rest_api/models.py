@@ -53,6 +53,15 @@ def mark_artifact_as_existing(generation, artifact):
     return url_query
 
 
+def serialize_response(next_gen_response):
+    ttransport = TTransport.TMemoryBuffer()
+    tprotocol = TBinaryProtocol.TBinaryProtocol(ttransport)
+    next_gen_response.write(tprotocol)
+    next_gen_response_ser = ttransport.getvalue()
+
+    return next_gen_response_ser
+
+
 def serialize_generation(generation):
     ttransport = TTransport.TMemoryBuffer()
     tprotocol = TBinaryProtocol.TBinaryProtocol(ttransport)

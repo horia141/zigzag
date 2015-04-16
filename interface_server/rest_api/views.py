@@ -6,7 +6,8 @@ from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
 from django.http import HttpResponseNotAllowed
 
-import common.defines as defines
+import common.defines.constants as defines
+import common.api.ttypes as api
 import rest_api.models as datastore
 
 
@@ -25,5 +26,6 @@ def nextgen(request):
         except ValueError as e:
             return HttpResponseBadRequest('Invalid "from" parameter')
 
-    generation_ser = datastore.serialize_generation(generation)
-    return HttpResponse(generation_ser, status=200, content_type='application/x-thrift')
+    response = api.NextGenResponse(generation, bandwidth_alert=False)        
+    response_ser = datastore.serialize_response(response)
+    return HttpResponse(response_ser, status=200, content_type='application/x-thrift')
