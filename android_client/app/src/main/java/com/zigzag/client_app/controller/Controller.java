@@ -125,8 +125,8 @@ public final class Controller {
     private static final String NAME = "ZizZag";
     private static final String REQUESTS_TAG = NAME;
     private static final String EXTERNAL_CACHE_PATH = "External";
-    private static final String API_NEXTGEN_URL_PATTERN = "http://192.168.1.35:9000/api/v1/nextgen?from=%s";
-    private static final String API_RES_URL_PATTERN = "http://192.168.1.35:9001/%s";
+    private static final String API_NEXTGEN_URL_PATTERN = "http://horia141.com:9000/api/v1/nextgen?from=%s";
+    private static final String API_RES_URL_PATTERN = "http://horia141.com:9001/%s";
     private static final int IMAGE_CACHE_SIZE = 20;
 
     private final RequestQueue requestQueue;

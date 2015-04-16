@@ -32,7 +32,7 @@ export USER=horia141
 tree -fi | grep pyc | xargs rm
 
 # Mass copy other task elements.
-scp -r common datastore explorer fetcher interface_server photo_save config workflow $USER@$HOST://home/$USER/zigzag
+scp -r common datastore explorer fetcher interface_server photo_save config workflow gen $USER@$HOST://home/$USER/zigzag
 
 # Change setup_env.sh file to work with the remote host.
 ssh $USER@$HOST <<EOF
