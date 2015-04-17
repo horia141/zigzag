@@ -11,10 +11,8 @@ lighttpd -D -f ./config/res_serving.lighttpd &
 RES_SERVER_PID="$!"
 
 # Start the REST API server.
-python ./interface_server/manage.py runfcgi method=threaded host=127.0.0.1 port=9002
-# python ./interface_server/manage.py runfcgi method=threaded host=127.0.0.1 port=9002 outlog=./var/interface_server.out.log errlog=./var/interface_server.error.log umask=0
-# python ./interface_server/manage.py runfcgi protocol=fcgi demonize=false host=127.0.0.1 port=9002 pidfile=./var/interface_server.pid > ./var/interface_server.log &
-INTERFACE_SERVER_PID="$!"
+python ./interface_server/manage.py runfcgi method=threaded host=127.0.0.1 port=9002 workdir=`pwd` outlog=./var/interface_server.out.log errlog=./var/interface_server.error.log pidfile=./var/interface_server.pid
+INTERFACE_SERVER_PID=`cat ./var/interface_server.pid`
 
 # If the application exist, all these tasks must be killed as well.
 trap "kill $RES_SERVER_PID $INTERFACE_SERVER_PID" EXIT INT
