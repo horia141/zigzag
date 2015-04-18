@@ -1,5 +1,4 @@
 import datetime
-import json
 import pytz
 
 from django.http import HttpResponse
