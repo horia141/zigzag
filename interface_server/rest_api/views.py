@@ -16,6 +16,7 @@ def nextgen(request):
         return HttpResponseNotAllowed(['GET'])
 
     from_id = request.GET.get('from', '')
+    output = request.GET.get('output', '')
 
     if from_id == 'latest':
         generation = datastore.load_latest_generation()
@@ -26,6 +27,15 @@ def nextgen(request):
         except ValueError as e:
             return HttpResponseBadRequest('Invalid "from" parameter')
 
-    response = api.NextGenResponse(generation, bandwidth_alert=False)        
-    response_ser = datastore.serialize_response(response)
-    return HttpResponse(response_ser, status=200, content_type='application/x-thrift')
+    response = api.NextGenResponse(generation, bandwidth_alert=False)
+
+    if output == 'thrift':
+        response_ser = datastore.serialize_response_as_thrift(response)
+        content_type = 'application/x-thrift'
+    elif output == 'json':
+        response_ser = datastore.serialize_response_as_json(response)
+        content_type = 'application/json'
+    else:
+        return HttpResponseBadRequest('Invalid "output" parameter')
+
+    return HttpResponse(response_ser, status=200, content_type=content_type)
