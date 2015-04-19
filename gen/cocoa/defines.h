@@ -20,6 +20,7 @@
 @interface common.definesdefinesConstants : NSObject {
 }
 + (NSString *) TIME_FORMAT;
++ (int32_t) MAX_ARTIFACTS_PER_GENERATION;
 + (NSMutableSet *) WEBPAGE_MIMETYPES;
 + (NSMutableSet *) PHOTO_MIMETYPES;
 + (NSMutableDictionary *) PHOTO_MIMETYPES_TO_EXTENSION;

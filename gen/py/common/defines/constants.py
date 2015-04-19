@@ -10,6 +10,7 @@ from thrift.Thrift import TType, TMessageType, TException, TApplicationException
 from ttypes import *
 
 TIME_FORMAT = "%B %d, %Y %I:%M:%S %p %Z"
+MAX_ARTIFACTS_PER_GENERATION = 32
 WEBPAGE_MIMETYPES = set([
   "application/xhtml+xml",
   "text/html",
@@ -70,8 +71,8 @@ IMAGE_SCREEN_CONFIG = {
     "width" : 800,
   }),
   4 : common.model.ttypes.ScreenConfig(**{
-    "id" : 4,
     "name" : "1200",
+    "id" : 4,
     "width" : 1200,
   }),
 }

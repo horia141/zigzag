@@ -1,6 +1,7 @@
 import datetime
-import pytz
 import logging
+import pytz
+import random
 import time
 import urllib2
 
@@ -83,22 +84,30 @@ def main():
 
         logging.info('Finished processing for "%s"', analyzer_name)
 
+    logging.info('Shuffling the list of artifacts')
+    random.shuffle(artifacts)
+
     right_now_2 = datetime.datetime.now(pytz.utc)
 
     datetime_started_ts = long(time.mktime(right_now_1.timetuple()))
     datetime_ended_ts = long(time.mktime(right_now_2.timetuple()))
     screen_configs = defines.IMAGE_SCREEN_CONFIG.copy()
     screen_configs.update(defines.VIDEO_SCREEN_CONFIG)
-    generation = model.Generation(-1, datetime_started_ts, datetime_ended_ts,
-        defines.ARTIFACT_SOURCES, screen_configs, artifacts)
-    # Datastore operations might need to be wrapped in a transaction, so we should be certain that
-    # both the generation and all the artifacts could properly be marked as added. If an error 
-    # occurs in the latter stage, we might end up with duplicate artifacts, because not all
-    # artifacts in generation might properly be marked.
-    # TODO(horia141): use a transaction here or something else to mark a properly closed generation.
-    datastore.save_generation(generation)
-    for artifact in artifacts:
-        datastore.mark_artifact_as_existing(generation, artifact)
+
+    for idx in range(0, len(artifacts), defines.MAX_ARTIFACTS_PER_GENERATION):
+        logging.info('Saving artifacts %d to %d' % (idx, idx+defines.MAX_ARTIFACTS_PER_GENERATION))
+        artifacts_chunk = artifacts[idx:idx+defines.MAX_ARTIFACTS_PER_GENERATION]
+
+        generation = model.Generation(-1, datetime_started_ts, datetime_ended_ts,
+            defines.ARTIFACT_SOURCES, screen_configs, artifacts_chunk)
+        # Datastore operations might need to be wrapped in a transaction, so we should be certain that
+        # both the generation and all the artifacts could properly be marked as added. If an error 
+        # occurs in the latter stage, we might end up with duplicate artifacts, because not all
+        # artifacts in generation might properly be marked.
+        # TODO(horia141): use a transaction here or something else to mark a properly closed generation.
+        datastore.save_generation(generation)
+        for artifact in artifacts:
+            datastore.mark_artifact_as_existing(generation, artifact)
 
     logging.info('Closing generation')
 

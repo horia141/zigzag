@@ -38,6 +38,8 @@ public class definesConstants {
 
   public static final String TIME_FORMAT = "%B %d, %Y %I:%M:%S %p %Z";
 
+  public static final int MAX_ARTIFACTS_PER_GENERATION = 32;
+
   public static final Set<String> WEBPAGE_MIMETYPES = new HashSet<String>();
   static {
     WEBPAGE_MIMETYPES.add("application/xhtml+xml");
@@ -125,8 +127,8 @@ public class definesConstants {
 
     IMAGE_SCREEN_CONFIG.put(3L, tmp5);
     com.zigzag.common.model.ScreenConfig tmp6 = new com.zigzag.common.model.ScreenConfig();
-    tmp6.setId(4L);
     tmp6.setName("1200");
+    tmp6.setId(4L);
     tmp6.setWidth(1200);
 
     IMAGE_SCREEN_CONFIG.put(4L, tmp6);

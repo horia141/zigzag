@@ -20,6 +20,7 @@
 #import "defines.h"
 
 static NSString * common.definesTIME_FORMAT = @"%B %d, %Y %I:%M:%S %p %Z";
+static int32_t common.definesMAX_ARTIFACTS_PER_GENERATION = 32;
 static NSMutableSet * common.definesWEBPAGE_MIMETYPES;
 static NSMutableSet * common.definesPHOTO_MIMETYPES;
 static NSMutableDictionary * common.definesPHOTO_MIMETYPES_TO_EXTENSION;
@@ -107,8 +108,8 @@ static int32_t common.definesPHOTO_MAX_HEIGHT = 2048;
 
   [common.definesIMAGE_SCREEN_CONFIG setObject:tmp5 forKey:[NSNumber numberWithLongLong: 3]];
   common.modelScreenConfig * tmp6 = [[[common.modelScreenConfig alloc] init] autorelease_stub];
-  [tmp6 setId:4];
   [tmp6 setName:@"1200"];
+  [tmp6 setId:4];
   [tmp6 setWidth:1200];
 
   [common.definesIMAGE_SCREEN_CONFIG setObject:tmp6 forKey:[NSNumber numberWithLongLong: 4]];
@@ -117,6 +118,9 @@ static int32_t common.definesPHOTO_MAX_HEIGHT = 2048;
 }
 + (NSString *) TIME_FORMAT{
   return common.definesTIME_FORMAT;
+}
++ (int32_t) MAX_ARTIFACTS_PER_GENERATION{
+  return common.definesMAX_ARTIFACTS_PER_GENERATION;
 }
 + (NSMutableSet *) WEBPAGE_MIMETYPES{
   return common.definesWEBPAGE_MIMETYPES;

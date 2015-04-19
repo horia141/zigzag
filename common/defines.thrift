@@ -7,6 +7,8 @@ namespace cocoa common.defines
 
 const string TIME_FORMAT = '%B %d, %Y %I:%M:%S %p %Z';
 
+const i32 MAX_ARTIFACTS_PER_GENERATION = 32;
+
 const set<string> WEBPAGE_MIMETYPES = ['application/xhtml+xml', 'text/html', 'text/plain'];
 const set<string> PHOTO_MIMETYPES = ['image/gif', 'image/jpeg', 'image/png'];
 const map<string, string> PHOTO_MIMETYPES_TO_EXTENSION = {'image/gif': 'gif', 'image/jpeg': 'jpg', 'image/png': 'png', 'video/mp4': 'mp4'};
