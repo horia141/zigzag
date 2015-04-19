@@ -44,6 +44,6 @@ class Decoder(decoders.Decoder):
                                  video_storage_path])
 
         first_frame = model.TileData(desired_width, desired_height, first_frame_uri_path)
-        video = model.TileData(deisred_width, desired_height, video_uri_path)
+        video = model.TileData(desired_width, desired_height, video_uri_path)
         return model.PhotoData(video_photo_data=model.VideoPhotoData(first_frame, video,
             frames_per_sec, time_between_frames_ms))

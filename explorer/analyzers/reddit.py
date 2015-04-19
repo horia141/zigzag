@@ -32,7 +32,7 @@ class Analyzer(analyzers.Analyzer):
                 if category_page_type not in defines.WEBPAGE_MIMETYPES:
                     logging.warn('Main page is of wrong MIME type')
                     continue
-            except urllib2.URLError as e:
+            except (urllib2.URLError, ValueError) as e:
                 logging.warn('Could not fetch - %s', str(e))
                 continue
 
@@ -90,7 +90,7 @@ class Analyzer(analyzers.Analyzer):
                 # Try to parse things with the Imgur analyzer.
                 try_other_analyzer = True
                 logging.warn('Could not fetch as image, trying with another analyzer')
-        except urllib2.URLError as e:
+        except (urllib2.URLError, ValueError) as e:
             raise analyzers.Error('Could not fetch - %s' % str(e))
 
         if not try_other_analyzer:
