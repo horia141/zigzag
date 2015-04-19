@@ -71,8 +71,23 @@ static int32_t common.definesPHOTO_MAX_HEIGHT = 2048;
   [tmp0 setId:1];
   [tmp0 setName:@"Reddit"];
   [tmp0 setStart_page_uri:@"http://reddit.com/r/%s"];
-  NSMutableSet *tmp1 = [[[NSMutableSet alloc] initWithCapacity:1] autorelease_stub];
+  NSMutableSet *tmp1 = [[[NSMutableSet alloc] initWithCapacity:16] autorelease_stub];
   [tmp1 addObject:@"pics"];
+  [tmp1 addObject:@"comics"];
+  [tmp1 addObject:@"fffffffuuuuuuuuuuuu"];
+  [tmp1 addObject:@"ragecomics"];
+  [tmp1 addObject:@"lolcats"];
+  [tmp1 addObject:@"AdviceAnimals"];
+  [tmp1 addObject:@"Demotivational"];
+  [tmp1 addObject:@"memes"];
+  [tmp1 addObject:@"images"];
+  [tmp1 addObject:@"aww"];
+  [tmp1 addObject:@"cats"];
+  [tmp1 addObject:@"foxes"];
+  [tmp1 addObject:@"dogpictures"];
+  [tmp1 addObject:@"sloths"];
+  [tmp1 addObject:@"gifs"];
+  [tmp1 addObject:@"reactiongifs"];
 
   [tmp0 setSubdomains:tmp1];
 
@@ -108,8 +123,8 @@ static int32_t common.definesPHOTO_MAX_HEIGHT = 2048;
 
   [common.definesIMAGE_SCREEN_CONFIG setObject:tmp5 forKey:[NSNumber numberWithLongLong: 3]];
   common.modelScreenConfig * tmp6 = [[[common.modelScreenConfig alloc] init] autorelease_stub];
-  [tmp6 setName:@"1200"];
   [tmp6 setId:4];
+  [tmp6 setName:@"1200"];
   [tmp6 setWidth:1200];
 
   [common.definesIMAGE_SCREEN_CONFIG setObject:tmp6 forKey:[NSNumber numberWithLongLong: 4]];

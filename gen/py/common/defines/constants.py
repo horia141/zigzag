@@ -34,6 +34,21 @@ ARTIFACT_SOURCES = {
     "start_page_uri" : "http://reddit.com/r/%s",
     "subdomains" : set([
       "pics",
+      "comics",
+      "fffffffuuuuuuuuuuuu",
+      "ragecomics",
+      "lolcats",
+      "AdviceAnimals",
+      "Demotivational",
+      "memes",
+      "images",
+      "aww",
+      "cats",
+      "foxes",
+      "dogpictures",
+      "sloths",
+      "gifs",
+      "reactiongifs",
     ]),
   }),
   2 : common.model.ttypes.ArtifactSource(**{
@@ -71,8 +86,8 @@ IMAGE_SCREEN_CONFIG = {
     "width" : 800,
   }),
   4 : common.model.ttypes.ScreenConfig(**{
-    "name" : "1200",
     "id" : 4,
+    "name" : "1200",
     "width" : 1200,
   }),
 }
