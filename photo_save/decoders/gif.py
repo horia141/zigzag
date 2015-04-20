@@ -38,8 +38,8 @@ class Decoder(decoders.Decoder):
             time_between_frames_ms = video.info['duration']
         else:
             time_between_frames_ms = defines.DEFAULT_TIME_BETWEEN_FRAMES_MS
-        frames_per_sc = math.ceil(1000.0 / time_between_frames_ms)
-        subprocess.check_output(['photo_save/decoders/gif_to_mp4.sh', video_path, '%d' % frames_per_sc,
+        frames_per_sec = math.ceil(1000.0 / time_between_frames_ms)
+        subprocess.check_output(['photo_save/decoders/gif_to_mp4.sh', video_path, '%d' % frames_per_sec,
                                  '%d' % desired_width, '%d' % desired_height, defines.VIDEO_SAVE_BITRATE,
                                  video_storage_path])
 

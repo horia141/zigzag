@@ -14,8 +14,9 @@ from thrift.transport import TTransport
 import common.defines.constants as defines
 import common.model.ttypes as model
 import explorer.analyzers as analyzers
-import explorer.analyzers.reddit as reddit
 import explorer.analyzers.imgur as imgur
+import explorer.analyzers.ninegag as ninegag
+import explorer.analyzers.reddit as reddit
 import photo_save
 import rest_api.models as datastore
 
@@ -36,6 +37,7 @@ def main():
     all_analyzers = {
         'Reddit': reddit.Analyzer(defines.ARTIFACT_SOURCES[1]),
         'Imgur': imgur.Analyzer(defines.ARTIFACT_SOURCES[2]),
+        '9GAG': ninegag.Analyzer(defines.ARTIFACT_SOURCES[3])
     }
 
     logging.info('Analyzing sources')

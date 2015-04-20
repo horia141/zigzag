@@ -95,6 +95,18 @@ public class definesConstants {
     tmp2.setStart_page_uri("http://imgur.com");
 
     ARTIFACT_SOURCES.put(2L, tmp2);
+    com.zigzag.common.model.ArtifactSource tmp3 = new com.zigzag.common.model.ArtifactSource();
+    tmp3.setId(3L);
+    tmp3.setName("9GAG");
+    tmp3.setStart_page_uri("http://9gag.com/%s");
+    Set<String> tmp4 = new HashSet<String>();
+    tmp4.add("hot");
+    tmp4.add("trending");
+    tmp4.add("gif");
+
+    tmp3.setSubdomains(tmp4);
+
+    ARTIFACT_SOURCES.put(3L, tmp3);
   }
 
   public static final int API_SERVING_PORT = 9000;
@@ -119,34 +131,34 @@ public class definesConstants {
 
   public static final Map<Long,com.zigzag.common.model.ScreenConfig> VIDEO_SCREEN_CONFIG = new HashMap<Long,com.zigzag.common.model.ScreenConfig>();
   static {
-    com.zigzag.common.model.ScreenConfig tmp3 = new com.zigzag.common.model.ScreenConfig();
-    tmp3.setId(1L);
-    tmp3.setName("480");
-    tmp3.setWidth(480);
+    com.zigzag.common.model.ScreenConfig tmp5 = new com.zigzag.common.model.ScreenConfig();
+    tmp5.setId(1L);
+    tmp5.setName("480");
+    tmp5.setWidth(480);
 
-    VIDEO_SCREEN_CONFIG.put(1L, tmp3);
-    com.zigzag.common.model.ScreenConfig tmp4 = new com.zigzag.common.model.ScreenConfig();
-    tmp4.setId(2L);
-    tmp4.setName("720p");
-    tmp4.setWidth(1280);
+    VIDEO_SCREEN_CONFIG.put(1L, tmp5);
+    com.zigzag.common.model.ScreenConfig tmp6 = new com.zigzag.common.model.ScreenConfig();
+    tmp6.setId(2L);
+    tmp6.setName("720p");
+    tmp6.setWidth(1280);
 
-    VIDEO_SCREEN_CONFIG.put(2L, tmp4);
+    VIDEO_SCREEN_CONFIG.put(2L, tmp6);
   }
 
   public static final Map<Long,com.zigzag.common.model.ScreenConfig> IMAGE_SCREEN_CONFIG = new HashMap<Long,com.zigzag.common.model.ScreenConfig>();
   static {
-    com.zigzag.common.model.ScreenConfig tmp5 = new com.zigzag.common.model.ScreenConfig();
-    tmp5.setId(3L);
-    tmp5.setName("800");
-    tmp5.setWidth(800);
+    com.zigzag.common.model.ScreenConfig tmp7 = new com.zigzag.common.model.ScreenConfig();
+    tmp7.setId(3L);
+    tmp7.setName("800");
+    tmp7.setWidth(800);
 
-    IMAGE_SCREEN_CONFIG.put(3L, tmp5);
-    com.zigzag.common.model.ScreenConfig tmp6 = new com.zigzag.common.model.ScreenConfig();
-    tmp6.setId(4L);
-    tmp6.setName("1200");
-    tmp6.setWidth(1200);
+    IMAGE_SCREEN_CONFIG.put(3L, tmp7);
+    com.zigzag.common.model.ScreenConfig tmp8 = new com.zigzag.common.model.ScreenConfig();
+    tmp8.setId(4L);
+    tmp8.setName("1200");
+    tmp8.setWidth(1200);
 
-    IMAGE_SCREEN_CONFIG.put(4L, tmp6);
+    IMAGE_SCREEN_CONFIG.put(4L, tmp8);
   }
 
   public static final int IMAGE_SAVE_JPEG_OPTIONS_QUALITY = 50;

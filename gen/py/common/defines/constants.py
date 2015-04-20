@@ -56,6 +56,16 @@ ARTIFACT_SOURCES = {
     "name" : "Imgur",
     "start_page_uri" : "http://imgur.com",
   }),
+  3 : common.model.ttypes.ArtifactSource(**{
+    "id" : 3,
+    "name" : "9GAG",
+    "start_page_uri" : "http://9gag.com/%s",
+    "subdomains" : set([
+      "hot",
+      "trending",
+      "gif",
+    ]),
+  }),
 }
 API_SERVING_PORT = 9000
 API_SERVING_LOG_PATH = "var/api_serving.log"

@@ -16,8 +16,8 @@ const map<string, string> PHOTO_MIMETYPES_TO_EXTENSION = {'image/gif': 'gif', 'i
 const map<i64, model.ArtifactSource> ARTIFACT_SOURCES = {
     1: {
         'id': 1,
-	'name': 'Reddit',
-	'start_page_uri': 'http://reddit.com/r/%s',
+        'name': 'Reddit',
+        'start_page_uri': 'http://reddit.com/r/%s',
         'subdomains': ['pics', 'comics', 'fffffffuuuuuuuuuuuu', 'ragecomics'
             'lolcats', 'AdviceAnimals', 'Demotivational', 'memes', 'images',
             'aww', 'cats', 'foxes', 'dogpictures', 'sloths', 'gifs',
@@ -27,6 +27,12 @@ const map<i64, model.ArtifactSource> ARTIFACT_SOURCES = {
         'id': 2,
         'name': 'Imgur',
         'start_page_uri': 'http://imgur.com'
+    },
+    3: {
+        'id': 3,
+        'name': '9GAG',
+        'start_page_uri': 'http://9gag.com/%s',
+        'subdomains': ['hot', 'trending', 'gif']
     }
 }
 
