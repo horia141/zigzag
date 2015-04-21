@@ -109,20 +109,6 @@ public class definesConstants {
     ARTIFACT_SOURCES.put(3L, tmp3);
   }
 
-  public static final int API_SERVING_PORT = 9000;
-
-  public static final String API_SERVING_LOG_PATH = "var/api_serving.log";
-
-  public static final int RES_SERVING_PORT = 9001;
-
-  public static final String RES_SERVING_LOG_PATH = "var/res_serving.log";
-
-  public static final int FETCHER_PORT = 16000;
-
-  public static final String EXPLORER_LOG_PATH = "var/explorer.log";
-
-  public static final int PHOTO_SAVE_PORT = 16001;
-
   public static final Map<Long,com.zigzag.common.model.ScreenConfig> VIDEO_SCREEN_CONFIG = new HashMap<Long,com.zigzag.common.model.ScreenConfig>();
   static {
     com.zigzag.common.model.ScreenConfig tmp5 = new com.zigzag.common.model.ScreenConfig();

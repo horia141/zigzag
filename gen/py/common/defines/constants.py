@@ -67,13 +67,6 @@ ARTIFACT_SOURCES = {
     ]),
   }),
 }
-API_SERVING_PORT = 9000
-API_SERVING_LOG_PATH = "var/api_serving.log"
-RES_SERVING_PORT = 9001
-RES_SERVING_LOG_PATH = "var/res_serving.log"
-FETCHER_PORT = 16000
-EXPLORER_LOG_PATH = "var/explorer.log"
-PHOTO_SAVE_PORT = 16001
 VIDEO_SCREEN_CONFIG = {
   1 : common.model.ttypes.ScreenConfig(**{
     "id" : 1,

@@ -1,3 +1,4 @@
+import argparse
 import datetime
 import logging
 import pytz
@@ -19,15 +20,29 @@ import explorer.analyzers.ninegag as ninegag
 import explorer.analyzers.reddit as reddit
 import photo_save
 import rest_api.models as datastore
+import utils.pidfile as pidfile
 
 
 def main():
-    logging.basicConfig(level=logging.INFO, filename=defines.EXPLORER_LOG_PATH)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--fetcher_port', type=int, required=True,
+        help='Port on which the fetcher Comlink server is listening')
+    parser.add_argument('--photo_save_port', type=int, required=True,
+        help='Port on which the photo_save Comlink server is listening')
+    parser.add_argument('--log_path', type=str, required=True,
+        help='Path to the log file')
+    parser.add_argument('--pidfile_path', type=str, required=True,
+        help='Path for the pidfile')
+    args = parser.parse_args()
+
+    pidfile.write_pidfile(args.pidfile_path)
+
+    logging.basicConfig(level=logging.INFO, filename=args.log_path)
 
     right_now_1 = datetime.datetime.now(pytz.utc)
 
     ser = serializer.Serializer()
-    client = transport.Client(defines.PHOTO_SAVE_PORT, ser)
+    client = transport.Client(args.photo_save_port, ser)
     photo_save_client = photo_save.Service.client(client)
 
     logging.info('Starting crawl and analysis service on %s', right_now_1.strftime(defines.TIME_FORMAT))
@@ -35,9 +50,9 @@ def main():
     logging.info('Building analyzers')
 
     all_analyzers = {
-        'Reddit': reddit.Analyzer(defines.ARTIFACT_SOURCES[1]),
-        'Imgur': imgur.Analyzer(defines.ARTIFACT_SOURCES[2]),
-        '9GAG': ninegag.Analyzer(defines.ARTIFACT_SOURCES[3])
+        'Reddit': reddit.Analyzer(defines.ARTIFACT_SOURCES[1], args.fetcher_port),
+        'Imgur': imgur.Analyzer(defines.ARTIFACT_SOURCES[2], args.fetcher_port),
+        '9GAG': ninegag.Analyzer(defines.ARTIFACT_SOURCES[3], args.fetcher_port)
     }
 
     logging.info('Analyzing sources')

@@ -13,8 +13,8 @@ import explorer.analyzers as analyzers
 class Analyzer(analyzers.Analyzer):
     """Class for performing analysis of the Imgur artifact source."""
 
-    def __init__(self, source):
-        super(Analyzer, self).__init__(source)
+    def __init__(self, source, fetcher_port):
+        super(Analyzer, self).__init__(source, fetcher_port)
 
     def analyze(self):
         logging.info('Analyzing Imgur')

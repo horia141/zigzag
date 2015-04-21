@@ -25,13 +25,6 @@ static NSMutableSet * common.definesWEBPAGE_MIMETYPES;
 static NSMutableSet * common.definesPHOTO_MIMETYPES;
 static NSMutableDictionary * common.definesPHOTO_MIMETYPES_TO_EXTENSION;
 static NSMutableDictionary * common.definesARTIFACT_SOURCES;
-static int32_t common.definesAPI_SERVING_PORT = 9000;
-static NSString * common.definesAPI_SERVING_LOG_PATH = @"var/api_serving.log";
-static int32_t common.definesRES_SERVING_PORT = 9001;
-static NSString * common.definesRES_SERVING_LOG_PATH = @"var/res_serving.log";
-static int32_t common.definesFETCHER_PORT = 16000;
-static NSString * common.definesEXPLORER_LOG_PATH = @"var/explorer.log";
-static int32_t common.definesPHOTO_SAVE_PORT = 16001;
 static NSMutableDictionary * common.definesVIDEO_SCREEN_CONFIG;
 static NSMutableDictionary * common.definesIMAGE_SCREEN_CONFIG;
 static int32_t common.definesIMAGE_SAVE_JPEG_OPTIONS_QUALITY = 50;
@@ -157,27 +150,6 @@ static int32_t common.definesPHOTO_MAX_HEIGHT = 2048;
 }
 + (NSMutableDictionary *) ARTIFACT_SOURCES{
   return common.definesARTIFACT_SOURCES;
-}
-+ (int32_t) API_SERVING_PORT{
-  return common.definesAPI_SERVING_PORT;
-}
-+ (NSString *) API_SERVING_LOG_PATH{
-  return common.definesAPI_SERVING_LOG_PATH;
-}
-+ (int32_t) RES_SERVING_PORT{
-  return common.definesRES_SERVING_PORT;
-}
-+ (NSString *) RES_SERVING_LOG_PATH{
-  return common.definesRES_SERVING_LOG_PATH;
-}
-+ (int32_t) FETCHER_PORT{
-  return common.definesFETCHER_PORT;
-}
-+ (NSString *) EXPLORER_LOG_PATH{
-  return common.definesEXPLORER_LOG_PATH;
-}
-+ (int32_t) PHOTO_SAVE_PORT{
-  return common.definesPHOTO_SAVE_PORT;
 }
 + (NSMutableDictionary *) VIDEO_SCREEN_CONFIG{
   return common.definesVIDEO_SCREEN_CONFIG;

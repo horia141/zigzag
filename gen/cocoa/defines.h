@@ -25,13 +25,6 @@
 + (NSMutableSet *) PHOTO_MIMETYPES;
 + (NSMutableDictionary *) PHOTO_MIMETYPES_TO_EXTENSION;
 + (NSMutableDictionary *) ARTIFACT_SOURCES;
-+ (int32_t) API_SERVING_PORT;
-+ (NSString *) API_SERVING_LOG_PATH;
-+ (int32_t) RES_SERVING_PORT;
-+ (NSString *) RES_SERVING_LOG_PATH;
-+ (int32_t) FETCHER_PORT;
-+ (NSString *) EXPLORER_LOG_PATH;
-+ (int32_t) PHOTO_SAVE_PORT;
 + (NSMutableDictionary *) VIDEO_SCREEN_CONFIG;
 + (NSMutableDictionary *) IMAGE_SCREEN_CONFIG;
 + (int32_t) IMAGE_SAVE_JPEG_OPTIONS_QUALITY;

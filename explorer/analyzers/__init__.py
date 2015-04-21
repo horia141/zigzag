@@ -5,7 +5,6 @@ import urlparse
 import comlink.serializer.pickle as serializer
 import comlink.transport.localipc as transport
 
-import common.defines.constants as defines
 import fetcher
 
 
@@ -17,10 +16,10 @@ class Error(Exception):
 class Analyzer(object):
     """Base class for artifact source and artifact analyzers."""
 
-    def __init__(self, source):
+    def __init__(self, source, fetcher_port):
         """Construct an analyzer."""
         ser = serializer.Serializer()
-        client = transport.Client(defines.FETCHER_PORT, ser)
+        client = transport.Client(fetcher_port, ser)
         self._fetcher = fetcher.Service.client(client)
         self._source = source
 

@@ -36,18 +36,6 @@ const map<i64, model.ArtifactSource> ARTIFACT_SOURCES = {
     }
 }
 
-const i32 API_SERVING_PORT = 9000;
-const string API_SERVING_LOG_PATH = 'var/api_serving.log';
-
-const i32 RES_SERVING_PORT = 9001;
-const string RES_SERVING_LOG_PATH = 'var/res_serving.log';
-
-const i32 FETCHER_PORT = 16000; # Still needed for a while.
-
-const string EXPLORER_LOG_PATH = 'var/explorer.log';
-
-const i32 PHOTO_SAVE_PORT = 16001;
-
 const map<i64, model.ScreenConfig> VIDEO_SCREEN_CONFIG = {
     1: {'id': 1, 'name': '480', 'width': 480},
     2: {'id': 2, 'name': '720p', 'width': 1280}

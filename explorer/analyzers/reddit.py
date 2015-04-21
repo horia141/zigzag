@@ -13,9 +13,9 @@ import explorer.analyzers.imgur as imgur
 class Analyzer(analyzers.Analyzer):
     """Class for performing analysis of the Reddit artifact source."""
 
-    def __init__(self, source):
-        super(Analyzer, self).__init__(source)
-        self._imgur_analyzer = imgur.Analyzer(defines.ARTIFACT_SOURCES[2])
+    def __init__(self, source, fetcher_port):
+        super(Analyzer, self).__init__(source, fetcher_port)
+        self._imgur_analyzer = imgur.Analyzer(defines.ARTIFACT_SOURCES[2], fetcher_port)
 
     def analyze(self):
         logging.info('Analyzing Reddit')
