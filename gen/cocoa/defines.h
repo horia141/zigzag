@@ -32,8 +32,6 @@
 + (int32_t) FETCHER_PORT;
 + (NSString *) EXPLORER_LOG_PATH;
 + (int32_t) PHOTO_SAVE_PORT;
-+ (NSString *) PHOTO_SAVE_LOG_PATH;
-+ (NSString *) PHOTO_SAVE_STORAGE_PATH;
 + (NSMutableDictionary *) VIDEO_SCREEN_CONFIG;
 + (NSMutableDictionary *) IMAGE_SCREEN_CONFIG;
 + (int32_t) IMAGE_SAVE_JPEG_OPTIONS_QUALITY;

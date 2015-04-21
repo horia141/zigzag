@@ -1,7 +1,9 @@
 """A service which processes the images found for an artifact."""
 
+import argparse
 import cStringIO as StringIO
 import logging
+import os.path
 import uuid
 
 import comlink
@@ -14,6 +16,7 @@ import common.model.ttypes as model
 import fetcher
 import photo_save.decoders.gif
 import photo_save.decoders.generic_image
+import utils.pidfile as pidfile
 
 
 class Error(Exception):
@@ -25,9 +28,10 @@ class GifTooLargeError(Error):
 
 
 class Service(comlink.Service):
-    def __init__(self, ser):
+    def __init__(self, ser, fetcher_port, photos_dir):
         super(Service, self).__init__()
-        client = transport.Client(defines.FETCHER_PORT, ser)
+        client = transport.Client(fetcher_port, ser)
+        self._photos_dir = photos_dir
         self._fetcher = fetcher.Service.client(client)
         self._image_decoders = {
             'image/jpeg': photo_save.decoders.generic_image.Decoder(),
@@ -80,7 +84,7 @@ class Service(comlink.Service):
     def _unique_photo_path(self, mime_type):
         extension = defines.PHOTO_MIMETYPES_TO_EXTENSION[mime_type]
         unique_file_name = '%s.%s' % (str(uuid.uuid4()), extension)
-        return (defines.PHOTO_SAVE_STORAGE_PATH % unique_file_name, unique_file_name)
+        return (os.path.join(self._photos_dir, unique_file_name), unique_file_name)
 
     def _is_video(self, photo):
         try:
@@ -92,12 +96,27 @@ class Service(comlink.Service):
 
 
 def main():
-    logging.basicConfig(level=logging.INFO, filename=defines.PHOTO_SAVE_LOG_PATH)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--port', type=int, required=True,
+        help='Port on which the Comlink server is listening')
+    parser.add_argument('--fetcher_port', type=int, required=True,
+        help='Port on which the fetcher Comlink server is listening')
+    parser.add_argument('--photos_dir', type=str, required=True,
+        help='Directory to store the processed photos')
+    parser.add_argument('--log_path', type=str, required=True,
+        help='Path to the log file')
+    parser.add_argument('--pidfile_path', type=str, required=True,
+        help='Path for the pidfile')
+    args = parser.parse_args()
+
+    pidfile.write_pidfile(args.pidfile_path)
+
+    logging.basicConfig(level=logging.INFO, filename=args.log_path)
 
     ser = serializer.Serializer()
-    photo_save_service = Service(ser)
+    photo_save_service = Service(ser, args.fetcher_port, args.photos_dir)
 
-    server = transport.Server(defines.PHOTO_SAVE_PORT, ser)
+    server = transport.Server(args.port, ser)
     server.add_service(photo_save_service)
     server.start()
 

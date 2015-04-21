@@ -123,10 +123,6 @@ public class definesConstants {
 
   public static final int PHOTO_SAVE_PORT = 16001;
 
-  public static final String PHOTO_SAVE_LOG_PATH = "var/photo_save.log";
-
-  public static final String PHOTO_SAVE_STORAGE_PATH = "var/photos/%s";
-
   public static final Map<Long,com.zigzag.common.model.ScreenConfig> VIDEO_SCREEN_CONFIG = new HashMap<Long,com.zigzag.common.model.ScreenConfig>();
   static {
     com.zigzag.common.model.ScreenConfig tmp5 = new com.zigzag.common.model.ScreenConfig();

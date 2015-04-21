@@ -47,8 +47,6 @@ const i32 FETCHER_PORT = 16000; # Still needed for a while.
 const string EXPLORER_LOG_PATH = 'var/explorer.log';
 
 const i32 PHOTO_SAVE_PORT = 16001;
-const string PHOTO_SAVE_LOG_PATH = 'var/photo_save.log';
-const string PHOTO_SAVE_STORAGE_PATH = 'var/photos/%s';
 
 const map<i64, model.ScreenConfig> VIDEO_SCREEN_CONFIG = {
     1: {'id': 1, 'name': '480', 'width': 480},

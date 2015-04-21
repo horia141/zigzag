@@ -32,8 +32,6 @@ static NSString * common.definesRES_SERVING_LOG_PATH = @"var/res_serving.log";
 static int32_t common.definesFETCHER_PORT = 16000;
 static NSString * common.definesEXPLORER_LOG_PATH = @"var/explorer.log";
 static int32_t common.definesPHOTO_SAVE_PORT = 16001;
-static NSString * common.definesPHOTO_SAVE_LOG_PATH = @"var/photo_save.log";
-static NSString * common.definesPHOTO_SAVE_STORAGE_PATH = @"var/photos/%s";
 static NSMutableDictionary * common.definesVIDEO_SCREEN_CONFIG;
 static NSMutableDictionary * common.definesIMAGE_SCREEN_CONFIG;
 static int32_t common.definesIMAGE_SAVE_JPEG_OPTIONS_QUALITY = 50;
@@ -180,12 +178,6 @@ static int32_t common.definesPHOTO_MAX_HEIGHT = 2048;
 }
 + (int32_t) PHOTO_SAVE_PORT{
   return common.definesPHOTO_SAVE_PORT;
-}
-+ (NSString *) PHOTO_SAVE_LOG_PATH{
-  return common.definesPHOTO_SAVE_LOG_PATH;
-}
-+ (NSString *) PHOTO_SAVE_STORAGE_PATH{
-  return common.definesPHOTO_SAVE_STORAGE_PATH;
 }
 + (NSMutableDictionary *) VIDEO_SCREEN_CONFIG{
   return common.definesVIDEO_SCREEN_CONFIG;

@@ -4,11 +4,11 @@
 source ./workflow/setup_env.sh
 
 # Run the fetcher service.
-python ./fetcher/__init__.py &
+python ./fetcher/__init__.py --port=16000 --log_path=./var/fetcher.log --pidfile_path=./var/fetcher.pid &
 FETCHER_PID="$!"
 
 # Run the photo save service.
-python ./photo_save/__init__.py &
+python ./photo_save/__init__.py --port=16001 --fetcher_port=16000 --photos_dir=./var/photos --log_path=./var/photo_save.log --pidfile_path=./var/photo_save.pid &
 PHOTO_SAVE_PID="$!"
 
 # If the application exist, all these tasks must be killed as well.
