@@ -119,8 +119,6 @@ public class definesConstants {
 
   public static final int FETCHER_PORT = 16000;
 
-  public static final String FETCHER_LOG_PATH = "var/fetcher.log";
-
   public static final String EXPLORER_LOG_PATH = "var/explorer.log";
 
   public static final int PHOTO_SAVE_PORT = 16001;

@@ -30,7 +30,6 @@
 + (int32_t) RES_SERVING_PORT;
 + (NSString *) RES_SERVING_LOG_PATH;
 + (int32_t) FETCHER_PORT;
-+ (NSString *) FETCHER_LOG_PATH;
 + (NSString *) EXPLORER_LOG_PATH;
 + (int32_t) PHOTO_SAVE_PORT;
 + (NSString *) PHOTO_SAVE_LOG_PATH;

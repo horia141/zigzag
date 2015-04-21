@@ -42,8 +42,7 @@ const string API_SERVING_LOG_PATH = 'var/api_serving.log';
 const i32 RES_SERVING_PORT = 9001;
 const string RES_SERVING_LOG_PATH = 'var/res_serving.log';
 
-const i32 FETCHER_PORT = 16000;
-const string FETCHER_LOG_PATH = 'var/fetcher.log';
+const i32 FETCHER_PORT = 16000; # Still needed for a while.
 
 const string EXPLORER_LOG_PATH = 'var/explorer.log';
 

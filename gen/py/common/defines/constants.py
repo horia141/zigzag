@@ -72,7 +72,6 @@ API_SERVING_LOG_PATH = "var/api_serving.log"
 RES_SERVING_PORT = 9001
 RES_SERVING_LOG_PATH = "var/res_serving.log"
 FETCHER_PORT = 16000
-FETCHER_LOG_PATH = "var/fetcher.log"
 EXPLORER_LOG_PATH = "var/explorer.log"
 PHOTO_SAVE_PORT = 16001
 PHOTO_SAVE_LOG_PATH = "var/photo_save.log"

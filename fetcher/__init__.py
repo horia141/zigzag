@@ -1,5 +1,6 @@
 """The single service used for fetching web resources from the external world."""
 
+import argparse
 import logging
 import urllib2
 
@@ -8,6 +9,7 @@ import comlink.serializer.pickle as serializer
 import comlink.transport.localipc as transport
 
 import common.defines.constants as defines
+import utils.pidfile as pidfile
 
 
 BOT_HEADERS = {
@@ -48,12 +50,23 @@ class Service(comlink.Service):
 
 
 def main():
-    logging.basicConfig(level=logging.INFO, filename=defines.FETCHER_LOG_PATH)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--port', type=int, required=True,
+        help='Port on which the Comlink server is listening')
+    parser.add_argument('--log_path', type=str, required=True,
+        help='Path to the log file')
+    parser.add_argument('--pidfile_path', type=str, required=True,
+        help='Path for the pidfile')
+    args = parser.parse_args()
+
+    pidfile.write_pidfile(args.pidfile_path)
+
+    logging.basicConfig(level=logging.INFO, filename=args.log_path)
 
     ser = serializer.Serializer()
     fetcher_service = Service()
 
-    server = transport.Server(defines.FETCHER_PORT, ser)
+    server = transport.Server(args.port, ser)
     server.add_service(fetcher_service)
     server.start()
 

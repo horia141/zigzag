@@ -30,7 +30,6 @@ static NSString * common.definesAPI_SERVING_LOG_PATH = @"var/api_serving.log";
 static int32_t common.definesRES_SERVING_PORT = 9001;
 static NSString * common.definesRES_SERVING_LOG_PATH = @"var/res_serving.log";
 static int32_t common.definesFETCHER_PORT = 16000;
-static NSString * common.definesFETCHER_LOG_PATH = @"var/fetcher.log";
 static NSString * common.definesEXPLORER_LOG_PATH = @"var/explorer.log";
 static int32_t common.definesPHOTO_SAVE_PORT = 16001;
 static NSString * common.definesPHOTO_SAVE_LOG_PATH = @"var/photo_save.log";
@@ -175,9 +174,6 @@ static int32_t common.definesPHOTO_MAX_HEIGHT = 2048;
 }
 + (int32_t) FETCHER_PORT{
   return common.definesFETCHER_PORT;
-}
-+ (NSString *) FETCHER_LOG_PATH{
-  return common.definesFETCHER_LOG_PATH;
 }
 + (NSString *) EXPLORER_LOG_PATH{
   return common.definesEXPLORER_LOG_PATH;
