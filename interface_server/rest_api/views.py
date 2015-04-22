@@ -29,7 +29,7 @@ def nextgen(request):
     response = api.NextGenResponse(generation, bandwidth_alert=False)
 
     if output == 'thrift':
-        response_ser = datastore.serialize_response_as_thrift(response)
+        response_ser = datastore.serialize(response)
         content_type = 'application/x-thrift'
     elif output == 'json':
         response_ser = datastore.serialize_response_as_json(response)

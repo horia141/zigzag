@@ -18,10 +18,11 @@ const map<i64, model.ArtifactSource> ARTIFACT_SOURCES = {
         'id': 1,
         'name': 'Reddit',
         'start_page_uri': 'http://reddit.com/r/%s',
-        'subdomains': ['pics', 'comics', 'fffffffuuuuuuuuuuuu', 'ragecomics'
-            'lolcats', 'AdviceAnimals', 'Demotivational', 'memes', 'images',
-            'aww', 'cats', 'foxes', 'dogpictures', 'sloths', 'gifs',
-            'reactiongifs']
+	'subdomains': []
+        # 'subdomains': ['pics', 'comics', 'fffffffuuuuuuuuuuuu', 'ragecomics'
+        #     'lolcats', 'AdviceAnimals', 'Demotivational', 'memes', 'images',
+        #     'aww', 'cats', 'foxes', 'dogpictures', 'sloths', 'gifs',
+        #     'reactiongifs']
     },
     2: {
         'id': 2,

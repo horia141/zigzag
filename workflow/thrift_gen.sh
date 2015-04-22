@@ -6,6 +6,7 @@ DEFINITIONS=(
   common/model.thrift
   common/defines.thrift
   common/api.thrift
+  log_analyzer/log_analyzer.thrift
 )
 
 mkdir -p gen

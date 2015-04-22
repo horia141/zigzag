@@ -9,6 +9,7 @@ from thrift.transport import TTransport
 
 import common.defines.constants as defines
 import common.model.ttypes as model
+import log_analyzer.protos.ttypes as log_analyzer_protos
 
 
 class Error(Exception):
@@ -23,6 +24,10 @@ class ArtifactUrlQuery(models.Model):
     page_uri = models.URLField(primary_key=True, db_index=True, unique=True)
     generation_id = models.IntegerField()
     artifact_idx = models.IntegerField()
+
+
+class LogAnalyzerAnalysisResultStore(models.Model):
+    analysis_result_ser = models.BinaryField()
 
 
 def canonical_uri(uri):
@@ -53,15 +58,6 @@ def mark_artifact_as_existing(generation, artifact):
     url_query.save()
 
     return url_query
-
-
-def serialize_response_as_thrift(next_gen_response):
-    ttransport = TTransport.TMemoryBuffer()
-    tprotocol = TBinaryProtocol.TBinaryProtocol(ttransport)
-    next_gen_response.write(tprotocol)
-    next_gen_response_ser = ttransport.getvalue()
-
-    return next_gen_response_ser
 
 
 def serialize_response_as_json(next_gen_response):
@@ -205,29 +201,29 @@ def serialize_response_as_json(next_gen_response):
     return response_ser
 
 
-def serialize_generation(generation):
+def serialize(thrift_object):
     ttransport = TTransport.TMemoryBuffer()
     tprotocol = TBinaryProtocol.TBinaryProtocol(ttransport)
-    generation.write(tprotocol)
-    generation_ser = ttransport.getvalue()
+    thrift_object.write(tprotocol)
+    thrift_object_ser = ttransport.getvalue()
 
-    return generation_ser
+    return thrift_object_ser
 
 
-def parse_generation(generation_ser):
-    ttransport = TTransport.TMemoryBuffer(generation_ser)
+def parse(constructor, thrift_object_ser):
+    ttransport = TTransport.TMemoryBuffer(thrift_object_ser)
     tprotocol = TBinaryProtocol.TBinaryProtocol(ttransport)
-    generation = model.Generation()
-    generation.read(tprotocol)
+    thrift_object_ser = constructor()
+    thrift_object_ser.read(tprotocol)
 
-    return generation
+    return thrift_object_ser
 
 
 def save_generation(generation):
     assert generation.id == -1
 
     generation_store = GenerationStore()
-    generation_store.generation_ser = serialize_generation(generation)
+    generation_store.generation_ser = serialize(generation)
     generation_store.save()
 
     generation.id = generation_store.id
@@ -241,7 +237,7 @@ def load_generation(id):
     except GenerationStore.DoesNotExist as e:
         raise Error(str(e))
 
-    generation = parse_generation(generation_store.generation_ser)
+    generation = parse(model.Generation, generation_store.generation_ser)
     generation.id = generation_store.id
 
     return generation
@@ -249,7 +245,7 @@ def load_generation(id):
 
 def load_latest_generation():
     generation_store = GenerationStore.objects.all().order_by('-id').first()
-    generation = parse_generation(generation_store.generation_ser)
+    generation = parse(model.Generation, generation_store.generation_ser)
     generation.id = generation_store.id
 
     return generation
@@ -261,7 +257,27 @@ def load_next_generation(next_id):
     if generation_store is None:
         return load_latest_generation()
 
-    generation = parse_generation(generation_store.generation_ser)
+    generation = parse(model.Generation, generation_store.generation_ser)
     generation.id = generation_store.id
 
     return generation
+
+
+def save_analysis_result(analysis_result):
+    assert analysis_result.id == -1
+
+    analysis_result_store = LogAnalyzerAnalysisResultStore()
+    analysis_result_store.analysis_result_ser = serialize(analysis_result)
+    analysis_result_store.save()
+
+    analysis_result.id = analysis_result_store.id
+
+    return analysis_result
+
+
+def load_latest_analysis_result():
+    analysis_result_store = LogAnalyzerStore.objects.all().order_by('-id').first()
+    analysis_result = parse(log_analyzer_protos.AnalysisResult, analysis_result_store.analysis_result_ser)
+    analysis_result.id = analysis_result_store.id
+
+    return analysis_result
