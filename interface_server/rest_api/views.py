@@ -26,6 +26,8 @@ def nextgen(request):
         except ValueError as e:
             return HttpResponseBadRequest('Invalid "from" parameter')
 
+    
+
     response = api.NextGenResponse(generation, bandwidth_alert=False)
 
     if output == 'thrift':

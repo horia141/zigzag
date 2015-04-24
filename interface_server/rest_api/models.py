@@ -276,7 +276,7 @@ def save_analysis_result(analysis_result):
 
 
 def load_latest_analysis_result():
-    analysis_result_store = LogAnalyzerStore.objects.all().order_by('-id').first()
+    analysis_result_store = LogAnalyzerAnalysisResultStore.objects.all().order_by('-id').first()
     analysis_result = parse(log_analyzer_protos.AnalysisResult, analysis_result_store.analysis_result_ser)
     analysis_result.id = analysis_result_store.id
 

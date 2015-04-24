@@ -96,6 +96,8 @@ class Analyzer(analyzers.Analyzer):
         else:
             logging.info('Found an regular image')
             img = soup.find('img', {'class': 'badge-item-img'})
+            if img is None:
+                raise analyzers.Error('Could not find imd div')
             url_path_raw = img.get('src')
 
         if url_path_raw is None:
