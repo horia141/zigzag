@@ -32,7 +32,7 @@ export USER=horia141
 tree -fi | grep pyc | xargs rm
 
 # Mass copy other task elements.
-scp -r common datastore explorer fetcher interface_server photo_save config workflow gen utils $USER@$HOST://home/$USER/zigzag
+scp -r common datastore explorer fetcher interface_server photo_save config log_analyzer workflow gen utils $USER@$HOST://home/$USER/zigzag
 
 # Change setup_env.sh file to work with the remote host.
 ssh $USER@$HOST <<EOF
@@ -44,9 +44,17 @@ ssh $USER@$HOST <<EOF
   mkdir -p zigzag/var/photos
 EOF
 
+# Build new tables and stuff.
+ssh $USER@$HOST <<EOF
+ cd zigzag
+ cd interface_server
+ env PYTHONPATH=../:../gen/py/ python manage.py syncdb
+EOF
+
 # Configure cron on the production machine.
-ssh $USER@$HOST <<'EOF'
+ssh $USER@$HOST <<EOF
   sed -i 's|/home/horia/Dropbox/Work/ZigZag|/home/horia141/zigzag|g' zigzag/config/crontab
   sed -i 's|/home/horia/Dropbox/Work/ZigZag|/home/horia141/zigzag|g' zigzag/workflow/run_exploring_in_cron.sh
+  sed -i 's|/home/horia/Dropbox/Work/ZigZag|/home/horia141/zigzag|g' zigzag/workflow/run_log_analyzing_in_cron.sh
   crontab zigzag/config/crontab
 EOF
