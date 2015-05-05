@@ -309,11 +309,9 @@
   return self;
 }
 
-- (id) initWithFull_image: (common.modelTileData *) full_image tiles: (NSMutableArray *) tiles
+- (id) initWithTiles: (NSMutableArray *) tiles
 {
   self = [super init];
-  __full_image = [full_image retain_stub];
-  __full_image_isset = YES;
   __tiles = [tiles retain_stub];
   __tiles_isset = YES;
   return self;
@@ -322,11 +320,6 @@
 - (id) initWithCoder: (NSCoder *) decoder
 {
   self = [super init];
-  if ([decoder containsValueForKey: @"full_image"])
-  {
-    __full_image = [[decoder decodeObjectForKey: @"full_image"] retain_stub];
-    __full_image_isset = YES;
-  }
   if ([decoder containsValueForKey: @"tiles"])
   {
     __tiles = [[decoder decodeObjectForKey: @"tiles"] retain_stub];
@@ -337,10 +330,6 @@
 
 - (void) encodeWithCoder: (NSCoder *) encoder
 {
-  if (__full_image_isset)
-  {
-    [encoder encodeObject: __full_image forKey: @"full_image"];
-  }
   if (__tiles_isset)
   {
     [encoder encodeObject: __tiles forKey: @"tiles"];
@@ -349,30 +338,8 @@
 
 - (void) dealloc
 {
-  [__full_image release_stub];
   [__tiles release_stub];
   [super dealloc_stub];
-}
-
-- (common.modelTileData *) full_image {
-  return [[__full_image retain_stub] autorelease_stub];
-}
-
-- (void) setFull_image: (common.modelTileData *) full_image {
-  [full_image retain_stub];
-  [__full_image release_stub];
-  __full_image = full_image;
-  __full_image_isset = YES;
-}
-
-- (BOOL) full_imageIsSet {
-  return __full_image_isset;
-}
-
-- (void) unsetFull_image {
-  [__full_image release_stub];
-  __full_image = nil;
-  __full_image_isset = NO;
 }
 
 - (NSMutableArray *) tiles {
@@ -412,16 +379,6 @@
     switch (fieldID)
     {
       case 1:
-        if (fieldType == TType_STRUCT) {
-          common.modelTileData *fieldValue = [[common.modelTileData alloc] init];
-          [fieldValue read: inProtocol];
-          [self setFull_image: fieldValue];
-          [fieldValue release_stub];
-        } else { 
-          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
-        }
-        break;
-      case 2:
         if (fieldType == TType_LIST) {
           int _size0;
           [inProtocol readListBeginReturningElementType: NULL size: &_size0];
@@ -452,16 +409,9 @@
 
 - (void) write: (id <TProtocol>) outProtocol {
   [outProtocol writeStructBeginWithName: @"ImagePhotoData"];
-  if (__full_image_isset) {
-    if (__full_image != nil) {
-      [outProtocol writeFieldBeginWithName: @"full_image" type: TType_STRUCT fieldID: 1];
-      [__full_image write: outProtocol];
-      [outProtocol writeFieldEnd];
-    }
-  }
   if (__tiles_isset) {
     if (__tiles != nil) {
-      [outProtocol writeFieldBeginWithName: @"tiles" type: TType_LIST fieldID: 2];
+      [outProtocol writeFieldBeginWithName: @"tiles" type: TType_LIST fieldID: 1];
       {
         [outProtocol writeListBeginWithElementType: TType_STRUCT size: [__tiles count]];
         int idx4;
@@ -480,10 +430,6 @@
 
 - (void) validate {
   // check for required fields
-  if (!__full_image_isset) {
-    @throw [TProtocolException exceptionWithName: @"TProtocolException"
-                               reason: @"Required field 'full_image' is not set."];
-  }
   if (!__tiles_isset) {
     @throw [TProtocolException exceptionWithName: @"TProtocolException"
                                reason: @"Required field 'tiles' is not set."];
@@ -492,9 +438,7 @@
 
 - (NSString *) description {
   NSMutableString * ms = [NSMutableString stringWithString: @"common.modelImagePhotoData("];
-  [ms appendString: @"full_image:"];
-  [ms appendFormat: @"%@", __full_image];
-  [ms appendString: @",tiles:"];
+  [ms appendString: @"tiles:"];
   [ms appendFormat: @"%@", __tiles];
   [ms appendString: @")"];
   return [NSString stringWithString: ms];

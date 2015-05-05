@@ -163,18 +163,15 @@ class TooBigPhotoData(object):
 class ImagePhotoData(object):
   """
   Attributes:
-   - full_image
    - tiles
   """
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRUCT, 'full_image', (TileData, TileData.thrift_spec), None, ), # 1
-    (2, TType.LIST, 'tiles', (TType.STRUCT,(TileData, TileData.thrift_spec)), None, ), # 2
+    (1, TType.LIST, 'tiles', (TType.STRUCT,(TileData, TileData.thrift_spec)), None, ), # 1
   )
 
-  def __init__(self, full_image=None, tiles=None,):
-    self.full_image = full_image
+  def __init__(self, tiles=None,):
     self.tiles = tiles
 
   def read(self, iprot):
@@ -187,12 +184,6 @@ class ImagePhotoData(object):
       if ftype == TType.STOP:
         break
       if fid == 1:
-        if ftype == TType.STRUCT:
-          self.full_image = TileData()
-          self.full_image.read(iprot)
-        else:
-          iprot.skip(ftype)
-      elif fid == 2:
         if ftype == TType.LIST:
           self.tiles = []
           (_etype3, _size0) = iprot.readListBegin()
@@ -213,12 +204,8 @@ class ImagePhotoData(object):
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('ImagePhotoData')
-    if self.full_image is not None:
-      oprot.writeFieldBegin('full_image', TType.STRUCT, 1)
-      self.full_image.write(oprot)
-      oprot.writeFieldEnd()
     if self.tiles is not None:
-      oprot.writeFieldBegin('tiles', TType.LIST, 2)
+      oprot.writeFieldBegin('tiles', TType.LIST, 1)
       oprot.writeListBegin(TType.STRUCT, len(self.tiles))
       for iter6 in self.tiles:
         iter6.write(oprot)
@@ -228,8 +215,6 @@ class ImagePhotoData(object):
     oprot.writeStructEnd()
 
   def validate(self):
-    if self.full_image is None:
-      raise TProtocol.TProtocolException(message='Required field full_image is unset!')
     if self.tiles is None:
       raise TProtocol.TProtocolException(message='Required field tiles is unset!')
     return
@@ -237,7 +222,6 @@ class ImagePhotoData(object):
 
   def __hash__(self):
     value = 17
-    value = (value * 31) ^ hash(self.full_image)
     value = (value * 31) ^ hash(self.tiles)
     return value
 

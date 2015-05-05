@@ -38,8 +38,7 @@ import org.slf4j.LoggerFactory;
 public class ImagePhotoData implements org.apache.thrift.TBase<ImagePhotoData, ImagePhotoData._Fields>, java.io.Serializable, Cloneable, Comparable<ImagePhotoData> {
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("ImagePhotoData");
 
-  private static final org.apache.thrift.protocol.TField FULL_IMAGE_FIELD_DESC = new org.apache.thrift.protocol.TField("full_image", org.apache.thrift.protocol.TType.STRUCT, (short)1);
-  private static final org.apache.thrift.protocol.TField TILES_FIELD_DESC = new org.apache.thrift.protocol.TField("tiles", org.apache.thrift.protocol.TType.LIST, (short)2);
+  private static final org.apache.thrift.protocol.TField TILES_FIELD_DESC = new org.apache.thrift.protocol.TField("tiles", org.apache.thrift.protocol.TType.LIST, (short)1);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -47,13 +46,11 @@ public class ImagePhotoData implements org.apache.thrift.TBase<ImagePhotoData, I
     schemes.put(TupleScheme.class, new ImagePhotoDataTupleSchemeFactory());
   }
 
-  public TileData full_image; // required
   public List<TileData> tiles; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-    FULL_IMAGE((short)1, "full_image"),
-    TILES((short)2, "tiles");
+    TILES((short)1, "tiles");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -68,9 +65,7 @@ public class ImagePhotoData implements org.apache.thrift.TBase<ImagePhotoData, I
      */
     public static _Fields findByThriftId(int fieldId) {
       switch(fieldId) {
-        case 1: // FULL_IMAGE
-          return FULL_IMAGE;
-        case 2: // TILES
+        case 1: // TILES
           return TILES;
         default:
           return null;
@@ -115,8 +110,6 @@ public class ImagePhotoData implements org.apache.thrift.TBase<ImagePhotoData, I
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-    tmpMap.put(_Fields.FULL_IMAGE, new org.apache.thrift.meta_data.FieldMetaData("full_image", org.apache.thrift.TFieldRequirementType.REQUIRED, 
-        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TileData.class)));
     tmpMap.put(_Fields.TILES, new org.apache.thrift.meta_data.FieldMetaData("tiles", org.apache.thrift.TFieldRequirementType.REQUIRED, 
         new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
             new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TileData.class))));
@@ -128,11 +121,9 @@ public class ImagePhotoData implements org.apache.thrift.TBase<ImagePhotoData, I
   }
 
   public ImagePhotoData(
-    TileData full_image,
     List<TileData> tiles)
   {
     this();
-    this.full_image = full_image;
     this.tiles = tiles;
   }
 
@@ -140,9 +131,6 @@ public class ImagePhotoData implements org.apache.thrift.TBase<ImagePhotoData, I
    * Performs a deep copy on <i>other</i>.
    */
   public ImagePhotoData(ImagePhotoData other) {
-    if (other.isSetFull_image()) {
-      this.full_image = new TileData(other.full_image);
-    }
     if (other.isSetTiles()) {
       List<TileData> __this__tiles = new ArrayList<TileData>(other.tiles.size());
       for (TileData other_element : other.tiles) {
@@ -158,32 +146,7 @@ public class ImagePhotoData implements org.apache.thrift.TBase<ImagePhotoData, I
 
   @Override
   public void clear() {
-    this.full_image = null;
     this.tiles = null;
-  }
-
-  public TileData getFull_image() {
-    return this.full_image;
-  }
-
-  public ImagePhotoData setFull_image(TileData full_image) {
-    this.full_image = full_image;
-    return this;
-  }
-
-  public void unsetFull_image() {
-    this.full_image = null;
-  }
-
-  /** Returns true if field full_image is set (has been assigned a value) and false otherwise */
-  public boolean isSetFull_image() {
-    return this.full_image != null;
-  }
-
-  public void setFull_imageIsSet(boolean value) {
-    if (!value) {
-      this.full_image = null;
-    }
   }
 
   public int getTilesSize() {
@@ -227,14 +190,6 @@ public class ImagePhotoData implements org.apache.thrift.TBase<ImagePhotoData, I
 
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
-    case FULL_IMAGE:
-      if (value == null) {
-        unsetFull_image();
-      } else {
-        setFull_image((TileData)value);
-      }
-      break;
-
     case TILES:
       if (value == null) {
         unsetTiles();
@@ -248,9 +203,6 @@ public class ImagePhotoData implements org.apache.thrift.TBase<ImagePhotoData, I
 
   public Object getFieldValue(_Fields field) {
     switch (field) {
-    case FULL_IMAGE:
-      return getFull_image();
-
     case TILES:
       return getTiles();
 
@@ -265,8 +217,6 @@ public class ImagePhotoData implements org.apache.thrift.TBase<ImagePhotoData, I
     }
 
     switch (field) {
-    case FULL_IMAGE:
-      return isSetFull_image();
     case TILES:
       return isSetTiles();
     }
@@ -286,15 +236,6 @@ public class ImagePhotoData implements org.apache.thrift.TBase<ImagePhotoData, I
     if (that == null)
       return false;
 
-    boolean this_present_full_image = true && this.isSetFull_image();
-    boolean that_present_full_image = true && that.isSetFull_image();
-    if (this_present_full_image || that_present_full_image) {
-      if (!(this_present_full_image && that_present_full_image))
-        return false;
-      if (!this.full_image.equals(that.full_image))
-        return false;
-    }
-
     boolean this_present_tiles = true && this.isSetTiles();
     boolean that_present_tiles = true && that.isSetTiles();
     if (this_present_tiles || that_present_tiles) {
@@ -310,11 +251,6 @@ public class ImagePhotoData implements org.apache.thrift.TBase<ImagePhotoData, I
   @Override
   public int hashCode() {
     List<Object> list = new ArrayList<Object>();
-
-    boolean present_full_image = true && (isSetFull_image());
-    list.add(present_full_image);
-    if (present_full_image)
-      list.add(full_image);
 
     boolean present_tiles = true && (isSetTiles());
     list.add(present_tiles);
@@ -332,16 +268,6 @@ public class ImagePhotoData implements org.apache.thrift.TBase<ImagePhotoData, I
 
     int lastComparison = 0;
 
-    lastComparison = Boolean.valueOf(isSetFull_image()).compareTo(other.isSetFull_image());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetFull_image()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.full_image, other.full_image);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
     lastComparison = Boolean.valueOf(isSetTiles()).compareTo(other.isSetTiles());
     if (lastComparison != 0) {
       return lastComparison;
@@ -372,14 +298,6 @@ public class ImagePhotoData implements org.apache.thrift.TBase<ImagePhotoData, I
     StringBuilder sb = new StringBuilder("ImagePhotoData(");
     boolean first = true;
 
-    sb.append("full_image:");
-    if (this.full_image == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.full_image);
-    }
-    first = false;
-    if (!first) sb.append(", ");
     sb.append("tiles:");
     if (this.tiles == null) {
       sb.append("null");
@@ -393,16 +311,10 @@ public class ImagePhotoData implements org.apache.thrift.TBase<ImagePhotoData, I
 
   public void validate() throws org.apache.thrift.TException {
     // check for required fields
-    if (full_image == null) {
-      throw new org.apache.thrift.protocol.TProtocolException("Required field 'full_image' was not present! Struct: " + toString());
-    }
     if (tiles == null) {
       throw new org.apache.thrift.protocol.TProtocolException("Required field 'tiles' was not present! Struct: " + toString());
     }
     // check for sub-struct validity
-    if (full_image != null) {
-      full_image.validate();
-    }
   }
 
   private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
@@ -439,16 +351,7 @@ public class ImagePhotoData implements org.apache.thrift.TBase<ImagePhotoData, I
           break;
         }
         switch (schemeField.id) {
-          case 1: // FULL_IMAGE
-            if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-              struct.full_image = new TileData();
-              struct.full_image.read(iprot);
-              struct.setFull_imageIsSet(true);
-            } else { 
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-            }
-            break;
-          case 2: // TILES
+          case 1: // TILES
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
                 org.apache.thrift.protocol.TList _list0 = iprot.readListBegin();
@@ -482,11 +385,6 @@ public class ImagePhotoData implements org.apache.thrift.TBase<ImagePhotoData, I
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
-      if (struct.full_image != null) {
-        oprot.writeFieldBegin(FULL_IMAGE_FIELD_DESC);
-        struct.full_image.write(oprot);
-        oprot.writeFieldEnd();
-      }
       if (struct.tiles != null) {
         oprot.writeFieldBegin(TILES_FIELD_DESC);
         {
@@ -516,7 +414,6 @@ public class ImagePhotoData implements org.apache.thrift.TBase<ImagePhotoData, I
     @Override
     public void write(org.apache.thrift.protocol.TProtocol prot, ImagePhotoData struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
-      struct.full_image.write(oprot);
       {
         oprot.writeI32(struct.tiles.size());
         for (TileData _iter4 : struct.tiles)
@@ -529,9 +426,6 @@ public class ImagePhotoData implements org.apache.thrift.TBase<ImagePhotoData, I
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, ImagePhotoData struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
-      struct.full_image = new TileData();
-      struct.full_image.read(iprot);
-      struct.setFull_imageIsSet(true);
       {
         org.apache.thrift.protocol.TList _list5 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
         struct.tiles = new ArrayList<TileData>(_list5.size);

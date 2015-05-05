@@ -164,7 +164,6 @@ def serialize_response_as_json(next_gen_response):
     def do_image_photo_data(image_photo_data):
         image_photo_data_json = {}
 
-        image_photo_data_json['full_image'] = do_tile_data(image_photo_data.full_image)
         image_photo_data_json['tiles'] = []
 
         for tile in image_photo_data.tiles:

@@ -75,31 +75,22 @@ typedef int64_t common.modelEntityId;
 @end
 
 @interface common.modelImagePhotoData : NSObject <TBase, NSCoding> {
-  common.modelTileData * __full_image;
   NSMutableArray * __tiles;
 
-  BOOL __full_image_isset;
   BOOL __tiles_isset;
 }
 
 #if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
-@property (nonatomic, retain, getter=full_image, setter=setFull_image:) common.modelTileData * full_image;
 @property (nonatomic, retain, getter=tiles, setter=setTiles:) NSMutableArray * tiles;
 #endif
 
 - (id) init;
-- (id) initWithFull_image: (common.modelTileData *) full_image tiles: (NSMutableArray *) tiles;
+- (id) initWithTiles: (NSMutableArray *) tiles;
 
 - (void) read: (id <TProtocol>) inProtocol;
 - (void) write: (id <TProtocol>) outProtocol;
 
 - (void) validate;
-
-#if !__has_feature(objc_arc)
-- (common.modelTileData *) full_image;
-- (void) setFull_image: (common.modelTileData *) full_image;
-#endif
-- (BOOL) full_imageIsSet;
 
 #if !__has_feature(objc_arc)
 - (NSMutableArray *) tiles;

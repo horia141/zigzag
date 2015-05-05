@@ -17,10 +17,9 @@ struct TileData {
 struct TooBigPhotoData {
 }
 
-// Next id: 3
+// Next id: 2
 struct ImagePhotoData {
-  1: required TileData full_image;
-  2: required list<TileData> tiles;
+  1: required list<TileData> tiles;
 }
 
 // Next id: 5

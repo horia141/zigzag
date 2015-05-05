@@ -38,12 +38,10 @@ const map<i64, model.ArtifactSource> ARTIFACT_SOURCES = {
 
 const map<i64, model.ScreenConfig> VIDEO_SCREEN_CONFIG = {
     1: {'id': 1, 'name': '480', 'width': 480},
-    2: {'id': 2, 'name': '720p', 'width': 1280}
 };
 
 const map<i64, model.ScreenConfig> IMAGE_SCREEN_CONFIG = {
-    3: {'id': 3, 'name': '800', 'width': 800},
-    4: {'id': 4, 'name': '1200', 'width': 1200}
+    2: {'id': 2, 'name': '800', 'width': 800},
 };
 
 const i32 IMAGE_SAVE_JPEG_OPTIONS_QUALITY = 50;

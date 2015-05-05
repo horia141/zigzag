@@ -24,13 +24,6 @@ class Decoder(object):
         desired_height = int(aspect_ratio * desired_width)
         image_resized = image_rgba.resize((desired_width, desired_height), Image.ANTIALIAS)
 
-        logging.info('Optimizing and saving full image')
-
-        (full_storage_path, full_uri_path) = unique_photo_path_fn('image/jpeg')
-        image_resized.save(full_storage_path, quality=defines.IMAGE_SAVE_JPEG_OPTIONS_QUALITY,
-                           optimize=defines.IMAGE_SAVE_JPEG_OPTIONS_OPTIMIZE,
-                           progressive=defines.IMAGE_SAVE_JPEG_OPTIONS_PROGRESSIVE)
-
         tile_count = desired_height / defines.PHOTO_MAX_HEIGHT + 1
         tiles = []
 
@@ -51,5 +44,4 @@ class Decoder(object):
 
             tiles.append(model.TileData(desired_width, tile_height, tile_uri_path))
 
-        full_image = model.TileData(desired_width, desired_height, full_uri_path)
-        return model.PhotoData(image_photo_data=model.ImagePhotoData(full_image, tiles))
+        return model.PhotoData(image_photo_data=model.ImagePhotoData(tiles))

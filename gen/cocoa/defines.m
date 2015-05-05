@@ -103,34 +103,22 @@ static int64_t common.definesBANDWIDTH_ALERT_BYTES_PER_MONTH = 1073741824;
   [common.definesARTIFACT_SOURCES setObject:tmp3 forKey:[NSNumber numberWithLongLong: 3]];
 
 ;
-  common.definesVIDEO_SCREEN_CONFIG = [[NSMutableDictionary alloc] initWithCapacity:2]; 
+  common.definesVIDEO_SCREEN_CONFIG = [[NSMutableDictionary alloc] initWithCapacity:1]; 
   common.modelScreenConfig * tmp5 = [[[common.modelScreenConfig alloc] init] autorelease_stub];
-  [tmp5 setWidth:480];
   [tmp5 setId:1];
   [tmp5 setName:@"480"];
+  [tmp5 setWidth:480];
 
   [common.definesVIDEO_SCREEN_CONFIG setObject:tmp5 forKey:[NSNumber numberWithLongLong: 1]];
-  common.modelScreenConfig * tmp6 = [[[common.modelScreenConfig alloc] init] autorelease_stub];
-  [tmp6 setId:2];
-  [tmp6 setName:@"720p"];
-  [tmp6 setWidth:1280];
-
-  [common.definesVIDEO_SCREEN_CONFIG setObject:tmp6 forKey:[NSNumber numberWithLongLong: 2]];
 
 ;
-  common.definesIMAGE_SCREEN_CONFIG = [[NSMutableDictionary alloc] initWithCapacity:2]; 
-  common.modelScreenConfig * tmp7 = [[[common.modelScreenConfig alloc] init] autorelease_stub];
-  [tmp7 setId:3];
-  [tmp7 setName:@"800"];
-  [tmp7 setWidth:800];
+  common.definesIMAGE_SCREEN_CONFIG = [[NSMutableDictionary alloc] initWithCapacity:1]; 
+  common.modelScreenConfig * tmp6 = [[[common.modelScreenConfig alloc] init] autorelease_stub];
+  [tmp6 setId:2];
+  [tmp6 setName:@"800"];
+  [tmp6 setWidth:800];
 
-  [common.definesIMAGE_SCREEN_CONFIG setObject:tmp7 forKey:[NSNumber numberWithLongLong: 3]];
-  common.modelScreenConfig * tmp8 = [[[common.modelScreenConfig alloc] init] autorelease_stub];
-  [tmp8 setId:4];
-  [tmp8 setName:@"1200"];
-  [tmp8 setWidth:1200];
-
-  [common.definesIMAGE_SCREEN_CONFIG setObject:tmp8 forKey:[NSNumber numberWithLongLong: 4]];
+  [common.definesIMAGE_SCREEN_CONFIG setObject:tmp6 forKey:[NSNumber numberWithLongLong: 2]];
 
 ;
 }

@@ -69,26 +69,16 @@ ARTIFACT_SOURCES = {
 }
 VIDEO_SCREEN_CONFIG = {
   1 : common.model.ttypes.ScreenConfig(**{
-    "width" : 480,
     "id" : 1,
     "name" : "480",
-  }),
-  2 : common.model.ttypes.ScreenConfig(**{
-    "id" : 2,
-    "name" : "720p",
-    "width" : 1280,
+    "width" : 480,
   }),
 }
 IMAGE_SCREEN_CONFIG = {
-  3 : common.model.ttypes.ScreenConfig(**{
-    "id" : 3,
+  2 : common.model.ttypes.ScreenConfig(**{
+    "id" : 2,
     "name" : "800",
     "width" : 800,
-  }),
-  4 : common.model.ttypes.ScreenConfig(**{
-    "id" : 4,
-    "name" : "1200",
-    "width" : 1200,
   }),
 }
 IMAGE_SAVE_JPEG_OPTIONS_QUALITY = 50

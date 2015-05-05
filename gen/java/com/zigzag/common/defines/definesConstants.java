@@ -112,33 +112,21 @@ public class definesConstants {
   public static final Map<Long,com.zigzag.common.model.ScreenConfig> VIDEO_SCREEN_CONFIG = new HashMap<Long,com.zigzag.common.model.ScreenConfig>();
   static {
     com.zigzag.common.model.ScreenConfig tmp5 = new com.zigzag.common.model.ScreenConfig();
-    tmp5.setWidth(480);
     tmp5.setId(1L);
     tmp5.setName("480");
+    tmp5.setWidth(480);
 
     VIDEO_SCREEN_CONFIG.put(1L, tmp5);
-    com.zigzag.common.model.ScreenConfig tmp6 = new com.zigzag.common.model.ScreenConfig();
-    tmp6.setId(2L);
-    tmp6.setName("720p");
-    tmp6.setWidth(1280);
-
-    VIDEO_SCREEN_CONFIG.put(2L, tmp6);
   }
 
   public static final Map<Long,com.zigzag.common.model.ScreenConfig> IMAGE_SCREEN_CONFIG = new HashMap<Long,com.zigzag.common.model.ScreenConfig>();
   static {
-    com.zigzag.common.model.ScreenConfig tmp7 = new com.zigzag.common.model.ScreenConfig();
-    tmp7.setId(3L);
-    tmp7.setName("800");
-    tmp7.setWidth(800);
+    com.zigzag.common.model.ScreenConfig tmp6 = new com.zigzag.common.model.ScreenConfig();
+    tmp6.setId(2L);
+    tmp6.setName("800");
+    tmp6.setWidth(800);
 
-    IMAGE_SCREEN_CONFIG.put(3L, tmp7);
-    com.zigzag.common.model.ScreenConfig tmp8 = new com.zigzag.common.model.ScreenConfig();
-    tmp8.setId(4L);
-    tmp8.setName("1200");
-    tmp8.setWidth(1200);
-
-    IMAGE_SCREEN_CONFIG.put(4L, tmp8);
+    IMAGE_SCREEN_CONFIG.put(2L, tmp6);
   }
 
   public static final int IMAGE_SAVE_JPEG_OPTIONS_QUALITY = 50;
