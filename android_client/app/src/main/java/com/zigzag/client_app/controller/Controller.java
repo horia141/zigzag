@@ -314,9 +314,9 @@ public final class Controller {
     }
 
     public static PhotoData getBestMatchingPhotoData(PhotoDescription photoDescription) {
-        if (photoDescription.getPhoto_data().containsKey(3L)) {
-            // From common/defines.thrift, 3 is the ID of the "800" screen config.
-            return photoDescription.getPhoto_data().get(3L);
+        if (photoDescription.getPhoto_data().containsKey(2L)) {
+            // From common/defines.thrift, 2 is the ID of the "800" screen config.
+            return photoDescription.getPhoto_data().get(2L);
         } else if (photoDescription.getPhoto_data().containsKey(1L)) {
             // From common/defines.thrift, 1 is the ID of the "480" screen config.
             return photoDescription.getPhoto_data().get(1L);
