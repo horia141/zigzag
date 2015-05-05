@@ -34,6 +34,7 @@ static NSString * common.definesVIDEO_SAVE_BITRATE = @"512k";
 static int32_t common.definesDEFAULT_TIME_BETWEEN_FRAMES_MS = 75;
 static int32_t common.definesPHOTO_MAX_WIDTH = 2048;
 static int32_t common.definesPHOTO_MAX_HEIGHT = 2048;
+static int64_t common.definesBANDWIDTH_ALERT_BYTES_PER_MONTH = 1073741824;
 
 @implementation common.definesdefinesConstants
 + (void) initialize {
@@ -104,9 +105,9 @@ static int32_t common.definesPHOTO_MAX_HEIGHT = 2048;
 ;
   common.definesVIDEO_SCREEN_CONFIG = [[NSMutableDictionary alloc] initWithCapacity:2]; 
   common.modelScreenConfig * tmp5 = [[[common.modelScreenConfig alloc] init] autorelease_stub];
+  [tmp5 setWidth:480];
   [tmp5 setId:1];
   [tmp5 setName:@"480"];
-  [tmp5 setWidth:480];
 
   [common.definesVIDEO_SCREEN_CONFIG setObject:tmp5 forKey:[NSNumber numberWithLongLong: 1]];
   common.modelScreenConfig * tmp6 = [[[common.modelScreenConfig alloc] init] autorelease_stub];
@@ -177,6 +178,9 @@ static int32_t common.definesPHOTO_MAX_HEIGHT = 2048;
 }
 + (int32_t) PHOTO_MAX_HEIGHT{
   return common.definesPHOTO_MAX_HEIGHT;
+}
++ (int64_t) BANDWIDTH_ALERT_BYTES_PER_MONTH{
+  return common.definesBANDWIDTH_ALERT_BYTES_PER_MONTH;
 }
 @end
 

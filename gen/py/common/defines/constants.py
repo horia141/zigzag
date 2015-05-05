@@ -69,9 +69,9 @@ ARTIFACT_SOURCES = {
 }
 VIDEO_SCREEN_CONFIG = {
   1 : common.model.ttypes.ScreenConfig(**{
+    "width" : 480,
     "id" : 1,
     "name" : "480",
-    "width" : 480,
   }),
   2 : common.model.ttypes.ScreenConfig(**{
     "id" : 2,
@@ -98,3 +98,4 @@ VIDEO_SAVE_BITRATE = "512k"
 DEFAULT_TIME_BETWEEN_FRAMES_MS = 75
 PHOTO_MAX_WIDTH = 2048
 PHOTO_MAX_HEIGHT = 2048
+BANDWIDTH_ALERT_BYTES_PER_MONTH = 1073741824

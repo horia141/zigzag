@@ -112,9 +112,9 @@ public class definesConstants {
   public static final Map<Long,com.zigzag.common.model.ScreenConfig> VIDEO_SCREEN_CONFIG = new HashMap<Long,com.zigzag.common.model.ScreenConfig>();
   static {
     com.zigzag.common.model.ScreenConfig tmp5 = new com.zigzag.common.model.ScreenConfig();
+    tmp5.setWidth(480);
     tmp5.setId(1L);
     tmp5.setName("480");
-    tmp5.setWidth(480);
 
     VIDEO_SCREEN_CONFIG.put(1L, tmp5);
     com.zigzag.common.model.ScreenConfig tmp6 = new com.zigzag.common.model.ScreenConfig();
@@ -154,5 +154,7 @@ public class definesConstants {
   public static final int PHOTO_MAX_WIDTH = 2048;
 
   public static final int PHOTO_MAX_HEIGHT = 2048;
+
+  public static final long BANDWIDTH_ALERT_BYTES_PER_MONTH = 1073741824L;
 
 }

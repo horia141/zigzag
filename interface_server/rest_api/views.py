@@ -26,9 +26,15 @@ def nextgen(request):
         except ValueError as e:
             return HttpResponseBadRequest('Invalid "from" parameter')
 
-    
+    latest_analysis_result = datastore.load_latest_analysis_result()
 
-    response = api.NextGenResponse(generation, bandwidth_alert=False)
+    if (latest_analysis_result.month.total_bytes >= 
+        defines.BANDWIDTH_ALERT_BYTES_PER_MONTH):
+        bandwidth_alert = True
+    else:
+        bandwidth_alert = False
+
+    response = api.NextGenResponse(generation, bandwidth_alert)
 
     if output == 'thrift':
         response_ser = datastore.serialize(response)
