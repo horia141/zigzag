@@ -74,14 +74,12 @@ def serialize_response_as_json(next_gen_response):
             .fromtimestamp(generation.datetime_ended_ts, pytz.utc)\
             .strftime(defines.TIME_FORMAT)
         generation_json['artifact_sources'] = {}
-        generation_json['screen_configs'] = {}
+        generation_json['image_screen_config'] = do_screen_config(defines.IMAGE_SCREEN_CONFIG)
+        generation_json['image_video_config'] = do_screen_config(defines.VIDEO_SCREEN_CONFIG)
         generation_json['artifacts'] = []
 
         for id, artifact_source in generation.artifact_sources.iteritems():
             generation_json['artifact_sources'][id] = do_artifact_source(artifact_source)
-
-        for id, screen_config in generation.screen_configs.iteritems():
-            generation_json['screen_configs'][id] = do_screen_config(screen_config)
 
         for artifact in generation.artifacts:
             generation_json['artifacts'].append(do_artifact(artifact))
@@ -104,7 +102,6 @@ def serialize_response_as_json(next_gen_response):
     def do_screen_config(screen_config):
         screen_config_json = {}
 
-        screen_config_json['id'] = screen_config.id
         screen_config_json['name'] = screen_config.name
         screen_config_json['width'] = screen_config.width
 
@@ -132,10 +129,7 @@ def serialize_response_as_json(next_gen_response):
         photo_description_json['description'] = photo_description.description
         photo_description_json['source_uri'] = photo_description.source_uri
         photo_description_json['original_uri_path'] = photo_description.original_uri_path
-        photo_description_json['photo_data'] = {}
-
-        for id, photo_data in photo_description.photo_data.iteritems():
-            photo_description_json['photo_data'][id] = do_photo_data(photo_data)
+        photo_description_json['photo_data'] = do_photo_data(photo_description.photo_data)
 
         return photo_description_json
 
