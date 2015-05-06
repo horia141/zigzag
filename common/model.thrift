@@ -43,7 +43,7 @@ struct PhotoDescription {
   2: optional string description;
   3: required string source_uri;
   4: required string original_uri_path;
-  5: optional map<EntityId, PhotoData> photo_data;
+  5: required PhotoData photo_data;
 }
 
 // Next id: 5
@@ -54,11 +54,10 @@ struct ArtifactSource {
   4: optional set<string> subdomains;
 }
 
-// Next id: 4
+// Next id: 3
 struct ScreenConfig {
-  1: required EntityId id;
-  2: required string name;
-  3: required i32 width;
+  1: required string name;
+  2: required i32 width;
 }
 
 // Next id: 4
@@ -69,12 +68,13 @@ struct Artifact {
   4: required list<PhotoDescription> photo_descriptions;
 }
 
-// Next id: 7
+// Next id: 8
 struct Generation {
   1: required EntityId id;
   2: required i32 datetime_started_ts;
   3: required i32 datetime_ended_ts;
   4: required map<EntityId, ArtifactSource> artifact_sources;
-  5: required map<EntityId, ScreenConfig> screen_configs;
-  6: optional list<Artifact> artifacts;
+  5: required ScreenConfig image_screen_config;
+  6: required ScreenConfig video_screen_config;
+  7: optional list<Artifact> artifacts;
 }

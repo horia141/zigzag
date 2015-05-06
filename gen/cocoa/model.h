@@ -202,7 +202,7 @@ typedef int64_t common.modelEntityId;
   NSString * __description;
   NSString * __source_uri;
   NSString * __original_uri_path;
-  NSMutableDictionary * __photo_data;
+  common.modelPhotoData * __photo_data;
 
   BOOL __subtitle_isset;
   BOOL __description_isset;
@@ -216,11 +216,11 @@ typedef int64_t common.modelEntityId;
 @property (nonatomic, retain, getter=description, setter=setDescription:) NSString * description;
 @property (nonatomic, retain, getter=source_uri, setter=setSource_uri:) NSString * source_uri;
 @property (nonatomic, retain, getter=original_uri_path, setter=setOriginal_uri_path:) NSString * original_uri_path;
-@property (nonatomic, retain, getter=photo_data, setter=setPhoto_data:) NSMutableDictionary * photo_data;
+@property (nonatomic, retain, getter=photo_data, setter=setPhoto_data:) common.modelPhotoData * photo_data;
 #endif
 
 - (id) init;
-- (id) initWithSubtitle: (NSString *) subtitle description: (NSString *) description source_uri: (NSString *) source_uri original_uri_path: (NSString *) original_uri_path photo_data: (NSMutableDictionary *) photo_data;
+- (id) initWithSubtitle: (NSString *) subtitle description: (NSString *) description source_uri: (NSString *) source_uri original_uri_path: (NSString *) original_uri_path photo_data: (common.modelPhotoData *) photo_data;
 
 - (void) read: (id <TProtocol>) inProtocol;
 - (void) write: (id <TProtocol>) outProtocol;
@@ -252,8 +252,8 @@ typedef int64_t common.modelEntityId;
 - (BOOL) original_uri_pathIsSet;
 
 #if !__has_feature(objc_arc)
-- (NSMutableDictionary *) photo_data;
-- (void) setPhoto_data: (NSMutableDictionary *) photo_data;
+- (common.modelPhotoData *) photo_data;
+- (void) setPhoto_data: (common.modelPhotoData *) photo_data;
 #endif
 - (BOOL) photo_dataIsSet;
 
@@ -313,34 +313,25 @@ typedef int64_t common.modelEntityId;
 @end
 
 @interface common.modelScreenConfig : NSObject <TBase, NSCoding> {
-  common.modelEntityId __id;
   NSString * __name;
   int32_t __width;
 
-  BOOL __id_isset;
   BOOL __name_isset;
   BOOL __width_isset;
 }
 
 #if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
-@property (nonatomic, getter=id, setter=setId:) common.modelEntityId id;
 @property (nonatomic, retain, getter=name, setter=setName:) NSString * name;
 @property (nonatomic, getter=width, setter=setWidth:) int32_t width;
 #endif
 
 - (id) init;
-- (id) initWithId: (common.modelEntityId) id name: (NSString *) name width: (int32_t) width;
+- (id) initWithName: (NSString *) name width: (int32_t) width;
 
 - (void) read: (id <TProtocol>) inProtocol;
 - (void) write: (id <TProtocol>) outProtocol;
 
 - (void) validate;
-
-#if !__has_feature(objc_arc)
-- (common.modelEntityId) id;
-- (void) setId: (common.modelEntityId) id;
-#endif
-- (BOOL) idIsSet;
 
 #if !__has_feature(objc_arc)
 - (NSString *) name;
@@ -414,14 +405,16 @@ typedef int64_t common.modelEntityId;
   int32_t __datetime_started_ts;
   int32_t __datetime_ended_ts;
   NSMutableDictionary * __artifact_sources;
-  NSMutableDictionary * __screen_configs;
+  common.modelScreenConfig * __image_screen_config;
+  common.modelScreenConfig * __video_screen_config;
   NSMutableArray * __artifacts;
 
   BOOL __id_isset;
   BOOL __datetime_started_ts_isset;
   BOOL __datetime_ended_ts_isset;
   BOOL __artifact_sources_isset;
-  BOOL __screen_configs_isset;
+  BOOL __image_screen_config_isset;
+  BOOL __video_screen_config_isset;
   BOOL __artifacts_isset;
 }
 
@@ -430,12 +423,13 @@ typedef int64_t common.modelEntityId;
 @property (nonatomic, getter=datetime_started_ts, setter=setDatetime_started_ts:) int32_t datetime_started_ts;
 @property (nonatomic, getter=datetime_ended_ts, setter=setDatetime_ended_ts:) int32_t datetime_ended_ts;
 @property (nonatomic, retain, getter=artifact_sources, setter=setArtifact_sources:) NSMutableDictionary * artifact_sources;
-@property (nonatomic, retain, getter=screen_configs, setter=setScreen_configs:) NSMutableDictionary * screen_configs;
+@property (nonatomic, retain, getter=image_screen_config, setter=setImage_screen_config:) common.modelScreenConfig * image_screen_config;
+@property (nonatomic, retain, getter=video_screen_config, setter=setVideo_screen_config:) common.modelScreenConfig * video_screen_config;
 @property (nonatomic, retain, getter=artifacts, setter=setArtifacts:) NSMutableArray * artifacts;
 #endif
 
 - (id) init;
-- (id) initWithId: (common.modelEntityId) id datetime_started_ts: (int32_t) datetime_started_ts datetime_ended_ts: (int32_t) datetime_ended_ts artifact_sources: (NSMutableDictionary *) artifact_sources screen_configs: (NSMutableDictionary *) screen_configs artifacts: (NSMutableArray *) artifacts;
+- (id) initWithId: (common.modelEntityId) id datetime_started_ts: (int32_t) datetime_started_ts datetime_ended_ts: (int32_t) datetime_ended_ts artifact_sources: (NSMutableDictionary *) artifact_sources image_screen_config: (common.modelScreenConfig *) image_screen_config video_screen_config: (common.modelScreenConfig *) video_screen_config artifacts: (NSMutableArray *) artifacts;
 
 - (void) read: (id <TProtocol>) inProtocol;
 - (void) write: (id <TProtocol>) outProtocol;
@@ -467,10 +461,16 @@ typedef int64_t common.modelEntityId;
 - (BOOL) artifact_sourcesIsSet;
 
 #if !__has_feature(objc_arc)
-- (NSMutableDictionary *) screen_configs;
-- (void) setScreen_configs: (NSMutableDictionary *) screen_configs;
+- (common.modelScreenConfig *) image_screen_config;
+- (void) setImage_screen_config: (common.modelScreenConfig *) image_screen_config;
 #endif
-- (BOOL) screen_configsIsSet;
+- (BOOL) image_screen_configIsSet;
+
+#if !__has_feature(objc_arc)
+- (common.modelScreenConfig *) video_screen_config;
+- (void) setVideo_screen_config: (common.modelScreenConfig *) video_screen_config;
+#endif
+- (BOOL) video_screen_configIsSet;
 
 #if !__has_feature(objc_arc)
 - (NSMutableArray *) artifacts;

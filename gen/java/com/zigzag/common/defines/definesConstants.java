@@ -69,22 +69,6 @@ public class definesConstants {
     tmp0.setName("Reddit");
     tmp0.setStart_page_uri("http://reddit.com/r/%s");
     Set<String> tmp1 = new HashSet<String>();
-    tmp1.add("pics");
-    tmp1.add("comics");
-    tmp1.add("fffffffuuuuuuuuuuuu");
-    tmp1.add("ragecomics");
-    tmp1.add("lolcats");
-    tmp1.add("AdviceAnimals");
-    tmp1.add("Demotivational");
-    tmp1.add("memes");
-    tmp1.add("images");
-    tmp1.add("aww");
-    tmp1.add("cats");
-    tmp1.add("foxes");
-    tmp1.add("dogpictures");
-    tmp1.add("sloths");
-    tmp1.add("gifs");
-    tmp1.add("reactiongifs");
 
     tmp0.setSubdomains(tmp1);
 
@@ -109,24 +93,16 @@ public class definesConstants {
     ARTIFACT_SOURCES.put(3L, tmp3);
   }
 
-  public static final Map<Long,com.zigzag.common.model.ScreenConfig> VIDEO_SCREEN_CONFIG = new HashMap<Long,com.zigzag.common.model.ScreenConfig>();
+  public static final com.zigzag.common.model.ScreenConfig IMAGE_SCREEN_CONFIG = new com.zigzag.common.model.ScreenConfig();
   static {
-    com.zigzag.common.model.ScreenConfig tmp5 = new com.zigzag.common.model.ScreenConfig();
-    tmp5.setId(1L);
-    tmp5.setName("480");
-    tmp5.setWidth(480);
-
-    VIDEO_SCREEN_CONFIG.put(1L, tmp5);
+    IMAGE_SCREEN_CONFIG.setName("800");
+    IMAGE_SCREEN_CONFIG.setWidth(800);
   }
 
-  public static final Map<Long,com.zigzag.common.model.ScreenConfig> IMAGE_SCREEN_CONFIG = new HashMap<Long,com.zigzag.common.model.ScreenConfig>();
+  public static final com.zigzag.common.model.ScreenConfig VIDEO_SCREEN_CONFIG = new com.zigzag.common.model.ScreenConfig();
   static {
-    com.zigzag.common.model.ScreenConfig tmp6 = new com.zigzag.common.model.ScreenConfig();
-    tmp6.setId(2L);
-    tmp6.setName("800");
-    tmp6.setWidth(800);
-
-    IMAGE_SCREEN_CONFIG.put(2L, tmp6);
+    VIDEO_SCREEN_CONFIG.setName("480");
+    VIDEO_SCREEN_CONFIG.setWidth(480);
   }
 
   public static final int IMAGE_SAVE_JPEG_OPTIONS_QUALITY = 50;

@@ -18,10 +18,11 @@ const map<i64, model.ArtifactSource> ARTIFACT_SOURCES = {
         'id': 1,
         'name': 'Reddit',
         'start_page_uri': 'http://reddit.com/r/%s',
-        'subdomains': ['pics', 'comics', 'fffffffuuuuuuuuuuuu', 'ragecomics'
-            'lolcats', 'AdviceAnimals', 'Demotivational', 'memes', 'images',
-            'aww', 'cats', 'foxes', 'dogpictures', 'sloths', 'gifs',
-            'reactiongifs']
+	'subdomains': [],
+        // 'subdomains': ['pics', 'comics', 'fffffffuuuuuuuuuuuu', 'ragecomics'
+        //     'lolcats', 'AdviceAnimals', 'Demotivational', 'memes', 'images',
+        //     'aww', 'cats', 'foxes', 'dogpictures', 'sloths', 'gifs',
+        //     'reactiongifs']
     },
     2: {
         'id': 2,
@@ -36,12 +37,14 @@ const map<i64, model.ArtifactSource> ARTIFACT_SOURCES = {
     }
 }
 
-const map<i64, model.ScreenConfig> VIDEO_SCREEN_CONFIG = {
-    1: {'id': 1, 'name': '480', 'width': 480},
+const model.ScreenConfig IMAGE_SCREEN_CONFIG = {
+    'name': '800',
+    'width': 800
 };
 
-const map<i64, model.ScreenConfig> IMAGE_SCREEN_CONFIG = {
-    2: {'id': 2, 'name': '800', 'width': 800},
+const model.ScreenConfig VIDEO_SCREEN_CONFIG = {
+    'name': '480',
+    'width': 480
 };
 
 const i32 IMAGE_SAVE_JPEG_OPTIONS_QUALITY = 50;

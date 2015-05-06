@@ -25,8 +25,8 @@ static NSMutableSet * common.definesWEBPAGE_MIMETYPES;
 static NSMutableSet * common.definesPHOTO_MIMETYPES;
 static NSMutableDictionary * common.definesPHOTO_MIMETYPES_TO_EXTENSION;
 static NSMutableDictionary * common.definesARTIFACT_SOURCES;
-static NSMutableDictionary * common.definesVIDEO_SCREEN_CONFIG;
-static NSMutableDictionary * common.definesIMAGE_SCREEN_CONFIG;
+static common.modelScreenConfig * common.definesIMAGE_SCREEN_CONFIG;
+static common.modelScreenConfig * common.definesVIDEO_SCREEN_CONFIG;
 static int32_t common.definesIMAGE_SAVE_JPEG_OPTIONS_QUALITY = 50;
 static BOOL common.definesIMAGE_SAVE_JPEG_OPTIONS_OPTIMIZE = YES;
 static BOOL common.definesIMAGE_SAVE_JPEG_OPTIONS_PROGRESSIVE = YES;
@@ -62,23 +62,7 @@ static int64_t common.definesBANDWIDTH_ALERT_BYTES_PER_MONTH = 1073741824;
   [tmp0 setId:1];
   [tmp0 setName:@"Reddit"];
   [tmp0 setStart_page_uri:@"http://reddit.com/r/%s"];
-  NSMutableSet *tmp1 = [[[NSMutableSet alloc] initWithCapacity:16] autorelease_stub];
-  [tmp1 addObject:@"pics"];
-  [tmp1 addObject:@"comics"];
-  [tmp1 addObject:@"fffffffuuuuuuuuuuuu"];
-  [tmp1 addObject:@"ragecomics"];
-  [tmp1 addObject:@"lolcats"];
-  [tmp1 addObject:@"AdviceAnimals"];
-  [tmp1 addObject:@"Demotivational"];
-  [tmp1 addObject:@"memes"];
-  [tmp1 addObject:@"images"];
-  [tmp1 addObject:@"aww"];
-  [tmp1 addObject:@"cats"];
-  [tmp1 addObject:@"foxes"];
-  [tmp1 addObject:@"dogpictures"];
-  [tmp1 addObject:@"sloths"];
-  [tmp1 addObject:@"gifs"];
-  [tmp1 addObject:@"reactiongifs"];
+  NSMutableSet *tmp1 = [[[NSMutableSet alloc] initWithCapacity:0] autorelease_stub];
 
   [tmp0 setSubdomains:tmp1];
 
@@ -103,22 +87,14 @@ static int64_t common.definesBANDWIDTH_ALERT_BYTES_PER_MONTH = 1073741824;
   [common.definesARTIFACT_SOURCES setObject:tmp3 forKey:[NSNumber numberWithLongLong: 3]];
 
 ;
-  common.definesVIDEO_SCREEN_CONFIG = [[NSMutableDictionary alloc] initWithCapacity:1]; 
-  common.modelScreenConfig * tmp5 = [[[common.modelScreenConfig alloc] init] autorelease_stub];
-  [tmp5 setId:1];
-  [tmp5 setName:@"480"];
-  [tmp5 setWidth:480];
-
-  [common.definesVIDEO_SCREEN_CONFIG setObject:tmp5 forKey:[NSNumber numberWithLongLong: 1]];
+  common.definesIMAGE_SCREEN_CONFIG = [[common.modelScreenConfig alloc] init];
+  [common.definesIMAGE_SCREEN_CONFIG setName:@"800"];
+  [common.definesIMAGE_SCREEN_CONFIG setWidth:800];
 
 ;
-  common.definesIMAGE_SCREEN_CONFIG = [[NSMutableDictionary alloc] initWithCapacity:1]; 
-  common.modelScreenConfig * tmp6 = [[[common.modelScreenConfig alloc] init] autorelease_stub];
-  [tmp6 setId:2];
-  [tmp6 setName:@"800"];
-  [tmp6 setWidth:800];
-
-  [common.definesIMAGE_SCREEN_CONFIG setObject:tmp6 forKey:[NSNumber numberWithLongLong: 2]];
+  common.definesVIDEO_SCREEN_CONFIG = [[common.modelScreenConfig alloc] init];
+  [common.definesVIDEO_SCREEN_CONFIG setName:@"480"];
+  [common.definesVIDEO_SCREEN_CONFIG setWidth:480];
 
 ;
 }
@@ -140,11 +116,11 @@ static int64_t common.definesBANDWIDTH_ALERT_BYTES_PER_MONTH = 1073741824;
 + (NSMutableDictionary *) ARTIFACT_SOURCES{
   return common.definesARTIFACT_SOURCES;
 }
-+ (NSMutableDictionary *) VIDEO_SCREEN_CONFIG{
-  return common.definesVIDEO_SCREEN_CONFIG;
-}
-+ (NSMutableDictionary *) IMAGE_SCREEN_CONFIG{
++ (common.modelScreenConfig *) IMAGE_SCREEN_CONFIG{
   return common.definesIMAGE_SCREEN_CONFIG;
+}
++ (common.modelScreenConfig *) VIDEO_SCREEN_CONFIG{
+  return common.definesVIDEO_SCREEN_CONFIG;
 }
 + (int32_t) IMAGE_SAVE_JPEG_OPTIONS_QUALITY{
   return common.definesIMAGE_SAVE_JPEG_OPTIONS_QUALITY;

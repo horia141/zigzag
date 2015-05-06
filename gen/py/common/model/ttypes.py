@@ -460,7 +460,7 @@ class PhotoDescription(object):
     (2, TType.STRING, 'description', None, None, ), # 2
     (3, TType.STRING, 'source_uri', None, None, ), # 3
     (4, TType.STRING, 'original_uri_path', None, None, ), # 4
-    (5, TType.MAP, 'photo_data', (TType.I64,None,TType.STRUCT,(PhotoData, PhotoData.thrift_spec)), None, ), # 5
+    (5, TType.STRUCT, 'photo_data', (PhotoData, PhotoData.thrift_spec), None, ), # 5
   )
 
   def __init__(self, subtitle=None, description=None, source_uri=None, original_uri_path=None, photo_data=None,):
@@ -500,15 +500,9 @@ class PhotoDescription(object):
         else:
           iprot.skip(ftype)
       elif fid == 5:
-        if ftype == TType.MAP:
-          self.photo_data = {}
-          (_ktype8, _vtype9, _size7 ) = iprot.readMapBegin()
-          for _i11 in xrange(_size7):
-            _key12 = iprot.readI64();
-            _val13 = PhotoData()
-            _val13.read(iprot)
-            self.photo_data[_key12] = _val13
-          iprot.readMapEnd()
+        if ftype == TType.STRUCT:
+          self.photo_data = PhotoData()
+          self.photo_data.read(iprot)
         else:
           iprot.skip(ftype)
       else:
@@ -538,12 +532,8 @@ class PhotoDescription(object):
       oprot.writeString(self.original_uri_path)
       oprot.writeFieldEnd()
     if self.photo_data is not None:
-      oprot.writeFieldBegin('photo_data', TType.MAP, 5)
-      oprot.writeMapBegin(TType.I64, TType.STRUCT, len(self.photo_data))
-      for kiter14,viter15 in self.photo_data.items():
-        oprot.writeI64(kiter14)
-        viter15.write(oprot)
-      oprot.writeMapEnd()
+      oprot.writeFieldBegin('photo_data', TType.STRUCT, 5)
+      self.photo_data.write(oprot)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -553,6 +543,8 @@ class PhotoDescription(object):
       raise TProtocol.TProtocolException(message='Required field source_uri is unset!')
     if self.original_uri_path is None:
       raise TProtocol.TProtocolException(message='Required field original_uri_path is unset!')
+    if self.photo_data is None:
+      raise TProtocol.TProtocolException(message='Required field photo_data is unset!')
     return
 
 
@@ -626,10 +618,10 @@ class ArtifactSource(object):
       elif fid == 4:
         if ftype == TType.SET:
           self.subdomains = set()
-          (_etype19, _size16) = iprot.readSetBegin()
-          for _i20 in xrange(_size16):
-            _elem21 = iprot.readString();
-            self.subdomains.add(_elem21)
+          (_etype10, _size7) = iprot.readSetBegin()
+          for _i11 in xrange(_size7):
+            _elem12 = iprot.readString();
+            self.subdomains.add(_elem12)
           iprot.readSetEnd()
         else:
           iprot.skip(ftype)
@@ -658,8 +650,8 @@ class ArtifactSource(object):
     if self.subdomains is not None:
       oprot.writeFieldBegin('subdomains', TType.SET, 4)
       oprot.writeSetBegin(TType.STRING, len(self.subdomains))
-      for iter22 in self.subdomains:
-        oprot.writeString(iter22)
+      for iter13 in self.subdomains:
+        oprot.writeString(iter13)
       oprot.writeSetEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -697,20 +689,17 @@ class ArtifactSource(object):
 class ScreenConfig(object):
   """
   Attributes:
-   - id
    - name
    - width
   """
 
   thrift_spec = (
     None, # 0
-    (1, TType.I64, 'id', None, None, ), # 1
-    (2, TType.STRING, 'name', None, None, ), # 2
-    (3, TType.I32, 'width', None, None, ), # 3
+    (1, TType.STRING, 'name', None, None, ), # 1
+    (2, TType.I32, 'width', None, None, ), # 2
   )
 
-  def __init__(self, id=None, name=None, width=None,):
-    self.id = id
+  def __init__(self, name=None, width=None,):
     self.name = name
     self.width = width
 
@@ -724,16 +713,11 @@ class ScreenConfig(object):
       if ftype == TType.STOP:
         break
       if fid == 1:
-        if ftype == TType.I64:
-          self.id = iprot.readI64();
-        else:
-          iprot.skip(ftype)
-      elif fid == 2:
         if ftype == TType.STRING:
           self.name = iprot.readString();
         else:
           iprot.skip(ftype)
-      elif fid == 3:
+      elif fid == 2:
         if ftype == TType.I32:
           self.width = iprot.readI32();
         else:
@@ -748,24 +732,18 @@ class ScreenConfig(object):
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('ScreenConfig')
-    if self.id is not None:
-      oprot.writeFieldBegin('id', TType.I64, 1)
-      oprot.writeI64(self.id)
-      oprot.writeFieldEnd()
     if self.name is not None:
-      oprot.writeFieldBegin('name', TType.STRING, 2)
+      oprot.writeFieldBegin('name', TType.STRING, 1)
       oprot.writeString(self.name)
       oprot.writeFieldEnd()
     if self.width is not None:
-      oprot.writeFieldBegin('width', TType.I32, 3)
+      oprot.writeFieldBegin('width', TType.I32, 2)
       oprot.writeI32(self.width)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
   def validate(self):
-    if self.id is None:
-      raise TProtocol.TProtocolException(message='Required field id is unset!')
     if self.name is None:
       raise TProtocol.TProtocolException(message='Required field name is unset!')
     if self.width is None:
@@ -775,7 +753,6 @@ class ScreenConfig(object):
 
   def __hash__(self):
     value = 17
-    value = (value * 31) ^ hash(self.id)
     value = (value * 31) ^ hash(self.name)
     value = (value * 31) ^ hash(self.width)
     return value
@@ -841,11 +818,11 @@ class Artifact(object):
       elif fid == 4:
         if ftype == TType.LIST:
           self.photo_descriptions = []
-          (_etype26, _size23) = iprot.readListBegin()
-          for _i27 in xrange(_size23):
-            _elem28 = PhotoDescription()
-            _elem28.read(iprot)
-            self.photo_descriptions.append(_elem28)
+          (_etype17, _size14) = iprot.readListBegin()
+          for _i18 in xrange(_size14):
+            _elem19 = PhotoDescription()
+            _elem19.read(iprot)
+            self.photo_descriptions.append(_elem19)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -874,8 +851,8 @@ class Artifact(object):
     if self.photo_descriptions is not None:
       oprot.writeFieldBegin('photo_descriptions', TType.LIST, 4)
       oprot.writeListBegin(TType.STRUCT, len(self.photo_descriptions))
-      for iter29 in self.photo_descriptions:
-        iter29.write(oprot)
+      for iter20 in self.photo_descriptions:
+        iter20.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -919,7 +896,8 @@ class Generation(object):
    - datetime_started_ts
    - datetime_ended_ts
    - artifact_sources
-   - screen_configs
+   - image_screen_config
+   - video_screen_config
    - artifacts
   """
 
@@ -929,16 +907,18 @@ class Generation(object):
     (2, TType.I32, 'datetime_started_ts', None, None, ), # 2
     (3, TType.I32, 'datetime_ended_ts', None, None, ), # 3
     (4, TType.MAP, 'artifact_sources', (TType.I64,None,TType.STRUCT,(ArtifactSource, ArtifactSource.thrift_spec)), None, ), # 4
-    (5, TType.MAP, 'screen_configs', (TType.I64,None,TType.STRUCT,(ScreenConfig, ScreenConfig.thrift_spec)), None, ), # 5
-    (6, TType.LIST, 'artifacts', (TType.STRUCT,(Artifact, Artifact.thrift_spec)), None, ), # 6
+    (5, TType.STRUCT, 'image_screen_config', (ScreenConfig, ScreenConfig.thrift_spec), None, ), # 5
+    (6, TType.STRUCT, 'video_screen_config', (ScreenConfig, ScreenConfig.thrift_spec), None, ), # 6
+    (7, TType.LIST, 'artifacts', (TType.STRUCT,(Artifact, Artifact.thrift_spec)), None, ), # 7
   )
 
-  def __init__(self, id=None, datetime_started_ts=None, datetime_ended_ts=None, artifact_sources=None, screen_configs=None, artifacts=None,):
+  def __init__(self, id=None, datetime_started_ts=None, datetime_ended_ts=None, artifact_sources=None, image_screen_config=None, video_screen_config=None, artifacts=None,):
     self.id = id
     self.datetime_started_ts = datetime_started_ts
     self.datetime_ended_ts = datetime_ended_ts
     self.artifact_sources = artifact_sources
-    self.screen_configs = screen_configs
+    self.image_screen_config = image_screen_config
+    self.video_screen_config = video_screen_config
     self.artifacts = artifacts
 
   def read(self, iprot):
@@ -968,35 +948,35 @@ class Generation(object):
       elif fid == 4:
         if ftype == TType.MAP:
           self.artifact_sources = {}
-          (_ktype31, _vtype32, _size30 ) = iprot.readMapBegin()
-          for _i34 in xrange(_size30):
-            _key35 = iprot.readI64();
-            _val36 = ArtifactSource()
-            _val36.read(iprot)
-            self.artifact_sources[_key35] = _val36
+          (_ktype22, _vtype23, _size21 ) = iprot.readMapBegin()
+          for _i25 in xrange(_size21):
+            _key26 = iprot.readI64();
+            _val27 = ArtifactSource()
+            _val27.read(iprot)
+            self.artifact_sources[_key26] = _val27
           iprot.readMapEnd()
         else:
           iprot.skip(ftype)
       elif fid == 5:
-        if ftype == TType.MAP:
-          self.screen_configs = {}
-          (_ktype38, _vtype39, _size37 ) = iprot.readMapBegin()
-          for _i41 in xrange(_size37):
-            _key42 = iprot.readI64();
-            _val43 = ScreenConfig()
-            _val43.read(iprot)
-            self.screen_configs[_key42] = _val43
-          iprot.readMapEnd()
+        if ftype == TType.STRUCT:
+          self.image_screen_config = ScreenConfig()
+          self.image_screen_config.read(iprot)
         else:
           iprot.skip(ftype)
       elif fid == 6:
+        if ftype == TType.STRUCT:
+          self.video_screen_config = ScreenConfig()
+          self.video_screen_config.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 7:
         if ftype == TType.LIST:
           self.artifacts = []
-          (_etype47, _size44) = iprot.readListBegin()
-          for _i48 in xrange(_size44):
-            _elem49 = Artifact()
-            _elem49.read(iprot)
-            self.artifacts.append(_elem49)
+          (_etype31, _size28) = iprot.readListBegin()
+          for _i32 in xrange(_size28):
+            _elem33 = Artifact()
+            _elem33.read(iprot)
+            self.artifacts.append(_elem33)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -1025,24 +1005,24 @@ class Generation(object):
     if self.artifact_sources is not None:
       oprot.writeFieldBegin('artifact_sources', TType.MAP, 4)
       oprot.writeMapBegin(TType.I64, TType.STRUCT, len(self.artifact_sources))
-      for kiter50,viter51 in self.artifact_sources.items():
-        oprot.writeI64(kiter50)
-        viter51.write(oprot)
+      for kiter34,viter35 in self.artifact_sources.items():
+        oprot.writeI64(kiter34)
+        viter35.write(oprot)
       oprot.writeMapEnd()
       oprot.writeFieldEnd()
-    if self.screen_configs is not None:
-      oprot.writeFieldBegin('screen_configs', TType.MAP, 5)
-      oprot.writeMapBegin(TType.I64, TType.STRUCT, len(self.screen_configs))
-      for kiter52,viter53 in self.screen_configs.items():
-        oprot.writeI64(kiter52)
-        viter53.write(oprot)
-      oprot.writeMapEnd()
+    if self.image_screen_config is not None:
+      oprot.writeFieldBegin('image_screen_config', TType.STRUCT, 5)
+      self.image_screen_config.write(oprot)
+      oprot.writeFieldEnd()
+    if self.video_screen_config is not None:
+      oprot.writeFieldBegin('video_screen_config', TType.STRUCT, 6)
+      self.video_screen_config.write(oprot)
       oprot.writeFieldEnd()
     if self.artifacts is not None:
-      oprot.writeFieldBegin('artifacts', TType.LIST, 6)
+      oprot.writeFieldBegin('artifacts', TType.LIST, 7)
       oprot.writeListBegin(TType.STRUCT, len(self.artifacts))
-      for iter54 in self.artifacts:
-        iter54.write(oprot)
+      for iter36 in self.artifacts:
+        iter36.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -1057,8 +1037,10 @@ class Generation(object):
       raise TProtocol.TProtocolException(message='Required field datetime_ended_ts is unset!')
     if self.artifact_sources is None:
       raise TProtocol.TProtocolException(message='Required field artifact_sources is unset!')
-    if self.screen_configs is None:
-      raise TProtocol.TProtocolException(message='Required field screen_configs is unset!')
+    if self.image_screen_config is None:
+      raise TProtocol.TProtocolException(message='Required field image_screen_config is unset!')
+    if self.video_screen_config is None:
+      raise TProtocol.TProtocolException(message='Required field video_screen_config is unset!')
     return
 
 
@@ -1068,7 +1050,8 @@ class Generation(object):
     value = (value * 31) ^ hash(self.datetime_started_ts)
     value = (value * 31) ^ hash(self.datetime_ended_ts)
     value = (value * 31) ^ hash(self.artifact_sources)
-    value = (value * 31) ^ hash(self.screen_configs)
+    value = (value * 31) ^ hash(self.image_screen_config)
+    value = (value * 31) ^ hash(self.video_screen_config)
     value = (value * 31) ^ hash(self.artifacts)
     return value
 

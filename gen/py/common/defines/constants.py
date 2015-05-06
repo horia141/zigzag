@@ -33,22 +33,6 @@ ARTIFACT_SOURCES = {
     "name" : "Reddit",
     "start_page_uri" : "http://reddit.com/r/%s",
     "subdomains" : set([
-      "pics",
-      "comics",
-      "fffffffuuuuuuuuuuuu",
-      "ragecomics",
-      "lolcats",
-      "AdviceAnimals",
-      "Demotivational",
-      "memes",
-      "images",
-      "aww",
-      "cats",
-      "foxes",
-      "dogpictures",
-      "sloths",
-      "gifs",
-      "reactiongifs",
     ]),
   }),
   2 : common.model.ttypes.ArtifactSource(**{
@@ -67,20 +51,14 @@ ARTIFACT_SOURCES = {
     ]),
   }),
 }
-VIDEO_SCREEN_CONFIG = {
-  1 : common.model.ttypes.ScreenConfig(**{
-    "id" : 1,
-    "name" : "480",
-    "width" : 480,
-  }),
-}
-IMAGE_SCREEN_CONFIG = {
-  2 : common.model.ttypes.ScreenConfig(**{
-    "id" : 2,
-    "name" : "800",
-    "width" : 800,
-  }),
-}
+IMAGE_SCREEN_CONFIG = common.model.ttypes.ScreenConfig(**{
+  "name" : "800",
+  "width" : 800,
+})
+VIDEO_SCREEN_CONFIG = common.model.ttypes.ScreenConfig(**{
+  "name" : "480",
+  "width" : 480,
+})
 IMAGE_SAVE_JPEG_OPTIONS_QUALITY = 50
 IMAGE_SAVE_JPEG_OPTIONS_OPTIMIZE = True
 IMAGE_SAVE_JPEG_OPTIONS_PROGRESSIVE = True

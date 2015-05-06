@@ -964,7 +964,7 @@
   return self;
 }
 
-- (id) initWithSubtitle: (NSString *) subtitle description: (NSString *) description source_uri: (NSString *) source_uri original_uri_path: (NSString *) original_uri_path photo_data: (NSMutableDictionary *) photo_data
+- (id) initWithSubtitle: (NSString *) subtitle description: (NSString *) description source_uri: (NSString *) source_uri original_uri_path: (NSString *) original_uri_path photo_data: (common.modelPhotoData *) photo_data
 {
   self = [super init];
   __subtitle = [subtitle retain_stub];
@@ -1129,11 +1129,11 @@
   __original_uri_path_isset = NO;
 }
 
-- (NSMutableDictionary *) photo_data {
+- (common.modelPhotoData *) photo_data {
   return [[__photo_data retain_stub] autorelease_stub];
 }
 
-- (void) setPhoto_data: (NSMutableDictionary *) photo_data {
+- (void) setPhoto_data: (common.modelPhotoData *) photo_data {
   [photo_data retain_stub];
   [__photo_data release_stub];
   __photo_data = photo_data;
@@ -1198,20 +1198,9 @@
         }
         break;
       case 5:
-        if (fieldType == TType_MAP) {
-          int _size5;
-          [inProtocol readMapBeginReturningKeyType: NULL valueType: NULL size: &_size5];
-          NSMutableDictionary * fieldValue = [[NSMutableDictionary alloc] initWithCapacity: _size5];
-          int _i6;
-          for (_i6 = 0; _i6 < _size5; ++_i6)
-          {
-            int64_t _key7 = [inProtocol readI64];
-            common.modelPhotoData *_val8 = [[common.modelPhotoData alloc] init];
-            [_val8 read: inProtocol];
-            [fieldValue setObject: _val8 forKey: [NSNumber numberWithLongLong: _key7]];
-            [_val8 release_stub];
-          }
-          [inProtocol readMapEnd];
+        if (fieldType == TType_STRUCT) {
+          common.modelPhotoData *fieldValue = [[common.modelPhotoData alloc] init];
+          [fieldValue read: inProtocol];
           [self setPhoto_data: fieldValue];
           [fieldValue release_stub];
         } else { 
@@ -1259,18 +1248,8 @@
   }
   if (__photo_data_isset) {
     if (__photo_data != nil) {
-      [outProtocol writeFieldBeginWithName: @"photo_data" type: TType_MAP fieldID: 5];
-      {
-        [outProtocol writeMapBeginWithKeyType: TType_I64 valueType: TType_STRUCT size: [__photo_data count]];
-        NSEnumerator * _iter9 = [__photo_data keyEnumerator];
-        id key10;
-        while ((key10 = [_iter9 nextObject]))
-        {
-          [outProtocol writeI64: [key10 longLongValue]];
-          [[__photo_data objectForKey: key10] write: outProtocol];
-        }
-        [outProtocol writeMapEnd];
-      }
+      [outProtocol writeFieldBeginWithName: @"photo_data" type: TType_STRUCT fieldID: 5];
+      [__photo_data write: outProtocol];
       [outProtocol writeFieldEnd];
     }
   }
@@ -1287,6 +1266,10 @@
   if (!__original_uri_path_isset) {
     @throw [TProtocolException exceptionWithName: @"TProtocolException"
                                reason: @"Required field 'original_uri_path' is not set."];
+  }
+  if (!__photo_data_isset) {
+    @throw [TProtocolException exceptionWithName: @"TProtocolException"
+                               reason: @"Required field 'photo_data' is not set."];
   }
 }
 
@@ -1507,14 +1490,14 @@
         break;
       case 4:
         if (fieldType == TType_SET) {
-          int _size11;
-          [inProtocol readSetBeginReturningElementType: NULL size: &_size11];
-          NSMutableSet * fieldValue = [[NSMutableSet alloc] initWithCapacity: _size11];
-          int _i12;
-          for (_i12 = 0; _i12 < _size11; ++_i12)
+          int _size5;
+          [inProtocol readSetBeginReturningElementType: NULL size: &_size5];
+          NSMutableSet * fieldValue = [[NSMutableSet alloc] initWithCapacity: _size5];
+          int _i6;
+          for (_i6 = 0; _i6 < _size5; ++_i6)
           {
-            NSString * _elem13 = [inProtocol readString];
-            [fieldValue addObject: _elem13];
+            NSString * _elem7 = [inProtocol readString];
+            [fieldValue addObject: _elem7];
           }
           [inProtocol readSetEnd];
           [self setSubdomains: fieldValue];
@@ -1558,11 +1541,11 @@
       [outProtocol writeFieldBeginWithName: @"subdomains" type: TType_SET fieldID: 4];
       {
         [outProtocol writeSetBeginWithElementType: TType_STRING size: [__subdomains count]];
-        NSEnumerator * _iter14 = [__subdomains objectEnumerator];
-        id obj15;
-        while ((obj15 = [_iter14 nextObject]))
+        NSEnumerator * _iter8 = [__subdomains objectEnumerator];
+        id obj9;
+        while ((obj9 = [_iter8 nextObject]))
         {
-          [outProtocol writeString: obj15];
+          [outProtocol writeString: obj9];
         }
         [outProtocol writeSetEnd];
       }
@@ -1615,11 +1598,9 @@
   return self;
 }
 
-- (id) initWithId: (common.modelEntityId) id name: (NSString *) name width: (int32_t) width
+- (id) initWithName: (NSString *) name width: (int32_t) width
 {
   self = [super init];
-  __id = id;
-  __id_isset = YES;
   __name = [name retain_stub];
   __name_isset = YES;
   __width = width;
@@ -1630,11 +1611,6 @@
 - (id) initWithCoder: (NSCoder *) decoder
 {
   self = [super init];
-  if ([decoder containsValueForKey: @"id"])
-  {
-    __id = [decoder decodeInt64ForKey: @"id"];
-    __id_isset = YES;
-  }
   if ([decoder containsValueForKey: @"name"])
   {
     __name = [[decoder decodeObjectForKey: @"name"] retain_stub];
@@ -1650,10 +1626,6 @@
 
 - (void) encodeWithCoder: (NSCoder *) encoder
 {
-  if (__id_isset)
-  {
-    [encoder encodeInt64: __id forKey: @"id"];
-  }
   if (__name_isset)
   {
     [encoder encodeObject: __name forKey: @"name"];
@@ -1668,23 +1640,6 @@
 {
   [__name release_stub];
   [super dealloc_stub];
-}
-
-- (int64_t) id {
-  return __id;
-}
-
-- (void) setId: (int64_t) id {
-  __id = id;
-  __id_isset = YES;
-}
-
-- (BOOL) idIsSet {
-  return __id_isset;
-}
-
-- (void) unsetId {
-  __id_isset = NO;
 }
 
 - (NSString *) name {
@@ -1741,14 +1696,6 @@
     switch (fieldID)
     {
       case 1:
-        if (fieldType == TType_I64) {
-          int64_t fieldValue = [inProtocol readI64];
-          [self setId: fieldValue];
-        } else { 
-          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
-        }
-        break;
-      case 2:
         if (fieldType == TType_STRING) {
           NSString * fieldValue = [inProtocol readString];
           [self setName: fieldValue];
@@ -1756,7 +1703,7 @@
           [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
         }
         break;
-      case 3:
+      case 2:
         if (fieldType == TType_I32) {
           int32_t fieldValue = [inProtocol readI32];
           [self setWidth: fieldValue];
@@ -1775,20 +1722,15 @@
 
 - (void) write: (id <TProtocol>) outProtocol {
   [outProtocol writeStructBeginWithName: @"ScreenConfig"];
-  if (__id_isset) {
-    [outProtocol writeFieldBeginWithName: @"id" type: TType_I64 fieldID: 1];
-    [outProtocol writeI64: __id];
-    [outProtocol writeFieldEnd];
-  }
   if (__name_isset) {
     if (__name != nil) {
-      [outProtocol writeFieldBeginWithName: @"name" type: TType_STRING fieldID: 2];
+      [outProtocol writeFieldBeginWithName: @"name" type: TType_STRING fieldID: 1];
       [outProtocol writeString: __name];
       [outProtocol writeFieldEnd];
     }
   }
   if (__width_isset) {
-    [outProtocol writeFieldBeginWithName: @"width" type: TType_I32 fieldID: 3];
+    [outProtocol writeFieldBeginWithName: @"width" type: TType_I32 fieldID: 2];
     [outProtocol writeI32: __width];
     [outProtocol writeFieldEnd];
   }
@@ -1798,10 +1740,6 @@
 
 - (void) validate {
   // check for required fields
-  if (!__id_isset) {
-    @throw [TProtocolException exceptionWithName: @"TProtocolException"
-                               reason: @"Required field 'id' is not set."];
-  }
   if (!__name_isset) {
     @throw [TProtocolException exceptionWithName: @"TProtocolException"
                                reason: @"Required field 'name' is not set."];
@@ -1814,9 +1752,7 @@
 
 - (NSString *) description {
   NSMutableString * ms = [NSMutableString stringWithString: @"common.modelScreenConfig("];
-  [ms appendString: @"id:"];
-  [ms appendFormat: @"%qi", __id];
-  [ms appendString: @",name:"];
+  [ms appendString: @"name:"];
   [ms appendFormat: @"\"%@\"", __name];
   [ms appendString: @",width:"];
   [ms appendFormat: @"%i", __width];
@@ -2025,16 +1961,16 @@
         break;
       case 4:
         if (fieldType == TType_LIST) {
-          int _size16;
-          [inProtocol readListBeginReturningElementType: NULL size: &_size16];
-          NSMutableArray * fieldValue = [[NSMutableArray alloc] initWithCapacity: _size16];
-          int _i17;
-          for (_i17 = 0; _i17 < _size16; ++_i17)
+          int _size10;
+          [inProtocol readListBeginReturningElementType: NULL size: &_size10];
+          NSMutableArray * fieldValue = [[NSMutableArray alloc] initWithCapacity: _size10];
+          int _i11;
+          for (_i11 = 0; _i11 < _size10; ++_i11)
           {
-            common.modelPhotoDescription *_elem18 = [[common.modelPhotoDescription alloc] init];
-            [_elem18 read: inProtocol];
-            [fieldValue addObject: _elem18];
-            [_elem18 release_stub];
+            common.modelPhotoDescription *_elem12 = [[common.modelPhotoDescription alloc] init];
+            [_elem12 read: inProtocol];
+            [fieldValue addObject: _elem12];
+            [_elem12 release_stub];
           }
           [inProtocol readListEnd];
           [self setPhoto_descriptions: fieldValue];
@@ -2078,10 +2014,10 @@
       [outProtocol writeFieldBeginWithName: @"photo_descriptions" type: TType_LIST fieldID: 4];
       {
         [outProtocol writeListBeginWithElementType: TType_STRUCT size: [__photo_descriptions count]];
-        int idx20;
-        for (idx20 = 0; idx20 < [__photo_descriptions count]; idx20++)
+        int idx14;
+        for (idx14 = 0; idx14 < [__photo_descriptions count]; idx14++)
         {
-          [[__photo_descriptions objectAtIndex: idx20] write: outProtocol];
+          [[__photo_descriptions objectAtIndex: idx14] write: outProtocol];
         }
         [outProtocol writeListEnd];
       }
@@ -2138,7 +2074,7 @@
   return self;
 }
 
-- (id) initWithId: (common.modelEntityId) id datetime_started_ts: (int32_t) datetime_started_ts datetime_ended_ts: (int32_t) datetime_ended_ts artifact_sources: (NSMutableDictionary *) artifact_sources screen_configs: (NSMutableDictionary *) screen_configs artifacts: (NSMutableArray *) artifacts
+- (id) initWithId: (common.modelEntityId) id datetime_started_ts: (int32_t) datetime_started_ts datetime_ended_ts: (int32_t) datetime_ended_ts artifact_sources: (NSMutableDictionary *) artifact_sources image_screen_config: (common.modelScreenConfig *) image_screen_config video_screen_config: (common.modelScreenConfig *) video_screen_config artifacts: (NSMutableArray *) artifacts
 {
   self = [super init];
   __id = id;
@@ -2149,8 +2085,10 @@
   __datetime_ended_ts_isset = YES;
   __artifact_sources = [artifact_sources retain_stub];
   __artifact_sources_isset = YES;
-  __screen_configs = [screen_configs retain_stub];
-  __screen_configs_isset = YES;
+  __image_screen_config = [image_screen_config retain_stub];
+  __image_screen_config_isset = YES;
+  __video_screen_config = [video_screen_config retain_stub];
+  __video_screen_config_isset = YES;
   __artifacts = [artifacts retain_stub];
   __artifacts_isset = YES;
   return self;
@@ -2179,10 +2117,15 @@
     __artifact_sources = [[decoder decodeObjectForKey: @"artifact_sources"] retain_stub];
     __artifact_sources_isset = YES;
   }
-  if ([decoder containsValueForKey: @"screen_configs"])
+  if ([decoder containsValueForKey: @"image_screen_config"])
   {
-    __screen_configs = [[decoder decodeObjectForKey: @"screen_configs"] retain_stub];
-    __screen_configs_isset = YES;
+    __image_screen_config = [[decoder decodeObjectForKey: @"image_screen_config"] retain_stub];
+    __image_screen_config_isset = YES;
+  }
+  if ([decoder containsValueForKey: @"video_screen_config"])
+  {
+    __video_screen_config = [[decoder decodeObjectForKey: @"video_screen_config"] retain_stub];
+    __video_screen_config_isset = YES;
   }
   if ([decoder containsValueForKey: @"artifacts"])
   {
@@ -2210,9 +2153,13 @@
   {
     [encoder encodeObject: __artifact_sources forKey: @"artifact_sources"];
   }
-  if (__screen_configs_isset)
+  if (__image_screen_config_isset)
   {
-    [encoder encodeObject: __screen_configs forKey: @"screen_configs"];
+    [encoder encodeObject: __image_screen_config forKey: @"image_screen_config"];
+  }
+  if (__video_screen_config_isset)
+  {
+    [encoder encodeObject: __video_screen_config forKey: @"video_screen_config"];
   }
   if (__artifacts_isset)
   {
@@ -2223,7 +2170,8 @@
 - (void) dealloc
 {
   [__artifact_sources release_stub];
-  [__screen_configs release_stub];
+  [__image_screen_config release_stub];
+  [__video_screen_config release_stub];
   [__artifacts release_stub];
   [super dealloc_stub];
 }
@@ -2300,25 +2248,46 @@
   __artifact_sources_isset = NO;
 }
 
-- (NSMutableDictionary *) screen_configs {
-  return [[__screen_configs retain_stub] autorelease_stub];
+- (common.modelScreenConfig *) image_screen_config {
+  return [[__image_screen_config retain_stub] autorelease_stub];
 }
 
-- (void) setScreen_configs: (NSMutableDictionary *) screen_configs {
-  [screen_configs retain_stub];
-  [__screen_configs release_stub];
-  __screen_configs = screen_configs;
-  __screen_configs_isset = YES;
+- (void) setImage_screen_config: (common.modelScreenConfig *) image_screen_config {
+  [image_screen_config retain_stub];
+  [__image_screen_config release_stub];
+  __image_screen_config = image_screen_config;
+  __image_screen_config_isset = YES;
 }
 
-- (BOOL) screen_configsIsSet {
-  return __screen_configs_isset;
+- (BOOL) image_screen_configIsSet {
+  return __image_screen_config_isset;
 }
 
-- (void) unsetScreen_configs {
-  [__screen_configs release_stub];
-  __screen_configs = nil;
-  __screen_configs_isset = NO;
+- (void) unsetImage_screen_config {
+  [__image_screen_config release_stub];
+  __image_screen_config = nil;
+  __image_screen_config_isset = NO;
+}
+
+- (common.modelScreenConfig *) video_screen_config {
+  return [[__video_screen_config retain_stub] autorelease_stub];
+}
+
+- (void) setVideo_screen_config: (common.modelScreenConfig *) video_screen_config {
+  [video_screen_config retain_stub];
+  [__video_screen_config release_stub];
+  __video_screen_config = video_screen_config;
+  __video_screen_config_isset = YES;
+}
+
+- (BOOL) video_screen_configIsSet {
+  return __video_screen_config_isset;
+}
+
+- (void) unsetVideo_screen_config {
+  [__video_screen_config release_stub];
+  __video_screen_config = nil;
+  __video_screen_config_isset = NO;
 }
 
 - (NSMutableArray *) artifacts {
@@ -2383,17 +2352,17 @@
         break;
       case 4:
         if (fieldType == TType_MAP) {
-          int _size21;
-          [inProtocol readMapBeginReturningKeyType: NULL valueType: NULL size: &_size21];
-          NSMutableDictionary * fieldValue = [[NSMutableDictionary alloc] initWithCapacity: _size21];
-          int _i22;
-          for (_i22 = 0; _i22 < _size21; ++_i22)
+          int _size15;
+          [inProtocol readMapBeginReturningKeyType: NULL valueType: NULL size: &_size15];
+          NSMutableDictionary * fieldValue = [[NSMutableDictionary alloc] initWithCapacity: _size15];
+          int _i16;
+          for (_i16 = 0; _i16 < _size15; ++_i16)
           {
-            int64_t _key23 = [inProtocol readI64];
-            common.modelArtifactSource *_val24 = [[common.modelArtifactSource alloc] init];
-            [_val24 read: inProtocol];
-            [fieldValue setObject: _val24 forKey: [NSNumber numberWithLongLong: _key23]];
-            [_val24 release_stub];
+            int64_t _key17 = [inProtocol readI64];
+            common.modelArtifactSource *_val18 = [[common.modelArtifactSource alloc] init];
+            [_val18 read: inProtocol];
+            [fieldValue setObject: _val18 forKey: [NSNumber numberWithLongLong: _key17]];
+            [_val18 release_stub];
           }
           [inProtocol readMapEnd];
           [self setArtifact_sources: fieldValue];
@@ -2403,38 +2372,37 @@
         }
         break;
       case 5:
-        if (fieldType == TType_MAP) {
-          int _size25;
-          [inProtocol readMapBeginReturningKeyType: NULL valueType: NULL size: &_size25];
-          NSMutableDictionary * fieldValue = [[NSMutableDictionary alloc] initWithCapacity: _size25];
-          int _i26;
-          for (_i26 = 0; _i26 < _size25; ++_i26)
-          {
-            int64_t _key27 = [inProtocol readI64];
-            common.modelScreenConfig *_val28 = [[common.modelScreenConfig alloc] init];
-            [_val28 read: inProtocol];
-            [fieldValue setObject: _val28 forKey: [NSNumber numberWithLongLong: _key27]];
-            [_val28 release_stub];
-          }
-          [inProtocol readMapEnd];
-          [self setScreen_configs: fieldValue];
+        if (fieldType == TType_STRUCT) {
+          common.modelScreenConfig *fieldValue = [[common.modelScreenConfig alloc] init];
+          [fieldValue read: inProtocol];
+          [self setImage_screen_config: fieldValue];
           [fieldValue release_stub];
         } else { 
           [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
         }
         break;
       case 6:
+        if (fieldType == TType_STRUCT) {
+          common.modelScreenConfig *fieldValue = [[common.modelScreenConfig alloc] init];
+          [fieldValue read: inProtocol];
+          [self setVideo_screen_config: fieldValue];
+          [fieldValue release_stub];
+        } else { 
+          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
+        }
+        break;
+      case 7:
         if (fieldType == TType_LIST) {
-          int _size29;
-          [inProtocol readListBeginReturningElementType: NULL size: &_size29];
-          NSMutableArray * fieldValue = [[NSMutableArray alloc] initWithCapacity: _size29];
-          int _i30;
-          for (_i30 = 0; _i30 < _size29; ++_i30)
+          int _size19;
+          [inProtocol readListBeginReturningElementType: NULL size: &_size19];
+          NSMutableArray * fieldValue = [[NSMutableArray alloc] initWithCapacity: _size19];
+          int _i20;
+          for (_i20 = 0; _i20 < _size19; ++_i20)
           {
-            common.modelArtifact *_elem31 = [[common.modelArtifact alloc] init];
-            [_elem31 read: inProtocol];
-            [fieldValue addObject: _elem31];
-            [_elem31 release_stub];
+            common.modelArtifact *_elem21 = [[common.modelArtifact alloc] init];
+            [_elem21 read: inProtocol];
+            [fieldValue addObject: _elem21];
+            [_elem21 release_stub];
           }
           [inProtocol readListEnd];
           [self setArtifacts: fieldValue];
@@ -2474,44 +2442,41 @@
       [outProtocol writeFieldBeginWithName: @"artifact_sources" type: TType_MAP fieldID: 4];
       {
         [outProtocol writeMapBeginWithKeyType: TType_I64 valueType: TType_STRUCT size: [__artifact_sources count]];
-        NSEnumerator * _iter32 = [__artifact_sources keyEnumerator];
-        id key33;
-        while ((key33 = [_iter32 nextObject]))
+        NSEnumerator * _iter22 = [__artifact_sources keyEnumerator];
+        id key23;
+        while ((key23 = [_iter22 nextObject]))
         {
-          [outProtocol writeI64: [key33 longLongValue]];
-          [[__artifact_sources objectForKey: key33] write: outProtocol];
+          [outProtocol writeI64: [key23 longLongValue]];
+          [[__artifact_sources objectForKey: key23] write: outProtocol];
         }
         [outProtocol writeMapEnd];
       }
       [outProtocol writeFieldEnd];
     }
   }
-  if (__screen_configs_isset) {
-    if (__screen_configs != nil) {
-      [outProtocol writeFieldBeginWithName: @"screen_configs" type: TType_MAP fieldID: 5];
-      {
-        [outProtocol writeMapBeginWithKeyType: TType_I64 valueType: TType_STRUCT size: [__screen_configs count]];
-        NSEnumerator * _iter34 = [__screen_configs keyEnumerator];
-        id key35;
-        while ((key35 = [_iter34 nextObject]))
-        {
-          [outProtocol writeI64: [key35 longLongValue]];
-          [[__screen_configs objectForKey: key35] write: outProtocol];
-        }
-        [outProtocol writeMapEnd];
-      }
+  if (__image_screen_config_isset) {
+    if (__image_screen_config != nil) {
+      [outProtocol writeFieldBeginWithName: @"image_screen_config" type: TType_STRUCT fieldID: 5];
+      [__image_screen_config write: outProtocol];
+      [outProtocol writeFieldEnd];
+    }
+  }
+  if (__video_screen_config_isset) {
+    if (__video_screen_config != nil) {
+      [outProtocol writeFieldBeginWithName: @"video_screen_config" type: TType_STRUCT fieldID: 6];
+      [__video_screen_config write: outProtocol];
       [outProtocol writeFieldEnd];
     }
   }
   if (__artifacts_isset) {
     if (__artifacts != nil) {
-      [outProtocol writeFieldBeginWithName: @"artifacts" type: TType_LIST fieldID: 6];
+      [outProtocol writeFieldBeginWithName: @"artifacts" type: TType_LIST fieldID: 7];
       {
         [outProtocol writeListBeginWithElementType: TType_STRUCT size: [__artifacts count]];
-        int idx37;
-        for (idx37 = 0; idx37 < [__artifacts count]; idx37++)
+        int idx25;
+        for (idx25 = 0; idx25 < [__artifacts count]; idx25++)
         {
-          [[__artifacts objectAtIndex: idx37] write: outProtocol];
+          [[__artifacts objectAtIndex: idx25] write: outProtocol];
         }
         [outProtocol writeListEnd];
       }
@@ -2540,9 +2505,13 @@
     @throw [TProtocolException exceptionWithName: @"TProtocolException"
                                reason: @"Required field 'artifact_sources' is not set."];
   }
-  if (!__screen_configs_isset) {
+  if (!__image_screen_config_isset) {
     @throw [TProtocolException exceptionWithName: @"TProtocolException"
-                               reason: @"Required field 'screen_configs' is not set."];
+                               reason: @"Required field 'image_screen_config' is not set."];
+  }
+  if (!__video_screen_config_isset) {
+    @throw [TProtocolException exceptionWithName: @"TProtocolException"
+                               reason: @"Required field 'video_screen_config' is not set."];
   }
 }
 
@@ -2556,8 +2525,10 @@
   [ms appendFormat: @"%i", __datetime_ended_ts];
   [ms appendString: @",artifact_sources:"];
   [ms appendFormat: @"%@", __artifact_sources];
-  [ms appendString: @",screen_configs:"];
-  [ms appendFormat: @"%@", __screen_configs];
+  [ms appendString: @",image_screen_config:"];
+  [ms appendFormat: @"%@", __image_screen_config];
+  [ms appendString: @",video_screen_config:"];
+  [ms appendFormat: @"%@", __video_screen_config];
   [ms appendString: @",artifacts:"];
   [ms appendFormat: @"%@", __artifacts];
   [ms appendString: @")"];

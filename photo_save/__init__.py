@@ -62,20 +62,18 @@ class Service(comlink.Service):
 
         logging.info('Decoding image')
         photo = Image.open(StringIO.StringIO(photo_raw_data))
-        photo_data = {}
 
         if self._is_video(photo):
             logging.info('Detected animation')
-            for (screen_config_key, screen_config) in defines.VIDEO_SCREEN_CONFIG.iteritems():
-                photo_data[screen_config_key] = self._video_decoders[photo_raw_mime_type].decode(
-                    screen_config.name, screen_config, photo, storage_path,
-                    lambda mime_type: self._unique_photo_path(mime_type))
+            screen_config = defines.VIDEO_SCREEN_CONFIG
+            photo_data = self._video_decoders[photo_raw_mime_type].decode(
+                defines.VIDEO_SCREEN_CONFIG.name, defines.VIDEO_SCREEN_CONFIG, photo,
+                storage_path, lambda mime_type: self._unique_photo_path(mime_type))
         else:
             logging.info('Detected regular')
-            for (screen_config_key, screen_config) in defines.IMAGE_SCREEN_CONFIG.iteritems():
-                photo_data[screen_config_key] = self._image_decoders[photo_raw_mime_type].decode(
-                    screen_config.name, screen_config, photo, storage_path,
-                    lambda mime_type: self._unique_photo_path(mime_type))
+            photo_data = self._image_decoders[photo_raw_mime_type].decode(
+                defines.IMAGE_SCREEN_CONFIG.name, defines.IMAGE_SCREEN_CONFIG, photo,
+                storage_path, lambda mime_type: self._unique_photo_path(mime_type))
 
         logging.info('Done')
         return model.PhotoDescription(subtitle.encode('utf-8'), description.encode('utf-8'),

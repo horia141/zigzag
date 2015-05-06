@@ -108,15 +108,14 @@ def main():
 
     datetime_started_ts = long(time.mktime(right_now_1.timetuple()))
     datetime_ended_ts = long(time.mktime(right_now_2.timetuple()))
-    screen_configs = defines.IMAGE_SCREEN_CONFIG.copy()
-    screen_configs.update(defines.VIDEO_SCREEN_CONFIG)
 
     for idx in range(0, len(artifacts), defines.MAX_ARTIFACTS_PER_GENERATION):
         logging.info('Saving artifacts %d to %d' % (idx, idx+defines.MAX_ARTIFACTS_PER_GENERATION))
         artifacts_chunk = artifacts[idx:idx+defines.MAX_ARTIFACTS_PER_GENERATION]
 
         generation = model.Generation(-1, datetime_started_ts, datetime_ended_ts,
-            defines.ARTIFACT_SOURCES, screen_configs, artifacts_chunk)
+            defines.ARTIFACT_SOURCES, defines.IMAGE_SCREEN_CONFIG,
+            defines.VIDEO_SCREEN_CONFIG, artifacts_chunk)
         # Datastore operations might need to be wrapped in a transaction, so we should be certain that
         # both the generation and all the artifacts could properly be marked as added. If an error 
         # occurs in the latter stage, we might end up with duplicate artifacts, because not all

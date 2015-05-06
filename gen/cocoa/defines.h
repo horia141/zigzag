@@ -25,8 +25,8 @@
 + (NSMutableSet *) PHOTO_MIMETYPES;
 + (NSMutableDictionary *) PHOTO_MIMETYPES_TO_EXTENSION;
 + (NSMutableDictionary *) ARTIFACT_SOURCES;
-+ (NSMutableDictionary *) VIDEO_SCREEN_CONFIG;
-+ (NSMutableDictionary *) IMAGE_SCREEN_CONFIG;
++ (common.modelScreenConfig *) IMAGE_SCREEN_CONFIG;
++ (common.modelScreenConfig *) VIDEO_SCREEN_CONFIG;
 + (int32_t) IMAGE_SAVE_JPEG_OPTIONS_QUALITY;
 + (BOOL) IMAGE_SAVE_JPEG_OPTIONS_OPTIMIZE;
 + (BOOL) IMAGE_SAVE_JPEG_OPTIONS_PROGRESSIVE;
