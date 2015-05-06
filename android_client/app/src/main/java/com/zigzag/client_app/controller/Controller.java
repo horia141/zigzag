@@ -225,7 +225,7 @@ public final class Controller {
         for (int ii = 0; ii < artifact.getPhoto_descriptionsSize(); ii++) {
             final int imageIdx = ii;
             final PhotoDescription photoDescription = artifact.getPhoto_descriptions().get(ii);
-            final PhotoData photoData = getBestMatchingPhotoData(photoDescription);
+            final PhotoData photoData = photoDescription.getPhoto_data();
             List<String> uriPathsToFetch = getUriPathsToFetch(photoData);
 
             for (int jj = 0; jj < uriPathsToFetch.size(); jj++) {
@@ -311,18 +311,6 @@ public final class Controller {
 
     private static String translateVideoPath(String urlPath) {
         return String.format(API_RES_URL_PATTERN, urlPath);
-    }
-
-    public static PhotoData getBestMatchingPhotoData(PhotoDescription photoDescription) {
-        if (photoDescription.getPhoto_data().containsKey(2L)) {
-            // From common/defines.thrift, 2 is the ID of the "800" screen config.
-            return photoDescription.getPhoto_data().get(2L);
-        } else if (photoDescription.getPhoto_data().containsKey(1L)) {
-            // From common/defines.thrift, 1 is the ID of the "480" screen config.
-            return photoDescription.getPhoto_data().get(1L);
-        } else {
-            throw new RuntimeException("Cannot find good photo data");
-        }
     }
 
     private static List<String> getUriPathsToFetch(PhotoData photoData) {

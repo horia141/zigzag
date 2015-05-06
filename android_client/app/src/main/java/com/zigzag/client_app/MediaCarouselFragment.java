@@ -262,7 +262,7 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
         // to contain only nulls and the associated adapter and associate them with the image
         // list view.
         for (PhotoDescription photoDescription : artifact.getPhoto_descriptions()) {
-            PhotoData photoData = Controller.getInstance(getActivity()).getBestMatchingPhotoData(photoDescription);
+            PhotoData photoData = photoDescription.getPhoto_data();
             ImageInfo info = new ImageInfo(photoDescription, photoData);
 
             if (photoData.isSetToo_big_photo_data()) {
