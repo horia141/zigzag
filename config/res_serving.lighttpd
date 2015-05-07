@@ -4,7 +4,7 @@ server.modules = (
   "mod_expire"
 )
 
-server.document-root = "./var/photos/"
+server.document-root = "./var/photos/processed"
 
 server.port = 9001
 

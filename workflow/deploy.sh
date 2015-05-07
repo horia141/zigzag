@@ -42,6 +42,8 @@ EOF
 # Create a place to store photos.
 ssh $USER@$HOST <<EOF
   mkdir -p zigzag/var/photos
+  mkdir -p zigzag/var/photos/original
+  mkdir -p zigzag/var/photos/processed
 EOF
 
 # Build new tables and stuff.
