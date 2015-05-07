@@ -69,7 +69,10 @@ class Analyzer(analyzers.Analyzer):
         logging.info('Analyzing "%s"', artifact_page_url)
 
         try:
-            (page_raw_content, page_mime_type) = self._fetcher.fetch_url(artifact_page_url)
+            res = self._fetcher.fetch_url(artifact_page_url)
+            if res is None:
+                raise analyzers.Error('Unknown error')
+            (page_raw_content, page_mime_type) = res
             if page_mime_type not in defines.WEBPAGE_MIMETYPES:
                 raise analyzers.Error('Page is of wrong MIME type')
         except (urllib2.URLError, ValueError) as e:
