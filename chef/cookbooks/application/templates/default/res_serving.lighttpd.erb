@@ -1,0 +1,31 @@
+server.modules = (
+  "mod_access",
+  "mod_accesslog",
+  "mod_expire"
+)
+
+server.document-root = "<%= node.default['application']['processed_photos_dir'] %>"
+
+server.port = <%= node.default['application']['res_serving']['port'] %>
+
+server.username = "<%= node.default['application']['res_serving']['user'] %>"
+server.groupname = "<%= node.default['application']['group'] %>"
+server.pid-file = "<%= node.default['application']['res_serving']['pid_file'] %>"
+server.errorlog = "<%= node.default['application']['res_serving']['error_log'] %>"
+accesslog.filename = "<%= node.default['application']['res_serving']['access_log'] %>"
+
+mimetype.assign = (
+  ".jpg" => "image/jpeg",
+  ".mp4" => "video/mp4" 
+)
+
+static-file.exclude-extensions = ( ".fcgi", ".php", ".rb", "~", ".inc" )
+index-file.names = ()
+
+# Do not allow access to non-jpg or non-mp4 files.
+$HTTP["url"] !~ "\.(<%= node.default['application']['res_serving']['allowed_extension'] %>)$" {
+  url.access-deny = ("")
+}
+
+# Setup caching.
+expire.url = ( "/" => "<%= node.default['application']['res_serving']['expire'] %>" )
