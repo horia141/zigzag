@@ -14,37 +14,37 @@ user 'zigzag-res-serving' do
 end
 
 # Define directory structure for the runtime data.
-directory 'var' do
+directory File.join(node.default['application']['work_dir'], 'var') do
   owner 'horia'
-  group 'horia'
+  group 'zigzag'
   mode '0755'
   action :create
 end
 
-directory 'var/db_backup' do
+directory File.join(node.default['application']['work_dir'], 'var/db_backup') do
   owner 'horia'
-  group 'horia'
+  group 'zigzag'
   mode '0755'
   action :create
 end
 
-directory 'var/photos' do
+directory File.join(node.default['application']['work_dir'], 'var/photos') do
   owner 'horia'
-  group 'horia'
+  group 'zigzag'
   mode '0755'
   action :create
 end
 
-directory 'var/photos/original' do
+directory File.join(node.default['application']['work_dir'], 'var/photos/original') do
   owner 'horia'
-  group 'horia'
+  group 'zigzag'
   mode '0755'
   action :create
 end
 
-directory 'var/photos/processed' do
+directory File.join(node.default['application']['work_dir'], 'var/photos/processed') do
   owner 'horia'
-  group 'horia'
+  group 'zigzag'
   mode '0755'
   action :create
 end
