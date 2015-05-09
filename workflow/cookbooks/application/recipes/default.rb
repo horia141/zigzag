@@ -1,3 +1,6 @@
+# Keep the APT cache up-to-date.
+include_recipe 'apt::default'
+
 # Define groups and users used by different components.
 group 'zigzag'
 
