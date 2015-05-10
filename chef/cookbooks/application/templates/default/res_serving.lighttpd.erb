@@ -10,9 +10,9 @@ server.port = <%= node.default['application']['res_serving']['port'] %>
 
 server.username = "<%= node.default['application']['res_serving']['user'] %>"
 server.groupname = "<%= node.default['application']['group'] %>"
-server.pid-file = "<%= node.default['application']['res_serving']['pid_file'] %>"
-server.errorlog = "<%= node.default['application']['res_serving']['error_log'] %>"
-accesslog.filename = "<%= node.default['application']['res_serving']['access_log'] %>"
+server.pid-file = "<%= node.default['application']['res_serving']['lighttpd']['pid_file'] %>"
+server.errorlog = "<%= node.default['application']['res_serving']['lighttpd']['error_log'] %>"
+accesslog.filename = "<%= node.default['application']['res_serving']['lighttpd']['access_log'] %>"
 
 mimetype.assign = (
   ".jpg" => "image/jpeg",

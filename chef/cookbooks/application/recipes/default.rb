@@ -2,10 +2,12 @@
 include_recipe 'apt::default'
 
 # Setup the proper packages.
+
 package 'daemon'
 package 'lighttpd'
 
 # Define groups and users used by different components.
+
 group node.default['application']['group'] do
   system true
   members [node.default['application']['user'],
@@ -51,6 +53,7 @@ firewall_rule 'ssh' do
 end
 
 # Define directory structure for the runtime data.
+
 directory node.default['application']['work_dir'] do
   owner node.default['application']['user']
   group node.default['application']['group']
@@ -97,6 +100,57 @@ end
 
 # Setup API serving.
 
+directory node.default['application']['api_serving']['work_dir'] do
+  owner node.default['application']['api_serving']['user']
+  group node.default['application']['group']
+  mode '0770'
+  action :create
+end
+
+python_virtualenv node.default['application']['api_serving']['virtual_env'] do
+  owner node.default['application']['api_serving']['user']
+  group node.default['application']['group']
+  action :create
+end
+
+python_pip 'django' do
+  virtualenv node.default['application']['api_serving']['virtual_env']
+end
+
+python_pip 'pytz' do
+  virtualenv node.default['application']['api_serving']['virtual_env']
+end
+
+template node.default['application']['api_serving']['config'] do
+  source 'api_serving.lighttpd.erb'
+  owner node.default['application']['api_serving']['user']
+  group node.default['application']['group']
+  mode '0440'
+  verify "lighttpd -t -f %{file}"
+end
+
+template node.default['application']['api_serving']['daemon']['script'] do
+  source 'api_serving.daemon.erb'
+  owner 'root'
+  group 'root'
+  mode '0755'
+end
+
+service node.default['application']['api_serving']['name'] do
+  init_command node.default['application']['api_serving']['daemon']['script']
+  supports :start => true, :stop => true, :restart => true, :status => true
+  action [:enable, :start]
+  subscribes :restart, "template[#{node.default['application']['api_serving']['daemon']['script']}]", :delayed
+  subscribes :restart, "template[#{node.default['application']['api_serving']['config']}]", :delayed
+end
+
+firewall_rule node.default['application']['api_serving']['name'] do
+  port node.default['application']['api_serving']['port']
+  protocol :tcp
+  action :allow
+  notifies :enable, 'firewall[ufw]', :delayed
+end
+
 # Setup resources serving.
 
 template node.default['application']['res_serving']['config'] do
@@ -107,7 +161,7 @@ template node.default['application']['res_serving']['config'] do
   verify "lighttpd -t -f %{file}"
 end
 
-template node.default['application']['res_serving']['daemon_script'] do
+template node.default['application']['res_serving']['daemon']['script'] do
   source 'res_serving.daemon.erb'
   owner 'root'
   group 'root'
@@ -115,10 +169,10 @@ template node.default['application']['res_serving']['daemon_script'] do
 end
 
 service node.default['application']['res_serving']['name'] do
-  init_command node.default['application']['res_serving']['daemon_script']
+  init_command node.default['application']['res_serving']['daemon']['script']
   supports :start => true, :stop => true, :restart => true, :status => true
   action [:enable, :start]
-  subscribes :restart, "template[#{node.default['application']['res_serving']['daemon_script']}]", :delayed
+  subscribes :restart, "template[#{node.default['application']['res_serving']['daemon']['script']}]", :delayed
   subscribes :restart, "template[#{node.default['application']['res_serving']['config']}]", :delayed
 end
 

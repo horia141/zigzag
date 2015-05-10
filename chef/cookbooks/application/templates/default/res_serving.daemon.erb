@@ -1,20 +1,20 @@
 #!/bin/sh
 # Comments to support chkconfig on Red Hat Linux
 # chkconfig: 2345 64 36
-# Description: node.default['application']['res_serving']['name']
+# Description: <%= node.default['application']['res_serving']['name'] %>
 
 start () {
     echo "Starting <%= node.default['application']['res_serving']['name'] %>... "
 
     daemon --name='<%= node.default['application']['res_serving']['name'] %>' \
            --command='lighttpd -D -f <%= node.default['application']['res_serving']['config'] %>' \
-           --pidfile='<%= node.default['application']['res_serving']['daemon_pid_file'] %>' \
+           --pidfile='<%= node.default['application']['res_serving']['daemon']['pid_file'] %>' \
            --user='<%= node.default['application']['res_serving']['user'] %>' \
            --chdir='<%= node.default['application']['work_dir'] %>' \
            --safe \
            --respawn \
-           --errlog='<%= node.default['application']['res_serving']['daemon_error_log'] %>' \
-           --dbglog='<%= node.default['application']['res_serving']['daemon_debug_log'] %>' \
+           --errlog='<%= node.default['application']['res_serving']['daemon']['error_log'] %>' \
+           --dbglog='<%= node.default['application']['res_serving']['daemon']['debug_log'] %>' \
            --verbose
     return $?
 }
@@ -23,7 +23,7 @@ stop () {
     echo "Stopping <%= node.default['application']['res_serving']['name'] %>... "
 
     daemon --name='<%= node.default['application']['res_serving']['name'] %>' \
-           --pidfile='<%= node.default['application']['res_serving']['daemon_pid_file'] %>' \
+           --pidfile='<%= node.default['application']['res_serving']['daemon']['pid_file'] %>' \
            --stop \
            --verbose
     return $?
@@ -34,7 +34,7 @@ restart () {
     echo "Restarting <%= node.default['application']['res_serving']['name'] %>..."
 
     daemon --name='<%= node.default['application']['res_serving']['name'] %>' \
-           --pidfile='<%= node.default['application']['res_serving']['daemon_pid_file'] %>' \
+           --pidfile='<%= node.default['application']['res_serving']['daemon']['pid_file'] %>' \
            --restart  \
            --verbose
     return $?
@@ -43,7 +43,7 @@ restart () {
 
 status () {
     daemon --name='<%= node.default['application']['res_serving']['name'] %>' \
-           --pidfile='<%= node.default['application']['res_serving']['daemon_pid_file'] %>' \
+           --pidfile='<%= node.default['application']['res_serving']['daemon']['pid_file'] %>' \
            --running \
            --verbose
     return $?
