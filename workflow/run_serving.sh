@@ -6,20 +6,16 @@ source ./workflow/setup_env.sh
 
 echo 'Running ZigZag server application!'
 
-# Start resource serving public visible task.
-lighttpd -D -f ./config/res_serving.lighttpd &
-RES_SERVER_PID="$!"
-
 # Start the REST API server.
 python ./interface_server/manage.py runfcgi method=threaded host=127.0.0.1 port=9002 workdir=`pwd` outlog=./var/interface_server.out.log errlog=./var/interface_server.error.log pidfile=./var/interface_server.pid
 INTERFACE_SERVER_PID=`cat ./var/interface_server.pid`
 
 # If the application exist, all these tasks must be killed as well.
-trap "kill $RES_SERVER_PID $INTERFACE_SERVER_PID" EXIT INT
+trap "kill $INTERFACE_SERVER_PID" EXIT INT
 
 # Start REST API public visible task.
 lighttpd -D -f ./config/api_serving.lighttpd
 
 # Kill all tasks if the last one somehow stops.
 echo 'Killing all started jobs'
-kill $RES_SERVER_PID $INTERFACE_SERVER_PID $API_SERVER_PID
+kill $INTERFACE_SERVER_PID $API_SERVER_PID

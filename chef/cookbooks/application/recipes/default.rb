@@ -6,24 +6,34 @@ package 'daemon'
 package 'lighttpd'
 
 # Define groups and users used by different components.
-group node.default['application']['group']
+group node.default['application']['group'] do
+  system true
+  members [node.default['application']['user'], node.default['application']['api_serving']['user'],
+           node.default['application']['res_serving']['user']]
+end
 
 user node.default['application']['user'] do
   comment 'Master user for the application'
   group node.default['application']['group']
-  shell '/bin/bash'
+  shell '/usr/sbin/nologin'
+  home node.default['application']['work_dir']
+  system true
 end
 
 user node.default['application']['api_serving']['user'] do
   comment 'User for the API serving component'
   group node.default['application']['group']
-  shell '/bin/bash'
+  shell '/usr/sbin/nologin'
+  home node.default['application']['work_dir']
+  system true
 end
 
 user node.default['application']['res_serving']['user'] do
   comment 'User for the resources serving component'
   group node.default['application']['group']
-  shell '/bin/bash'
+  shell '/usr/sbin/nologin'
+  home node.default['application']['work_dir']
+  system true
 end
 
 # Define directory structure for the runtime data.
