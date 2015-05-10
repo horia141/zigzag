@@ -8,7 +8,8 @@ package 'lighttpd'
 # Define groups and users used by different components.
 group node.default['application']['group'] do
   system true
-  members [node.default['application']['user'], node.default['application']['api_serving']['user'],
+  members [node.default['application']['user'],
+           node.default['application']['api_serving']['user'],
            node.default['application']['res_serving']['user']]
 end
 
@@ -34,6 +35,19 @@ user node.default['application']['res_serving']['user'] do
   shell '/usr/sbin/nologin'
   home node.default['application']['work_dir']
   system true
+end
+
+# General firewall configuration.
+
+firewall 'ufw' do
+  action :nothing
+end
+
+firewall_rule 'ssh' do
+  port 22
+  protocol :tcp
+  action :allow
+  notifies :enable, 'firewall[ufw]', :delayed
 end
 
 # Define directory structure for the runtime data.
@@ -106,4 +120,11 @@ service node.default['application']['res_serving']['name'] do
   action [:enable, :start]
   subscribes :restart, "template[#{node.default['application']['res_serving']['daemon_script']}]", :delayed
   subscribes :restart, "template[#{node.default['application']['res_serving']['config']}]", :delayed
+end
+
+firewall_rule node.default['application']['res_serving']['name'] do
+  port node.default['application']['res_serving']['port']
+  protocol :tcp
+  action :allow
+  notifies :enable, 'firewall[ufw]', :delayed
 end
