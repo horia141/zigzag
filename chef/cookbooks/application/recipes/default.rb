@@ -121,6 +121,50 @@ python_pip 'pytz' do
   virtualenv node.default['application']['api_serving']['virtual_env']
 end
 
+execute 'api_serving_sources' do
+  command "cp -r #{node.default['application']['DUMB_project_path']}/datastore #{node.default['application']['api_serving']['work_dir']} && " +
+          "chown -R #{node.default['application']['api_serving']['user']} #{node.default['application']['api_serving']['work_dir']}/datastore && " + 
+          "chgrp -R #{node.default['application']['group']} #{node.default['application']['api_serving']['work_dir']}/datastore && " +
+          "chmod -R g+w #{node.default['application']['api_serving']['work_dir']}/datastore && " +
+
+          "cp -r #{node.default['application']['DUMB_project_path']}/explorer #{node.default['application']['api_serving']['work_dir']} && " +
+          "chown -R #{node.default['application']['api_serving']['user']} #{node.default['application']['api_serving']['work_dir']}/explorer && " + 
+          "chgrp -R #{node.default['application']['group']} #{node.default['application']['api_serving']['work_dir']}/explorer && " +
+          "chmod -R g+w #{node.default['application']['api_serving']['work_dir']}/explorer && " +
+
+          "cp -r #{node.default['application']['DUMB_project_path']}/fetcher #{node.default['application']['api_serving']['work_dir']} && " +
+          "chown -R #{node.default['application']['api_serving']['user']} #{node.default['application']['api_serving']['work_dir']}/fetcher && " + 
+          "chgrp -R #{node.default['application']['group']} #{node.default['application']['api_serving']['work_dir']}/fetcher && " +
+          "chmod -R g+w #{node.default['application']['api_serving']['work_dir']}/fetcher && " +
+
+          "cp -r #{node.default['application']['DUMB_project_path']}/gen #{node.default['application']['api_serving']['work_dir']} && " +
+          "chown -R #{node.default['application']['api_serving']['user']} #{node.default['application']['api_serving']['work_dir']}/gen && " + 
+          "chgrp -R #{node.default['application']['group']} #{node.default['application']['api_serving']['work_dir']}/gen && " +
+          "chmod -R g+w #{node.default['application']['api_serving']['work_dir']}/gen && " +
+
+          "cp -r #{node.default['application']['DUMB_project_path']}/interface_server #{node.default['application']['api_serving']['work_dir']} && " +
+          "chown -R #{node.default['application']['api_serving']['user']} #{node.default['application']['api_serving']['work_dir']}/interface_server && " + 
+          "chgrp -R #{node.default['application']['group']} #{node.default['application']['api_serving']['work_dir']}/interface_server && " +
+          "chmod -R g+w #{node.default['application']['api_serving']['work_dir']}/interface_server && " +
+
+          "cp -r #{node.default['application']['DUMB_project_path']}/log_analyzer #{node.default['application']['api_serving']['work_dir']} && " +
+          "chown -R #{node.default['application']['api_serving']['user']} #{node.default['application']['api_serving']['work_dir']}/log_analyzer && " + 
+          "chgrp -R #{node.default['application']['group']} #{node.default['application']['api_serving']['work_dir']}/log_analyzer && " +
+          "chmod -R g+w #{node.default['application']['api_serving']['work_dir']}/log_analyzer && " +
+
+          "cp -r #{node.default['application']['DUMB_project_path']}/photo_save #{node.default['application']['api_serving']['work_dir']} && " +
+          "chown -R #{node.default['application']['api_serving']['user']} #{node.default['application']['api_serving']['work_dir']}/photo_save && " + 
+          "chgrp -R #{node.default['application']['group']} #{node.default['application']['api_serving']['work_dir']}/photo_save && " +
+          "chmod -R g+w #{node.default['application']['api_serving']['work_dir']}/photo_save && " +
+
+          "cp -r #{node.default['application']['DUMB_project_path']}/utils #{node.default['application']['api_serving']['work_dir']} && " +
+          "chown -R #{node.default['application']['api_serving']['user']} #{node.default['application']['api_serving']['work_dir']}/utils && " + 
+          "chgrp -R #{node.default['application']['group']} #{node.default['application']['api_serving']['work_dir']}/utils && " +
+          "chmod -R g+w #{node.default['application']['api_serving']['work_dir']}/utils && " +
+
+          "/bin/true"
+end
+
 template node.default['application']['api_serving']['config'] do
   source 'api_serving.lighttpd.erb'
   owner node.default['application']['api_serving']['user']
