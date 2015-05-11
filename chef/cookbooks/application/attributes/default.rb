@@ -1,3 +1,7 @@
+default['thrift']['version'] = '0.9.2'
+default['thrift']['mirror'] = 'http://apache.mirror.anlx.net'
+default['thrift']['checksum'] = 'cef50d3934c41db5fa7724440cc6f10a732e7a77fe979b98c23ce45725349570'
+
 default['application']['DUMB_project_path'] = '/home/horiacoman/Work/zigzag'
 
 default['application']['user'] = 'zigzag'
@@ -24,6 +28,14 @@ default['application']['api_serving']['lighttpd']['error_log'] = File.join(defau
 default['application']['api_serving']['lighttpd']['access_log'] = File.join(default['application']['api_serving']['work_dir'], 'lighttpd.access.log')
 default['application']['api_serving']['django']['fastcgi_host'] = '127.0.0.1'
 default['application']['api_serving']['django']['fastcgi_port'] = 9002
+default['application']['api_serving']['app']['name'] = 'zigzag_api_serving_app'
+default['application']['api_serving']['app']['daemon']['script'] = '/etc/init.d/zigzag_api_serving_app'
+default['application']['api_serving']['app']['daemon']['pid_file'] = File.join(default['application']['api_serving']['work_dir'], 'app.daemon.pid')
+default['application']['api_serving']['app']['daemon']['error_log'] = File.join(default['application']['api_serving']['work_dir'], 'app.daemon.error.log')
+default['application']['api_serving']['app']['daemon']['debug_log'] = File.join(default['application']['api_serving']['work_dir'], 'app.daemon.debug.log')
+default['application']['api_serving']['app']['pid_file'] = File.join(default['application']['api_serving']['work_dir'], 'app.pid')
+default['application']['api_serving']['app']['output_log'] = File.join(default['application']['api_serving']['work_dir'], 'app.output.log')
+default['application']['api_serving']['app']['error_log'] = File.join(default['application']['api_serving']['work_dir'], 'app.error.log')
 
 default['application']['res_serving']['name'] = 'zigzag_res_serving'
 default['application']['res_serving']['config'] = File.join(default['application']['config_dir'], 'res_serving.lighttpd')

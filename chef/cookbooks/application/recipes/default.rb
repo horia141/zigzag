@@ -1,10 +1,13 @@
 # Keep the APT cache up-to-date.
 include_recipe 'apt::default'
 
-# Setup the proper packages.
+# Setup the proper packages and source stuff.
 
 package 'daemon'
 package 'lighttpd'
+include_recipe 'build-essential'
+include_recipe 'python'
+include_recipe 'thrift'
 
 # Define groups and users used by different components.
 
@@ -117,10 +120,25 @@ python_pip 'django' do
   virtualenv node.default['application']['api_serving']['virtual_env']
 end
 
+python_pip 'flup' do
+  virtualenv node.default['application']['api_serving']['virtual_env']
+end
+
 python_pip 'pytz' do
   virtualenv node.default['application']['api_serving']['virtual_env']
 end
 
+bash 'install_thrift_python' do
+  cwd File.join(Chef::Config[:file_cache_path], "thrift-#{node.default['thrift']['version']}", 'lib', 'py')
+  code <<-EOF
+    (#{node.default['application']['api_serving']['virtual_env']}/bin/python setup.py install)
+  EOF
+  not_if { FileTest.exists?(File.join(node.default['application']['api_serving']['virtual_env'], 'local', 'lib', 'python2.7', 'site-packages', "thrift-#{node.default['thrift']['version']}-py2.7-linux-x86_64.egg")) }
+end
+
+# TODO(horia141): this is a particular flavor of ugly. It is both low-level and imperative.
+# The configuration should be described in a high-level fashion and as a "state", rather than a
+# sequence of steps for achieving something. This is neither, and it should be corrected.
 execute 'api_serving_sources' do
   command "cp -r #{node.default['application']['DUMB_project_path']}/datastore #{node.default['application']['api_serving']['work_dir']} && " +
           "chown -R #{node.default['application']['api_serving']['user']} #{node.default['application']['api_serving']['work_dir']}/datastore && " + 
@@ -193,6 +211,20 @@ firewall_rule node.default['application']['api_serving']['name'] do
   protocol :tcp
   action :allow
   notifies :enable, 'firewall[ufw]', :delayed
+end
+
+template node.default['application']['api_serving']['app']['daemon']['script'] do
+  source 'api_serving_app.daemon.erb'
+  owner 'root'
+  group 'root'
+  mode '0755'
+end
+
+service node.default['application']['api_serving']['app']['name'] do
+  init_command node.default['application']['api_serving']['app']['daemon']['script']
+  supports :start => true, :stop => true, :restart => true, :status => true
+  action [:enable, :start]
+  subscribes :restart, "template[#{node.default['application']['api_serving']['app']['daemon']['script']}]", :delayed
 end
 
 # Setup resources serving.
