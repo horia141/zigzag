@@ -50,3 +50,6 @@ default['application']['res_serving']['lighttpd']['error_log'] = File.join(defau
 default['application']['res_serving']['lighttpd']['access_log'] = File.join(default['application']['work_dir'], 'res_serving.lighttpd.access.log')
 default['application']['res_serving']['allowed_extension'] = 'jpg|mp4'
 default['application']['res_serving']['expire'] = 'access plus 1 months'
+default['application']['exploring']['user'] = 'zigzag_exploring'
+default['application']['exploring']['work_dir'] = File.join(default['application']['work_dir'], 'exploring')
+default['application']['exploring']['virtual_env'] = File.join(default['application']['exploring']['work_dir'], 'virtual_env')
