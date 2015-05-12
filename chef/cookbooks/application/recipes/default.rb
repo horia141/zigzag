@@ -219,8 +219,8 @@ end
 # TODO(horia141): this should not rely on the built in keys. but rather on protected keys in the data bag.
 # TODO(horia141): factor out the repository name.
 git "#{Chef::Config[:file_cache_path]}/comlink" do
-  repository "git@github.com:horia141/comlink.git"
-  reference "master"
+  repository node.default['application']['git']['comlink']['repo']
+  reference node.default['application']['git']['comlink']['branch']
   action :sync
   notifies :run, 'bash[install_comlink]', :delayed
   # user node.default['application']['user']

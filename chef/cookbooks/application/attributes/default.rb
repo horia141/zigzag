@@ -66,3 +66,9 @@ default['application']['exploring']['fetcher']['daemon']['script'] = '/etc/init.
 default['application']['exploring']['fetcher']['daemon']['pid_file'] = File.join(default['application']['var_dir'], 'exploring.fetcher_daemon.pid')
 default['application']['exploring']['fetcher']['daemon']['error_log'] = File.join(default['application']['var_dir'], 'exploring.fetcher_daemon.error.log')
 default['application']['exploring']['fetcher']['daemon']['debug_log'] = File.join(default['application']['var_dir'], 'exploring.fetcher_daemon.debug.log')
+
+default['application']['git']['comlink']['repo'] = 'git@github.com:horia141/comlink.git'
+default['application']['git']['comlink']['branch'] = 'master'
+
+default['application']['python_env']['PYTHONPATH'] = "#{default['application']['sources_dir']}:#{default['application']['sources_dir']}/interface_server:#{node.default['application']['sources_dir']}/gen/py"
+default['application']['python_env']['DJANGO_SETTINGS_MODULE'] = 'interface_server.settings'
