@@ -1,7 +1,7 @@
 #!/bin/sh
 # Comments to support chkconfig on Red Hat Linux
 # chkconfig: 2345 64 36
-# Description: <%= node.default['application']['api_serving']['name'] %>
+# Description: <%= node.default['application']['api_serving']['frontend']['name'] %>
 
 start () {
     echo "Starting <%= node.default['application']['api_serving']['frontend']['name'] %>... "

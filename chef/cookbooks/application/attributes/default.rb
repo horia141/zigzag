@@ -56,4 +56,13 @@ default['application']['res_serving']['daemon']['pid_file'] = File.join(default[
 default['application']['res_serving']['daemon']['error_log'] = File.join(default['application']['var_dir'], 'res_serving_daemon.error.log')
 default['application']['res_serving']['daemon']['debug_log'] = File.join(default['application']['var_dir'], 'res_serving_daemon.debug.log')
 
+default['application']['exploring']['name'] = 'zigzag_exploring'
 default['application']['exploring']['user'] = 'zigzag_exploring'
+default['application']['exploring']['fetcher']['name'] = 'zigzag_exploring_fetcher'
+default['application']['exploring']['fetcher']['port'] = 16000
+default['application']['exploring']['fetcher']['pid_file'] = File.join(default['application']['var_dir'], 'exploring.fetcher.pid')
+default['application']['exploring']['fetcher']['log'] = File.join(default['application']['var_dir'], 'exploring.fetcher.log')
+default['application']['exploring']['fetcher']['daemon']['script'] = '/etc/init.d/zigzag_exploring_fetcher'
+default['application']['exploring']['fetcher']['daemon']['pid_file'] = File.join(default['application']['var_dir'], 'exploring.fetcher_daemon.pid')
+default['application']['exploring']['fetcher']['daemon']['error_log'] = File.join(default['application']['var_dir'], 'exploring.fetcher_daemon.error.log')
+default['application']['exploring']['fetcher']['daemon']['debug_log'] = File.join(default['application']['var_dir'], 'exploring.fetcher_daemon.debug.log')

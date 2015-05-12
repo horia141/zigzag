@@ -320,3 +320,19 @@ firewall_rule node.default['application']['res_serving']['name'] do
 end
 
 # Setup exploring.
+
+# Setup fetcher service.
+
+template node.default['application']['exploring']['fetcher']['daemon']['script'] do
+  source 'exploring.fetcher_daemon.erb'
+  owner 'root'
+  group 'root'
+  mode '0755'
+end
+
+service node.default['application']['exploring']['fetcher']['name'] do
+  init_command node.default['application']['exploring']['fetcher']['daemon']['script']
+  supports :start => true, :stop => true, :restart => true, :status => true
+  action [:enable, :start]
+  subscribes :restart, "template[#{node.default['application']['exploring']['fetcher']['daemon']['script']}]", :delayed
+end
