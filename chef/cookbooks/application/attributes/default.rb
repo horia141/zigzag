@@ -6,17 +6,21 @@ default['application']['DUMB_project_path'] = '/home/horiacoman/Work/zigzag'
 
 default['application']['user'] = 'zigzag'
 default['application']['group'] = 'zigzag'
+
 default['application']['work_dir'] = '/zigzag'
-default['application']['db_backup_dir'] = File.join(default['application']['work_dir'], 'db_backup')
 default['application']['config_dir'] = File.join(default['application']['work_dir'], 'config')
-default['application']['photos_dir'] = File.join(default['application']['work_dir'], 'photos')
+default['application']['data_dir'] = File.join(default['application']['work_dir'], 'data')
+default['application']['db_backup_dir'] = File.join(default['application']['data_dir'], 'db_backup')
+default['application']['photos_dir'] = File.join(default['application']['data_dir'], 'photos')
 default['application']['original_photos_dir'] = File.join(default['application']['photos_dir'], 'original')
 default['application']['processed_photos_dir'] = File.join(default['application']['photos_dir'], 'processed')
+default['application']['sources_dir'] = File.join(default['application']['work_dir'], 'sources')
+
+default['application']['virtual_env'] = File.join(default['application']['sources_dir'], 'env')
 
 default['application']['api_serving']['name'] = 'zigzag_api_serving'
 default['application']['api_serving']['user'] = 'zigzag_api_serving'
 default['application']['api_serving']['work_dir'] = File.join(default['application']['work_dir'], 'api_serving')
-default['application']['api_serving']['virtual_env'] = File.join(default['application']['api_serving']['work_dir'], 'virtual_env')
 default['application']['api_serving']['config'] = File.join(default['application']['config_dir'], 'api_serving.lighttpd')
 default['application']['api_serving']['port'] = 9000
 default['application']['api_serving']['daemon']['script'] = '/etc/init.d/zigzag_api_serving'
@@ -50,6 +54,6 @@ default['application']['res_serving']['lighttpd']['error_log'] = File.join(defau
 default['application']['res_serving']['lighttpd']['access_log'] = File.join(default['application']['work_dir'], 'res_serving.lighttpd.access.log')
 default['application']['res_serving']['allowed_extension'] = 'jpg|mp4'
 default['application']['res_serving']['expire'] = 'access plus 1 months'
+
 default['application']['exploring']['user'] = 'zigzag_exploring'
 default['application']['exploring']['work_dir'] = File.join(default['application']['work_dir'], 'exploring')
-default['application']['exploring']['virtual_env'] = File.join(default['application']['exploring']['work_dir'], 'virtual_env')
