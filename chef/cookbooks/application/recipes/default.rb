@@ -121,6 +121,13 @@ directory node.default['application']['sources_dir'] do
   action :create
 end
 
+directory node.default['application']['var_dir'] do
+  owner node.default['application']['user']
+  group node.default['application']['group']
+  mode '0770'
+  action :create
+end
+
 # Setup server side components sources.
 
 python_virtualenv node.default['application']['virtual_env'] do
@@ -209,12 +216,14 @@ file "#{Chef::Config[:file_cache_path]}/git_ssh_wrapper.sh" do
   content "#!/bin/sh\nexec /usr/bin/ssh -i /home/horiacoman/.ssh/id_rsa -o StrictHostKeyChecking=no -o PubkeyAuthentication=yes -o PasswordAuthentication=no \"$@\""
 end
 
+# TODO(horia141): this should not rely on the built in keys. but rather on protected keys in the data bag.
+# TODO(horia141): factor out the repository name.
 git "#{Chef::Config[:file_cache_path]}/comlink" do
   repository "git@github.com:horia141/comlink.git"
   reference "master"
   action :sync
   notifies :run, 'bash[install_comlink]', :delayed
-  # user node.default['application']['res_serving']['user']
+  # user node.default['application']['user']
   # group node.default['application']['group']
   ssh_wrapper "#{Chef::Config[:file_cache_path]}/git_ssh_wrapper.sh"
 end
@@ -234,45 +243,38 @@ end
 
 # Setup API serving.
 
-directory node.default['application']['api_serving']['work_dir'] do
-  owner node.default['application']['api_serving']['user']
-  group node.default['application']['group']
-  mode '0770'
-  action :create
-end
-
-template node.default['application']['api_serving']['config'] do
-  source 'api_serving.lighttpd.erb'
+template node.default['application']['api_serving']['frontend']['config'] do
+  source 'api_serving.frontend.erb'
   owner node.default['application']['api_serving']['user']
   group node.default['application']['group']
   mode '0440'
   verify "lighttpd -t -f %{file}"
 end
 
-template node.default['application']['api_serving']['daemon']['script'] do
-  source 'api_serving.daemon.erb'
+template node.default['application']['api_serving']['frontend']['daemon']['script'] do
+  source 'api_serving.frontend_daemon.erb'
   owner 'root'
   group 'root'
   mode '0755'
 end
 
-service node.default['application']['api_serving']['name'] do
-  init_command node.default['application']['api_serving']['daemon']['script']
+service node.default['application']['api_serving']['frontend']['name'] do
+  init_command node.default['application']['api_serving']['frontend']['daemon']['script']
   supports :start => true, :stop => true, :restart => true, :status => true
   action [:enable, :start]
-  subscribes :restart, "template[#{node.default['application']['api_serving']['daemon']['script']}]", :delayed
-  subscribes :restart, "template[#{node.default['application']['api_serving']['config']}]", :delayed
+  subscribes :restart, "template[#{node.default['application']['api_serving']['frontend']['config']}]", :delayed
+  subscribes :restart, "template[#{node.default['application']['api_serving']['frontend']['daemon']['script']}]", :delayed
 end
 
-firewall_rule node.default['application']['api_serving']['name'] do
-  port node.default['application']['api_serving']['port']
+firewall_rule node.default['application']['api_serving']['frontend']['name'] do
+  port node.default['application']['api_serving']['frontend']['port']
   protocol :tcp
   action :allow
   notifies :enable, 'firewall[ufw]', :delayed
 end
 
 template node.default['application']['api_serving']['app']['daemon']['script'] do
-  source 'api_serving_app.daemon.erb'
+  source 'api_serving.app_daemon.erb'
   owner 'root'
   group 'root'
   mode '0755'
@@ -288,7 +290,7 @@ end
 # Setup resources serving.
 
 template node.default['application']['res_serving']['config'] do
-  source 'res_serving.lighttpd.erb'
+  source 'res_serving.erb'
   owner node.default['application']['res_serving']['user']
   group node.default['application']['group']
   mode '0440'
@@ -296,7 +298,7 @@ template node.default['application']['res_serving']['config'] do
 end
 
 template node.default['application']['res_serving']['daemon']['script'] do
-  source 'res_serving.daemon.erb'
+  source 'res_serving_daemon.erb'
   owner 'root'
   group 'root'
   mode '0755'
@@ -306,8 +308,8 @@ service node.default['application']['res_serving']['name'] do
   init_command node.default['application']['res_serving']['daemon']['script']
   supports :start => true, :stop => true, :restart => true, :status => true
   action [:enable, :start]
-  subscribes :restart, "template[#{node.default['application']['res_serving']['daemon']['script']}]", :delayed
   subscribes :restart, "template[#{node.default['application']['res_serving']['config']}]", :delayed
+  subscribes :restart, "template[#{node.default['application']['res_serving']['daemon']['script']}]", :delayed
 end
 
 firewall_rule node.default['application']['res_serving']['name'] do
