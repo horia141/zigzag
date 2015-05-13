@@ -161,6 +161,12 @@ python_pip 'pytz' do
   options "--cache-dir #{node.default['application']['pip_cache']}"
 end
 
+# TODO(horia141): figure out how to write this as the appropriate user and group.
+python_pip 'pillow' do
+  virtualenv node.default['application']['virtual_env']
+  options "--cache-dir #{node.default['application']['pip_cache']}"
+end
+
 # TODO(horia141): depends too much on where and how the egg file is written.
 bash 'install_thrift_python' do
   cwd File.join(Chef::Config[:file_cache_path], "thrift-#{node.default['thrift']['version']}", 'lib', 'py')
@@ -345,4 +351,20 @@ service node.default['application']['exploring']['fetcher']['name'] do
   supports :start => true, :stop => true, :restart => true, :status => true
   action [:enable, :start]
   subscribes :restart, "template[#{node.default['application']['exploring']['fetcher']['daemon']['script']}]", :delayed
+end
+
+# Setup photo_save service.
+
+template node.default['application']['exploring']['photo_save']['daemon']['script'] do
+  source 'exploring.photo_save_daemon.erb'
+  owner 'root'
+  group 'root'
+  mode '0755'
+end
+
+service node.default['application']['exploring']['photo_save']['name'] do
+  init_command node.default['application']['exploring']['photo_save']['daemon']['script']
+  supports :start => true, :stop => true, :restart => true, :status => true
+  action [:enable, :start]
+  subscribes :restart, "template[#{node.default['application']['exploring']['photo_save']['daemon']['script']}]", :delayed
 end

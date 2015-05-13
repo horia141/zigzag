@@ -7,12 +7,12 @@ start () {
     echo "Starting <%= node.default['application']['exploring']['fetcher']['name'] %>... "
 
     daemon --name='<%= node.default['application']['exploring']['fetcher']['name'] %>' \
-           --command='<%= node.default['application']['virtual_env'] %>/bin/python <%= node.default['application']['sources_dir'] %>/fetcher/__init__ --port=<%= node.default['application']['exploring']['fetcher']['port'] %> --log_path=<%= node.default['application']['exploring']['fetcher']['log'] %> --pidfile_path=<%= node.default['application']['exploring']['fetcher']['pid_file'] %>' \
+           --command='<%= node.default['application']['virtual_env'] %>/bin/python <%= node.default['application']['sources_dir'] %>/fetcher/__init__.py --port=<%= node.default['application']['exploring']['fetcher']['port'] %> --log_path=<%= node.default['application']['exploring']['fetcher']['log'] %> --pidfile_path=<%= node.default['application']['exploring']['fetcher']['pid_file'] %>' \
            --env='PYTHONPATH=<%= node.default['application']['python_env']['PYTHONPATH'] %>' \
            --env='DJANGO_SETTINGS_MODULE=<%= node.default['application']['python_env']['DJANGO_SETTINGS_MODULE'] %>' \
            --env='PYTHON_EGG_CACHE=<%= node.default['application']['python_env']['PYTHON_EGG_CACHE'] %>' \
            --pidfile='<%= node.default['application']['exploring']['fetcher']['daemon']['pid_file'] %>' \
-           --user='<%= node.default['application']['api_serving']['user'] %>' \
+           --user='<%= node.default['application']['exploring']['user'] %>' \
            --chdir='<%= node.default['application']['work_dir'] %>' \
            --unsafe \
            --respawn \
@@ -35,11 +35,8 @@ stop () {
 
 restart () {
     echo "Restarting <%= node.default['application']['exploring']['fetcher']['name'] %>..."
-
-    daemon --name='<%= node.default['application']['exploring']['fetcher']['name'] %>' \
-           --pidfile='<%= node.default['application']['exploring']['fetcher']['daemon']['pid_file'] %>' \
-           --restart  \
-           --verbose
+    stop
+    start
     return $?
 }
 

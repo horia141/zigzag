@@ -70,6 +70,14 @@ default['application']['exploring']['fetcher']['daemon']['script'] = '/etc/init.
 default['application']['exploring']['fetcher']['daemon']['pid_file'] = File.join(default['application']['var_dir'], 'exploring.fetcher_daemon.pid')
 default['application']['exploring']['fetcher']['daemon']['error_log'] = File.join(default['application']['var_dir'], 'exploring.fetcher_daemon.error.log')
 default['application']['exploring']['fetcher']['daemon']['debug_log'] = File.join(default['application']['var_dir'], 'exploring.fetcher_daemon.debug.log')
+default['application']['exploring']['photo_save']['name'] = 'zigzag_exploring_photo_save'
+default['application']['exploring']['photo_save']['port'] = 16100
+default['application']['exploring']['photo_save']['pid_file'] = File.join(default['application']['var_dir'], 'exploring.photo_save.pid')
+default['application']['exploring']['photo_save']['log'] = File.join(default['application']['var_dir'], 'exploring.photo_save.log')
+default['application']['exploring']['photo_save']['daemon']['script'] = '/etc/init.d/zigzag_exploring_photo_save'
+default['application']['exploring']['photo_save']['daemon']['pid_file'] = File.join(default['application']['var_dir'], 'exploring.photo_save_daemon.pid')
+default['application']['exploring']['photo_save']['daemon']['error_log'] = File.join(default['application']['var_dir'], 'exploring.photo_save_daemon.error.log')
+default['application']['exploring']['photo_save']['daemon']['debug_log'] = File.join(default['application']['var_dir'], 'exploring.photo_save_daemon.debug.log')
 
 default['application']['git']['comlink']['repo'] = 'git@github.com:horia141/comlink.git'
 default['application']['git']['comlink']['branch'] = 'master'
