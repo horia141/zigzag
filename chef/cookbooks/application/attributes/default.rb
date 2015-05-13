@@ -16,8 +16,12 @@ default['application']['original_photos_dir'] = File.join(default['application']
 default['application']['processed_photos_dir'] = File.join(default['application']['photos_dir'], 'processed')
 default['application']['sources_dir'] = File.join(default['application']['work_dir'], 'sources')
 default['application']['var_dir'] = File.join(default['application']['work_dir'], 'var')
+default['application']['tmp_dir'] = File.join(default['application']['work_dir'], 'tmp')
+
 
 default['application']['virtual_env'] = File.join(default['application']['sources_dir'], 'env')
+default['application']['egg_cache'] = File.join(default['application']['tmp_dir'], 'egg-cache')
+default['application']['pip_cache'] = File.join(default['application']['tmp_dir'], 'pip-cache')
 
 default['application']['api_serving']['name'] = 'zigzag_api_serving'
 default['application']['api_serving']['user'] = 'zigzag_api_serving'
@@ -72,3 +76,4 @@ default['application']['git']['comlink']['branch'] = 'master'
 
 default['application']['python_env']['PYTHONPATH'] = "#{default['application']['sources_dir']}:#{default['application']['sources_dir']}/interface_server:#{node.default['application']['sources_dir']}/gen/py"
 default['application']['python_env']['DJANGO_SETTINGS_MODULE'] = 'interface_server.settings'
+default['application']['python_env']['PYTHON_EGG_CACHE'] = default['application']['egg_cache']

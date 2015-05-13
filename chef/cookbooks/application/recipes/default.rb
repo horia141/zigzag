@@ -128,6 +128,13 @@ directory node.default['application']['var_dir'] do
   action :create
 end
 
+directory node.default['application']['tmp_dir'] do
+  owner node.default['application']['user']
+  group node.default['application']['group']
+  mode '0770'
+  action :create
+end
+
 # Setup server side components sources.
 
 python_virtualenv node.default['application']['virtual_env'] do
@@ -139,16 +146,19 @@ end
 # TODO(horia141): figure out how to write this as the appropriate user and group.
 python_pip 'django' do
   virtualenv node.default['application']['virtual_env']
+  options "--cache-dir #{node.default['application']['pip_cache']}"
 end
 
 # TODO(horia141): figure out how to write this as the appropriate user and group.
 python_pip 'flup' do
   virtualenv node.default['application']['virtual_env']
+  options "--cache-dir #{node.default['application']['pip_cache']}"
 end
 
 # TODO(horia141): figure out how to write this as the appropriate user and group.
 python_pip 'pytz' do
   virtualenv node.default['application']['virtual_env']
+  options "--cache-dir #{node.default['application']['pip_cache']}"
 end
 
 # TODO(horia141): depends too much on where and how the egg file is written.
@@ -165,7 +175,7 @@ end
 # TODO(horia141): this is a particular flavor of ugly. It is both low-level and imperative.
 # The configuration should be described in a high-level fashion and as a "state", rather than a
 # sequence of steps for achieving something. This is neither, and it should be corrected.
-execute 'api_serving_sources' do
+execute 'sources' do
   command "cp -r #{node.default['application']['DUMB_project_path']}/datastore #{node.default['application']['sources_dir']} && " +
           "chown -R #{node.default['application']['user']} #{node.default['application']['sources_dir']}/datastore && " + 
           "chgrp -R #{node.default['application']['group']} #{node.default['application']['sources_dir']}/datastore && " +

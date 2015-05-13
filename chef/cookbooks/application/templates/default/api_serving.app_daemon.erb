@@ -8,8 +8,9 @@ start () {
 
     daemon --name='<%= node.default['application']['api_serving']['app']['name'] %>' \
            --command='<%= node.default['application']['virtual_env'] %>/bin/python <%= node.default['application']['sources_dir'] %>/interface_server/manage.py runfcgi method=threaded host=<%= node.default['application']['api_serving']['app']['fastcgi_host'] %> port=<%= node.default['application']['api_serving']['app']['fastcgi_port'] %> workdir=<%= node.default['application']['work_dir'] %> outlog=<%= node.default['application']['api_serving']['app']['output_log'] %> errlog=<%= node.default['application']['api_serving']['app']['error_log'] %> pidfile=<%= node.default['application']['api_serving']['app']['pid_file'] %>' \
-	   --env='PYTHONPATH=<%= node.default['application']['python_env']['PYTHONPATH'] %>'
-	   --env='DJANGO_SETTINGS_MODULE=<% node.default['application']['python_env']['DJANGO_SETTINGS_MODULE'] %>' \
+           --env='PYTHONPATH=<%= node.default['application']['python_env']['PYTHONPATH'] %>' \
+           --env='DJANGO_SETTINGS_MODULE=<%= node.default['application']['python_env']['DJANGO_SETTINGS_MODULE'] %>' \
+           --env='PYTHON_EGG_CACHE=<%= node.default['application']['python_env']['PYTHON_EGG_CACHE'] %>' \
            --pidfile='<%= node.default['application']['api_serving']['app']['daemon']['pid_file'] %>' \
            --user='<%= node.default['application']['api_serving']['user'] %>' \
            --chdir='<%= node.default['application']['work_dir'] %>' \
