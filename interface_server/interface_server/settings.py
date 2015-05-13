@@ -8,12 +8,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import os
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-VAR_DIR = os.path.join(BASE_DIR, '..', 'var')
-
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
@@ -48,7 +42,7 @@ WSGI_APPLICATION = 'interface_server.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(VAR_DIR, 'db.sqlite3'),
+        'NAME': "<%= node.default['application']['db_path'] %>",
     }
 }
 

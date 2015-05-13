@@ -18,6 +18,7 @@ default['application']['sources_dir'] = File.join(default['application']['work_d
 default['application']['var_dir'] = File.join(default['application']['work_dir'], 'var')
 default['application']['tmp_dir'] = File.join(default['application']['work_dir'], 'tmp')
 
+default['application']['db_path'] = File.join(default['application']['var_dir'], 'db.sqlite3')
 
 default['application']['virtual_env'] = File.join(default['application']['sources_dir'], 'env')
 default['application']['egg_cache'] = File.join(default['application']['tmp_dir'], 'egg-cache')
@@ -36,6 +37,7 @@ default['application']['api_serving']['frontend']['daemon']['pid_file'] = File.j
 default['application']['api_serving']['frontend']['daemon']['error_log'] = File.join(default['application']['var_dir'], 'api_serving.frontend_daemon.error.log')
 default['application']['api_serving']['frontend']['daemon']['debug_log'] = File.join(default['application']['var_dir'], 'api_serving.frontend_daemon.debug.log')
 default['application']['api_serving']['app']['name'] = 'zigzag_api_serving_app'
+default['application']['api_serving']['app']['config'] = File.join(default['application']['sources_dir'], 'interface_server', 'interface_server', 'settings.py')
 default['application']['api_serving']['app']['fastcgi_host'] = '127.0.0.1'
 default['application']['api_serving']['app']['fastcgi_port'] = 9002
 default['application']['api_serving']['app']['pid_file'] = File.join(default['application']['var_dir'], 'api_serving.app.pid')

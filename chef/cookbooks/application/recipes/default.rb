@@ -1,15 +1,16 @@
-# Keep the APT cache up-to-date.
+# === Keep the APT cache up-to-date. ===
 include_recipe 'apt::default'
 
-# Setup the proper packages and source stuff.
+# === Setup the proper packages and source stuff. ===
 
 package 'daemon'
 package 'lighttpd'
+package 'sqlite'
 include_recipe 'build-essential'
 include_recipe 'python'
 include_recipe 'thrift'
 
-# Define groups and users used by different components.
+# === Define groups and users used by different components. ===
 
 group node.default['application']['group'] do
   system true
@@ -50,7 +51,7 @@ user node.default['application']['exploring']['user'] do
   system true
 end
 
-# General firewall configuration.
+# === General firewall configuration. ===
 
 firewall 'ufw' do
   action :nothing
@@ -63,7 +64,7 @@ firewall_rule 'ssh' do
   notifies :enable, 'firewall[ufw]', :delayed
 end
 
-# Define directory structure for the runtime data.
+# === Define directory structure for the runtime data. ===
 
 directory node.default['application']['work_dir'] do
   owner node.default['application']['user']
@@ -135,7 +136,7 @@ directory node.default['application']['tmp_dir'] do
   action :create
 end
 
-# Setup server side components sources.
+# === Setup server side components sources. ===
 
 python_virtualenv node.default['application']['virtual_env'] do
   owner node.default['application']['user']
@@ -244,7 +245,7 @@ git "#{Chef::Config[:file_cache_path]}/comlink" do
   ssh_wrapper "#{Chef::Config[:file_cache_path]}/git_ssh_wrapper.sh"
 end
 
-bash "install_comlink" do
+bash 'install_comlink' do
   cwd "#{Chef::Config[:file_cache_path]}/comlink"
   code <<-EOH
     (#{node.default['application']['virtual_env']}/bin/python setup.py install)
@@ -255,7 +256,20 @@ bash "install_comlink" do
   not_if { FileTest.exists?(File.join(node.default['application']['virtual_env'], 'local', 'lib', 'python2.7', 'site-packages', 'comlink-0.1-py2.7.egg')) }
 end
 
-# Setup serving.
+# === Build or update the master database ===
+
+bash 'build_and_sync_db' do
+  cwd "#{node.default['application']['sources_dir']}/interface_server"
+  code <<-EOH
+    (#{node.default['application']['virtual_env']}/bin/python manage.py syncdb)
+  EOH
+  environment node.default['application']['python_env']
+  user node.default['application']['user']
+  group node.default['application']['group']
+  subscribes :run, 'bash[build_and_sync_db]', :delayed
+end
+
+# === Setup serving. ===
 
 # Setup API serving.
 
@@ -289,6 +303,13 @@ firewall_rule node.default['application']['api_serving']['frontend']['name'] do
   notifies :enable, 'firewall[ufw]', :delayed
 end
 
+template node.default['application']['api_serving']['app']['config'] do
+  source 'api_serving.app.erb'
+  owner node.default['application']['user'] # Owned by application.user, like all sources
+  group node.default['application']['group']
+  mode '0440'
+end
+
 template node.default['application']['api_serving']['app']['daemon']['script'] do
   source 'api_serving.app_daemon.erb'
   owner 'root'
@@ -300,10 +321,11 @@ service node.default['application']['api_serving']['app']['name'] do
   init_command node.default['application']['api_serving']['app']['daemon']['script']
   supports :start => true, :stop => true, :restart => true, :status => true
   action [:enable, :start]
+  subscribes :restart, "template[#{node.default['application']['api_serving']['app']['config']}]", :delayed
   subscribes :restart, "template[#{node.default['application']['api_serving']['app']['daemon']['script']}]", :delayed
 end
 
-# Setup resources serving.
+# === Setup resources serving. ===
 
 template node.default['application']['res_serving']['config'] do
   source 'res_serving.erb'
@@ -335,7 +357,7 @@ firewall_rule node.default['application']['res_serving']['name'] do
   notifies :enable, 'firewall[ufw]', :delayed
 end
 
-# Setup exploring.
+# === Setup exploring. ===
 
 # Setup fetcher service.
 
@@ -368,3 +390,6 @@ service node.default['application']['exploring']['photo_save']['name'] do
   action [:enable, :start]
   subscribes :restart, "template[#{node.default['application']['exploring']['photo_save']['daemon']['script']}]", :delayed
 end
+
+# Setup explorer service as a cron job.
+
