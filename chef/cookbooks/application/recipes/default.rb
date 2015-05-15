@@ -6,6 +6,8 @@ include_recipe 'apt::default'
 package 'daemon'
 package 'lighttpd'
 package 'sqlite'
+package 'libjpeg-dev'
+package 'libjpeg8-dev' # Only on Ubuntu 14.04 >=
 include_recipe 'build-essential'
 include_recipe 'python'
 include_recipe 'thrift'
@@ -57,9 +59,26 @@ firewall 'ufw' do
   action :nothing
 end
 
-firewall_rule 'ssh' do
+firewall_rule 'ssh-in' do
   port 22
   protocol :tcp
+  direction :in
+  action :allow
+  notifies :enable, 'firewall[ufw]', :delayed
+end
+
+firewall_rule 'http-out' do
+  port 80
+  protocol :tcp
+  direction :out
+  action :allow
+  notifies :enable, 'firewall[ufw]', :delayed
+end
+
+firewall_rule 'https-out' do
+  port 443
+  protocol :tcp
+  direction :out
   action :allow
   notifies :enable, 'firewall[ufw]', :delayed
 end
@@ -122,6 +141,13 @@ directory node.default['application']['sources_dir'] do
   action :create
 end
 
+directory node.default['application']['run_scripts_dir'] do
+  owner node.default['application']['user']
+  group node.default['application']['group']
+  mode '0770'
+  action :create
+end
+
 directory node.default['application']['var_dir'] do
   owner node.default['application']['user']
   group node.default['application']['group']
@@ -164,6 +190,12 @@ end
 
 # TODO(horia141): figure out how to write this as the appropriate user and group.
 python_pip 'pillow' do
+  virtualenv node.default['application']['virtual_env']
+  options "--cache-dir #{node.default['application']['pip_cache']}"
+end
+
+# TODO(horia141): figure out how to write this as the appropriate user and group.
+python_pip 'beautifulsoup4' do
   virtualenv node.default['application']['virtual_env']
   options "--cache-dir #{node.default['application']['pip_cache']}"
 end
@@ -261,12 +293,14 @@ end
 bash 'build_and_sync_db' do
   cwd "#{node.default['application']['sources_dir']}/interface_server"
   code <<-EOH
-    (#{node.default['application']['virtual_env']}/bin/python manage.py syncdb)
+    (touch #{node.default['application']['db_path']})
+    (#{node.default['application']['virtual_env']}/bin/python manage.py migrate)
+    (chmod g+w #{node.default['application']['db_path']})
   EOH
   environment node.default['application']['python_env']
   user node.default['application']['user']
   group node.default['application']['group']
-  subscribes :run, 'bash[build_and_sync_db]', :delayed
+  subscribes :run, "template[#{node.default['application']['api_serving']['app']['config']}]", :delayed
 end
 
 # === Setup serving. ===
@@ -321,6 +355,7 @@ service node.default['application']['api_serving']['app']['name'] do
   init_command node.default['application']['api_serving']['app']['daemon']['script']
   supports :start => true, :stop => true, :restart => true, :status => true
   action [:enable, :start]
+  subscribes :restart, 'bash[build_and_sync_db]', :delayed
   subscribes :restart, "template[#{node.default['application']['api_serving']['app']['config']}]", :delayed
   subscribes :restart, "template[#{node.default['application']['api_serving']['app']['daemon']['script']}]", :delayed
 end
@@ -391,5 +426,18 @@ service node.default['application']['exploring']['photo_save']['name'] do
   subscribes :restart, "template[#{node.default['application']['exploring']['photo_save']['daemon']['script']}]", :delayed
 end
 
-# Setup explorer service as a cron job.
+# Setup explorer service.
 
+template node.default['application']['exploring']['explorer']['daemon']['script'] do
+  source 'exploring.explorer_daemon.erb'
+  owner 'root'
+  group 'root'
+  mode '0755'
+end
+
+# service node.default['application']['exploring']['explorer']['name'] do
+#   init_command node.default['application']['exploring']['explorer']['daemon']['script']
+#   supports :start => true, :stop => true, :restart => true, :status => true
+#   action [:enable, :start]
+#   subscribes :restart, "template[#{node.default['application']['exploring']['explorer']['daemon']['script']}]", :delayed
+# end

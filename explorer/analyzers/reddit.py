@@ -3,7 +3,7 @@
 import logging
 import urllib2
 
-import BeautifulSoup as bs
+import bs4 as bs
 
 import common.defines.constants as defines
 import explorer.analyzers as analyzers
@@ -37,7 +37,7 @@ class Analyzer(analyzers.Analyzer):
                 continue
 
             logging.info('Parse structure')
-            soup = bs.BeautifulSoup(category_page_raw_content, convertEntities=bs.BeautifulSoup.HTML_ENTITIES)
+            soup = bs.BeautifulSoup(category_page_raw_content)
 
             if soup is None:
                 raise analyzers.Error('Could not parse structure')

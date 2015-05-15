@@ -15,10 +15,11 @@ default['application']['photos_dir'] = File.join(default['application']['data_di
 default['application']['original_photos_dir'] = File.join(default['application']['photos_dir'], 'original')
 default['application']['processed_photos_dir'] = File.join(default['application']['photos_dir'], 'processed')
 default['application']['sources_dir'] = File.join(default['application']['work_dir'], 'sources')
+default['application']['run_scripts_dir'] = File.join(default['application']['work_dir'], 'run_scripts')
 default['application']['var_dir'] = File.join(default['application']['work_dir'], 'var')
 default['application']['tmp_dir'] = File.join(default['application']['work_dir'], 'tmp')
 
-default['application']['db_path'] = File.join(default['application']['var_dir'], 'db.sqlite3')
+default['application']['db_path'] = File.join(default['application']['data_dir'], 'db.sqlite3')
 
 default['application']['virtual_env'] = File.join(default['application']['sources_dir'], 'env')
 default['application']['egg_cache'] = File.join(default['application']['tmp_dir'], 'egg-cache')
@@ -80,6 +81,14 @@ default['application']['exploring']['photo_save']['daemon']['script'] = '/etc/in
 default['application']['exploring']['photo_save']['daemon']['pid_file'] = File.join(default['application']['var_dir'], 'exploring.photo_save_daemon.pid')
 default['application']['exploring']['photo_save']['daemon']['error_log'] = File.join(default['application']['var_dir'], 'exploring.photo_save_daemon.error.log')
 default['application']['exploring']['photo_save']['daemon']['debug_log'] = File.join(default['application']['var_dir'], 'exploring.photo_save_daemon.debug.log')
+default['application']['exploring']['explorer']['name'] = 'zigzag_exploring_explorer'
+default['application']['exploring']['explorer']['sleep_sec'] = 30 * 60
+default['application']['exploring']['explorer']['pid_file'] = File.join(default['application']['var_dir'], 'exploring.explorer.pid')
+default['application']['exploring']['explorer']['log'] = File.join(default['application']['var_dir'], 'exploring.explorer.log')
+default['application']['exploring']['explorer']['daemon']['script'] = '/etc/init.d/zigzag_exploring_explorer'
+default['application']['exploring']['explorer']['daemon']['pid_file'] = File.join(default['application']['var_dir'], 'exploring.explorer_daemon.pid')
+default['application']['exploring']['explorer']['daemon']['error_log'] = File.join(default['application']['var_dir'], 'exploring.explorer_daemon.error.log')
+default['application']['exploring']['explorer']['daemon']['debug_log'] = File.join(default['application']['var_dir'], 'exploring.explorer_daemon.debug.log')
 
 default['application']['git']['comlink']['repo'] = 'git@github.com:horia141/comlink.git'
 default['application']['git']['comlink']['branch'] = 'master'

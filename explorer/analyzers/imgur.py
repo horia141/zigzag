@@ -4,7 +4,7 @@ import logging
 import urllib2
 import urlparse
 
-import BeautifulSoup as bs
+import bs4 as bs
 
 import common.defines.constants as defines
 import explorer.analyzers as analyzers
@@ -33,7 +33,7 @@ class Analyzer(analyzers.Analyzer):
             return []
 
         logging.info('Parse structure')
-        soup = bs.BeautifulSoup(main_page_raw_content, convertEntities=bs.BeautifulSoup.HTML_ENTITIES)
+        soup = bs.BeautifulSoup(main_page_raw_content)
 
         if soup is None:
             raise analyzers.Error('Could not parse structure')
@@ -80,7 +80,7 @@ class Analyzer(analyzers.Analyzer):
 
         logging.info('Parse structure')
         try:
-            soup = bs.BeautifulSoup(page_raw_content, convertEntities=bs.BeautifulSoup.HTML_ENTITIES)
+            soup = bs.BeautifulSoup(page_raw_content)
         except TypeError as e:
             # TODO(horia141): I think there's a bug in BeautifulSoup.
             raise analyzers.Error('Could not process - %s' % str(e))
@@ -172,7 +172,7 @@ class Analyzer(analyzers.Analyzer):
             raise analyzers.Error('Could not fetch - %s' % str(e))
 
         logging.info('Parse structure')
-        soup = bs.BeautifulSoup(page_raw_content, convertEntities=bs.BeautifulSoup.HTML_ENTITIES)
+        soup = bs.BeautifulSoup(page_raw_content)
 
         if soup is None:
             raise analyzers.Error('Could not parse structure')
