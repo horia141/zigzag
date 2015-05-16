@@ -15,7 +15,6 @@ default['application']['photos_dir'] = File.join(default['application']['data_di
 default['application']['original_photos_dir'] = File.join(default['application']['photos_dir'], 'original')
 default['application']['processed_photos_dir'] = File.join(default['application']['photos_dir'], 'processed')
 default['application']['sources_dir'] = File.join(default['application']['work_dir'], 'sources')
-default['application']['run_scripts_dir'] = File.join(default['application']['work_dir'], 'run_scripts')
 default['application']['var_dir'] = File.join(default['application']['work_dir'], 'var')
 default['application']['tmp_dir'] = File.join(default['application']['work_dir'], 'tmp')
 

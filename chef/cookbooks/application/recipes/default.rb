@@ -158,13 +158,6 @@ directory node.default['application']['sources_dir'] do
   action :create
 end
 
-directory node.default['application']['run_scripts_dir'] do
-  owner node.default['application']['user']
-  group node.default['application']['group']
-  mode '0770'
-  action :create
-end
-
 directory node.default['application']['var_dir'] do
   owner node.default['application']['user']
   group node.default['application']['group']
@@ -317,7 +310,6 @@ bash 'build_and_sync_db' do
   environment node.default['application']['python_env']
   user node.default['application']['user']
   group node.default['application']['group']
-  subscribes :run, "template[#{node.default['application']['api_server']['app']['config']}]", :delayed
 end
 
 # === Setup serving. ===
@@ -342,9 +334,7 @@ end
 service node.default['application']['api_server']['frontend']['name'] do
   init_command node.default['application']['api_server']['frontend']['daemon']['script']
   supports :start => true, :stop => true, :restart => true, :status => true
-  action [:enable, :start]
-  subscribes :restart, "template[#{node.default['application']['api_server']['frontend']['config']}]", :delayed
-  subscribes :restart, "template[#{node.default['application']['api_server']['frontend']['daemon']['script']}]", :delayed
+  action [:enable, :start, :restart]
 end
 
 firewall_rule node.default['application']['api_server']['frontend']['name'] do
@@ -371,10 +361,7 @@ end
 service node.default['application']['api_server']['app']['name'] do
   init_command node.default['application']['api_server']['app']['daemon']['script']
   supports :start => true, :stop => true, :restart => true, :status => true
-  action [:enable, :start]
-  subscribes :restart, 'bash[build_and_sync_db]', :delayed
-  subscribes :restart, "template[#{node.default['application']['api_server']['app']['config']}]", :delayed
-  subscribes :restart, "template[#{node.default['application']['api_server']['app']['daemon']['script']}]", :delayed
+  action [:enable, :start, :restart]
 end
 
 # === Setup resources server. ===
@@ -397,9 +384,7 @@ end
 service node.default['application']['res_server']['name'] do
   init_command node.default['application']['res_server']['daemon']['script']
   supports :start => true, :stop => true, :restart => true, :status => true
-  action [:enable, :start]
-  subscribes :restart, "template[#{node.default['application']['res_server']['config']}]", :delayed
-  subscribes :restart, "template[#{node.default['application']['res_server']['daemon']['script']}]", :delayed
+  action [:enable, :start, :restart]
 end
 
 firewall_rule node.default['application']['res_server']['name'] do
@@ -423,8 +408,7 @@ end
 service node.default['application']['explorer']['fetcher']['name'] do
   init_command node.default['application']['explorer']['fetcher']['daemon']['script']
   supports :start => true, :stop => true, :restart => true, :status => true
-  action [:enable, :start]
-  subscribes :restart, "template[#{node.default['application']['explorer']['fetcher']['daemon']['script']}]", :delayed
+  action [:enable, :start, :restart]
 end
 
 # Setup photo_save service.
@@ -439,8 +423,7 @@ end
 service node.default['application']['explorer']['photo_save']['name'] do
   init_command node.default['application']['explorer']['photo_save']['daemon']['script']
   supports :start => true, :stop => true, :restart => true, :status => true
-  action [:enable, :start]
-  subscribes :restart, "template[#{node.default['application']['explorer']['photo_save']['daemon']['script']}]", :delayed
+  action [:enable, :start, :restart]
 end
 
 # Setup explorer service.
@@ -455,8 +438,7 @@ end
 service node.default['application']['explorer']['explorer']['name'] do
   init_command node.default['application']['explorer']['explorer']['daemon']['script']
   supports :start => true, :stop => true, :restart => true, :status => true
-  action [:enable, :start]
-  subscribes :restart, "template[#{node.default['application']['explorer']['explorer']['daemon']['script']}]", :delayed
+  action [:enable, :start, :restart]
 end
 
 # === Setup log analyzer. ===
@@ -471,6 +453,5 @@ end
 service node.default['application']['log_analyzer']['name'] do
   init_command node.default['application']['log_analyzer']['daemon']['script']
   supports :start => true, :stop => true, :restart => true, :status => true
-  action [:enable, :start]
-  subscribes :restart, "template[#{node.default['application']['log_analyzer']['daemon']['script']}]", :delayed
+  action [:enable, :start, :restart]
 end
