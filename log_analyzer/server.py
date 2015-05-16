@@ -85,12 +85,16 @@ def main():
 
         right_now_1 = datetime.datetime.now(pytz.utc)
 
-        api_server_log = ServerLog(args.api_server_log_path)
-        api_server_total_bytes_for_month, api_server_total_bytes_for_day = \
-            api_server_log.size_of_requested_resources_for_today()
-        res_server_log = ServerLog(args.res_server_log_path)
-        res_server_total_bytes_for_month, res_server_total_bytes_for_day = \
-            res_server_log.size_of_requested_resources_for_today()
+        try:
+            api_server_log = ServerLog(args.api_server_log_path)
+            api_server_total_bytes_for_month, api_server_total_bytes_for_day = \
+                api_server_log.size_of_requested_resources_for_today()
+            res_server_log = ServerLog(args.res_server_log_path)
+            res_server_total_bytes_for_month, res_server_total_bytes_for_day = \
+                res_server_log.size_of_requested_resources_for_today()
+        except IOError as e:
+            logging.error('Could not process logs - %s' % str(e))
+            continue
 
         datetime_ran_ts = long(time.mktime(datetime.datetime.now().timetuple()))
         month_consumption = log_analyzer_protos.SystemConsumption(
