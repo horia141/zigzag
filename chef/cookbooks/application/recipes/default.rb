@@ -290,7 +290,7 @@ end
 bash 'install_comlink' do
   cwd "#{Chef::Config[:file_cache_path]}/comlink"
   code <<-EOH
-#     (#{node.default['application']['virtual_env']}/bin/python setup.py install)
+    (#{node.default['application']['virtual_env']}/bin/python setup.py install)
     (chown -R #{node.default['application']['user']} #{File.join(node.default['application']['virtual_env'], 'local', 'lib', 'python2.7', 'site-packages', 'comlink-0.1-py2.7.egg')})
     (chgrp -R #{node.default['application']['group']} #{File.join(node.default['application']['virtual_env'], 'local', 'lib', 'python2.7', 'site-packages', 'comlink-0.1-py2.7.egg')})
   EOH
