@@ -268,190 +268,190 @@ execute 'sources' do
           "/bin/true"
 end
 
-file "#{Chef::Config[:file_cache_path]}/git_ssh_wrapper.sh" do
-  owner node.default['application']['user']
-  group node.default['application']['group']
-  mode '0755'
-  content "#!/bin/sh\nexec /usr/bin/ssh -i /home/horiacoman/.ssh/id_rsa -o StrictHostKeyChecking=no -o PubkeyAuthentication=yes -o PasswordAuthentication=no \"$@\""
-end
+# file "#{Chef::Config[:file_cache_path]}/git_ssh_wrapper.sh" do
+#   owner node.default['application']['user']
+#   group node.default['application']['group']
+#   mode '0755'
+#   content "#!/bin/sh\nexec /usr/bin/ssh -i /home/horiacoman/.ssh/id_rsa -o StrictHostKeyChecking=no -o PubkeyAuthentication=yes -o PasswordAuthentication=no \"$@\""
+# end
 
-# TODO(horia141): this should not rely on the built in keys. but rather on protected keys in the data bag.
-# TODO(horia141): factor out the repository name.
-git "#{Chef::Config[:file_cache_path]}/comlink" do
-  repository node.default['application']['git']['comlink']['repo']
-  reference node.default['application']['git']['comlink']['branch']
-  action :sync
-  notifies :run, 'bash[install_comlink]', :delayed
-  # user node.default['application']['user']
-  # group node.default['application']['group']
-  ssh_wrapper "#{Chef::Config[:file_cache_path]}/git_ssh_wrapper.sh"
-end
+# # TODO(horia141): this should not rely on the built in keys. but rather on protected keys in the data bag.
+# # TODO(horia141): factor out the repository name.
+# git "#{Chef::Config[:file_cache_path]}/comlink" do
+#   repository node.default['application']['git']['comlink']['repo']
+#   reference node.default['application']['git']['comlink']['branch']
+#   action :sync
+#   notifies :run, 'bash[install_comlink]', :delayed
+#   # user node.default['application']['user']
+#   # group node.default['application']['group']
+#   ssh_wrapper "#{Chef::Config[:file_cache_path]}/git_ssh_wrapper.sh"
+# end
 
-bash 'install_comlink' do
-  cwd "#{Chef::Config[:file_cache_path]}/comlink"
-  code <<-EOH
-    (#{node.default['application']['virtual_env']}/bin/python setup.py install)
-    (chown -R #{node.default['application']['user']} #{File.join(node.default['application']['virtual_env'], 'local', 'lib', 'python2.7', 'site-packages', 'comlink-0.1-py2.7.egg')})
-    (chgrp -R #{node.default['application']['group']} #{File.join(node.default['application']['virtual_env'], 'local', 'lib', 'python2.7', 'site-packages', 'comlink-0.1-py2.7.egg')})
-  EOH
+# bash 'install_comlink' do
+#   cwd "#{Chef::Config[:file_cache_path]}/comlink"
+#   code <<-EOH
+#     (#{node.default['application']['virtual_env']}/bin/python setup.py install)
+#     (chown -R #{node.default['application']['user']} #{File.join(node.default['application']['virtual_env'], 'local', 'lib', 'python2.7', 'site-packages', 'comlink-0.1-py2.7.egg')})
+#     (chgrp -R #{node.default['application']['group']} #{File.join(node.default['application']['virtual_env'], 'local', 'lib', 'python2.7', 'site-packages', 'comlink-0.1-py2.7.egg')})
+#   EOH
 
-  not_if { FileTest.exists?(File.join(node.default['application']['virtual_env'], 'local', 'lib', 'python2.7', 'site-packages', 'comlink-0.1-py2.7.egg')) }
-end
+#   not_if { FileTest.exists?(File.join(node.default['application']['virtual_env'], 'local', 'lib', 'python2.7', 'site-packages', 'comlink-0.1-py2.7.egg')) }
+# end
 
-# === Build or update the master database ===
+# # === Build or update the master database ===
 
-bash 'build_and_sync_db' do
-  cwd "#{node.default['application']['sources_dir']}/interface_server"
-  code <<-EOH
-    (touch #{node.default['application']['db_path']})
-    (#{node.default['application']['virtual_env']}/bin/python manage.py migrate)
-    (chmod g+w #{node.default['application']['db_path']})
-  EOH
-  environment node.default['application']['python_env']
-  user node.default['application']['user']
-  group node.default['application']['group']
-end
+# bash 'build_and_sync_db' do
+#   cwd "#{node.default['application']['sources_dir']}/interface_server"
+#   code <<-EOH
+#     (touch #{node.default['application']['db_path']})
+#     (#{node.default['application']['virtual_env']}/bin/python manage.py migrate)
+#     (chmod g+w #{node.default['application']['db_path']})
+#   EOH
+#   environment node.default['application']['python_env']
+#   user node.default['application']['user']
+#   group node.default['application']['group']
+# end
 
-# === Setup serving. ===
+# # === Setup serving. ===
 
-# Setup API server.
+# # Setup API server.
 
-template node.default['application']['api_server']['frontend']['config'] do
-  source 'api_server.frontend.erb'
-  owner node.default['application']['api_server']['user']
-  group node.default['application']['group']
-  mode '0440'
-  verify "lighttpd -t -f %{file}"
-end
+# template node.default['application']['api_server']['frontend']['config'] do
+#   source 'api_server.frontend.erb'
+#   owner node.default['application']['api_server']['user']
+#   group node.default['application']['group']
+#   mode '0440'
+#   verify "lighttpd -t -f %{file}"
+# end
 
-template node.default['application']['api_server']['frontend']['daemon']['script'] do
-  source 'api_server.frontend_daemon.erb'
-  owner 'root'
-  group 'root'
-  mode '0755'
-end
+# template node.default['application']['api_server']['frontend']['daemon']['script'] do
+#   source 'api_server.frontend_daemon.erb'
+#   owner 'root'
+#   group 'root'
+#   mode '0755'
+# end
 
-service node.default['application']['api_server']['frontend']['name'] do
-  init_command node.default['application']['api_server']['frontend']['daemon']['script']
-  supports :start => true, :stop => true, :restart => true, :status => true
-  action [:enable, :start, :restart]
-end
+# service node.default['application']['api_server']['frontend']['name'] do
+#   init_command node.default['application']['api_server']['frontend']['daemon']['script']
+#   supports :start => true, :stop => true, :restart => true, :status => true
+#   action [:enable, :start, :restart]
+# end
 
-firewall_rule node.default['application']['api_server']['frontend']['name'] do
-  port node.default['application']['api_server']['frontend']['port']
-  protocol :tcp
-  action :allow
-  notifies :enable, 'firewall[ufw]', :delayed
-end
+# firewall_rule node.default['application']['api_server']['frontend']['name'] do
+#   port node.default['application']['api_server']['frontend']['port']
+#   protocol :tcp
+#   action :allow
+#   notifies :enable, 'firewall[ufw]', :delayed
+# end
 
-template node.default['application']['api_server']['app']['config'] do
-  source 'api_server.app.erb'
-  owner node.default['application']['user'] # Owned by application.user, like all sources
-  group node.default['application']['group']
-  mode '0440'
-end
+# template node.default['application']['api_server']['app']['config'] do
+#   source 'api_server.app.erb'
+#   owner node.default['application']['user'] # Owned by application.user, like all sources
+#   group node.default['application']['group']
+#   mode '0440'
+# end
 
-template node.default['application']['api_server']['app']['daemon']['script'] do
-  source 'api_server.app_daemon.erb'
-  owner 'root'
-  group 'root'
-  mode '0755'
-end
+# template node.default['application']['api_server']['app']['daemon']['script'] do
+#   source 'api_server.app_daemon.erb'
+#   owner 'root'
+#   group 'root'
+#   mode '0755'
+# end
 
-service node.default['application']['api_server']['app']['name'] do
-  init_command node.default['application']['api_server']['app']['daemon']['script']
-  supports :start => true, :stop => true, :restart => true, :status => true
-  action [:enable, :start, :restart]
-end
+# service node.default['application']['api_server']['app']['name'] do
+#   init_command node.default['application']['api_server']['app']['daemon']['script']
+#   supports :start => true, :stop => true, :restart => true, :status => true
+#   action [:enable, :start, :restart]
+# end
 
-# === Setup resources server. ===
+# # === Setup resources server. ===
 
-template node.default['application']['res_server']['config'] do
-  source 'res_server.erb'
-  owner node.default['application']['res_server']['user']
-  group node.default['application']['group']
-  mode '0440'
-  verify "lighttpd -t -f %{file}"
-end
+# template node.default['application']['res_server']['config'] do
+#   source 'res_server.erb'
+#   owner node.default['application']['res_server']['user']
+#   group node.default['application']['group']
+#   mode '0440'
+#   verify "lighttpd -t -f %{file}"
+# end
 
-template node.default['application']['res_server']['daemon']['script'] do
-  source 'res_server_daemon.erb'
-  owner 'root'
-  group 'root'
-  mode '0755'
-end
+# template node.default['application']['res_server']['daemon']['script'] do
+#   source 'res_server_daemon.erb'
+#   owner 'root'
+#   group 'root'
+#   mode '0755'
+# end
 
-service node.default['application']['res_server']['name'] do
-  init_command node.default['application']['res_server']['daemon']['script']
-  supports :start => true, :stop => true, :restart => true, :status => true
-  action [:enable, :start, :restart]
-end
+# service node.default['application']['res_server']['name'] do
+#   init_command node.default['application']['res_server']['daemon']['script']
+#   supports :start => true, :stop => true, :restart => true, :status => true
+#   action [:enable, :start, :restart]
+# end
 
-firewall_rule node.default['application']['res_server']['name'] do
-  port node.default['application']['res_server']['port']
-  protocol :tcp
-  action :allow
-  notifies :enable, 'firewall[ufw]', :delayed
-end
+# firewall_rule node.default['application']['res_server']['name'] do
+#   port node.default['application']['res_server']['port']
+#   protocol :tcp
+#   action :allow
+#   notifies :enable, 'firewall[ufw]', :delayed
+# end
 
-# === Setup explorer. ===
+# # === Setup explorer. ===
 
-# Setup fetcher service.
+# # Setup fetcher service.
 
-template node.default['application']['explorer']['fetcher']['daemon']['script'] do
-  source 'explorer.fetcher_daemon.erb'
-  owner 'root'
-  group 'root'
-  mode '0755'
-end
+# template node.default['application']['explorer']['fetcher']['daemon']['script'] do
+#   source 'explorer.fetcher_daemon.erb'
+#   owner 'root'
+#   group 'root'
+#   mode '0755'
+# end
 
-service node.default['application']['explorer']['fetcher']['name'] do
-  init_command node.default['application']['explorer']['fetcher']['daemon']['script']
-  supports :start => true, :stop => true, :restart => true, :status => true
-  action [:enable, :start, :restart]
-end
+# service node.default['application']['explorer']['fetcher']['name'] do
+#   init_command node.default['application']['explorer']['fetcher']['daemon']['script']
+#   supports :start => true, :stop => true, :restart => true, :status => true
+#   action [:enable, :start, :restart]
+# end
 
-# Setup photo_save service.
+# # Setup photo_save service.
 
-template node.default['application']['explorer']['photo_save']['daemon']['script'] do
-  source 'explorer.photo_save_daemon.erb'
-  owner 'root'
-  group 'root'
-  mode '0755'
-end
+# template node.default['application']['explorer']['photo_save']['daemon']['script'] do
+#   source 'explorer.photo_save_daemon.erb'
+#   owner 'root'
+#   group 'root'
+#   mode '0755'
+# end
 
-service node.default['application']['explorer']['photo_save']['name'] do
-  init_command node.default['application']['explorer']['photo_save']['daemon']['script']
-  supports :start => true, :stop => true, :restart => true, :status => true
-  action [:enable, :start, :restart]
-end
+# service node.default['application']['explorer']['photo_save']['name'] do
+#   init_command node.default['application']['explorer']['photo_save']['daemon']['script']
+#   supports :start => true, :stop => true, :restart => true, :status => true
+#   action [:enable, :start, :restart]
+# end
 
-# Setup explorer service.
+# # Setup explorer service.
 
-template node.default['application']['explorer']['explorer']['daemon']['script'] do
-  source 'explorer.explorer_daemon.erb'
-  owner 'root'
-  group 'root'
-  mode '0755'
-end
+# template node.default['application']['explorer']['explorer']['daemon']['script'] do
+#   source 'explorer.explorer_daemon.erb'
+#   owner 'root'
+#   group 'root'
+#   mode '0755'
+# end
 
-service node.default['application']['explorer']['explorer']['name'] do
-  init_command node.default['application']['explorer']['explorer']['daemon']['script']
-  supports :start => true, :stop => true, :restart => true, :status => true
-  action [:enable, :start, :restart]
-end
+# service node.default['application']['explorer']['explorer']['name'] do
+#   init_command node.default['application']['explorer']['explorer']['daemon']['script']
+#   supports :start => true, :stop => true, :restart => true, :status => true
+#   action [:enable, :start, :restart]
+# end
 
-# === Setup log analyzer. ===
+# # === Setup log analyzer. ===
 
-template node.default['application']['log_analyzer']['daemon']['script'] do
-  source 'log_analyzer_daemon.erb'
-  owner 'root'
-  group 'root'
-  mode '0755'
-end
+# template node.default['application']['log_analyzer']['daemon']['script'] do
+#   source 'log_analyzer_daemon.erb'
+#   owner 'root'
+#   group 'root'
+#   mode '0755'
+# end
 
-service node.default['application']['log_analyzer']['name'] do
-  init_command node.default['application']['log_analyzer']['daemon']['script']
-  supports :start => true, :stop => true, :restart => true, :status => true
-  action [:enable, :start, :restart]
-end
+# service node.default['application']['log_analyzer']['name'] do
+#   init_command node.default['application']['log_analyzer']['daemon']['script']
+#   supports :start => true, :stop => true, :restart => true, :status => true
+#   action [:enable, :start, :restart]
+# end
