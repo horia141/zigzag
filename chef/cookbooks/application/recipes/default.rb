@@ -310,7 +310,7 @@ bash 'build_and_sync_db' do
   environment node.default['application']['python_env']
   user node.default['application']['user']
   group node.default['application']['group']
-  action :none
+  action :nothing
   subscribes :run, "template[#{node.default['application']['api_server']['app']['config']}]", :delayed
 end
 
@@ -364,6 +364,7 @@ service node.default['application']['api_server']['app']['name'] do
   init_command node.default['application']['api_server']['app']['daemon']['script']
   supports :start => true, :stop => true, :restart => true, :status => true
   action [:enable, :start, :restart]
+  subscribes :restart, "bash[build_and_sync_db]", :delayed
 end
 
 # === Setup resources server. ===
