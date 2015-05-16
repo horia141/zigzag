@@ -47,8 +47,8 @@ user node.default['application']['res_serving']['user'] do
   system true
 end
 
-user node.default['application']['exploring']['user'] do
-  comment 'User for the exploring component'
+user node.default['application']['explorer']['user'] do
+  comment 'User for the explorer component'
   group node.default['application']['group']
   shell '/usr/sbin/nologin'
   home node.default['application']['work_dir']
@@ -402,54 +402,54 @@ firewall_rule node.default['application']['res_serving']['name'] do
   notifies :enable, 'firewall[ufw]', :delayed
 end
 
-# === Setup exploring. ===
+# === Setup explorer. ===
 
 # Setup fetcher service.
 
-template node.default['application']['exploring']['fetcher']['daemon']['script'] do
-  source 'exploring.fetcher_daemon.erb'
+template node.default['application']['explorer']['fetcher']['daemon']['script'] do
+  source 'explorer.fetcher_daemon.erb'
   owner 'root'
   group 'root'
   mode '0755'
 end
 
-service node.default['application']['exploring']['fetcher']['name'] do
-  init_command node.default['application']['exploring']['fetcher']['daemon']['script']
+service node.default['application']['explorer']['fetcher']['name'] do
+  init_command node.default['application']['explorer']['fetcher']['daemon']['script']
   supports :start => true, :stop => true, :restart => true, :status => true
   action [:enable, :start]
-  subscribes :restart, "template[#{node.default['application']['exploring']['fetcher']['daemon']['script']}]", :delayed
+  subscribes :restart, "template[#{node.default['application']['explorer']['fetcher']['daemon']['script']}]", :delayed
 end
 
 # Setup photo_save service.
 
-template node.default['application']['exploring']['photo_save']['daemon']['script'] do
-  source 'exploring.photo_save_daemon.erb'
+template node.default['application']['explorer']['photo_save']['daemon']['script'] do
+  source 'explorer.photo_save_daemon.erb'
   owner 'root'
   group 'root'
   mode '0755'
 end
 
-service node.default['application']['exploring']['photo_save']['name'] do
-  init_command node.default['application']['exploring']['photo_save']['daemon']['script']
+service node.default['application']['explorer']['photo_save']['name'] do
+  init_command node.default['application']['explorer']['photo_save']['daemon']['script']
   supports :start => true, :stop => true, :restart => true, :status => true
   action [:enable, :start]
-  subscribes :restart, "template[#{node.default['application']['exploring']['photo_save']['daemon']['script']}]", :delayed
+  subscribes :restart, "template[#{node.default['application']['explorer']['photo_save']['daemon']['script']}]", :delayed
 end
 
 # Setup explorer service.
 
-template node.default['application']['exploring']['explorer']['daemon']['script'] do
-  source 'exploring.explorer_daemon.erb'
+template node.default['application']['explorer']['explorer']['daemon']['script'] do
+  source 'explorer.explorer_daemon.erb'
   owner 'root'
   group 'root'
   mode '0755'
 end
 
-service node.default['application']['exploring']['explorer']['name'] do
-  init_command node.default['application']['exploring']['explorer']['daemon']['script']
+service node.default['application']['explorer']['explorer']['name'] do
+  init_command node.default['application']['explorer']['explorer']['daemon']['script']
   supports :start => true, :stop => true, :restart => true, :status => true
   action [:enable, :start]
-  subscribes :restart, "template[#{node.default['application']['exploring']['explorer']['daemon']['script']}]", :delayed
+  subscribes :restart, "template[#{node.default['application']['explorer']['explorer']['daemon']['script']}]", :delayed
 end
 
 # === Setup log analyzer. ===
