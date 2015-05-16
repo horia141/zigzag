@@ -337,6 +337,7 @@ service node.default['application']['api_server']['frontend']['name'] do
   init_command node.default['application']['api_server']['frontend']['daemon']['script']
   supports :start => true, :stop => true, :restart => true, :status => true
   action [:enable, :start, :restart]
+  provider Chef::Provider::Service::Init::Debian
 end
 
 firewall_rule node.default['application']['api_server']['frontend']['name'] do
@@ -364,6 +365,7 @@ service node.default['application']['api_server']['app']['name'] do
   init_command node.default['application']['api_server']['app']['daemon']['script']
   supports :start => true, :stop => true, :restart => true, :status => true
   action [:enable, :start, :restart]
+  provider Chef::Provider::Service::Init::Debian
   subscribes :restart, "bash[build_and_sync_db]", :delayed
 end
 
@@ -388,6 +390,7 @@ service node.default['application']['res_server']['name'] do
   init_command node.default['application']['res_server']['daemon']['script']
   supports :start => true, :stop => true, :restart => true, :status => true
   action [:enable, :start, :restart]
+  provider Chef::Provider::Service::Init::Debian
 end
 
 firewall_rule node.default['application']['res_server']['name'] do
@@ -412,6 +415,7 @@ service node.default['application']['explorer']['fetcher']['name'] do
   init_command node.default['application']['explorer']['fetcher']['daemon']['script']
   supports :start => true, :stop => true, :restart => true, :status => true
   action [:enable, :start, :restart]
+  provider Chef::Provider::Service::Init::Debian
 end
 
 # Setup photo_save service.
@@ -427,6 +431,7 @@ service node.default['application']['explorer']['photo_save']['name'] do
   init_command node.default['application']['explorer']['photo_save']['daemon']['script']
   supports :start => true, :stop => true, :restart => true, :status => true
   action [:enable, :start, :restart]
+  provider Chef::Provider::Service::Init::Debian
 end
 
 # Setup explorer service.
@@ -442,6 +447,7 @@ service node.default['application']['explorer']['explorer']['name'] do
   init_command node.default['application']['explorer']['explorer']['daemon']['script']
   supports :start => true, :stop => true, :restart => true, :status => true
   action [:enable, :start, :restart]
+  provider Chef::Provider::Service::Init::Debian
 end
 
 # === Setup log analyzer. ===
@@ -457,4 +463,5 @@ service node.default['application']['log_analyzer']['name'] do
   init_command node.default['application']['log_analyzer']['daemon']['script']
   supports :start => true, :stop => true, :restart => true, :status => true
   action [:enable, :start, :restart]
+  provider Chef::Provider::Service::Init::Debian
 end
