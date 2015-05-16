@@ -12,6 +12,10 @@ package 'libav-tools'
 include_recipe 'build-essential'
 include_recipe 'python'
 include_recipe 'thrift'
+package 'python-dev'
+package 'libpq-dev'
+package 'postgresql'
+package 'postgresql-contrib'
 
 # === System level firewall configuration. ===
 
@@ -206,6 +210,18 @@ end
 
 # TODO(horia141): figure out how to write this as the appropriate user and group.
 python_pip 'beautifulsoup4' do
+  virtualenv node.default['application']['virtual_env']
+  options "--cache-dir #{node.default['application']['pip_cache']}"
+end
+
+# TODO(horia141): figure out how to write this as the appropriate user and group.
+python_pip 'gunicorn' do
+  virtualenv node.default['application']['virtual_env']
+  options "--cache-dir #{node.default['application']['pip_cache']}"
+end
+
+# TODO(horia141): figure out how to write this as the appropriate user and group.
+python_pip 'psycopg2' do
   virtualenv node.default['application']['virtual_env']
   options "--cache-dir #{node.default['application']['pip_cache']}"
 end
