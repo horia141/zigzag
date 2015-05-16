@@ -13,7 +13,7 @@ import log_analyzer.protos.ttypes as log_analyzer_protos
 import utils.pidfile as pidfile
 
 
-class ServingLog(object):
+class ServerLog(object):
     def __init__(self, log_path):
         self._log_path = log_path
             
@@ -62,10 +62,10 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--sleep_sec', type=int, required=True,
         help='Number of seconds to sleep between analysis sessions')
-    parser.add_argument('--api_serving_log_path', type=str, required=True,
-        help='Path to the API serving log')
-    parser.add_argument('--res_serving_log_path', type=str, required=True,
-        help='Path to the res serving log')
+    parser.add_argument('--api_server_log_path', type=str, required=True,
+        help='Path to the API server log')
+    parser.add_argument('--res_server_log_path', type=str, required=True,
+        help='Path to the res server log')
     parser.add_argument('--log_path', type=str, required=True,
         help='Path to the log file')
     parser.add_argument('--pidfile_path', type=str, required=True,
@@ -85,20 +85,20 @@ def main():
 
         right_now_1 = datetime.datetime.now(pytz.utc)
 
-        api_serving_log = ServingLog(args.api_serving_log_path)
-        api_serving_total_bytes_for_month, api_serving_total_bytes_for_day = \
-            api_serving_log.size_of_requested_resources_for_today()
-        res_serving_log = ServingLog(args.res_serving_log_path)
-        res_serving_total_bytes_for_month, res_serving_total_bytes_for_day = \
-            res_serving_log.size_of_requested_resources_for_today()
+        api_server_log = ServerLog(args.api_server_log_path)
+        api_server_total_bytes_for_month, api_server_total_bytes_for_day = \
+            api_server_log.size_of_requested_resources_for_today()
+        res_server_log = ServerLog(args.res_server_log_path)
+        res_server_total_bytes_for_month, res_server_total_bytes_for_day = \
+            res_server_log.size_of_requested_resources_for_today()
 
         datetime_ran_ts = long(time.mktime(datetime.datetime.now().timetuple()))
         month_consumption = log_analyzer_protos.SystemConsumption(
-            api_serving_total_bytes_for_month + res_serving_total_bytes_for_month,
-            api_serving_total_bytes_for_month, res_serving_total_bytes_for_month)
+            api_server_total_bytes_for_month + res_server_total_bytes_for_month,
+            api_server_total_bytes_for_month, res_server_total_bytes_for_month)
         day_consumption = log_analyzer_protos.SystemConsumption(
-            api_serving_total_bytes_for_day + res_serving_total_bytes_for_day,
-            api_serving_total_bytes_for_day, res_serving_total_bytes_for_day)
+            api_server_total_bytes_for_day + res_server_total_bytes_for_day,
+            api_server_total_bytes_for_day, res_server_total_bytes_for_day)
         analysis_result = log_analyzer_protos.AnalysisResult(-1, datetime_ran_ts,
             month_consumption, day_consumption)
 

@@ -1,7 +1,6 @@
-# === Keep the APT cache up-to-date. ===
-include_recipe 'apt::default'
+# === Setup the proper system level packages and source stuff. ===
 
-# === Setup the proper packages and source stuff. ===
+include_recipe 'apt::default'
 
 package 'daemon'
 package 'lighttpd'
@@ -14,56 +13,7 @@ include_recipe 'build-essential'
 include_recipe 'python'
 include_recipe 'thrift'
 
-# === Define groups and users used by different components. ===
-
-group node.default['application']['group'] do
-  system true
-  members [node.default['application']['user'],
-           node.default['application']['api_serving']['user'],
-           node.default['application']['res_serving']['user']]
-end
-
-user node.default['application']['user'] do
-  comment 'Master user for the application'
-  group node.default['application']['group']
-  shell '/usr/sbin/nologin'
-  home node.default['application']['work_dir']
-  system true
-end
-
-user node.default['application']['api_serving']['user'] do
-  comment 'User for the API serving component'
-  group node.default['application']['group']
-  shell '/usr/sbin/nologin'
-  home node.default['application']['work_dir']
-  system true
-end
-
-user node.default['application']['res_serving']['user'] do
-  comment 'User for the resources serving component'
-  group node.default['application']['group']
-  shell '/usr/sbin/nologin'
-  home node.default['application']['work_dir']
-  system true
-end
-
-user node.default['application']['explorer']['user'] do
-  comment 'User for the explorer component'
-  group node.default['application']['group']
-  shell '/usr/sbin/nologin'
-  home node.default['application']['work_dir']
-  system true
-end
-
-user node.default['application']['log_analyzer']['user'] do
-  comment 'User for the log_analyzer component'
-  group node.default['application']['group']
-  shell '/usr/sbin/nologin'
-  home node.default['application']['work_dir']
-  system true
-end
-
-# === General firewall configuration. ===
+# === System level firewall configuration. ===
 
 firewall 'ufw' do
   action :nothing
@@ -91,6 +41,63 @@ firewall_rule 'https-out' do
   direction :out
   action :allow
   notifies :enable, 'firewall[ufw]', :delayed
+end
+
+# === Define groups and users used by different components. ===
+
+group node.default['application']['group'] do
+  system true
+end
+
+user node.default['application']['user'] do
+  comment 'Master user for the application'
+  group node.default['application']['group']
+  shell '/usr/sbin/nologin'
+  home node.default['application']['work_dir']
+  system true
+end
+
+user node.default['application']['api_server']['user'] do
+  comment 'User for the API server component'
+  group node.default['application']['group']
+  shell '/usr/sbin/nologin'
+  home node.default['application']['work_dir']
+  system true
+end
+
+user node.default['application']['res_server']['user'] do
+  comment 'User for the resources server component'
+  group node.default['application']['group']
+  shell '/usr/sbin/nologin'
+  home node.default['application']['work_dir']
+  system true
+end
+
+user node.default['application']['explorer']['user'] do
+  comment 'User for the explorer component'
+  group node.default['application']['group']
+  shell '/usr/sbin/nologin'
+  home node.default['application']['work_dir']
+  system true
+end
+
+user node.default['application']['log_analyzer']['user'] do
+  comment 'User for the log_analyzer component'
+  group node.default['application']['group']
+  shell '/usr/sbin/nologin'
+  home node.default['application']['work_dir']
+  system true
+end
+
+# Defining the group is split into two because we want to explicitly specify the members, and we
+# cannot do that if they are not yet defined.
+group node.default['application']['group'] do
+  system true
+  members [node.default['application']['user'],
+           node.default['application']['api_server']['user'],
+           node.default['application']['res_server']['user'],
+           node.default['application']['explorer']['user'],
+           node.default['application']['log_analyzer']['user']]
 end
 
 # === Define directory structure for the runtime data. ===
@@ -310,93 +317,93 @@ bash 'build_and_sync_db' do
   environment node.default['application']['python_env']
   user node.default['application']['user']
   group node.default['application']['group']
-  subscribes :run, "template[#{node.default['application']['api_serving']['app']['config']}]", :delayed
+  subscribes :run, "template[#{node.default['application']['api_server']['app']['config']}]", :delayed
 end
 
 # === Setup serving. ===
 
-# Setup API serving.
+# Setup API server.
 
-template node.default['application']['api_serving']['frontend']['config'] do
-  source 'api_serving.frontend.erb'
-  owner node.default['application']['api_serving']['user']
+template node.default['application']['api_server']['frontend']['config'] do
+  source 'api_server.frontend.erb'
+  owner node.default['application']['api_server']['user']
   group node.default['application']['group']
   mode '0440'
   verify "lighttpd -t -f %{file}"
 end
 
-template node.default['application']['api_serving']['frontend']['daemon']['script'] do
-  source 'api_serving.frontend_daemon.erb'
+template node.default['application']['api_server']['frontend']['daemon']['script'] do
+  source 'api_server.frontend_daemon.erb'
   owner 'root'
   group 'root'
   mode '0755'
 end
 
-service node.default['application']['api_serving']['frontend']['name'] do
-  init_command node.default['application']['api_serving']['frontend']['daemon']['script']
+service node.default['application']['api_server']['frontend']['name'] do
+  init_command node.default['application']['api_server']['frontend']['daemon']['script']
   supports :start => true, :stop => true, :restart => true, :status => true
   action [:enable, :start]
-  subscribes :restart, "template[#{node.default['application']['api_serving']['frontend']['config']}]", :delayed
-  subscribes :restart, "template[#{node.default['application']['api_serving']['frontend']['daemon']['script']}]", :delayed
+  subscribes :restart, "template[#{node.default['application']['api_server']['frontend']['config']}]", :delayed
+  subscribes :restart, "template[#{node.default['application']['api_server']['frontend']['daemon']['script']}]", :delayed
 end
 
-firewall_rule node.default['application']['api_serving']['frontend']['name'] do
-  port node.default['application']['api_serving']['frontend']['port']
+firewall_rule node.default['application']['api_server']['frontend']['name'] do
+  port node.default['application']['api_server']['frontend']['port']
   protocol :tcp
   action :allow
   notifies :enable, 'firewall[ufw]', :delayed
 end
 
-template node.default['application']['api_serving']['app']['config'] do
-  source 'api_serving.app.erb'
+template node.default['application']['api_server']['app']['config'] do
+  source 'api_server.app.erb'
   owner node.default['application']['user'] # Owned by application.user, like all sources
   group node.default['application']['group']
   mode '0440'
 end
 
-template node.default['application']['api_serving']['app']['daemon']['script'] do
-  source 'api_serving.app_daemon.erb'
+template node.default['application']['api_server']['app']['daemon']['script'] do
+  source 'api_server.app_daemon.erb'
   owner 'root'
   group 'root'
   mode '0755'
 end
 
-service node.default['application']['api_serving']['app']['name'] do
-  init_command node.default['application']['api_serving']['app']['daemon']['script']
+service node.default['application']['api_server']['app']['name'] do
+  init_command node.default['application']['api_server']['app']['daemon']['script']
   supports :start => true, :stop => true, :restart => true, :status => true
   action [:enable, :start]
   subscribes :restart, 'bash[build_and_sync_db]', :delayed
-  subscribes :restart, "template[#{node.default['application']['api_serving']['app']['config']}]", :delayed
-  subscribes :restart, "template[#{node.default['application']['api_serving']['app']['daemon']['script']}]", :delayed
+  subscribes :restart, "template[#{node.default['application']['api_server']['app']['config']}]", :delayed
+  subscribes :restart, "template[#{node.default['application']['api_server']['app']['daemon']['script']}]", :delayed
 end
 
-# === Setup resources serving. ===
+# === Setup resources server. ===
 
-template node.default['application']['res_serving']['config'] do
-  source 'res_serving.erb'
-  owner node.default['application']['res_serving']['user']
+template node.default['application']['res_server']['config'] do
+  source 'res_server.erb'
+  owner node.default['application']['res_server']['user']
   group node.default['application']['group']
   mode '0440'
   verify "lighttpd -t -f %{file}"
 end
 
-template node.default['application']['res_serving']['daemon']['script'] do
-  source 'res_serving_daemon.erb'
+template node.default['application']['res_server']['daemon']['script'] do
+  source 'res_server_daemon.erb'
   owner 'root'
   group 'root'
   mode '0755'
 end
 
-service node.default['application']['res_serving']['name'] do
-  init_command node.default['application']['res_serving']['daemon']['script']
+service node.default['application']['res_server']['name'] do
+  init_command node.default['application']['res_server']['daemon']['script']
   supports :start => true, :stop => true, :restart => true, :status => true
   action [:enable, :start]
-  subscribes :restart, "template[#{node.default['application']['res_serving']['config']}]", :delayed
-  subscribes :restart, "template[#{node.default['application']['res_serving']['daemon']['script']}]", :delayed
+  subscribes :restart, "template[#{node.default['application']['res_server']['config']}]", :delayed
+  subscribes :restart, "template[#{node.default['application']['res_server']['daemon']['script']}]", :delayed
 end
 
-firewall_rule node.default['application']['res_serving']['name'] do
-  port node.default['application']['res_serving']['port']
+firewall_rule node.default['application']['res_server']['name'] do
+  port node.default['application']['res_server']['port']
   protocol :tcp
   action :allow
   notifies :enable, 'firewall[ufw]', :delayed
