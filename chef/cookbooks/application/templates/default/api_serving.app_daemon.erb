@@ -5,7 +5,6 @@
 
 start () {
     echo "Starting <%= node.default['application']['api_serving']['app']['name'] %>... "
-
     daemon --name='<%= node.default['application']['api_serving']['app']['name'] %>' \
            --command='<%= node.default['application']['virtual_env'] %>/bin/python <%= node.default['application']['sources_dir'] %>/interface_server/manage.py runfcgi daemonize=false method=threaded host=<%= node.default['application']['api_serving']['app']['fastcgi_host'] %> port=<%= node.default['application']['api_serving']['app']['fastcgi_port'] %> workdir=<%= node.default['application']['work_dir'] %> outlog=<%= node.default['application']['api_serving']['app']['output_log'] %> errlog=<%= node.default['application']['api_serving']['app']['error_log'] %> pidfile=<%= node.default['application']['api_serving']['app']['pid_file'] %>' \
            --env='PYTHONPATH=<%= node.default['application']['python_env']['PYTHONPATH'] %>' \
@@ -24,7 +23,6 @@ start () {
 
 stop () {
     echo "Stopping <%= node.default['application']['api_serving']['app']['name'] %>... "
-
     daemon --name='<%= node.default['application']['api_serving']['app']['name'] %>' \
            --pidfile='<%= node.default['application']['api_serving']['app']['daemon']['pid_file'] %>' \
            --stop \
@@ -35,8 +33,10 @@ stop () {
 
 restart () {
     echo "Restarting <%= node.default['application']['api_serving']['app']['name'] %>..."
-    stop
-    start
+    daemon --name='<%= node.default['application']['api_serving']['app']['name'] %>' \
+           --pidfile='<%= node.default['application']['api_serving']['app']['daemon']['pid_file'] %>' \
+           --restart \
+           --verbose
     return $?
 }
 

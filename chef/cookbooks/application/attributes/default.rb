@@ -90,6 +90,16 @@ default['application']['exploring']['explorer']['daemon']['pid_file'] = File.joi
 default['application']['exploring']['explorer']['daemon']['error_log'] = File.join(default['application']['var_dir'], 'exploring.explorer_daemon.error.log')
 default['application']['exploring']['explorer']['daemon']['debug_log'] = File.join(default['application']['var_dir'], 'exploring.explorer_daemon.debug.log')
 
+default['application']['log_analyzer']['name'] = 'zigzag_log_analyzer'
+default['application']['log_analyzer']['user'] = 'zigzag_log_analyzer'
+default['application']['log_analyzer']['sleep_sec'] = 30 * 60
+default['application']['log_analyzer']['pid_file'] = File.join(default['application']['var_dir'], 'log_analyzer.pid')
+default['application']['log_analyzer']['log'] = File.join(default['application']['var_dir'], 'log_analyzer.log')
+default['application']['log_analyzer']['daemon']['script'] = '/etc/init.d/zigzag_log_analyzer'
+default['application']['log_analyzer']['daemon']['pid_file'] = File.join(default['application']['var_dir'], 'log_analyzer_daemon.pid')
+default['application']['log_analyzer']['daemon']['error_log'] = File.join(default['application']['var_dir'], 'log_analyzer_daemon.error.log')
+default['application']['log_analyzer']['daemon']['debug_log'] = File.join(default['application']['var_dir'], 'log_analyzer_daemon.debug.log')
+
 default['application']['git']['comlink']['repo'] = 'git@github.com:horia141/comlink.git'
 default['application']['git']['comlink']['branch'] = 'master'
 

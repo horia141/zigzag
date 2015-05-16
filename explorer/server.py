@@ -9,8 +9,6 @@ import urllib2
 import comlink
 import comlink.serializer.pickle as serializer
 import comlink.transport.localipc as transport
-from thrift.protocol import TJSONProtocol
-from thrift.transport import TTransport
 
 import common.defines.constants as defines
 import common.model.ttypes as model
@@ -149,6 +147,7 @@ def main():
         time.sleep(sleep_time_sec)
 
         logging.info('Waking up')
+        iter_nr = iter_nr + 1
 
 
 if __name__ == '__main__':

@@ -5,7 +5,6 @@
 
 start () {
     echo "Starting <%= node.default['application']['exploring']['explorer']['name'] %>... "
-
     daemon --name='<%= node.default['application']['exploring']['explorer']['name'] %>' \
            --command='<%= node.default['application']['virtual_env'] %>/bin/python <%= node.default['application']['sources_dir'] %>/explorer/server.py --sleep_sec=<%= node.default['application']['exploring']['explorer']['sleep_sec'] %> --fetcher_port=<%= node.default['application']['exploring']['fetcher']['port'] %> --photo_save_port=<%= node.default['application']['exploring']['photo_save']['port'] %> --log_path=<%= node.default['application']['exploring']['explorer']['log'] %> --pidfile_path=<%= node.default['application']['exploring']['explorer']['pid_file'] %>' \
            --env='PYTHONPATH=<%= node.default['application']['python_env']['PYTHONPATH'] %>' \
@@ -24,7 +23,6 @@ start () {
 
 stop () {
     echo "Stopping <%= node.default['application']['exploring']['explorer']['name'] %>... "
-
     daemon --name='<%= node.default['application']['exploring']['explorer']['name'] %>' \
            --pidfile='<%= node.default['application']['exploring']['explorer']['daemon']['pid_file'] %>' \
            --stop \
@@ -35,8 +33,10 @@ stop () {
 
 restart () {
     echo "Restarting <%= node.default['application']['exploring']['explorer']['name'] %>..."
-    stop
-    start
+    daemon --name='<%= node.default['application']['exploring']['explorer']['name'] %>' \
+           --pidfile='<%= node.default['application']['exploring']['explorer']['daemon']['pid_file'] %>' \
+           --restart \
+           --verbos
     return $?
 }
 

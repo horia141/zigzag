@@ -2,8 +2,11 @@ import argparse
 import datetime
 import logging
 import os
+import pytz
 import re
 import time
+
+import comlink
 
 import rest_api.models as models
 import log_analyzer.protos.ttypes as log_analyzer_protos
@@ -57,6 +60,8 @@ class ServingLog(object):
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument('--sleep_sec', type=int, required=True,
+        help='Number of seconds to sleep between analysis sessions')
     parser.add_argument('--api_serving_log_path', type=str, required=True,
         help='Path to the API serving log')
     parser.add_argument('--res_serving_log_path', type=str, required=True,
@@ -71,25 +76,54 @@ def main():
 
     logging.basicConfig(level=logging.INFO, filename=args.log_path)
 
-    api_serving_log = ServingLog(args.api_serving_log_path)
-    api_serving_total_bytes_for_month, api_serving_total_bytes_for_day = \
-        api_serving_log.size_of_requested_resources_for_today()
-    res_serving_log = ServingLog(args.res_serving_log_path)
-    res_serving_total_bytes_for_month, res_serving_total_bytes_for_day = \
-        res_serving_log.size_of_requested_resources_for_today()
+    logging.info('Starting log analysis service')
 
-    datetime_ran_ts = long(time.mktime(datetime.datetime.now().timetuple()))
-    month_consumption = log_analyzer_protos.SystemConsumption(
-        api_serving_total_bytes_for_month + res_serving_total_bytes_for_month,
-        api_serving_total_bytes_for_month, res_serving_total_bytes_for_month)
-    day_consumption = log_analyzer_protos.SystemConsumption(
-        api_serving_total_bytes_for_day + res_serving_total_bytes_for_day,
-        api_serving_total_bytes_for_day, res_serving_total_bytes_for_day)
-    analysis_result = log_analyzer_protos.AnalysisResult(-1, datetime_ran_ts,
-        month_consumption, day_consumption)
+    iter_nr = 1
 
-    models.save_analysis_result(analysis_result)
+    while True:
+        logging.info('Iteration %d' % iter_nr)
+
+        right_now_1 = datetime.datetime.now(pytz.utc)
+
+        api_serving_log = ServingLog(args.api_serving_log_path)
+        api_serving_total_bytes_for_month, api_serving_total_bytes_for_day = \
+            api_serving_log.size_of_requested_resources_for_today()
+        res_serving_log = ServingLog(args.res_serving_log_path)
+        res_serving_total_bytes_for_month, res_serving_total_bytes_for_day = \
+            res_serving_log.size_of_requested_resources_for_today()
+
+        datetime_ran_ts = long(time.mktime(datetime.datetime.now().timetuple()))
+        month_consumption = log_analyzer_protos.SystemConsumption(
+            api_serving_total_bytes_for_month + res_serving_total_bytes_for_month,
+            api_serving_total_bytes_for_month, res_serving_total_bytes_for_month)
+        day_consumption = log_analyzer_protos.SystemConsumption(
+            api_serving_total_bytes_for_day + res_serving_total_bytes_for_day,
+            api_serving_total_bytes_for_day, res_serving_total_bytes_for_day)
+        analysis_result = log_analyzer_protos.AnalysisResult(-1, datetime_ran_ts,
+            month_consumption, day_consumption)
+
+        models.save_analysis_result(analysis_result)
+
+        logging.info('Analysis done')
+
+        right_now_2 = datetime.datetime.now(pytz.utc)
+        duration = right_now_2 - right_now_1
+        sleep_time_sec = max(10, args.sleep_sec - duration.total_seconds())
+
+        logging.info('Took %d seconds. Going to sleep for %d seconds' % (duration.total_seconds(), sleep_time_sec))
+
+        time.sleep(sleep_time_sec)
+
+        logging.info('Waking up')
+        iter_nr = iter_nr + 1
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except Exception as e:
+        if comlink.is_remote_exception(e):
+            logging.error(comlink.format_stacktrace_for_remote_exception(e))
+        else:
+            logging.exception(e)
+        raise

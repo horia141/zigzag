@@ -55,6 +55,14 @@ user node.default['application']['exploring']['user'] do
   system true
 end
 
+user node.default['application']['log_analyzer']['user'] do
+  comment 'User for the log_analyzer component'
+  group node.default['application']['group']
+  shell '/usr/sbin/nologin'
+  home node.default['application']['work_dir']
+  system true
+end
+
 # === General firewall configuration. ===
 
 firewall 'ufw' do
@@ -437,9 +445,25 @@ template node.default['application']['exploring']['explorer']['daemon']['script'
   mode '0755'
 end
 
-# service node.default['application']['exploring']['explorer']['name'] do
-#   init_command node.default['application']['exploring']['explorer']['daemon']['script']
-#   supports :start => true, :stop => true, :restart => true, :status => true
-#   action [:enable, :start]
-#   subscribes :restart, "template[#{node.default['application']['exploring']['explorer']['daemon']['script']}]", :delayed
-# end
+service node.default['application']['exploring']['explorer']['name'] do
+  init_command node.default['application']['exploring']['explorer']['daemon']['script']
+  supports :start => true, :stop => true, :restart => true, :status => true
+  action [:enable, :start]
+  subscribes :restart, "template[#{node.default['application']['exploring']['explorer']['daemon']['script']}]", :delayed
+end
+
+# === Setup log analyzer. ===
+
+template node.default['application']['log_analyzer']['daemon']['script'] do
+  source 'log_analyzer_daemon.erb'
+  owner 'root'
+  group 'root'
+  mode '0755'
+end
+
+service node.default['application']['log_analyzer']['name'] do
+  init_command node.default['application']['log_analyzer']['daemon']['script']
+  supports :start => true, :stop => true, :restart => true, :status => true
+  action [:enable, :start]
+  subscribes :restart, "template[#{node.default['application']['log_analyzer']['daemon']['script']}]", :delayed
+end

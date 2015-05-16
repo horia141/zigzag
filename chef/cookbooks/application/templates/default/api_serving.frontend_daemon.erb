@@ -5,7 +5,6 @@
 
 start () {
     echo "Starting <%= node.default['application']['api_serving']['frontend']['name'] %>... "
-
     daemon --name='<%= node.default['application']['api_serving']['frontend']['name'] %>' \
            --command='lighttpd -D -f <%= node.default['application']['api_serving']['frontend']['config'] %>' \
            --pidfile='<%= node.default['application']['api_serving']['frontend']['daemon']['pid_file'] %>' \
@@ -21,7 +20,6 @@ start () {
 
 stop () {
     echo "Stopping <%= node.default['application']['api_serving']['frontend']['name'] %>... "
-
     daemon --name='<%= node.default['application']['api_serving']['frontend']['name'] %>' \
            --pidfile='<%= node.default['application']['api_serving']['frontend']['daemon']['pid_file'] %>' \
            --stop \
@@ -32,7 +30,6 @@ stop () {
 
 restart () {
     echo "Restarting <%= node.default['application']['api_serving']['frontend']['name'] %>..."
-
     daemon --name='<%= node.default['application']['api_serving']['frontend']['name'] %>' \
            --pidfile='<%= node.default['application']['api_serving']['frontend']['daemon']['pid_file'] %>' \
            --restart  \

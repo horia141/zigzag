@@ -1,0 +1,72 @@
+#!/bin/sh
+# Comments to support chkconfig on Red Hat Linux
+# chkconfig: 2345 64 36
+# Description: <%= node.default['application']['log_analyzer']['name'] %>
+
+start () {
+    echo "Starting <%= node.default['application']['log_analyzer']['name'] %>... "
+    daemon --name='<%= node.default['application']['log_analyzer']['name'] %>' \
+           --command='<%= node.default['application']['virtual_env'] %>/bin/python <%= node.default['application']['sources_dir'] %>/log_analyzer/server.py --sleep_sec=<%= node.default['application']['log_analyzer']['sleep_sec'] %> --api_serving_log_path=<%= node.default['application']['api_serving']['frontend']['access_log'] %> --res_serving_log_path=<%= node.default['application']['res_serving']['access_log'] %> --log_path=<%= node.default['application']['log_analyzer']['log'] %> --pidfile_path=<%= node.default['application']['log_analyzer']['pid_file'] %>' \
+           --env='PYTHONPATH=<%= node.default['application']['python_env']['PYTHONPATH'] %>' \
+           --env='DJANGO_SETTINGS_MODULE=<%= node.default['application']['python_env']['DJANGO_SETTINGS_MODULE'] %>' \
+           --env='PYTHON_EGG_CACHE=<%= node.default['application']['python_env']['PYTHON_EGG_CACHE'] %>' \
+           --pidfile='<%= node.default['application']['log_analyzer']['daemon']['pid_file'] %>' \
+           --user='<%= node.default['application']['log_analyzer']['user'] %>' \
+           --chdir='<%= node.default['application']['work_dir'] %>' \
+           --unsafe \
+           --respawn \
+           --errlog='<%= node.default['application']['log_analyzer']['daemon']['error_log'] %>' \
+           --dbglog='<%= node.default['application']['log_analyzer']['daemon']['debug_log'] %>' \
+           --verbose
+    return $?
+}
+
+stop () {
+    echo "Stopping <%= node.default['application']['log_analyzer']['name'] %>... "
+    daemon --name='<%= node.default['application']['log_analyzer']['name'] %>' \
+           --pidfile='<%= node.default['application']['log_analyzer']['daemon']['pid_file'] %>' \
+           --stop \
+           --verbose
+    return $?
+}
+
+
+restart () {
+    echo "Restarting <%= node.default['application']['log_analyzer']['name'] %>..."
+    daemon --name='<%= node.default['application']['log_analyzer']['name'] %>' \
+           --pidfile='<%= node.default['application']['log_analyzer']['daemon']['pid_file'] %>' \
+           --restart \
+           --verbose
+    return $?
+}
+
+
+status () {
+    daemon --name='<%= node.default['application']['log_analyzer']['name'] %>' \
+           --pidfile='<%= node.default['application']['log_analyzer']['daemon']['pid_file'] %>' \
+           --running \
+           --verbose
+    return $?
+}
+
+
+case "$1" in
+    start)
+        start
+    ;;
+    status)
+        status
+    ;;
+    stop)
+        stop
+    ;;
+    restart)
+        restart
+    ;;
+    *)
+        echo $"Usage: <%= node.default['application']['log_analyzer']['name'] %> {start|status|stop|restart}"
+        exit 3
+    ;;
+esac
+
+exit $RETVAL
