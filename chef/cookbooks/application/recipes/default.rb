@@ -8,6 +8,8 @@ package 'lighttpd'
 package 'sqlite'
 package 'libjpeg-dev'
 package 'libjpeg8-dev' # Only on Ubuntu 14.04 >=
+package 'imagemagick'
+package 'libav-tools'
 include_recipe 'build-essential'
 include_recipe 'python'
 include_recipe 'thrift'
