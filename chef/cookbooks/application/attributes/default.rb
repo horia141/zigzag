@@ -1,7 +1,3 @@
-default['thrift']['version'] = '0.9.2'
-default['thrift']['mirror'] = 'http://apache.mirror.anlx.net'
-default['thrift']['checksum'] = 'cef50d3934c41db5fa7724440cc6f10a732e7a77fe979b98c23ce45725349570'
-
 default['application']['DUMB_project_path'] = '/home/horiacoman/Work/zigzag'
 
 default['application']['user'] = 'zigzag'
@@ -19,10 +15,6 @@ default['application']['var_dir'] = File.join(default['application']['work_dir']
 default['application']['tmp_dir'] = File.join(default['application']['work_dir'], 'tmp')
 
 default['application']['db_path'] = File.join(default['application']['data_dir'], 'db.sqlite3')
-
-default['application']['virtual_env'] = File.join(default['application']['sources_dir'], 'env')
-default['application']['egg_cache'] = File.join(default['application']['tmp_dir'], 'egg-cache')
-default['application']['pip_cache'] = File.join(default['application']['tmp_dir'], 'pip-cache')
 
 default['application']['api_server']['name'] = 'zigzag_api_server'
 default['application']['api_server']['user'] = 'zigzag_api_server'
@@ -99,8 +91,21 @@ default['application']['log_analyzer']['daemon']['pid_file'] = File.join(default
 default['application']['log_analyzer']['daemon']['error_log'] = File.join(default['application']['var_dir'], 'log_analyzer_daemon.error.log')
 default['application']['log_analyzer']['daemon']['debug_log'] = File.join(default['application']['var_dir'], 'log_analyzer_daemon.debug.log')
 
+default['application']['virtual_env'] = File.join(default['application']['sources_dir'], 'env')
+default['application']['egg_cache'] = File.join(default['application']['tmp_dir'], 'egg-cache')
+default['application']['pip_cache'] = File.join(default['application']['tmp_dir'], 'pip-cache')
+
 default['application']['git']['comlink']['repo'] = 'git@github.com:horia141/comlink.git'
 default['application']['git']['comlink']['branch'] = 'master'
+
+default['thrift']['version'] = '0.9.2'
+default['thrift']['mirror'] = 'http://apache.mirror.anlx.net'
+default['thrift']['checksum'] = 'cef50d3934c41db5fa7724440cc6f10a732e7a77fe979b98c23ce45725349570'
+
+default['application']['postgresql']['version'] = '9.4.1'
+default['application']['postgresql']['remote_path'] = "https://ftp.postgresql.org/pub/source/v9.4.1/postgresql-#{default['application']['postgresql']['version']}.tar.gz"
+default['application']['postgresql']['checksum'] = '43da2d54ff8333a2ee595efc3d0df3255bb46d4431841d2b88f9cfcd6366e234'
+default['application']['postgresql']['postgres_path'] = '/usr/local/pgsql/bin/postgres'
 
 default['application']['python_env']['PYTHONPATH'] = "#{default['application']['sources_dir']}:#{default['application']['sources_dir']}/interface_server:#{node.default['application']['sources_dir']}/gen/py"
 default['application']['python_env']['DJANGO_SETTINGS_MODULE'] = 'interface_server.settings'

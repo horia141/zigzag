@@ -14,8 +14,26 @@ package 'libjpeg8-dev' # Only on Ubuntu 14.04 >=
 package 'imagemagick'
 package 'libav-tools'
 package 'libpq-dev'
-package 'postgresql'
-package 'postgresql-contrib'
+package 'libreadline6'
+package 'libreadline6-dev'
+
+# Install PostgreSQL from sources.
+
+remote_file "#{Chef::Config[:file_cache_path]}/postgresql-#{node.default['application']['postgresql']['version']}.tar.gz" do
+  source node.default['application']['postgresql']['remote_path']
+  checksum node.default['application']['postgresql']['checksum']
+end
+
+bash 'install_postgresql' do
+  cwd Chef::Config[:file_cache_path]
+  code <<-EOH
+    (tar -zxvf postgresql-#{node.default['application']['postgresql']['version']}.tar.gz)
+    (cd postgresql-#{node.default['application']['postgresql']['version']} && ./configure)
+    (cd postgresql-#{node.default['application']['postgresql']['version']} && make)
+    (cd postgresql-#{node.default['application']['postgresql']['version']} && make install)
+  EOH
+  not_if { FileTest.exists?(node.default['application']['postgresql']['postgres_path']) }
+end
 
 # === System level firewall configuration. ===
 
