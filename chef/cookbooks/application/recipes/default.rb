@@ -79,6 +79,14 @@ user node.default['application']['user'] do
   system true
 end
 
+user node.default['application']['database']['user'] do
+  comment 'User for the PostgreSQL database component'
+  group node.default['application']['group']
+  shell '/usr/sbin/nologin'
+  home node.default['application']['work_dir']
+  system true
+end
+
 user node.default['application']['api_server']['user'] do
   comment 'User for the API server component'
   group node.default['application']['group']
@@ -145,8 +153,9 @@ directory node.default['application']['data_dir'] do
   action :create
 end
 
-directory node.default['application']['db_backup_dir'] do
-  owner node.default['application']['user']
+directory node.default['application']['database_dir'] do
+  # Must be owner by the database user rather than by the master user.
+  owner node.default['application']['database']['user']
   group node.default['application']['group']
   mode '0770'
   action :create
@@ -333,6 +342,15 @@ bash 'install_comlink' do
 end
 
 # === Build or update the master database ===
+
+bash 'database_initdb' do
+  code <<-EOH
+    (#{node.default['application']['postgresql']['initdb_path']} -D #{node.default['application']['database_dir']})
+  EOH
+  user node.default['application']['database']['user']
+  group node.default['application']['group']
+  creates "#{node.default['application']['database_dir']}/postgresql.conf"
+end
 
 bash 'build_and_sync_db' do
   cwd "#{node.default['application']['sources_dir']}/interface_server"
