@@ -153,11 +153,12 @@ directory node.default['application']['data_dir'] do
   action :create
 end
 
+# Must be owned by the database user rather than by the master user and must have user-only read
+# and write access.
 directory node.default['application']['database_dir'] do
-  # Must be owner by the database user rather than by the master user.
   owner node.default['application']['database']['user']
   group node.default['application']['group']
-  mode '0770'
+  mode '0700'
   action :create
 end
 
@@ -364,6 +365,15 @@ bash 'build_and_sync_db' do
   group node.default['application']['group']
   action :nothing
   subscribes :run, "template[#{node.default['application']['api_server']['app']['config']}]", :delayed
+end
+
+# === Setup database. ===
+
+template node.default['application']['database']['daemon']['script'] do
+  source 'database_daemon.erb'
+  owner 'root'
+  group 'root'
+  mode '0755'
 end
 
 # === Setup serving. ===

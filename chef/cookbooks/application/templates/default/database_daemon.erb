@@ -1,0 +1,71 @@
+#!/bin/sh
+# Comments to support chkconfig on Red Hat Linux
+# chkconfig: 2345 64 36
+# Description: <%= node.default['application']['database']['name'] %>
+
+start () {
+    echo "Starting <%= node.default['application']['database']['name'] %>... "
+    daemon --name='<%= node.default['application']['database']['name'] %>' \
+           --command='<%= node.default['application']['postgresql']['postgres_path'] %> -D <%= node.default['application']['database_dir'] %>' \
+           --pidfile='<%= node.default['application']['database']['daemon']['pid_file'] %>' \
+           --user='<%= node.default['application']['database']['user'] %>' \
+           --chdir='<%= node.default['application']['work_dir'] %>' \
+           --safe \
+           --respawn \
+           --errlog='<%= node.default['application']['database']['daemon']['error_log'] %>' \
+           --dbglog='<%= node.default['application']['database']['daemon']['debug_log'] %>' \
+           --stdout='<%= node.default['application']['database']['output_log'] %>' \
+           --stderr='<%= node.default['application']['database']['error_log'] %>' \
+           --verbose
+    return $?
+}
+
+stop () {
+    echo "Stopping <%= node.default['application']['database']['name'] %>... "
+    daemon --name='<%= node.default['application']['database']['name'] %>' \
+           --pidfile='<%= node.default['application']['database']['daemon']['pid_file'] %>' \
+           --stop \
+           --verbose
+    return $?
+}
+
+
+restart () {
+    echo "Restarting <%= node.default['application']['database']['name'] %>..."
+    daemon --name='<%= node.default['application']['database']['name'] %>' \
+           --pidfile='<%= node.default['application']['database']['daemon']['pid_file'] %>' \
+           --restart  \
+           --verbose
+    return $?
+}
+
+
+status () {
+    daemon --name='<%= node.default['application']['database']['name'] %>' \
+           --pidfile='<%= node.default['application']['database']['daemon']['pid_file'] %>' \
+           --running \
+           --verbose
+    return $?
+}
+
+
+case "$1" in
+    start)
+        start
+    ;;
+    status)
+        status
+    ;;
+    stop)
+        stop
+    ;;
+    restart)
+        restart
+    ;;
+    *)
+        echo $"Usage: <%= node.default['application']['database']['name'] %> {start|status|stop|restart}"
+        exit 3
+    ;;
+esac
+
+exit $RETVAL

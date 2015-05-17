@@ -18,6 +18,13 @@ default['application']['db_path'] = File.join(default['application']['data_dir']
 
 default['application']['database']['name'] = 'zigzag_database'
 default['application']['database']['user'] = 'zigzag_database'
+default['application']['database']['pid_file'] = File.join(default['application']['var_dir'], 'database.pid')
+default['application']['database']['output_log'] = File.join(default['application']['var_dir'], 'database.output.log')
+default['application']['database']['error_log'] = File.join(default['application']['var_dir'], 'database.error.log')
+default['application']['database']['daemon']['script'] = '/etc/init.d/zigzag_database'
+default['application']['database']['daemon']['pid_file'] = File.join(default['application']['var_dir'], 'database_daemon.pid')
+default['application']['database']['daemon']['error_log'] = File.join(default['application']['var_dir'], 'database_daemon.error.log')
+default['application']['database']['daemon']['debug_log'] = File.join(default['application']['var_dir'], 'database_daemon.debug.log')
 
 default['application']['api_server']['name'] = 'zigzag_api_server'
 default['application']['api_server']['user'] = 'zigzag_api_server'
