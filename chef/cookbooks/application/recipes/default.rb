@@ -1,6 +1,10 @@
 # === Setup the proper system level packages and source stuff. ===
 
-include_recipe 'apt::default'
+include_recipe 'apt'
+include_recipe 'build-essential'
+include_recipe 'firewall'
+include_recipe 'python'
+include_recipe 'thrift'
 
 package 'daemon'
 package 'lighttpd'
@@ -9,10 +13,6 @@ package 'libjpeg-dev'
 package 'libjpeg8-dev' # Only on Ubuntu 14.04 >=
 package 'imagemagick'
 package 'libav-tools'
-include_recipe 'build-essential'
-include_recipe 'python'
-include_recipe 'thrift'
-package 'python-dev'
 package 'libpq-dev'
 package 'postgresql'
 package 'postgresql-contrib'
@@ -95,14 +95,14 @@ end
 
 # Defining the group is split into two because we want to explicitly specify the members, and we
 # cannot do that if they are not yet defined.
-group node.default['application']['group'] do
-  system true
-  members [node.default['application']['user'],
-           node.default['application']['api_server']['user'],
-           node.default['application']['res_server']['user'],
-           node.default['application']['explorer']['user'],
-           node.default['application']['log_analyzer']['user']]
-end
+# group node.default['application']['group'] do
+#   system true
+#   members [node.default['application']['user'],
+#            node.default['application']['api_server']['user'],
+#            node.default['application']['res_server']['user'],
+#            node.default['application']['explorer']['user'],
+#            node.default['application']['log_analyzer']['user']]
+# end
 
 # === Define directory structure for the runtime data. ===
 

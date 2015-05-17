@@ -7,6 +7,6 @@ long_description ''
 version          '0.1.0'
 
 depends 'apt', '~> 2.7.0'
-depends 'firewall', '~> 1.1.0'
+depends 'firewall', '~> 1.1.1'
 depends 'python', '~> 1.4.6'
 depends 'thrift', '~> 1.2.0'
