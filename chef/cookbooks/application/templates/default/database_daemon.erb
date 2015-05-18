@@ -6,7 +6,7 @@
 start () {
     echo "Starting <%= node.default['application']['database']['name'] %>... "
     daemon --name='<%= node.default['application']['database']['name'] %>' \
-           --command='<%= node.default['application']['postgresql']['postgres_path'] %> -D <%= node.default['application']['database_dir'] %>' \
+           --command='<%= node.default['application']['postgresql']['postgres_path'] %> -c config_file=<%= node.default['application']['database']['config'] %>' \
            --pidfile='<%= node.default['application']['database']['daemon']['pid_file'] %>' \
            --user='<%= node.default['application']['database']['user'] %>' \
            --chdir='<%= node.default['application']['work_dir'] %>' \
@@ -14,7 +14,6 @@ start () {
            --respawn \
            --errlog='<%= node.default['application']['database']['daemon']['error_log'] %>' \
            --dbglog='<%= node.default['application']['database']['daemon']['debug_log'] %>' \
-           --stdout='<%= node.default['application']['database']['output_log'] %>' \
            --stderr='<%= node.default['application']['database']['error_log'] %>' \
            --verbose
     return $?
@@ -34,7 +33,7 @@ restart () {
     echo "Restarting <%= node.default['application']['database']['name'] %>..."
     daemon --name='<%= node.default['application']['database']['name'] %>' \
            --pidfile='<%= node.default['application']['database']['daemon']['pid_file'] %>' \
-           --restart  \
+           --restart \
            --verbose
     return $?
 }

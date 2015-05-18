@@ -134,6 +134,7 @@ end
 
 directory node.default['application']['work_dir'] do
   owner node.default['application']['user']
+
   group node.default['application']['group']
   mode '0770'
   action :create
@@ -369,11 +370,39 @@ end
 
 # === Setup database. ===
 
+template node.default['application']['database']['config'] do
+  source 'database.erb'
+  owner node.default['application']['database']['user']
+  group node.default['application']['group']
+  mode '0400'
+end
+
+template node.default['application']['database']['hba_config'] do
+  source 'database_hba.erb'
+  owner node.default['application']['database']['user']
+  group node.default['application']['group']
+  mode '0400'
+end
+
+template node.default['application']['database']['ident_config'] do
+  source 'database_ident.erb'
+  owner node.default['application']['database']['user']
+  group node.default['application']['group']
+  mode '0400'
+end
+
 template node.default['application']['database']['daemon']['script'] do
   source 'database_daemon.erb'
   owner 'root'
   group 'root'
   mode '0755'
+end
+
+service node.default['application']['database']['name'] do
+  init_command node.default['application']['database']['daemon']['script']
+  supports :start => true, :stop => true, :restart => true, :status => true
+  action [:enable, :start, :restart]
+  provider Chef::Provider::Service::Init::Debian
 end
 
 # === Setup serving. ===

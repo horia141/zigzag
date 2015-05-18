@@ -1,0 +1,90 @@
+#------------------------------------------------------------------------------
+# FILE LOCATIONS
+#------------------------------------------------------------------------------
+
+data_directory = '<%= node.default['application']['database_dir'] %>'
+hba_file = '<%= node.default['application']['database']['hba_config'] %>'
+ident_file = '<%= node.default['application']['database']['ident_config'] %>'
+
+external_pid_file = '<%= node.default['application']['database']['pid_file'] %>'
+
+#------------------------------------------------------------------------------
+# CONNECTIONS AND AUTHENTICATION
+#------------------------------------------------------------------------------
+
+listen_addresses = '<%= node.default['application']['database']['host'] %>'
+port = '<%= node.default['application']['database']['port'] %>'
+max_connections = 100
+superuser_reserved_connections = 3
+
+unix_socket_directories = ''
+
+authentication_timeout = 1min
+ssl = off
+password_encryption = on
+db_user_namespace = off
+
+#------------------------------------------------------------------------------
+# RESOURCE USAGE (except WAL)
+#------------------------------------------------------------------------------
+
+shared_buffers = 128MB
+huge_pages = try
+temp_buffers = 8MB
+max_prepared_transactions = 0
+work_mem = 8MB
+maintenance_work_mem = 64MB
+autovacuum_work_mem = -1
+max_stack_depth = 2MB
+dynamic_shared_memory_type = posix
+
+temp_file_limit = -1
+
+max_files_per_process = 1000
+
+#------------------------------------------------------------------------------
+# WRITE AHEAD LOG
+#------------------------------------------------------------------------------
+
+wal_level = minimal
+fsync = on
+synchronous_commit = on
+wal_sync_method = fsync
+full_page_writes = on
+
+#------------------------------------------------------------------------------
+# ERROR REPORTING AND LOGGING
+#------------------------------------------------------------------------------
+
+log_destination = 'stderr'
+logging_collector = on
+log_directory = '<%= node.default['application']['var_dir'] %>'
+log_filename = '<%= node.default['application']['database']['output_log'] %>'
+log_file_mode = 0640
+log_truncate_on_rotation = off
+log_rotation_age = 1d
+log_rotation_size = 0
+
+client_min_messages = notice
+log_min_messages = warning
+log_min_error_statement = error
+log_min_duration_statement = -1
+
+log_line_prefix = '%d-%u %d %r:$h %t'
+log_timezone = 'GB'
+
+#------------------------------------------------------------------------------
+# CLIENT CONNECTION DEFAULTS
+#------------------------------------------------------------------------------
+
+datestyle = 'iso, mdy'
+intervalstyle = 'postgres'
+timezone = 'GB'
+timezone_abbreviations = 'Default'
+extra_float_digits = 0
+client_encoding = sql_ascii
+lc_messages = 'C.UTF-8'
+lc_monetary = 'C.UTF-8'
+lc_numeric = 'C.UTF-8'
+lc_time = 'C.UTF-8'
+default_text_search_config = 'pg_catalog.english'
