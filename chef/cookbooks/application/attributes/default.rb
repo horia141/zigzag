@@ -122,6 +122,7 @@ default['application']['postgresql']['remote_path'] = "https://ftp.postgresql.or
 default['application']['postgresql']['checksum'] = '43da2d54ff8333a2ee595efc3d0df3255bb46d4431841d2b88f9cfcd6366e234'
 default['application']['postgresql']['initdb_path'] = '/usr/local/pgsql/bin/initdb'
 default['application']['postgresql']['postgres_path'] = '/usr/local/pgsql/bin/postgres'
+default['application']['postgresql']['psql_path'] = '/usr/local/pgsql/bin/psql'
 
 default['application']['python_env']['PYTHONPATH'] = "#{default['application']['sources_dir']}:#{default['application']['sources_dir']}/interface_server:#{node.default['application']['sources_dir']}/gen/py"
 default['application']['python_env']['DJANGO_SETTINGS_MODULE'] = 'interface_server.settings'

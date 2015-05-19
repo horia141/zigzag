@@ -345,15 +345,6 @@ end
 
 # === Build or update the master database ===
 
-bash 'database_initdb' do
-  code <<-EOH
-    (#{node.default['application']['postgresql']['initdb_path']} -D #{node.default['application']['database_dir']})
-  EOH
-  user node.default['application']['database']['user']
-  group node.default['application']['group']
-  creates "#{node.default['application']['database_dir']}/postgresql.conf"
-end
-
 bash 'build_and_sync_db' do
   cwd "#{node.default['application']['sources_dir']}/interface_server"
   code <<-EOH
@@ -368,7 +359,29 @@ bash 'build_and_sync_db' do
   subscribes :run, "template[#{node.default['application']['api_server']['app']['config']}]", :delayed
 end
 
-# === Setup database. ===
+# === Setup database service. ===
+
+bash 'database_initdb' do
+  code <<-EOH
+    (#{node.default['application']['postgresql']['initdb_path']} -D #{node.default['application']['database_dir']} -U #{node.default['application']['user']})
+  EOH
+  user node.default['application']['database']['user']
+  group node.default['application']['group']
+  creates "#{node.default['application']['database_dir']}/postgresql.auto.conf"
+end
+
+# Remove undeeded configuration files.
+file "#{node.default['application']['database_dir']}/postgresql.conf" do
+  action :delete
+end
+
+file "#{node.default['application']['database_dir']}/pg_hba.conf" do
+  action :delete
+end
+
+file "#{node.default['application']['database_dir']}/pg_ident.conf" do
+  action :delete
+end
 
 template node.default['application']['database']['config'] do
   source 'database.erb'
@@ -403,6 +416,68 @@ service node.default['application']['database']['name'] do
   supports :start => true, :stop => true, :restart => true, :status => true
   action [:enable, :start, :restart]
   provider Chef::Provider::Service::Init::Debian
+end
+
+PSQL_CMD = "#{node.default['application']['postgresql']['psql_path']} --host=#{node.default['application']['database']['host']} --port=#{node.default['application']['database']['port']} --username=#{node.default['application']['user']} -d postgres"
+
+# TODO(horia141): Hackish way of going about this. Also, the test if for the user existing, not for
+# it having the desired roles.
+bash "database_create_role_#{node.default['application']['database']['user']}" do
+  code <<-EOH
+    (sleep 1)
+    (#{PSQL_CMD} --command='create user #{node.default['application']['database']['user']} login createdb createrole;')
+  EOH
+  user node.default['application']['database']['user']
+  group node.default['application']['group']
+  not_if "sleep 1 && #{PSQL_CMD} --command='\\du' | grep #{node.default['application']['database']['user']}"
+end
+
+# TODO(horia141): Hackish way of going about this. Also, the test if for the user existing, not for
+# it having the desired roles.
+bash "database_create_role_#{node.default['application']['api_server']['user']}" do
+  code <<-EOH
+    (sleep 1)
+    (#{PSQL_CMD} --command='create user #{node.default['application']['api_server']['user']} login;')
+  EOH
+  user node.default['application']['database']['user']
+  group node.default['application']['group']
+  not_if "sleep 1 && #{PSQL_CMD} --command='\\du' | grep #{node.default['application']['api_server']['user']}"
+end
+
+# TODO(horia141): Hackish way of going about this. Also, the test if for the user existing, not for
+# it having the desired roles.
+bash "database_create_role_#{node.default['application']['res_server']['user']}" do
+  code <<-EOH
+    (sleep 1)
+    (#{PSQL_CMD} --command='create user #{node.default['application']['res_server']['user']} login;')
+  EOH
+  user node.default['application']['database']['user']
+  group node.default['application']['group']
+  not_if "sleep 1 && #{PSQL_CMD} --command='\\du' | grep #{node.default['application']['res_server']['user']}"
+end
+
+# TODO(horia141): Hackish way of going about this. Also, the test if for the user existing, not for
+# it having the desired roles.
+bash "database_create_role_#{node.default['application']['explorer']['user']}" do
+  code <<-EOH
+    (sleep 1)
+    (#{PSQL_CMD} --command='create user #{node.default['application']['explorer']['user']} login;')
+  EOH
+  user node.default['application']['database']['user']
+  group node.default['application']['group']
+  not_if "sleep 1 && #{PSQL_CMD} --command='\\du' | grep #{node.default['application']['explorer']['user']}"
+end
+
+# TODO(horia141): Hackish way of going about this. Also, the test if for the user existing, not for
+# it having the desired roles.
+bash "database_create_role_#{node.default['application']['log_analyzer']['user']}" do
+  code <<-EOH
+    (sleep 1)
+    (#{PSQL_CMD} --command='create user #{node.default['application']['log_analyzer']['user']} login;')
+  EOH
+  user node.default['application']['database']['user']
+  group node.default['application']['group']
+  not_if "sleep 1 && #{PSQL_CMD} --command='\\du' | grep #{node.default['application']['log_analyzer']['user']}"
 end
 
 # === Setup serving. ===
