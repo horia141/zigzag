@@ -15,6 +15,7 @@ default['application']['var_dir'] = File.join(default['application']['work_dir']
 default['application']['tmp_dir'] = File.join(default['application']['work_dir'], 'tmp')
 
 default['application']['db_path'] = File.join(default['application']['data_dir'], 'db.sqlite3')
+default['application']['database_name'] = 'zigzag_main'
 
 default['application']['database']['name'] = 'zigzag_database'
 default['application']['database']['user'] = 'zigzag_database'
@@ -24,7 +25,7 @@ default['application']['database']['ident_config'] = File.join(default['applicat
 default['application']['database']['host'] = '127.0.0.1'
 default['application']['database']['port'] = 8000
 default['application']['database']['pid_file'] = File.join(default['application']['var_dir'], 'database.pid')
-default['application']['database']['output_log'] = 'database.output.%Y%m%d_%H%M%S.log'
+default['application']['database']['output_log'] = 'database.output.%Y%m%d.log'
 default['application']['database']['error_log'] = File.join(default['application']['var_dir'], 'database.error.log')
 default['application']['database']['daemon']['script'] = '/etc/init.d/zigzag_database'
 default['application']['database']['daemon']['pid_file'] = File.join(default['application']['var_dir'], 'database_daemon.pid')

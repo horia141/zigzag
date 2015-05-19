@@ -480,6 +480,16 @@ bash "database_create_role_#{node.default['application']['log_analyzer']['user']
   not_if "sleep 1 && #{PSQL_CMD} --command='\\du' | grep #{node.default['application']['log_analyzer']['user']}"
 end
 
+bash 'database_create_database' do
+  code <<-EOH
+    (sleep 1)
+    (#{PSQL_CMD} --command='create database #{node.default['application']['database_name']} owner #{node.default['application']['database']['user']};')
+  EOH
+  user node.default['application']['database']['user']
+  group node.default['application']['group']
+  not_if "sleep 1 && #{PSQL_CMD} --command='\\list' | grep #{node.default['application']['database_name']}"
+end
+
 # === Setup serving. ===
 
 # Setup API server.
