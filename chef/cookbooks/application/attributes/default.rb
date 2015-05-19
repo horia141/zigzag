@@ -127,3 +127,6 @@ default['application']['postgresql']['psql_path'] = '/usr/local/pgsql/bin/psql'
 default['application']['python_env']['PYTHONPATH'] = "#{default['application']['sources_dir']}:#{default['application']['sources_dir']}/interface_server:#{node.default['application']['sources_dir']}/gen/py"
 default['application']['python_env']['DJANGO_SETTINGS_MODULE'] = 'interface_server.settings'
 default['application']['python_env']['PYTHON_EGG_CACHE'] = default['application']['egg_cache']
+
+default['application']['runtime']['debug'] = 'True'
+

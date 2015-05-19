@@ -398,7 +398,7 @@ end
 service node.default['application']['database']['name'] do
   init_command node.default['application']['database']['daemon']['script']
   supports :start => true, :stop => true, :restart => true, :status => true
-  action [:enable, :start, :restart]
+  action [:enable, :start]
   provider Chef::Provider::Service::Init::Debian
 end
 

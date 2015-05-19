@@ -15,9 +15,9 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 SECRET_KEY = '43_@^r!wysh7l35dndt*=$x!fdg9kh#&a-1=hp(()&aar#dd_!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = <%= node.default['application']['runtime']['debug'] %>
 
-TEMPLATE_DEBUG = True
+TEMPLATE_DEBUG = <%= node.default['application']['runtime']['debug'] %>
 
 ALLOWED_HOSTS = []
 

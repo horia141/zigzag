@@ -30,11 +30,12 @@ stop () {
 
 
 restart () {
-    echo "Restarting <%= node.default['application']['database']['name'] %>..."
-    daemon --name='<%= node.default['application']['database']['name'] %>' \
-           --pidfile='<%= node.default['application']['database']['daemon']['pid_file'] %>' \
-           --restart \
-           --verbose
+    # We have to sleep a little while. It might be the case that the system hasn't managed to be
+    # brought up, in which case, us killing it will cause it to not behave properly.
+    sleep 2
+    stop
+    sleep 2
+    start
     return $?
 }
 
