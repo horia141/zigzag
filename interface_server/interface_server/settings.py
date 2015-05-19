@@ -41,8 +41,12 @@ WSGI_APPLICATION = 'interface_server.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': "<%= node.default['application']['db_path'] %>",
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': '<%= node.default['application']['database_name'] %>',
+        'USER': '<%= node.default['application']['database']['user'] %>',
+        'PASSWORD': '',
+        'HOST': '<%= node.default['application']['database']['host'] %>',
+        'PORT': '<%= node.default['application']['database']['port'] %>'
     }
 }
 

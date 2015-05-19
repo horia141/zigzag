@@ -343,22 +343,6 @@ bash 'install_comlink' do
   not_if { FileTest.exists?(File.join(node.default['application']['virtual_env'], 'local', 'lib', 'python2.7', 'site-packages', 'comlink-0.1-py2.7.egg')) }
 end
 
-# === Build or update the master database ===
-
-bash 'build_and_sync_db' do
-  cwd "#{node.default['application']['sources_dir']}/interface_server"
-  code <<-EOH
-    (touch #{node.default['application']['db_path']})
-    (#{node.default['application']['virtual_env']}/bin/python manage.py migrate)
-    (chmod g+w #{node.default['application']['db_path']})
-  EOH
-  environment node.default['application']['python_env']
-  user node.default['application']['user']
-  group node.default['application']['group']
-  action :nothing
-  subscribes :run, "template[#{node.default['application']['api_server']['app']['config']}]", :delayed
-end
-
 # === Setup database service. ===
 
 bash 'database_initdb' do
@@ -488,6 +472,20 @@ bash 'database_create_database' do
   user node.default['application']['database']['user']
   group node.default['application']['group']
   not_if "sleep 1 && #{PSQL_CMD} --command='\\list' | grep #{node.default['application']['database_name']}"
+end
+
+bash 'build_and_sync_db' do
+  cwd "#{node.default['application']['sources_dir']}/interface_server"
+  code <<-EOH
+    (sleep 1)
+    (touch #{node.default['application']['db_path']})
+    (#{node.default['application']['virtual_env']}/bin/python manage.py migrate)
+    (chmod g+w #{node.default['application']['db_path']})
+  EOH
+  environment node.default['application']['python_env']
+  user node.default['application']['user']
+  group node.default['application']['group']
+  subscribes :run, "template[#{node.default['application']['api_server']['app']['config']}]", :immediately
 end
 
 # === Setup serving. ===

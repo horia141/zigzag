@@ -14,7 +14,6 @@ default['application']['sources_dir'] = File.join(default['application']['work_d
 default['application']['var_dir'] = File.join(default['application']['work_dir'], 'var')
 default['application']['tmp_dir'] = File.join(default['application']['work_dir'], 'tmp')
 
-default['application']['db_path'] = File.join(default['application']['data_dir'], 'db.sqlite3')
 default['application']['database_name'] = 'zigzag_main'
 
 default['application']['database']['name'] = 'zigzag_database'
