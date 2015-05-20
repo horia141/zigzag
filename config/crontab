@@ -1,5 +1,0 @@
-# For more information see the manual pages of crontab(5) and cron(8)
-# 
-# m h  dom mon dow   command
-*/30 * * * * /home/horia/Dropbox/Work/ZigZag/workflow/run_exploring_in_cron.sh
-*/30 * * * * /home/horia/Dropbox/Work/ZigZag/workflow/run_log_analyzing_in_cron.sh
