@@ -49,7 +49,7 @@ class Service(comlink.Service):
 
         logging.info('Fetching from remote source')
 
-        (photo_raw_data, photo_raw_mime_type) = self._fetcher.fetch_url(source_uri)
+        (photo_raw_data, photo_raw_mime_type) = self._fetcher.fetch_photo(source_uri)
         if photo_raw_mime_type not in defines.PHOTO_MIMETYPES:
             raise Error('Unrecognized photo type - "%s"' % photo_raw_mime_type)
 

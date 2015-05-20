@@ -37,6 +37,22 @@ class Service(comlink.Service):
         return (raw_content, file_obj.info().gettype())
 
     @comlink.call
+    def fetch_photo(self, photo_url):
+        logging.info('Trying to fetch photo "%s"' % photo_url)
+
+        request = urllib2.Request(photo_url, headers=BOT_HEADERS)
+        file_obj = urllib2.urlopen(request)
+        content_length = int(file_obj.headers['content-length'], 10)
+        if content_length > defines.MAXIMUM_FETCHED_PHOTO_SIZE_IN_BYTES:
+            raise IOError('Photo at "%s" is too large at %d bytes' % (photo_url, content_length))
+        raw_content = file_obj.read()
+        file_obj.close()
+
+        logging.info('Successfully fetched photo "%s"' % photo_url)
+
+        return (raw_content, file_obj.info().gettype())
+
+    @comlink.call
     def fetch_url_mimetype(self, page_url):
         logging.info('Trying to fetch "%s"' % page_url)
 

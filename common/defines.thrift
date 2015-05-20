@@ -59,3 +59,8 @@ const i32 PHOTO_MAX_WIDTH = 2048;
 const i32 PHOTO_MAX_HEIGHT = 2048;
 
 const i64 BANDWIDTH_ALERT_BYTES_PER_MONTH = 1073741824; // 1GB
+
+// The maximum image size the fetcher service is allowed to download.Larger sizes seem to block
+// Comlink for some reason. Luckly, images larger than this comprise less than 1% of the total,
+// based on a 2000 image sample. They are mostly GIFs as well.
+const i64 MAXIMUM_FETCHED_PHOTO_SIZE_IN_BYTES = 5242880; // 5MB

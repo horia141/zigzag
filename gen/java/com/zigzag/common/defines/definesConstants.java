@@ -137,4 +137,6 @@ public class definesConstants {
 
   public static final long BANDWIDTH_ALERT_BYTES_PER_MONTH = 1073741824L;
 
+  public static final long MAXIMUM_FETCHED_PHOTO_SIZE_IN_BYTES = 5242880L;
+
 }

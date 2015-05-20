@@ -35,6 +35,7 @@ static int32_t common.definesDEFAULT_TIME_BETWEEN_FRAMES_MS = 75;
 static int32_t common.definesPHOTO_MAX_WIDTH = 2048;
 static int32_t common.definesPHOTO_MAX_HEIGHT = 2048;
 static int64_t common.definesBANDWIDTH_ALERT_BYTES_PER_MONTH = 1073741824;
+static int64_t common.definesMAXIMUM_FETCHED_PHOTO_SIZE_IN_BYTES = 5242880;
 
 @implementation common.definesdefinesConstants
 + (void) initialize {
@@ -161,6 +162,9 @@ static int64_t common.definesBANDWIDTH_ALERT_BYTES_PER_MONTH = 1073741824;
 }
 + (int64_t) BANDWIDTH_ALERT_BYTES_PER_MONTH{
   return common.definesBANDWIDTH_ALERT_BYTES_PER_MONTH;
+}
++ (int64_t) MAXIMUM_FETCHED_PHOTO_SIZE_IN_BYTES{
+  return common.definesMAXIMUM_FETCHED_PHOTO_SIZE_IN_BYTES;
 }
 @end
 
