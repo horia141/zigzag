@@ -1,20 +1,18 @@
 package com.zigzag.client_app;
 
+import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -27,7 +25,6 @@ import com.zigzag.common.model.Artifact;
 import com.zigzag.common.model.ImagePhotoData;
 import com.zigzag.common.model.PhotoData;
 import com.zigzag.common.model.PhotoDescription;
-import com.zigzag.common.model.TooBigPhotoData;
 import com.zigzag.common.model.VideoPhotoData;
 
 import java.util.ArrayList;
@@ -214,31 +211,6 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
         final ListView imageListView = (ListView)rootView.findViewById(R.id.image_list);
         imageListView.setEmptyView(waitingView);
         imageListView.setAdapter(imagesDescriptionBitmapListAdapter);
-
-        ImageButton saveButton = (ImageButton)rootView.findViewById(R.id.save_button);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View saveButton) {
-            }
-        });
-
-        ImageButton shareButton = (ImageButton)rootView.findViewById(R.id.share_button);
-        shareButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View shareButton) {
-                if (artifact == null) {
-                    return;
-                }
-
-                String subject = String.format("%s via %s", artifact.getTitle(), getActivity().getString(R.string.app_name));
-                String text = String.format("%s via %s %s", artifact.getTitle(), getActivity().getString(R.string.app_name), artifact.getPage_uri());
-                Intent i = new Intent(Intent.ACTION_SEND);
-                i.setType("text/plain");
-                i.putExtra(Intent.EXTRA_SUBJECT, subject);
-                i.putExtra(Intent.EXTRA_TEXT, text);
-                startActivity(Intent.createChooser(i, getActivity().getString(R.string.share_title)));
-            }
-        });
 
         // Clear the current data structures and interface. Dispose of the associated bitmaps and
         // clear the tiles list.

@@ -1,8 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
-        <!-- Customize your theme here. -->
+    <style name="ZigZagTheme" parent="@android:style/Theme.Holo.Light">
+        <item name="android:actionBarStyle">@style/ZigZagActionBarTheme</item>
+    </style>
+
+    <!-- Action bar theme. -->
+    <style name="ZigZagActionBarTheme" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:titleTextStyle">@style/ZigZagActionBarTitleTheme</item>
+        <item name="android:background">#68b6ff</item>
+    </style>
+
+    <style name="ZigZagActionBarTitleTheme" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+        <item name="android:textColor">#ffffff</item>
     </style>
 
 </resources>
