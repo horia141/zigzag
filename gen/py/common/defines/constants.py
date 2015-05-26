@@ -31,6 +31,7 @@ ARTIFACT_SOURCES = {
   1 : common.model.ttypes.ArtifactSource(**{
     "id" : 1,
     "name" : "Reddit",
+    "artifact_title_name" : "reddit.com",
     "start_page_uri" : "http://reddit.com/r/%s",
     "subdomains" : set([
       "pics",
@@ -54,11 +55,13 @@ ARTIFACT_SOURCES = {
   2 : common.model.ttypes.ArtifactSource(**{
     "id" : 2,
     "name" : "Imgur",
+    "artifact_title_name" : "imgur",
     "start_page_uri" : "http://imgur.com",
   }),
   3 : common.model.ttypes.ArtifactSource(**{
     "id" : 3,
     "name" : "9GAG",
+    "artifact_title_name" : "9gag",
     "start_page_uri" : "http://9gag.com/%s",
     "subdomains" : set([
       "hot",

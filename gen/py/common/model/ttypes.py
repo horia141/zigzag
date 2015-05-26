@@ -573,6 +573,7 @@ class ArtifactSource(object):
   Attributes:
    - id
    - name
+   - artifact_title_name
    - start_page_uri
    - subdomains
   """
@@ -581,13 +582,15 @@ class ArtifactSource(object):
     None, # 0
     (1, TType.I64, 'id', None, None, ), # 1
     (2, TType.STRING, 'name', None, None, ), # 2
-    (3, TType.STRING, 'start_page_uri', None, None, ), # 3
-    (4, TType.SET, 'subdomains', (TType.STRING,None), None, ), # 4
+    (3, TType.STRING, 'artifact_title_name', None, None, ), # 3
+    (4, TType.STRING, 'start_page_uri', None, None, ), # 4
+    (5, TType.SET, 'subdomains', (TType.STRING,None), None, ), # 5
   )
 
-  def __init__(self, id=None, name=None, start_page_uri=None, subdomains=None,):
+  def __init__(self, id=None, name=None, artifact_title_name=None, start_page_uri=None, subdomains=None,):
     self.id = id
     self.name = name
+    self.artifact_title_name = artifact_title_name
     self.start_page_uri = start_page_uri
     self.subdomains = subdomains
 
@@ -612,10 +615,15 @@ class ArtifactSource(object):
           iprot.skip(ftype)
       elif fid == 3:
         if ftype == TType.STRING:
-          self.start_page_uri = iprot.readString();
+          self.artifact_title_name = iprot.readString();
         else:
           iprot.skip(ftype)
       elif fid == 4:
+        if ftype == TType.STRING:
+          self.start_page_uri = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 5:
         if ftype == TType.SET:
           self.subdomains = set()
           (_etype10, _size7) = iprot.readSetBegin()
@@ -643,12 +651,16 @@ class ArtifactSource(object):
       oprot.writeFieldBegin('name', TType.STRING, 2)
       oprot.writeString(self.name)
       oprot.writeFieldEnd()
+    if self.artifact_title_name is not None:
+      oprot.writeFieldBegin('artifact_title_name', TType.STRING, 3)
+      oprot.writeString(self.artifact_title_name)
+      oprot.writeFieldEnd()
     if self.start_page_uri is not None:
-      oprot.writeFieldBegin('start_page_uri', TType.STRING, 3)
+      oprot.writeFieldBegin('start_page_uri', TType.STRING, 4)
       oprot.writeString(self.start_page_uri)
       oprot.writeFieldEnd()
     if self.subdomains is not None:
-      oprot.writeFieldBegin('subdomains', TType.SET, 4)
+      oprot.writeFieldBegin('subdomains', TType.SET, 5)
       oprot.writeSetBegin(TType.STRING, len(self.subdomains))
       for iter13 in self.subdomains:
         oprot.writeString(iter13)
@@ -662,6 +674,8 @@ class ArtifactSource(object):
       raise TProtocol.TProtocolException(message='Required field id is unset!')
     if self.name is None:
       raise TProtocol.TProtocolException(message='Required field name is unset!')
+    if self.artifact_title_name is None:
+      raise TProtocol.TProtocolException(message='Required field artifact_title_name is unset!')
     if self.start_page_uri is None:
       raise TProtocol.TProtocolException(message='Required field start_page_uri is unset!')
     return
@@ -671,6 +685,7 @@ class ArtifactSource(object):
     value = 17
     value = (value * 31) ^ hash(self.id)
     value = (value * 31) ^ hash(self.name)
+    value = (value * 31) ^ hash(self.artifact_title_name)
     value = (value * 31) ^ hash(self.start_page_uri)
     value = (value * 31) ^ hash(self.subdomains)
     return value

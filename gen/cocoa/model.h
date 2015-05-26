@@ -262,11 +262,13 @@ typedef int64_t common.modelEntityId;
 @interface common.modelArtifactSource : NSObject <TBase, NSCoding> {
   common.modelEntityId __id;
   NSString * __name;
+  NSString * __artifact_title_name;
   NSString * __start_page_uri;
   NSMutableSet * __subdomains;
 
   BOOL __id_isset;
   BOOL __name_isset;
+  BOOL __artifact_title_name_isset;
   BOOL __start_page_uri_isset;
   BOOL __subdomains_isset;
 }
@@ -274,12 +276,13 @@ typedef int64_t common.modelEntityId;
 #if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
 @property (nonatomic, getter=id, setter=setId:) common.modelEntityId id;
 @property (nonatomic, retain, getter=name, setter=setName:) NSString * name;
+@property (nonatomic, retain, getter=artifact_title_name, setter=setArtifact_title_name:) NSString * artifact_title_name;
 @property (nonatomic, retain, getter=start_page_uri, setter=setStart_page_uri:) NSString * start_page_uri;
 @property (nonatomic, retain, getter=subdomains, setter=setSubdomains:) NSMutableSet * subdomains;
 #endif
 
 - (id) init;
-- (id) initWithId: (common.modelEntityId) id name: (NSString *) name start_page_uri: (NSString *) start_page_uri subdomains: (NSMutableSet *) subdomains;
+- (id) initWithId: (common.modelEntityId) id name: (NSString *) name artifact_title_name: (NSString *) artifact_title_name start_page_uri: (NSString *) start_page_uri subdomains: (NSMutableSet *) subdomains;
 
 - (void) read: (id <TProtocol>) inProtocol;
 - (void) write: (id <TProtocol>) outProtocol;
@@ -297,6 +300,12 @@ typedef int64_t common.modelEntityId;
 - (void) setName: (NSString *) name;
 #endif
 - (BOOL) nameIsSet;
+
+#if !__has_feature(objc_arc)
+- (NSString *) artifact_title_name;
+- (void) setArtifact_title_name: (NSString *) artifact_title_name;
+#endif
+- (BOOL) artifact_title_nameIsSet;
 
 #if !__has_feature(objc_arc)
 - (NSString *) start_page_uri;

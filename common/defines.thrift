@@ -17,6 +17,7 @@ const map<i64, model.ArtifactSource> ARTIFACT_SOURCES = {
     1: {
         'id': 1,
         'name': 'Reddit',
+	'artifact_title_name': 'reddit.com',
         'start_page_uri': 'http://reddit.com/r/%s',
         'subdomains': ['pics', 'comics', 'fffffffuuuuuuuuuuuu', 'ragecomics'
             'lolcats', 'AdviceAnimals', 'Demotivational', 'memes', 'images',
@@ -26,11 +27,13 @@ const map<i64, model.ArtifactSource> ARTIFACT_SOURCES = {
     2: {
         'id': 2,
         'name': 'Imgur',
+	'artifact_title_name': 'imgur',
         'start_page_uri': 'http://imgur.com'
     },
     3: {
         'id': 3,
         'name': '9GAG',
+	'artifact_title_name': '9gag',
         'start_page_uri': 'http://9gag.com/%s',
         'subdomains': ['hot', 'trending', 'gif']
     }

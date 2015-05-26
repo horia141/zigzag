@@ -67,6 +67,7 @@ public class definesConstants {
     com.zigzag.common.model.ArtifactSource tmp0 = new com.zigzag.common.model.ArtifactSource();
     tmp0.setId(1L);
     tmp0.setName("Reddit");
+    tmp0.setArtifact_title_name("reddit.com");
     tmp0.setStart_page_uri("http://reddit.com/r/%s");
     Set<String> tmp1 = new HashSet<String>();
     tmp1.add("pics");
@@ -92,12 +93,14 @@ public class definesConstants {
     com.zigzag.common.model.ArtifactSource tmp2 = new com.zigzag.common.model.ArtifactSource();
     tmp2.setId(2L);
     tmp2.setName("Imgur");
+    tmp2.setArtifact_title_name("imgur");
     tmp2.setStart_page_uri("http://imgur.com");
 
     ARTIFACT_SOURCES.put(2L, tmp2);
     com.zigzag.common.model.ArtifactSource tmp3 = new com.zigzag.common.model.ArtifactSource();
     tmp3.setId(3L);
     tmp3.setName("9GAG");
+    tmp3.setArtifact_title_name("9gag");
     tmp3.setStart_page_uri("http://9gag.com/%s");
     Set<String> tmp4 = new HashSet<String>();
     tmp4.add("hot");
