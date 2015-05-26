@@ -81,9 +81,9 @@ public class MediaCarouselActivity extends Activity implements Controller.AllArt
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
-            case R.id.action_save:
-                saveArtifact(viewPager.getCurrentItem());
-                return true;
+//            case R.id.action_save:
+//                saveArtifact(viewPager.getCurrentItem());
+//                return true;
             case R.id.action_share:
                 shareArtifact(viewPager.getCurrentItem());
                 return true;

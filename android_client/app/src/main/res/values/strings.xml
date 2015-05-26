@@ -12,15 +12,12 @@
     <string name="fragment_media_carousel_one_image_description">Description</string>
 
     <color name="action_bar_blue">#68b6ff</color>
+    <color name="text_black">#000000</color>
     <color name="text_white">#ffffff</color>
     <color name="text_link">#167cdc</color>
     <color name="text_gray">#bababa</color>
     <color name="background_gray">#f7f7f7</color>
     <color name="background_white">#ffffff</color>
     <color name="border_black_transparent">#e7e7e7</color>
-
-    <color name="border_black">#777777</color>
-    <color name="background_black">#000000</color>
-    <color name="text_black">#000000</color>
 
 </resources>

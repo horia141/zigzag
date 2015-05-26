@@ -4,6 +4,8 @@
     <!-- Base application theme. -->
     <style name="ZigZagTheme" parent="@android:style/Theme.Holo.Light">
         <item name="android:actionBarStyle">@style/ZigZagActionBarTheme</item>
+        <item name="android:colorBackground">@color/background_white</item>
+        <item name="android:windowBackground">@color/background_white</item>
     </style>
 
     <!-- Action bar theme. -->
@@ -18,7 +20,7 @@
 
     <!-- Styles for the artifact title and surrounding components -->
     <style name="ArtifactTitleZone">
-        <item name="android:background">@drawable/artifact_title_zone_background</item>
+        <item name="android:background">@drawable/artifact_zone_background</item>
     </style>
 
     <style name="ArtifactTitle">
@@ -40,7 +42,23 @@
 
     <!-- Styles for the artifact content -->
     <style name="ArtifactContentZone">
-        <item name="android:background">@drawable/artifact_title_zone_background</item>
+        <item name="android:divider">@null</item>
+        <item name="android:dividerHeight">16dp</item>
+    </style>
+
+    <style name="ArtifactPhotoZone">
+        <item name="android:background">@drawable/artifact_zone_background</item>
+    </style>
+
+    <style name="ArtifactPhotoSubtitle">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/text_black</item>
+    </style>
+
+    <style name="ArtifactPhotoDescription">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/text_black</item>
     </style>
 
 </resources>

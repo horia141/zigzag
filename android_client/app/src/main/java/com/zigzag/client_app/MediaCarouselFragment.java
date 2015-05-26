@@ -13,9 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.zigzag.client_app.controller.Controller;
@@ -101,7 +99,7 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
         private final List<ImageInfo> imagesDescriptionBitmapList;
 
         public ImagesDescriptionBitmapListAdapter(Context context, List<ImageInfo> imagesDescriptionBitmapList) {
-            super(context, R.layout.fragment_media_carousel_one_image, imagesDescriptionBitmapList);
+            super(context, R.layout.fragment_media_carousel_one_photo, imagesDescriptionBitmapList);
             this.imagesDescriptionBitmapList = imagesDescriptionBitmapList;
         }
 
@@ -115,7 +113,7 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
 
             // Build the basic view of the element, and cache it for later use.
             if (rowView == null) {
-                rowView = inflater.inflate(R.layout.fragment_media_carousel_one_image, parent, false);
+                rowView = inflater.inflate(R.layout.fragment_media_carousel_one_photo, parent, false);
                 rowViewHolder = new ViewHolder();
 
                 rowViewHolder.tileImageView = (ImagePhotoView) rowView.findViewById(R.id.image_photo);
@@ -172,18 +170,14 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
                     rowViewHolder.subtitleTextView.setText(info.photoDescription.getSubtitle());
                     rowViewHolder.subtitleTextView.setVisibility(View.VISIBLE);
                 } else {
-                    rowViewHolder.subtitleTextView.setText("Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...");
-                    rowViewHolder.subtitleTextView.setVisibility(View.VISIBLE);
-                    // rowViewHolder.subtitleTextView.setVisibility(View.GONE);
+                    rowViewHolder.subtitleTextView.setVisibility(View.GONE);
                 }
 
                 if (!info.photoDescription.getDescription().equals("")) {
                     rowViewHolder.descriptionTextView.setText(info.photoDescription.getDescription());
                     rowViewHolder.descriptionTextView.setVisibility(View.VISIBLE);
                 } else {
-                    rowViewHolder.descriptionTextView.setText("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas consectetur erat felis, ac eleifend nunc lacinia eget. Sed auctor tellus ut nulla aliquam scelerisque. Vestibulum elementum tellus nec neque consectetur condimentum. Morbi interdum venenatis ipsum nec sodales");
-                    rowViewHolder.descriptionTextView.setVisibility(View.VISIBLE);
-                    // rowViewHolder.descriptionTextView.setVisibility(View.GONE);
+                    rowViewHolder.descriptionTextView.setVisibility(View.GONE);
                 }
             }
 

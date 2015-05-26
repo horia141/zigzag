@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -20,7 +21,10 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp">
 
             <TextView
                 android:id="@+id/source_name"
@@ -28,9 +32,7 @@
                 style="@style/ArtifactSourceName"
                 android:layout_weight="1"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"/>
+                android:layout_height="wrap_content"/>
 
             <TextView
                 android:id="@+id/date_added"
@@ -38,9 +40,7 @@
                 style="@style/ArtifactTimeAdded"
                 android:layout_weight="1"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="8dp"
-                android:layout_marginTop="8dp" />
+                android:layout_height="wrap_content"/>
         </LinearLayout>
 
         <TextView
@@ -60,18 +60,11 @@
         android:clipToPadding="false"
         android:scrollbarStyle="outsideOverlay"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:divider="@null"
-        android:dividerHeight="8dp"
-        android:paddingTop="8dp"
-        android:paddingLeft="0dp"
-        android:paddingRight="0dp"
-        android:paddingBottom="0dp"
         android:layout_marginTop="0dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
-        style="@style/ArtifactTitleZone" />
+        style="@style/ArtifactContentZone" />
 </LinearLayout>
