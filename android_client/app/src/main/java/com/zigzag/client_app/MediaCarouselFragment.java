@@ -92,9 +92,9 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
 
     private static class ImagesDescriptionBitmapListAdapter extends ArrayAdapter<ImageInfo> {
         private static class ViewHolder {
-            TextView subtitleTextView;
             ImagePhotoView tileImageView;
             VideoPhotoView videoPhotoView;
+            TextView subtitleTextView;
             TextView descriptionTextView;
         }
 
@@ -118,9 +118,9 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
                 rowView = inflater.inflate(R.layout.fragment_media_carousel_one_image, parent, false);
                 rowViewHolder = new ViewHolder();
 
-                rowViewHolder.subtitleTextView = (TextView) rowView.findViewById(R.id.subtitle);
                 rowViewHolder.tileImageView = (ImagePhotoView) rowView.findViewById(R.id.image_photo);
                 rowViewHolder.videoPhotoView = (VideoPhotoView) rowView.findViewById(R.id.video_photo);
+                rowViewHolder.subtitleTextView = (TextView) rowView.findViewById(R.id.subtitle);
                 rowViewHolder.descriptionTextView = (TextView) rowView.findViewById(R.id.description);
 
                 rowView.setTag(rowViewHolder);
@@ -131,18 +131,11 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
             ImageInfo info = imagesDescriptionBitmapList.get(position);
 
             if (info == null) {
-                rowViewHolder.subtitleTextView.setVisibility(View.GONE);
                 rowViewHolder.tileImageView.setVisibility(View.GONE);
                 rowViewHolder.videoPhotoView.setVisibility(View.GONE);
+                rowViewHolder.subtitleTextView.setVisibility(View.GONE);
                 rowViewHolder.descriptionTextView.setVisibility(View.GONE);
             } else {
-                if (!info.photoDescription.getSubtitle().equals("")) {
-                    rowViewHolder.subtitleTextView.setText(info.photoDescription.getSubtitle());
-                    rowViewHolder.subtitleTextView.setVisibility(View.VISIBLE);
-                } else {
-                    rowViewHolder.subtitleTextView.setVisibility(View.GONE);
-                }
-
                 if (info.photoData.isSetToo_big_photo_data()) {
                     rowViewHolder.tileImageView.setVisibility(View.GONE);
                     rowViewHolder.videoPhotoView.setVisibility(View.GONE);
@@ -175,11 +168,22 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
                     }
                 }
 
+                if (!info.photoDescription.getSubtitle().equals("")) {
+                    rowViewHolder.subtitleTextView.setText(info.photoDescription.getSubtitle());
+                    rowViewHolder.subtitleTextView.setVisibility(View.VISIBLE);
+                } else {
+                    rowViewHolder.subtitleTextView.setText("Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...");
+                    rowViewHolder.subtitleTextView.setVisibility(View.VISIBLE);
+                    // rowViewHolder.subtitleTextView.setVisibility(View.GONE);
+                }
+
                 if (!info.photoDescription.getDescription().equals("")) {
                     rowViewHolder.descriptionTextView.setText(info.photoDescription.getDescription());
                     rowViewHolder.descriptionTextView.setVisibility(View.VISIBLE);
                 } else {
-                    rowViewHolder.descriptionTextView.setVisibility(View.GONE);
+                    rowViewHolder.descriptionTextView.setText("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas consectetur erat felis, ac eleifend nunc lacinia eget. Sed auctor tellus ut nulla aliquam scelerisque. Vestibulum elementum tellus nec neque consectetur condimentum. Morbi interdum venenatis ipsum nec sodales");
+                    rowViewHolder.descriptionTextView.setVisibility(View.VISIBLE);
+                    // rowViewHolder.descriptionTextView.setVisibility(View.GONE);
                 }
             }
 
@@ -210,12 +214,9 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
 
         final View rootView = inflater.inflate(R.layout.fragment_media_carousel, container, false);
 
-        ProgressBar waitingView = (ProgressBar) rootView.findViewById(R.id.waiting);
-
         imagesDescriptionBitmapListAdapter = new ImagesDescriptionBitmapListAdapter(getActivity(), this.imagesDescriptionBitmapList);
 
         final ListView imageListView = (ListView)rootView.findViewById(R.id.image_list);
-        imageListView.setEmptyView(waitingView);
         imageListView.setAdapter(imagesDescriptionBitmapListAdapter);
 
         // Clear the current data structures and interface. Dispose of the associated bitmaps and
@@ -227,10 +228,6 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
         }
         imagesDescriptionBitmapList.clear();
         imagesDescriptionBitmapListAdapter.notifyDataSetChanged();
-
-        // Make the master waiting progress bar invisible, since there'll be individual image
-        // progress bars.
-        rootView.findViewById(R.id.waiting).setVisibility(View.GONE);
 
         // Setup title for artifact.
         TextView titleView = (TextView)rootView.findViewById(R.id.title);

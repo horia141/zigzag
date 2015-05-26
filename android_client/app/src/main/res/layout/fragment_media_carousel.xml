@@ -55,17 +55,10 @@
             android:layout_marginBottom="8dp"/>
     </LinearLayout>
 
-    <ProgressBar
-        android:id="@+id/waiting"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:visibility="gone"/>
-
     <ListView
         android:id="@+id/image_list"
+        android:clipToPadding="false"
+        android:scrollbarStyle="outsideOverlay"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -79,5 +72,6 @@
         android:layout_marginTop="0dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"/>
+        android:layout_marginBottom="8dp"
+        style="@style/ArtifactTitleZone" />
 </LinearLayout>
