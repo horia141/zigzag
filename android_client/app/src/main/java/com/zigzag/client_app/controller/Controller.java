@@ -18,6 +18,7 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import com.zigzag.common.api.NextGenResponse;
 import com.zigzag.common.model.Artifact;
+import com.zigzag.common.model.ArtifactSource;
 import com.zigzag.common.model.Generation;
 import com.zigzag.common.model.PhotoData;
 import com.zigzag.common.model.PhotoDescription;
@@ -29,9 +30,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public final class Controller {
 
@@ -303,6 +306,31 @@ public final class Controller {
         }
 
         return null;
+    }
+
+    public ArtifactSource getSourceForArtifact(Artifact artifact) {
+        for (Generation gen : generations) {
+            ArtifactSource artifactSource = gen.artifact_sources.get(artifact.getArtifact_source_pk());
+
+            if (artifactSource != null) {
+                return artifactSource;
+            }
+        }
+
+        throw new RuntimeException("Cannot find artifact source! This should not happen");
+    }
+
+    public Date getDateForArtifact(Artifact artifact) {
+        for (Generation gen : generations) {
+            for (Artifact otherArtifact : gen.getArtifacts()) {
+                if (otherArtifact.equals(artifact)) {
+                    // TODO(horia141): nicer conversion to ms.
+                    return new Date((long)gen.getDatetime_ended_ts() * 1000);
+                }
+            }
+        }
+
+        throw new RuntimeException("Cannot find artifact! This should not happen");
     }
 
     private static String translateImagePath(String urlPath) {

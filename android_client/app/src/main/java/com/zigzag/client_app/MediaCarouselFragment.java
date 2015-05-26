@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -22,12 +23,15 @@ import com.zigzag.client_app.ui.BitmapSetAdapter;
 import com.zigzag.client_app.ui.ImagePhotoView;
 import com.zigzag.client_app.ui.VideoPhotoView;
 import com.zigzag.common.model.Artifact;
+import com.zigzag.common.model.ArtifactSource;
 import com.zigzag.common.model.ImagePhotoData;
 import com.zigzag.common.model.PhotoData;
 import com.zigzag.common.model.PhotoDescription;
 import com.zigzag.common.model.VideoPhotoData;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MediaCarouselFragment extends Fragment implements Controller.ArtifactResourcesListener {
@@ -186,11 +190,13 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
     @Nullable private Artifact artifact;
     private final List<ImageInfo> imagesDescriptionBitmapList;
     @Nullable private ImagesDescriptionBitmapListAdapter imagesDescriptionBitmapListAdapter;
+    private final SimpleDateFormat dateAddedFormatter;
 
     public MediaCarouselFragment() {
         this.artifact = null;
         this.imagesDescriptionBitmapList = new ArrayList<>();
         this.imagesDescriptionBitmapListAdapter = null;
+        this.dateAddedFormatter = new SimpleDateFormat("d MMM yyyy");
     }
 
     @Override
@@ -229,6 +235,16 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
         // Setup title for artifact.
         TextView titleView = (TextView)rootView.findViewById(R.id.title);
         titleView.setText(String.format("%s", artifact.getTitle()));
+
+        // Setup source name for the artifact.
+        TextView sourceNameView = (TextView)rootView.findViewById(R.id.source_name);
+        ArtifactSource artifactSource = Controller.getInstance(getActivity()).getSourceForArtifact(artifact);
+        sourceNameView.setText(artifactSource.getName());
+
+        // Setup date for the artifact.
+        TextView dateAddedView = (TextView)rootView.findViewById(R.id.date_added);
+        Date dateForArtifact = Controller.getInstance(getActivity()).getDateForArtifact(artifact);
+        dateAddedView.setText(dateAddedFormatter.format(dateForArtifact));
 
         // Setup list view with all the images in the artifact. Reconstruct the list of bitmaps
         // to contain only nulls and the associated adapter and associate them with the image

@@ -6,13 +6,21 @@
     <string name="activity_media_carousel_action_save_title">Save</string>
     <string name="activity_media_carousel_action_share_title">Share</string>
     <string name="fragment_media_carousel_title">Title</string>
+    <string name="fragment_media_carousel_source_name">zigzag</string>
+    <string name="fragment_media_carousel_time_added">1 Jan 1970</string>
     <string name="fragment_media_carousel_one_image_subtitle">Subtitle</string>
     <string name="fragment_media_carousel_one_image_description">Description</string>
 
+    <color name="action_bar_blue">#68b6ff</color>
+    <color name="text_white">#ffffff</color>
+    <color name="text_link">#167cdc</color>
+    <color name="text_gray">#bababa</color>
+    <color name="background_gray">#f7f7f7</color>
+    <color name="background_white">#ffffff</color>
+    <color name="border_black_transparent">#e7e7e7</color>
+
     <color name="border_black">#777777</color>
     <color name="background_black">#000000</color>
-    <color name="background_white">#CCCCCC</color>
     <color name="text_black">#000000</color>
-    <color name="text_white">#CCCCCC</color>
 
 </resources>
