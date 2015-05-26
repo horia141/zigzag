@@ -239,7 +239,7 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
         // Setup source name for the artifact.
         TextView sourceNameView = (TextView)rootView.findViewById(R.id.source_name);
         ArtifactSource artifactSource = Controller.getInstance(getActivity()).getSourceForArtifact(artifact);
-        sourceNameView.setText(artifactSource.getName());
+        sourceNameView.setText(artifactSource.getArtifact_title_name());
 
         // Setup date for the artifact.
         TextView dateAddedView = (TextView)rootView.findViewById(R.id.date_added);
