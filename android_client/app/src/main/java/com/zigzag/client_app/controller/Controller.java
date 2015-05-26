@@ -134,6 +134,7 @@ public final class Controller {
 
     private final RequestQueue requestQueue;
     private final ImageLoader imageLoader;
+    private final Map<Long, ArtifactSource> artifactSources;
     private final List<Generation> generations;
     private final List<Artifact> artifacts;
     private final ModelDecoder modelDecoder;
@@ -143,6 +144,7 @@ public final class Controller {
     private Controller(Context context) {
         this.requestQueue = Volley.newRequestQueue(context);
         this.imageLoader = new ImageLoader(this.requestQueue, new ImageCache());
+        this.artifactSources = new HashMap<>();
         this.generations = new ArrayList<>();
         this.artifacts = new ArrayList<>();
         this.modelDecoder = new ModelDecoder();
@@ -182,6 +184,7 @@ public final class Controller {
                     Generation generation = nextGenResponse.getGeneration();
 
                     // Update the "model".
+                    artifactSources.putAll(generation.getArtifact_sources());
                     generations.add(generation);
                     artifacts.addAll(generation.getArtifacts());
 
@@ -309,15 +312,13 @@ public final class Controller {
     }
 
     public ArtifactSource getSourceForArtifact(Artifact artifact) {
-        for (Generation gen : generations) {
-            ArtifactSource artifactSource = gen.artifact_sources.get(artifact.getArtifact_source_pk());
+        ArtifactSource artifactSource = artifactSources.get(artifact.getArtifact_source_pk());
 
-            if (artifactSource != null) {
-                return artifactSource;
-            }
+        if (artifactSource == null) {
+            throw new RuntimeException("Cannot find artifact source! This should not happen");
         }
 
-        throw new RuntimeException("Cannot find artifact source! This should not happen");
+        return artifactSource;
     }
 
     public Date getDateForArtifact(Artifact artifact) {
