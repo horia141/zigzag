@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import com.zigzag.client_app.controller.Controller;
 import com.zigzag.client_app.ui.BitmapSetAdapter;
-import com.zigzag.client_app.ui.ImagePhotoView;
 import com.zigzag.client_app.ui.ImagePhotoView2;
 import com.zigzag.client_app.ui.VideoPhotoView;
 import com.zigzag.common.model.Artifact;
