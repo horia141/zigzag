@@ -15,17 +15,17 @@ import com.zigzag.common.model.TileData;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ImagePhotoView2 extends ViewGroup {
+public class ImagePhotoView extends ViewGroup {
 
     @Nullable private ImagePhotoData data;
     private final List<ProgressBar> progressBarsForTiles;
     private final List<ImageView> imagesForTiles;
 
-    public ImagePhotoView2(Context context) {
+    public ImagePhotoView(Context context) {
         this(context, null);
     }
 
-    public ImagePhotoView2(Context context, AttributeSet attrs) {
+    public ImagePhotoView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         data = null;

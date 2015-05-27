@@ -8,7 +8,7 @@
     android:baselineAligned="false"
     style="@style/ArtifactPhotoZone">
 
-    <com.zigzag.client_app.ui.ImagePhotoView2
+    <com.zigzag.client_app.ui.ImagePhotoView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/image_photo"
