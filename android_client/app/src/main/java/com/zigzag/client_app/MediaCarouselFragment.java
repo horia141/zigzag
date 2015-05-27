@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.zigzag.client_app.controller.Controller;
 import com.zigzag.client_app.ui.BitmapSetAdapter;
 import com.zigzag.client_app.ui.ImagePhotoView;
+import com.zigzag.client_app.ui.ImagePhotoView2;
 import com.zigzag.client_app.ui.VideoPhotoView;
 import com.zigzag.common.model.Artifact;
 import com.zigzag.common.model.ArtifactSource;
@@ -90,7 +91,7 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
 
     private static class ImagesDescriptionBitmapListAdapter extends ArrayAdapter<ImageInfo> {
         private static class ViewHolder {
-            ImagePhotoView tileImageView;
+            ImagePhotoView2 tileImageView;
             VideoPhotoView videoPhotoView;
             TextView subtitleTextView;
             TextView descriptionTextView;
@@ -116,7 +117,7 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
                 rowView = inflater.inflate(R.layout.fragment_media_carousel_one_photo, parent, false);
                 rowViewHolder = new ViewHolder();
 
-                rowViewHolder.tileImageView = (ImagePhotoView) rowView.findViewById(R.id.image_photo);
+                rowViewHolder.tileImageView = (ImagePhotoView2) rowView.findViewById(R.id.image_photo);
                 rowViewHolder.videoPhotoView = (VideoPhotoView) rowView.findViewById(R.id.video_photo);
                 rowViewHolder.subtitleTextView = (TextView) rowView.findViewById(R.id.subtitle);
                 rowViewHolder.descriptionTextView = (TextView) rowView.findViewById(R.id.description);
@@ -139,7 +140,14 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
                     rowViewHolder.videoPhotoView.setVisibility(View.GONE);
                 } else if (info.photoData.isSetImage_photo_data()) {
                     rowViewHolder.tileImageView.setVisibility(View.VISIBLE);
-                    rowViewHolder.tileImageView.setAdapter(info.tilesBitmapAdapter);
+                    rowViewHolder.tileImageView.setImagePhotoData(info.photoData.getImage_photo_data());
+                    for (int ii = 0; ii < info.tilesBitmaps.size(); ii++) {
+                        Bitmap tileBitmap = info.tilesBitmaps.get(ii);
+                        if (tileBitmap == null) {
+                            continue;
+                        }
+                        rowViewHolder.tileImageView.setBitmapForTile(ii, tileBitmap);
+                    }
                     rowViewHolder.videoPhotoView.setVisibility(View.GONE);
                 } else if (info.photoData.isSetVideo_photo_data()) {
                     rowViewHolder.tileImageView.setVisibility(View.GONE);
@@ -319,6 +327,15 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
 
         imageDescription.tilesBitmapAdapter.notifyDataSetChanged();
         imagesDescriptionBitmapListAdapter.notifyDataSetChanged();
+
+        // TODO(horia141): the hackiest of hacks.
+        ListView imageListView = (ListView) getView().findViewById(R.id.image_list);
+        View something = imageListView.getChildAt(imageIdx);
+        if (something == null) {
+            return;
+        }
+        ImagePhotoView2 imagePhotoView = (ImagePhotoView2) something.findViewById(R.id.image_photo);
+        imagePhotoView.setBitmapForTile(tileOrFrameIdx, image);
     }
 
     @Override

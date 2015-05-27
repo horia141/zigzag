@@ -8,12 +8,19 @@
     android:baselineAligned="false"
     style="@style/ArtifactPhotoZone">
 
-    <com.zigzag.client_app.ui.ImagePhotoView
+    <com.zigzag.client_app.ui.ImagePhotoView2
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/image_photo"
         android:layout_gravity="center"
         style="@style/ArtifactPhotoBorder"/>
+
+    <!--<com.zigzag.client_app.ui.ImagePhotoView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/image_photo"-->
+        <!--android:layout_gravity="center"-->
+        <!--style="@style/ArtifactPhotoBorder"/>-->
 
     <com.zigzag.client_app.ui.VideoPhotoView
         android:layout_width="match_parent"
