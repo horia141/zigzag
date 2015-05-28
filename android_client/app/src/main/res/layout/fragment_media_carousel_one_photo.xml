@@ -15,7 +15,7 @@
         android:layout_gravity="center"
         style="@style/ArtifactPhotoBorder"/>
 
-    <com.zigzag.client_app.ui.VideoPhotoView
+    <com.zigzag.client_app.ui.VideoPhotoView2
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"

@@ -33,7 +33,7 @@ public class ImagePhotoView extends ViewGroup {
         imagesForTiles = new ArrayList<>();
     }
 
-    public void setImagePhotoData(ImagePhotoData newData) {
+    public void setData(ImagePhotoData newData) {
         // First, clear up the current view.
         for (int ii = getChildCount() - 1; ii >= 0; ii--) {
             removeViewAt(ii);
