@@ -20,7 +20,6 @@ import com.zigzag.client_app.controller.Controller;
 import com.zigzag.client_app.ui.BitmapSetAdapter;
 import com.zigzag.client_app.ui.ImagePhotoView;
 import com.zigzag.client_app.ui.VideoPhotoView;
-import com.zigzag.client_app.ui.VideoPhotoView2;
 import com.zigzag.common.model.Artifact;
 import com.zigzag.common.model.ArtifactSource;
 import com.zigzag.common.model.ImagePhotoData;
@@ -92,7 +91,7 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
     private static class ImagesDescriptionBitmapListAdapter extends ArrayAdapter<ImageInfo> {
         private static class ViewHolder {
             ImagePhotoView tileImageView;
-            VideoPhotoView2 videoPhotoView;
+            VideoPhotoView videoPhotoView;
             TextView subtitleTextView;
             TextView descriptionTextView;
         }
@@ -118,7 +117,7 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
                 rowViewHolder = new ViewHolder();
 
                 rowViewHolder.tileImageView = (ImagePhotoView) rowView.findViewById(R.id.image_photo);
-                rowViewHolder.videoPhotoView = (VideoPhotoView2) rowView.findViewById(R.id.video_photo);
+                rowViewHolder.videoPhotoView = (VideoPhotoView) rowView.findViewById(R.id.video_photo);
                 rowViewHolder.subtitleTextView = (TextView) rowView.findViewById(R.id.subtitle);
                 rowViewHolder.descriptionTextView = (TextView) rowView.findViewById(R.id.description);
 

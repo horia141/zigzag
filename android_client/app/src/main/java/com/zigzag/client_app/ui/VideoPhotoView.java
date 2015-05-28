@@ -12,10 +12,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.VideoView;
 
-import com.zigzag.common.model.TileData;
 import com.zigzag.common.model.VideoPhotoData;
 
-public class VideoPhotoView2 extends ViewGroup {
+public class VideoPhotoView extends ViewGroup {
 
     private enum State {
         CREATED,
@@ -31,11 +30,11 @@ public class VideoPhotoView2 extends ViewGroup {
     private State state;
     private boolean videoEnabled;
 
-    public VideoPhotoView2(Context context) {
+    public VideoPhotoView(Context context) {
         this(context, null);
     }
 
-    public VideoPhotoView2(Context context, AttributeSet attrs) {
+    public VideoPhotoView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         data = null;
