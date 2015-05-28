@@ -17,7 +17,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.zigzag.client_app.controller.Controller;
-import com.zigzag.client_app.ui.BitmapSetAdapter;
 import com.zigzag.client_app.ui.ImagePhotoView;
 import com.zigzag.client_app.ui.VideoPhotoView;
 import com.zigzag.common.model.Artifact;
@@ -25,7 +24,6 @@ import com.zigzag.common.model.ArtifactSource;
 import com.zigzag.common.model.ImagePhotoData;
 import com.zigzag.common.model.PhotoData;
 import com.zigzag.common.model.PhotoDescription;
-import com.zigzag.common.model.VideoPhotoData;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,7 +35,6 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
         final PhotoDescription photoDescription;
         final PhotoData photoData;
         final List<Bitmap> tilesBitmaps;
-        final TilesBitmapAdapter tilesBitmapAdapter;
         String localPathToVideo;
         int viewTreeObserverHash;
 
@@ -45,46 +42,8 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
             this.photoDescription = photoDescription;
             this.photoData = photoData;
             this.tilesBitmaps = new ArrayList<>();
-            this.tilesBitmapAdapter = new TilesBitmapAdapter(photoData, this.tilesBitmaps);
             this.localPathToVideo = null;
             this.viewTreeObserverHash = -1;
-        }
-    }
-
-    private static class TilesBitmapAdapter extends BitmapSetAdapter {
-        private final PhotoData photoData;
-        private final List<Bitmap> tilesBitmaps;
-
-        public TilesBitmapAdapter(PhotoData photoData, List<Bitmap> tilesBitmaps) {
-            super();
-            this.photoData = photoData;
-            this.tilesBitmaps = tilesBitmaps;
-        }
-
-        @Override
-        @Nullable
-        public TileInfo getTileInfo(int position) {
-            if (photoData.isSetImage_photo_data()) {
-                ImagePhotoData imageSetImageData = photoData.getImage_photo_data();
-
-                return new TileInfo(tilesBitmaps.get(position),
-                        imageSetImageData.getTiles().get(position).getWidth(),
-                        imageSetImageData.getTiles().get(position).getHeight());
-            } else if (photoData.isSetVideo_photo_data()) {
-                // assert position == 0
-                VideoPhotoData videoPhotoData = photoData.getVideo_photo_data();
-
-                return new TileInfo(tilesBitmaps.get(position),
-                        videoPhotoData.getFirst_frame().getWidth(),
-                        videoPhotoData.getFirst_frame().getHeight());
-            } else {
-                throw new IllegalArgumentException("This codepath should not be reached");
-            }
-        }
-
-        @Override
-        public int getCount() {
-            return tilesBitmaps.size();
         }
     }
 
@@ -158,7 +117,6 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
                     if (info.localPathToVideo != null) {
                         rowViewHolder.videoPhotoView.setSourcePathForLocalVideo(info.localPathToVideo);
                     }
-//                    rowViewHolder.videoPhotoView.setAdapter(info.tilesBitmapAdapter, info.photoData.getVideo_photo_data(), info.localPathToVideo);
 
                     final ViewHolder localRowViewHolder = rowViewHolder;
                     ViewTreeObserver viewTreeObserver = rowView.getViewTreeObserver();
@@ -232,7 +190,6 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
         for (int ii = 0; ii < imagesDescriptionBitmapList.size(); ii++) {
             ImageInfo info = imagesDescriptionBitmapList.get(ii);
             info.tilesBitmaps.clear();
-            info.tilesBitmapAdapter.notifyDataSetChanged();
         }
         imagesDescriptionBitmapList.clear();
         imagesDescriptionBitmapListAdapter.notifyDataSetChanged();
@@ -270,7 +227,6 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
                 // frame of the image.
                 info.tilesBitmaps.add(null);
             }
-            info.tilesBitmapAdapter.notifyDataSetChanged();
             imagesDescriptionBitmapList.add(info);
         }
         imagesDescriptionBitmapListAdapter.notifyDataSetChanged();
@@ -331,7 +287,6 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
             imageDescription.tilesBitmaps.set(tileOrFrameIdx, image);
         }
 
-        imageDescription.tilesBitmapAdapter.notifyDataSetChanged();
         imagesDescriptionBitmapListAdapter.notifyDataSetChanged();
 
         // TODO(horia141): the hackiest of hacks.
@@ -370,7 +325,6 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
         }
 
         imageDescription.localPathToVideo = localPathToVideo;
-        imageDescription.tilesBitmapAdapter.notifyDataSetChanged();
         imagesDescriptionBitmapListAdapter.notifyDataSetChanged();
     }
 
