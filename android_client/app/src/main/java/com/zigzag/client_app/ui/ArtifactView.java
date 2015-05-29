@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.zigzag.client_app.R;
@@ -18,7 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class ArtifactView extends LinearLayout {
+public class ArtifactView extends ScrollView {
 
     private enum State {
         CREATED,
@@ -31,6 +32,7 @@ public class ArtifactView extends LinearLayout {
     @Nullable private Artifact artifact;
     @Nullable private ArtifactSource artifactSource;
     @Nullable private Date dateAdded;
+    private final LinearLayout contentView;
     private final TextView sourceNameView;
     private final TextView dateAddedView;
     private final TextView titleView;
@@ -48,8 +50,8 @@ public class ArtifactView extends LinearLayout {
         artifactSource = null;
         dateAdded = null;
 
-        setOrientation(VERTICAL);
         inflate(getContext(), R.layout.artifact_view, this);
+        contentView = (LinearLayout) findViewById(R.id.content);
         sourceNameView = (TextView) findViewById(R.id.source_name);
         dateAddedView = (TextView) findViewById(R.id.date_added);
         titleView = (TextView) findViewById(R.id.title);
@@ -76,7 +78,7 @@ public class ArtifactView extends LinearLayout {
             PhotoDescriptionView photoDescriptionView = new PhotoDescriptionView(getContext());
             photoDescriptionView.setPhotoDescription(photoDescription);
             photoDescriptionViews.add(photoDescriptionView);
-            addView(photoDescriptionView);
+            contentView.addView(photoDescriptionView);
         }
 
         // Request new drawing and layout.
@@ -95,6 +97,41 @@ public class ArtifactView extends LinearLayout {
 
         // Update view components.
         photoDescriptionViews.get(photoDescriptionIdx).setImageBitmapForTile(tileIdx, bitmap);
+
+        // Request new drawing and layout.
+        invalidate();
+        requestLayout();
+    }
+
+    public void setBitmapForFirstFrame(int photoDescriptionIdx, Bitmap bitmap) {
+        if (state != State.ARTIFACT_SET) {
+            throw new IllegalStateException("Not in bitmap setting state");
+        }
+
+        if (photoDescriptionIdx < 0 || photoDescriptionIdx >= artifact.getPhoto_descriptionsSize()) {
+            throw new IllegalArgumentException("Photo description index out of bounds");
+        }
+
+        // Update view components.
+        photoDescriptionViews.get(photoDescriptionIdx).setVideoBitmapForFirstFrame(bitmap);
+
+        // Request new drawing and layout.
+        invalidate();
+        requestLayout();
+    }
+
+    public void setSourcePathForLocalVideo(int photoDescriptionIdx, String sourcePathForLocalVideo) {
+        if (state != State.ARTIFACT_SET) {
+            throw new IllegalStateException("Not in source path setting state");
+        }
+
+        if (photoDescriptionIdx < 0 || photoDescriptionIdx >= artifact.getPhoto_descriptionsSize()) {
+            throw new IllegalArgumentException("Photo description index out of bounds");
+        }
+
+        // Update view components.
+        photoDescriptionViews.get(photoDescriptionIdx)
+                .setVideoSourcePathForLocalVideo(sourcePathForLocalVideo);
 
         // Request new drawing and layout.
         invalidate();

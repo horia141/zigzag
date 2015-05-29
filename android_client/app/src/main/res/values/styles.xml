@@ -19,6 +19,11 @@
     </style>
 
     <!-- Styles for the artifact title and surrounding components -->
+    <style name="ArtifactContentZone">
+        <item name="android:divider">@null</item>
+        <item name="android:dividerHeight">16dp</item>
+    </style>
+
     <style name="ArtifactTitleZone">
         <item name="android:background">@drawable/artifact_zone_background</item>
     </style>
@@ -41,10 +46,6 @@
     </style>
 
     <!-- Styles for the artifact content -->
-    <style name="ArtifactContentZone">
-        <item name="android:divider">@null</item>
-        <item name="android:dividerHeight">16dp</item>
-    </style>
 
     <style name="PhotoDescriptionView">
         <item name="android:background">@drawable/artifact_zone_background</item>

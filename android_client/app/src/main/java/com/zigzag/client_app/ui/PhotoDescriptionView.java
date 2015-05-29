@@ -14,9 +14,7 @@ public class PhotoDescriptionView extends LinearLayout {
 
     private enum State {
         CREATED,
-        PHOTO_DESCRIPTION_SET_TO_TOO_BIG,
-        PHOTO_DESCRIPTION_SET_TO_IMAGE,
-        PHOTO_DESCRIPTION_SET_TO_VIDEO
+        PHOTO_DESCRIPTION_SET
     }
 
     private State state;
@@ -51,19 +49,12 @@ public class PhotoDescriptionView extends LinearLayout {
         }
 
         // Update state.
-        if (newPhotoDescription.getPhoto_data().isSetToo_big_photo_data()) {
-            state = State.PHOTO_DESCRIPTION_SET_TO_TOO_BIG;
-        } else if (newPhotoDescription.getPhoto_data().isSetImage_photo_data()) {
-            state = State.PHOTO_DESCRIPTION_SET_TO_IMAGE;
-        } else if (newPhotoDescription.getPhoto_data().isSetVideo_photo_data()) {
-            state = State.PHOTO_DESCRIPTION_SET_TO_VIDEO;
-        } else {
-            throw new IllegalStateException("No valid photo data found");
-        }
+        state = State.PHOTO_DESCRIPTION_SET;
         photoDescription = newPhotoDescription;
 
         // Update view components.
         if (newPhotoDescription.getPhoto_data().isSetToo_big_photo_data()) {
+            // Nothing to do here.
         } else if (photoDescription.getPhoto_data().isSetImage_photo_data()) {
             imagePhotoView.setVisibility(VISIBLE);
             imagePhotoView.setData(newPhotoDescription.getPhoto_data().getImage_photo_data());
@@ -90,7 +81,7 @@ public class PhotoDescriptionView extends LinearLayout {
     }
 
     public void setImageBitmapForTile(int tileIdx, Bitmap bitmap) {
-        if (state != State.PHOTO_DESCRIPTION_SET_TO_IMAGE) {
+        if (state != State.PHOTO_DESCRIPTION_SET) {
             throw new IllegalStateException("Not in image setting state");
         }
 
@@ -103,7 +94,7 @@ public class PhotoDescriptionView extends LinearLayout {
     }
 
     public void setVideoBitmapForFirstFrame(Bitmap bitmap) {
-        if (state != State.PHOTO_DESCRIPTION_SET_TO_VIDEO) {
+        if (state != State.PHOTO_DESCRIPTION_SET) {
             throw new IllegalStateException("Not in video setting state");
         }
 
@@ -116,7 +107,7 @@ public class PhotoDescriptionView extends LinearLayout {
     }
 
     public void setVideoSourcePathForLocalVideo(String sourcePathForLocalVideo) {
-        if (state != State.PHOTO_DESCRIPTION_SET_TO_VIDEO) {
+        if (state != State.PHOTO_DESCRIPTION_SET) {
             throw new IllegalStateException("Not in video setting state");
         }
 
