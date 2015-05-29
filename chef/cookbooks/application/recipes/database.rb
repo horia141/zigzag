@@ -138,5 +138,5 @@ bash 'build_and_sync_db' do
   environment node.default['application']['python_env']
   user node.default['application']['user']
   group node.default['application']['group']
-  subscribes :run, "template[#{node.default['application']['api_server']['app']['config']}]", :immediately
+  subscribes :run, "template[#{node.default['application']['api_server']['app']['django_config']}]", :immediately
 end

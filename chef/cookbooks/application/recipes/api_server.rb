@@ -27,8 +27,16 @@ firewall_rule node.default['application']['api_server']['frontend']['name'] do
   notifies :enable, 'firewall[ufw]', :delayed
 end
 
-template node.default['application']['api_server']['app']['config'] do
-  source 'api_server.app.erb'
+template node.default['application']['api_server']['app']['gunicorn_config'] do
+  source 'api_server.app_gunicorn.erb'
+  owner node.default['application']['api_server']['user']
+  group node.default['application']['group']
+  mode '0440'
+  # verify "#{node.default['application']['virtual_env']}/bin/gunicorn --check-config %{file}"
+end
+
+template node.default['application']['api_server']['app']['django_config'] do
+  source 'api_server.app_django.erb'
   owner node.default['application']['user'] # Owned by application.user, like all sources
   group node.default['application']['group']
   mode '0440'
