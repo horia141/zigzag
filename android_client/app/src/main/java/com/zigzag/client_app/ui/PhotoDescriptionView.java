@@ -1,6 +1,7 @@
 package com.zigzag.client_app.ui;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
@@ -13,7 +14,9 @@ public class PhotoDescriptionView extends LinearLayout {
 
     private enum State {
         CREATED,
-        PHOTO_DESCRIPTION_SET
+        PHOTO_DESCRIPTION_SET_TO_TOO_BIG,
+        PHOTO_DESCRIPTION_SET_TO_IMAGE,
+        PHOTO_DESCRIPTION_SET_TO_VIDEO
     }
 
     private State state;
@@ -44,34 +47,81 @@ public class PhotoDescriptionView extends LinearLayout {
 
     public void setPhotoDescription(PhotoDescription newPhotoDescription) {
         if (state != State.CREATED) {
-            throw new IllegalStateException("Already set photo description");
+            throw new IllegalStateException("Not in description setting state");
         }
 
         // Update state.
-        state = State.PHOTO_DESCRIPTION_SET;
+        if (newPhotoDescription.getPhoto_data().isSetToo_big_photo_data()) {
+            state = State.PHOTO_DESCRIPTION_SET_TO_TOO_BIG;
+        } else if (newPhotoDescription.getPhoto_data().isSetImage_photo_data()) {
+            state = State.PHOTO_DESCRIPTION_SET_TO_IMAGE;
+        } else if (newPhotoDescription.getPhoto_data().isSetVideo_photo_data()) {
+            state = State.PHOTO_DESCRIPTION_SET_TO_VIDEO;
+        } else {
+            throw new IllegalStateException("No valid photo data found");
+        }
         photoDescription = newPhotoDescription;
 
         // Update view components.
-        if (photoDescription.getPhoto_data().isSetToo_big_photo_data()) {
+        if (newPhotoDescription.getPhoto_data().isSetToo_big_photo_data()) {
         } else if (photoDescription.getPhoto_data().isSetImage_photo_data()) {
             imagePhotoView.setVisibility(VISIBLE);
-            imagePhotoView.setData(photoDescription.getPhoto_data().getImage_photo_data());
-        } else if (photoDescription.getPhoto_data().isSetVideo_photo_data()) {
+            imagePhotoView.setData(newPhotoDescription.getPhoto_data().getImage_photo_data());
+        } else if (newPhotoDescription.getPhoto_data().isSetVideo_photo_data()) {
             videoPhotoView.setVisibility(VISIBLE);
-            videoPhotoView.setData(photoDescription.getPhoto_data().getVideo_photo_data());
+            videoPhotoView.setData(newPhotoDescription.getPhoto_data().getVideo_photo_data());
         } else {
             throw new IllegalStateException("No valid photo data found");
         }
 
-        if (!photoDescription.getSubtitle().equals("")) {
+        if (!newPhotoDescription.getSubtitle().equals("")) {
             subtitleView.setVisibility(VISIBLE);
-            subtitleView.setText(photoDescription.getSubtitle());
+            subtitleView.setText(newPhotoDescription.getSubtitle());
         }
 
-        if (!photoDescription.getDescription().equals("")) {
+        if (!newPhotoDescription.getDescription().equals("")) {
             descriptionView.setVisibility(VISIBLE);
-            descriptionView.setText(photoDescription.getSubtitle());
+            descriptionView.setText(newPhotoDescription.getSubtitle());
         }
+
+        // Request new drawing and layout.
+        invalidate();
+        requestLayout();
+    }
+
+    public void setImageBitmapForTile(int tileIdx, Bitmap bitmap) {
+        if (state != State.PHOTO_DESCRIPTION_SET_TO_IMAGE) {
+            throw new IllegalStateException("Not in image setting state");
+        }
+
+        // Update view components.
+        imagePhotoView.setBitmapForTile(tileIdx, bitmap);
+
+        // Request new drawing and layout.
+        invalidate();
+        requestLayout();
+    }
+
+    public void setVideoBitmapForFirstFrame(Bitmap bitmap) {
+        if (state != State.PHOTO_DESCRIPTION_SET_TO_VIDEO) {
+            throw new IllegalStateException("Not in video setting state");
+        }
+
+        // Update view components.
+        videoPhotoView.setBitmapForFirstFrame(bitmap);
+
+        // Request new drawing and layout.
+        invalidate();
+        requestLayout();
+    }
+
+    public void setVideoSourcePathForLocalVideo(String sourcePathForLocalVideo) {
+        if (state != State.PHOTO_DESCRIPTION_SET_TO_VIDEO) {
+            throw new IllegalStateException("Not in video setting state");
+        }
+
+        // Update view components.
+        videoPhotoView.setSourcePathForLocalVideo(sourcePathForLocalVideo);
 
         // Request new drawing and layout.
         invalidate();

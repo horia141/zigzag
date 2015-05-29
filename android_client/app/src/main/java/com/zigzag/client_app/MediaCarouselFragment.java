@@ -17,8 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.zigzag.client_app.controller.Controller;
-import com.zigzag.client_app.ui.ImagePhotoView;
-import com.zigzag.client_app.ui.VideoPhotoView;
+import com.zigzag.client_app.ui.PhotoDescriptionView;
 import com.zigzag.common.model.Artifact;
 import com.zigzag.common.model.ArtifactSource;
 import com.zigzag.common.model.ImagePhotoData;
@@ -48,12 +47,6 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
     }
 
     private static class ImagesDescriptionBitmapListAdapter extends ArrayAdapter<ImageInfo> {
-        private static class ViewHolder {
-            ImagePhotoView tileImageView;
-            VideoPhotoView videoPhotoView;
-            TextView subtitleTextView;
-            TextView descriptionTextView;
-        }
 
         private final List<ImageInfo> imagesDescriptionBitmapList;
 
@@ -67,93 +60,55 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
             LayoutInflater inflater = (LayoutInflater) getContext()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-            View rowView = convertView;
-            ViewHolder rowViewHolder;
-
-            // Build the basic view of the element, and cache it for later use.
-            if (rowView == null) {
-                rowView = inflater.inflate(R.layout.fragment_media_carousel_one_photo, parent, false);
-                rowViewHolder = new ViewHolder();
-
-                rowViewHolder.tileImageView = (ImagePhotoView) rowView.findViewById(R.id.image_photo);
-                rowViewHolder.videoPhotoView = (VideoPhotoView) rowView.findViewById(R.id.video_photo);
-                rowViewHolder.subtitleTextView = (TextView) rowView.findViewById(R.id.subtitle);
-                rowViewHolder.descriptionTextView = (TextView) rowView.findViewById(R.id.description);
-
-                rowView.setTag(rowViewHolder);
-            } else {
-                rowViewHolder = (ViewHolder)rowView.getTag();
-            }
+            PhotoDescriptionView photoDescriptionView = (PhotoDescriptionView) convertView;
 
             ImageInfo info = imagesDescriptionBitmapList.get(position);
 
-            if (info == null) {
-                rowViewHolder.tileImageView.setVisibility(View.GONE);
-                rowViewHolder.videoPhotoView.setVisibility(View.GONE);
-                rowViewHolder.subtitleTextView.setVisibility(View.GONE);
-                rowViewHolder.descriptionTextView.setVisibility(View.GONE);
+            // Build the basic view of the element, and cache it for later use.
+            if (photoDescriptionView == null) {
+                photoDescriptionView = (PhotoDescriptionView) inflater.inflate(
+                        R.layout.fragment_media_carousel_one_photo, parent, false);
+                photoDescriptionView.setPhotoDescription(info.photoDescription);
+            }
+
+            if (info.photoData.isSetImage_photo_data()) {
+                for (int ii = 0; ii < info.tilesBitmaps.size(); ii++) {
+                    Bitmap tileBitmap = info.tilesBitmaps.get(ii);
+                    if (tileBitmap == null) {
+                        continue;
+                    }
+                    photoDescriptionView.setImageBitmapForTile(ii, tileBitmap);
+                }
             } else {
-                if (info.photoData.isSetToo_big_photo_data()) {
-                    rowViewHolder.tileImageView.setVisibility(View.GONE);
-                    rowViewHolder.videoPhotoView.setVisibility(View.GONE);
-                } else if (info.photoData.isSetImage_photo_data()) {
-                    rowViewHolder.tileImageView.setVisibility(View.VISIBLE);
-                    rowViewHolder.tileImageView.setData(info.photoData.getImage_photo_data());
-                    for (int ii = 0; ii < info.tilesBitmaps.size(); ii++) {
-                        Bitmap tileBitmap = info.tilesBitmaps.get(ii);
-                        if (tileBitmap == null) {
-                            continue;
-                        }
-                        rowViewHolder.tileImageView.setBitmapForTile(ii, tileBitmap);
-                    }
-                    rowViewHolder.videoPhotoView.setVisibility(View.GONE);
-                } else if (info.photoData.isSetVideo_photo_data()) {
-                    rowViewHolder.tileImageView.setVisibility(View.GONE);
-                    rowViewHolder.videoPhotoView.setVisibility(View.VISIBLE);
-                    rowViewHolder.videoPhotoView.setData(info.photoData.getVideo_photo_data());
-                    if (info.tilesBitmaps.size() == 1 && info.tilesBitmaps.get(0) != null) {
-                        rowViewHolder.videoPhotoView.setBitmapForFirstFrame(info.tilesBitmaps.get(0));
-                    }
-                    if (info.localPathToVideo != null) {
-                        rowViewHolder.videoPhotoView.setSourcePathForLocalVideo(info.localPathToVideo);
-                    }
+                if (info.tilesBitmaps.size() == 1 && info.tilesBitmaps.get(0) != null) {
+                    photoDescriptionView.setVideoBitmapForFirstFrame(info.tilesBitmaps.get(0));
+                }
 
-                    final ViewHolder localRowViewHolder = rowViewHolder;
-                    ViewTreeObserver viewTreeObserver = rowView.getViewTreeObserver();
+                if (info.localPathToVideo != null) {
+                    photoDescriptionView.setVideoSourcePathForLocalVideo(info.localPathToVideo);
+                }
 
-                    if (info.viewTreeObserverHash != Math.abs(viewTreeObserver.hashCode())) {
-                        info.viewTreeObserverHash = Math.abs(viewTreeObserver.hashCode());
-                        rowView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-                            @Override
-                            public void onScrollChanged() {
-                                Rect scrollBounds = new Rect();
-                                parent.getHitRect(scrollBounds);
-                                if (localRowViewHolder.videoPhotoView.getLocalVisibleRect(scrollBounds)) {
-                                    localRowViewHolder.videoPhotoView.enableVideo();
-                                } else {
-                                    localRowViewHolder.videoPhotoView.disableVideo();
-                                }
+                final PhotoDescriptionView capturedPhotoDescriptionView = photoDescriptionView;
+                ViewTreeObserver viewTreeObserver = photoDescriptionView.getViewTreeObserver();
+
+                if (info.viewTreeObserverHash != Math.abs(viewTreeObserver.hashCode())) {
+                    info.viewTreeObserverHash = Math.abs(viewTreeObserver.hashCode());
+                    photoDescriptionView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+                        @Override
+                        public void onScrollChanged() {
+                            Rect scrollBounds = new Rect();
+                            parent.getHitRect(scrollBounds);
+                            if (capturedPhotoDescriptionView.getLocalVisibleRect(scrollBounds)) {
+                                // capturedPhotoDescriptionView.enableVideo();
+                            } else {
+                                // capturedPhotoDescriptionView.disableVideo();
                             }
-                        });
-                    }
-                }
-
-                if (!info.photoDescription.getSubtitle().equals("")) {
-                    rowViewHolder.subtitleTextView.setText(info.photoDescription.getSubtitle());
-                    rowViewHolder.subtitleTextView.setVisibility(View.VISIBLE);
-                } else {
-                    rowViewHolder.subtitleTextView.setVisibility(View.GONE);
-                }
-
-                if (!info.photoDescription.getDescription().equals("")) {
-                    rowViewHolder.descriptionTextView.setText(info.photoDescription.getDescription());
-                    rowViewHolder.descriptionTextView.setVisibility(View.VISIBLE);
-                } else {
-                    rowViewHolder.descriptionTextView.setVisibility(View.GONE);
+                        }
+                    });
                 }
             }
 
-            return rowView;
+            return photoDescriptionView;
         }
     }
 
@@ -291,12 +246,15 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
 
         // TODO(horia141): the hackiest of hacks.
         ListView imageListView = (ListView) getView().findViewById(R.id.image_list);
-        View something = imageListView.getChildAt(imageIdx);
+        PhotoDescriptionView something = (PhotoDescriptionView)imageListView.getChildAt(imageIdx);
         if (something == null) {
             return;
         }
-        ImagePhotoView imagePhotoView = (ImagePhotoView) something.findViewById(R.id.image_photo);
-        imagePhotoView.setBitmapForTile(tileOrFrameIdx, image);
+        if (imageDescription.photoData.isSetImage_photo_data()) {
+            something.setImageBitmapForTile(tileOrFrameIdx, image);
+        } else {
+            something.setVideoBitmapForFirstFrame(image);
+        }
     }
 
     @Override
@@ -326,6 +284,14 @@ public class MediaCarouselFragment extends Fragment implements Controller.Artifa
 
         imageDescription.localPathToVideo = localPathToVideo;
         imagesDescriptionBitmapListAdapter.notifyDataSetChanged();
+
+        // TODO(horia141): the hackiest of hacks.
+        ListView imageListView = (ListView) getView().findViewById(R.id.image_list);
+        PhotoDescriptionView something = (PhotoDescriptionView)imageListView.getChildAt(imageIdx);
+        if (something == null) {
+            return;
+        }
+        something.setVideoSourcePathForLocalVideo(localPathToVideo);
     }
 
     @Override

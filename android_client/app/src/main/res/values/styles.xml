@@ -23,11 +23,6 @@
         <item name="android:background">@drawable/artifact_zone_background</item>
     </style>
 
-    <style name="ArtifactPhotoBorder">
-        <item name="android:padding">1dp</item>
-        <item name="android:background">@color/border_black_transparent</item>
-    </style>
-
     <style name="ArtifactTitle">
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
@@ -51,17 +46,22 @@
         <item name="android:dividerHeight">16dp</item>
     </style>
 
-    <style name="ArtifactPhotoZone">
+    <style name="PhotoDescriptionView">
         <item name="android:background">@drawable/artifact_zone_background</item>
     </style>
 
-    <style name="ArtifactPhotoSubtitle">
+    <style name="PhotoDescriptionViewBorder">
+        <item name="android:padding">1dp</item>
+        <item name="android:background">@color/border_black_transparent</item>
+    </style>
+
+    <style name="PhotoDescriptionViewSubtitle">
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/text_black</item>
     </style>
 
-    <style name="ArtifactPhotoDescription">
+    <style name="PhotoDescriptionViewDescription">
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/text_black</item>
     </style>

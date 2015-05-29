@@ -1,46 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<com.zigzag.client_app.ui.PhotoDescriptionView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:baselineAligned="false"
-    style="@style/ArtifactPhotoZone">
-
-    <com.zigzag.client_app.ui.ImagePhotoView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/image_photo"
-        android:layout_gravity="center"
-        style="@style/ArtifactPhotoBorder"/>
-
-    <com.zigzag.client_app.ui.VideoPhotoView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:layout_gravity="center_horizontal"
-        android:id="@+id/video_photo"
-        style="@style/ArtifactPhotoBorder" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:text="@string/fragment_media_carousel_one_image_subtitle"
-        android:id="@+id/subtitle"
-        style="@style/ArtifactPhotoSubtitle" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/fragment_media_carousel_one_image_description"
-        android:id="@+id/description"
-        style="@style/ArtifactPhotoDescription" />
-</LinearLayout>
+    style="@style/PhotoDescriptionView" />
