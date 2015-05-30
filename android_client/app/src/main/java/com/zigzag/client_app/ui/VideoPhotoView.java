@@ -27,6 +27,8 @@ public class VideoPhotoView extends ViewGroup {
     @Nullable private ProgressBar progressBar;
     @Nullable private ImageView imageForFirstFrame;
     @Nullable private VideoView video;
+    private boolean videoLoaded;
+    private boolean enabled;
 
     public VideoPhotoView(Context context) {
         this(context, null);
@@ -40,15 +42,8 @@ public class VideoPhotoView extends ViewGroup {
         progressBar = null;
         imageForFirstFrame = null;
         video = null;
-    }
-
-    @Override
-    public void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        if (video != null) {
-            video.stopPlayback();
-            video = null;
-        }
+        videoLoaded = false;
+        enabled = false;
     }
 
     public void setVideoPhotoData(VideoPhotoData newData) {
@@ -70,13 +65,18 @@ public class VideoPhotoView extends ViewGroup {
         video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
-                video.start();
+                videoLoaded = true;
+                if (enabled) {
+                    video.start();
+                }
             }
         });
         video.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                video.start();
+                if (enabled) {
+                    video.start();
+                }
             }
         });
         video.setOnErrorListener(new MediaPlayer.OnErrorListener() {
@@ -128,10 +128,35 @@ public class VideoPhotoView extends ViewGroup {
         imageForFirstFrame = null;
         video.setVideoPath(sourcePathForLocalVideo);
         addView(video);
+        videoLoaded = false;
 
         // Request new drawing and layout.
         invalidate();
         requestLayout();
+    }
+
+    public void enable() {
+        if (state != State.VIDEO_PHOTO_DATA_SET && state != State.SOURCE_PATH_FOR_LOCAL_VIDEO_SET) {
+            throw new IllegalStateException("Not in enabling state");
+        }
+
+        // Update view components.
+        enabled = true;
+        if (videoLoaded && !video.isPlaying()) {
+            video.start();
+        }
+    }
+
+    public void disable() {
+        if (state != State.VIDEO_PHOTO_DATA_SET && state != State.SOURCE_PATH_FOR_LOCAL_VIDEO_SET) {
+            throw new IllegalStateException("Not in disabling state");
+        }
+
+        // Update view components.
+        enabled = false;
+        if (videoLoaded && video.isPlaying()) {
+            video.pause();
+        }
     }
 
     @Override

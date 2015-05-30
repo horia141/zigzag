@@ -2,9 +2,11 @@ package com.zigzag.client_app.ui;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -21,27 +23,6 @@ import java.util.List;
 import java.util.Locale;
 
 public class ArtifactView extends ScrollView {
-
-
-//    final PhotoDescriptionView capturedPhotoDescriptionView = photoDescriptionView;
-//    ViewTreeObserver viewTreeObserver = photoDescriptionView.getViewTreeObserver();
-//
-//    if (info.viewTreeObserverHash != Math.abs(viewTreeObserver.hashCode())) {
-//        info.viewTreeObserverHash = Math.abs(viewTreeObserver.hashCode());
-//        photoDescriptionView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-//            @Override
-//            public void onScrollChanged() {
-//                Rect scrollBounds = new Rect();
-//                parent.getHitRect(scrollBounds);
-//                if (capturedPhotoDescriptionView.getLocalVisibleRect(scrollBounds)) {
-//                    // capturedPhotoDescriptionView.enableVideo();
-//                } else {
-//                    // capturedPhotoDescriptionView.disableVideo();
-//                }
-//            }
-//        });
-//    }
-
 
     private enum State {
         CREATED,
@@ -99,12 +80,32 @@ public class ArtifactView extends ScrollView {
         dateAddedView.setText(DATE_ADDED_FORMATTER.format(newDateAdded));
         titleView.setText(newArtifact.getTitle());
 
+        final ArtifactView parent = this;
+
         for (PhotoDescription photoDescription : newArtifact.getPhoto_descriptions()) {
-            PhotoDescriptionView photoDescriptionView = (PhotoDescriptionView) inflater.inflate(
+            final PhotoDescriptionView photoDescriptionView = (PhotoDescriptionView) inflater.inflate(
                     R.layout.artifact_view_photo_description, contentView, false);
             photoDescriptionView.setPhotoDescription(photoDescription);
             photoDescriptionViews.add(photoDescriptionView);
             contentView.addView(photoDescriptionView);
+
+            // VideoPhotoViews need some extra care. They should only start playing when we scroll
+            // to them. The ArtifactView controls when this happens.
+            if (photoDescription.getPhoto_data().isSetVideo_photo_data()) {
+                photoDescriptionView.getViewTreeObserver().addOnScrollChangedListener(
+                        new ViewTreeObserver.OnScrollChangedListener() {
+                    @Override
+                    public void onScrollChanged() {
+                        Rect scrollBounds = new Rect();
+                        parent.getHitRect(scrollBounds);
+                        if (photoDescriptionView.getLocalVisibleRect(scrollBounds)) {
+                            photoDescriptionView.enableVideo();
+                        } else {
+                            photoDescriptionView.disableVideo();
+                        }
+                    }
+                });
+            }
         }
 
         // Request new drawing and layout.

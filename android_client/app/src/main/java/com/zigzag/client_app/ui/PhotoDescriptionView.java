@@ -118,4 +118,22 @@ public class PhotoDescriptionView extends LinearLayout {
         invalidate();
         requestLayout();
     }
+
+    public void enableVideo() {
+        if (state != State.PHOTO_DESCRIPTION_SET) {
+            throw new IllegalStateException("Not in video enabling state");
+        }
+
+        // Update view components.
+        videoPhotoView.enable();
+    }
+
+    public void disableVideo() {
+        if (state != State.PHOTO_DESCRIPTION_SET) {
+            throw new IllegalStateException("Not in video enabling state");
+        }
+
+        // Update view components.
+        videoPhotoView.disable();
+    }
 }
