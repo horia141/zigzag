@@ -18,17 +18,15 @@ public class VideoPhotoView extends ViewGroup {
 
     private enum State {
         CREATED,
-        DATA_SET,
-        SHOW_FIRST_FRAME,
-        SHOW_VIDEO
+        VIDEO_PHOTO_DATA_SET,
+        SOURCE_PATH_FOR_LOCAL_VIDEO_SET
     }
 
+    private State state;
     @Nullable private VideoPhotoData data;
     @Nullable private ProgressBar progressBar;
     @Nullable private ImageView imageForFirstFrame;
     @Nullable private VideoView video;
-    private State state;
-    private boolean videoEnabled;
 
     public VideoPhotoView(Context context) {
         this(context, null);
@@ -37,12 +35,11 @@ public class VideoPhotoView extends ViewGroup {
     public VideoPhotoView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
+        state = State.CREATED;
         data = null;
         progressBar = null;
         imageForFirstFrame = null;
         video = null;
-        state = State.CREATED;
-        videoEnabled = false;
     }
 
     @Override
@@ -54,24 +51,16 @@ public class VideoPhotoView extends ViewGroup {
         }
     }
 
-    public void setData(VideoPhotoData newData) {
+    public void setVideoPhotoData(VideoPhotoData newData) {
         if (state != State.CREATED) {
-            return;
+            throw new IllegalStateException("Not in video photo data setting state");
         }
 
-        // First, clear up the current view.
-        for (int ii = getChildCount() - 1; ii >= 0; ii--) {
-            removeViewAt(ii);
-        }
-
-        // Then, clear up all views.
-        progressBar = null;
-        imageForFirstFrame = null;
-        video = null;
-
-        // Reset the view data with the new information.
+        // Update state.
+        state = State.VIDEO_PHOTO_DATA_SET;
         data = newData;
 
+        // Update view.
         progressBar = new ProgressBar(getContext());
         progressBar.setIndeterminate(true);
 
@@ -100,51 +89,49 @@ public class VideoPhotoView extends ViewGroup {
 
         addView(progressBar);
 
-        // Change to the new state.
-        state = State.DATA_SET;
+        // Request new drawing and layout.
+        invalidate();
+        requestLayout();
     }
 
     public void setBitmapForFirstFrame(Bitmap bitmap) {
-        if (data == null) {
-            return;
+        if (state != State.VIDEO_PHOTO_DATA_SET) {
+            if (state == State.SOURCE_PATH_FOR_LOCAL_VIDEO_SET) {
+                return;
+            }
+
+            throw new IllegalStateException("Not in bitmap for first frame setting state");
         }
 
-        if (state == State.SHOW_VIDEO) {
-            return;
-        }
-
+        // Update view components.
         removeViewAt(0);
         progressBar = null;
-
         imageForFirstFrame.setImageBitmap(bitmap);
         addView(imageForFirstFrame);
 
-        // Change to the new state.
-        state = State.SHOW_FIRST_FRAME;
+        // Request new drawing and layout.
+        invalidate();
+        requestLayout();
     }
 
     public void setSourcePathForLocalVideo(String sourcePathForLocalVideo) {
-        if (data == null) {
-            return;
+        if (state != State.VIDEO_PHOTO_DATA_SET) {
+            throw new IllegalStateException("Not in source path for local video setting state");
         }
 
+        // Update state.
+        state = State.SOURCE_PATH_FOR_LOCAL_VIDEO_SET;
+
+        // Update view components.
         removeViewAt(0);
         progressBar = null;
         imageForFirstFrame = null;
-
         video.setVideoPath(sourcePathForLocalVideo);
-
         addView(video);
 
-        state = State.SHOW_VIDEO;
-    }
-
-    public void enableVideo() {
-        videoEnabled = true;
-    }
-
-    public void disableVideo() {
-        videoEnabled = false;
+        // Request new drawing and layout.
+        invalidate();
+        requestLayout();
     }
 
     @Override

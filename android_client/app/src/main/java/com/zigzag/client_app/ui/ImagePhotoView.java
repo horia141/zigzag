@@ -50,7 +50,7 @@ public class ImagePhotoView extends ViewGroup {
         data = newData;
 
         // Update view.
-        for (int ii = 0; ii < data.getTilesSize(); ii++) {
+        for (int ii = 0; ii < newData.getTilesSize(); ii++) {
             ProgressBar progressBarForTile = new ProgressBar(getContext());
             progressBarForTile.setIndeterminate(true);
             progressBarsForTiles.add(progressBarForTile);

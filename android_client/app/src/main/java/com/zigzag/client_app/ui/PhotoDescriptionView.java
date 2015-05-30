@@ -60,7 +60,7 @@ public class PhotoDescriptionView extends LinearLayout {
             imagePhotoView.setImagePhotoData(newPhotoDescription.getPhoto_data().getImage_photo_data());
         } else if (newPhotoDescription.getPhoto_data().isSetVideo_photo_data()) {
             videoPhotoView.setVisibility(VISIBLE);
-            videoPhotoView.setData(newPhotoDescription.getPhoto_data().getVideo_photo_data());
+            videoPhotoView.setVideoPhotoData(newPhotoDescription.getPhoto_data().getVideo_photo_data());
         } else {
             throw new IllegalStateException("No valid photo data found");
         }
