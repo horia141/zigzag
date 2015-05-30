@@ -46,7 +46,6 @@
     </style>
 
     <!-- Styles for the artifact content -->
-
     <style name="PhotoDescriptionView">
         <item name="android:background">@drawable/artifact_zone_background</item>
     </style>
@@ -66,5 +65,4 @@
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/text_black</item>
     </style>
-
 </resources>

@@ -20,8 +20,8 @@ import com.zigzag.common.model.Artifact;
 import java.util.ArrayList;
 import java.util.List;
 
-
-public class MediaCarouselActivity extends Activity implements Controller.AllArtifactsListener {
+public class MediaCarouselActivity extends Activity
+        implements Controller.AllArtifactsListener {
     private static final int START_PREFETCH_BEFORE_END = 3;
 
     private final List<Artifact> artifacts = new ArrayList<>();
@@ -30,7 +30,6 @@ public class MediaCarouselActivity extends Activity implements Controller.AllArt
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.i("ZigZag/MediaCarouselActivity", "Create");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_media_carousel);
 
@@ -60,17 +59,6 @@ public class MediaCarouselActivity extends Activity implements Controller.AllArt
     }
 
     @Override
-    public void onNewArtifacts(List<Artifact> newArtifacts) {
-        artifacts.addAll(newArtifacts);
-        artifactsAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onError(String errorDescription) {
-        Log.e("ZigZag/MediaCarouselActivity", String.format("Error %s", errorDescription));
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.media_carousel_activity, menu);
@@ -79,7 +67,6 @@ public class MediaCarouselActivity extends Activity implements Controller.AllArt
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle presses on the action bar items
         switch (item.getItemId()) {
 //            case R.id.action_save:
 //                saveArtifact(viewPager.getCurrentItem());
@@ -96,9 +83,6 @@ public class MediaCarouselActivity extends Activity implements Controller.AllArt
     }
 
     private void shareArtifact(int artifactId) {
-        if (artifactId > artifacts.size()) {
-            Log.e("ZigZag/MediaCarouselActivity", String.format("Artifact id %d too big (%d)", artifactId, artifacts.size()));
-        }
         Artifact artifact = artifacts.get(artifactId);
         String subject = String.format("%s via %s", artifact.getTitle(), getString(R.string.app_name));
         String text = String.format("%s via %s %s", artifact.getTitle(), getString(R.string.app_name), artifact.getPage_uri());
@@ -109,20 +93,31 @@ public class MediaCarouselActivity extends Activity implements Controller.AllArt
         startActivity(Intent.createChooser(i, getString(R.string.activity_media_carousel_action_share_title)));
     }
 
+    @Override
+    public void onNewArtifacts(List<Artifact> newArtifacts) {
+        artifacts.addAll(newArtifacts);
+        artifactsAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onError(String errorDescription) {
+        Log.e("ZigZag/MediaCarouselA", String.format("Error %s", errorDescription));
+    }
+
     private class ArtifactsAdapter extends FragmentStatePagerAdapter {
         public ArtifactsAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
         }
 
         @Override
-        public Fragment getItem(int i) {
-            if (i + START_PREFETCH_BEFORE_END >= artifacts.size()) {
-                Controller.getInstance(MediaCarouselActivity.this).fetchArtifacts(MediaCarouselActivity.this);
+        public Fragment getItem(int position) {
+            if (position + START_PREFETCH_BEFORE_END >= artifacts.size()) {
+                Controller.getInstance(MediaCarouselActivity.this)
+                        .fetchArtifacts(MediaCarouselActivity.this);
             }
 
-            Artifact artifact = artifacts.get(i);
-            Fragment fragment = MediaCarouselFragment.newInstance(artifact);
-            return fragment;
+            Artifact artifact = artifacts.get(position);
+            return MediaCarouselFragment.newInstance(artifact);
         }
 
         @Override
@@ -132,7 +127,8 @@ public class MediaCarouselActivity extends Activity implements Controller.AllArt
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return "Default Title";
+            Artifact artifact = artifacts.get(position);
+            return artifact.getTitle();
         }
     }
 }
