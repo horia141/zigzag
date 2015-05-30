@@ -44,8 +44,8 @@ public final class Controller {
     }
 
     public static interface ArtifactResourcesListener {
-        void onResourcesForArtifact(Artifact artifact, int imageIdx, int tileOrFrameIdx, Bitmap image);
-        void onVideoResourcesForArtifact(Artifact artifact, int imageIdx, String localPathToVideo);
+        void onResourcesForArtifact(Artifact artifact, int photoDescriptionIdx, int tileOrFrameIdx, Bitmap image);
+        void onVideoResourcesForArtifact(Artifact artifact, int photoDescriptionIdx, String localPathToVideo);
         void onError(String errorDescription);
     }
 

@@ -25,10 +25,10 @@ public class ModelDecoder {
 
     public NextGenResponse decodeNextGenResponse(ByteBuffer nextGenResponseSerializedData) throws Error {
         try {
-            TTransport tTransport = new TMemoryInputTransport(nextGenResponseSerializedData.array());
-            TProtocol tProtocol = new TBinaryProtocol(tTransport);
+            TTransport transport = new TMemoryInputTransport(nextGenResponseSerializedData.array());
+            TProtocol protocol = new TBinaryProtocol(transport);
             NextGenResponse nextGenResponse = new NextGenResponse();
-            nextGenResponse.read(tProtocol);
+            nextGenResponse.read(protocol);
 
             return nextGenResponse;
         } catch (TException e) {

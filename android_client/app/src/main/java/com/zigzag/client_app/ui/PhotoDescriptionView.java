@@ -80,7 +80,7 @@ public class PhotoDescriptionView extends LinearLayout {
         requestLayout();
     }
 
-    public void setImageBitmapForTile(int tileIdx, Bitmap bitmap) {
+    public void setBitmapForTile(int tileIdx, Bitmap bitmap) {
         if (state != State.PHOTO_DESCRIPTION_SET) {
             throw new IllegalStateException("Not in image setting state");
         }
@@ -93,7 +93,7 @@ public class PhotoDescriptionView extends LinearLayout {
         requestLayout();
     }
 
-    public void setVideoBitmapForFirstFrame(Bitmap bitmap) {
+    public void setBitmapForFirstFrame(Bitmap bitmap) {
         if (state != State.PHOTO_DESCRIPTION_SET) {
             throw new IllegalStateException("Not in video setting state");
         }
@@ -106,7 +106,7 @@ public class PhotoDescriptionView extends LinearLayout {
         requestLayout();
     }
 
-    public void setVideoSourcePathForLocalVideo(String sourcePathForLocalVideo) {
+    public void setSourcePathForLocalVideo(String sourcePathForLocalVideo) {
         if (state != State.PHOTO_DESCRIPTION_SET) {
             throw new IllegalStateException("Not in video setting state");
         }
