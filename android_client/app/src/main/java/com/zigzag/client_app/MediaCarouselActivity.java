@@ -68,9 +68,6 @@ public class MediaCarouselActivity extends Activity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-//            case R.id.action_save:
-//                saveArtifact(viewPager.getCurrentItem());
-//                return true;
             case R.id.action_share:
                 shareArtifact(viewPager.getCurrentItem());
                 return true;
@@ -79,13 +76,11 @@ public class MediaCarouselActivity extends Activity
         }
     }
 
-    private void saveArtifact(int artifactId) {
-    }
-
-    private void shareArtifact(int artifactId) {
-        Artifact artifact = artifacts.get(artifactId);
-        String subject = String.format("%s via %s", artifact.getTitle(), getString(R.string.app_name));
-        String text = String.format("%s via %s %s", artifact.getTitle(), getString(R.string.app_name), artifact.getPage_uri());
+    private void shareArtifact(int artifactIdx) {
+        Artifact artifact = artifacts.get(artifactIdx);
+        String subject = getString(R.string.share_title, artifact.getTitle(),
+                getString(R.string.app_name));
+        String text = getString(R.string.share_body, artifact.getPage_uri());
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setType("text/plain");
         i.putExtra(Intent.EXTRA_SUBJECT, subject);
@@ -110,13 +105,13 @@ public class MediaCarouselActivity extends Activity
         }
 
         @Override
-        public Fragment getItem(int position) {
-            if (position + START_PREFETCH_BEFORE_END >= artifacts.size()) {
+        public Fragment getItem(int artifactIdx) {
+            if (artifactIdx + START_PREFETCH_BEFORE_END >= artifacts.size()) {
                 Controller.getInstance(MediaCarouselActivity.this)
                         .fetchArtifacts(MediaCarouselActivity.this);
             }
 
-            Artifact artifact = artifacts.get(position);
+            Artifact artifact = artifacts.get(artifactIdx);
             return MediaCarouselFragment.newInstance(artifact);
         }
 
@@ -126,8 +121,8 @@ public class MediaCarouselActivity extends Activity
         }
 
         @Override
-        public CharSequence getPageTitle(int position) {
-            Artifact artifact = artifacts.get(position);
+        public CharSequence getPageTitle(int artifactIdx) {
+            Artifact artifact = artifacts.get(artifactIdx);
             return artifact.getTitle();
         }
     }

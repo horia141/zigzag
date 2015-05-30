@@ -11,6 +11,9 @@
     <string name="fragment_media_carousel_one_image_subtitle">Subtitle</string>
     <string name="fragment_media_carousel_one_image_description">Description</string>
 
+    <string name="share_title">\"%1$s\" via %2$s</string>
+    <string name="share_body">%1$s</string>
+
     <color name="action_bar_blue">#68b6ff</color>
     <color name="text_black">#000000</color>
     <color name="text_white">#ffffff</color>
