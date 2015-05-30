@@ -17,6 +17,12 @@ import java.util.List;
 
 public class ImagePhotoView extends ViewGroup {
 
+    private enum State {
+        CREATED,
+        IMAGE_PHOTO_DATA_SET
+    }
+
+    private State state;
     @Nullable private ImagePhotoData data;
     private final List<ProgressBar> progressBarsForTiles;
     private final List<ImageView> imagesForTiles;
@@ -28,25 +34,22 @@ public class ImagePhotoView extends ViewGroup {
     public ImagePhotoView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
+        state = State.CREATED;
         data = null;
         progressBarsForTiles = new ArrayList<>();
         imagesForTiles = new ArrayList<>();
     }
 
-    public void setData(ImagePhotoData newData) {
-        // First, clear up the current view.
-        for (int ii = getChildCount() - 1; ii >= 0; ii--) {
-            removeViewAt(ii);
+    public void setImagePhotoData(ImagePhotoData newData) {
+        if (state != State.CREATED) {
+            throw new IllegalStateException("Not in image photo data setting state");
         }
 
-        // Then, clear up the view and bitmap data for the photo view.
-        progressBarsForTiles.clear();
-        imagesForTiles.clear();
-
-        // Reset the view data with the new image information.
+        // Update state.
+        state = State.IMAGE_PHOTO_DATA_SET;
         data = newData;
 
-        // Create new progress bars and images for each tiles.
+        // Update view.
         for (int ii = 0; ii < data.getTilesSize(); ii++) {
             ProgressBar progressBarForTile = new ProgressBar(getContext());
             progressBarForTile.setIndeterminate(true);
@@ -56,26 +59,34 @@ public class ImagePhotoView extends ViewGroup {
             imagesForTiles.add(imageForTile);
         }
 
-        // No bitmaps have been specifief. Fill only progress bars.
         for (ProgressBar progressBarForTile : progressBarsForTiles) {
             addView(progressBarForTile);
         }
+
+        // Request new drawing and layout.
+        invalidate();
+        requestLayout();
     }
 
     public void setBitmapForTile(int tileIdx, Bitmap bitmap) {
-        if (data == null) {
-            return;
+        if (state != State.IMAGE_PHOTO_DATA_SET) {
+            throw new IllegalStateException("Not in bitmap setting state");
         }
 
         if (tileIdx < 0 || tileIdx >= data.getTilesSize()) {
-            throw new RuntimeException("Trying to set bitmap for inexistent tile");
+            throw new IndexOutOfBoundsException("Tile index out of bounds");
         }
 
+        // Update view components.
         removeViewAt(tileIdx);
         progressBarsForTiles.set(tileIdx, null);
         ImageView imageForTile = imagesForTiles.get(tileIdx);
         imageForTile.setImageBitmap(bitmap);
         addView(imageForTile, tileIdx);
+
+        // Request new drawing and layout.
+        invalidate();
+        requestLayout();
     }
 
     @Override

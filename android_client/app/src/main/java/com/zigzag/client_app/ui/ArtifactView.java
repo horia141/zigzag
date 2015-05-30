@@ -118,7 +118,7 @@ public class ArtifactView extends ScrollView {
         }
 
         if (photoDescriptionIdx < 0 || photoDescriptionIdx >= artifact.getPhoto_descriptionsSize()) {
-            throw new IllegalArgumentException("Photo description index out of bounds");
+            throw new IndexOutOfBoundsException("Photo description index out of bounds");
         }
 
         // Update view components.
@@ -135,7 +135,7 @@ public class ArtifactView extends ScrollView {
         }
 
         if (photoDescriptionIdx < 0 || photoDescriptionIdx >= artifact.getPhoto_descriptionsSize()) {
-            throw new IllegalArgumentException("Photo description index out of bounds");
+            throw new IndexOutOfBoundsException("Photo description index out of bounds");
         }
 
         // Update view components.
@@ -152,7 +152,7 @@ public class ArtifactView extends ScrollView {
         }
 
         if (photoDescriptionIdx < 0 || photoDescriptionIdx >= artifact.getPhoto_descriptionsSize()) {
-            throw new IllegalArgumentException("Photo description index out of bounds");
+            throw new IndexOutOfBoundsException("Photo description index out of bounds");
         }
 
         // Update view components.

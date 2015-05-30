@@ -57,7 +57,7 @@ public class PhotoDescriptionView extends LinearLayout {
             // Nothing to do here.
         } else if (photoDescription.getPhoto_data().isSetImage_photo_data()) {
             imagePhotoView.setVisibility(VISIBLE);
-            imagePhotoView.setData(newPhotoDescription.getPhoto_data().getImage_photo_data());
+            imagePhotoView.setImagePhotoData(newPhotoDescription.getPhoto_data().getImage_photo_data());
         } else if (newPhotoDescription.getPhoto_data().isSetVideo_photo_data()) {
             videoPhotoView.setVisibility(VISIBLE);
             videoPhotoView.setData(newPhotoDescription.getPhoto_data().getVideo_photo_data());
@@ -65,12 +65,12 @@ public class PhotoDescriptionView extends LinearLayout {
             throw new IllegalStateException("No valid photo data found");
         }
 
-        if (!newPhotoDescription.getSubtitle().equals("")) {
+        if (newPhotoDescription.getSubtitle().matches(".*\\w.*")) {
             subtitleView.setVisibility(VISIBLE);
             subtitleView.setText(newPhotoDescription.getSubtitle());
         }
 
-        if (!newPhotoDescription.getDescription().equals("")) {
+        if (newPhotoDescription.getDescription().matches(".*\\w.*")) {
             descriptionView.setVisibility(VISIBLE);
             descriptionView.setText(newPhotoDescription.getSubtitle());
         }
