@@ -32,8 +32,6 @@ public class MediaCarouselFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        Log.i("ZigZag/MediaCarousel", "Creating view");
-
         // Next section assumes that (1) args contains "artifact_id", which is a String representing
         // an artifact URI, and (2) that said URI exists in the system.
         Bundle args = getArguments();
@@ -53,14 +51,12 @@ public class MediaCarouselFragment extends Fragment
     @Override
     public void onStart() {
         super.onStart();
-        Log.i("ZigZag/MediaCarousel", "Starting");
         Controller.getInstance(getActivity()).fetchArtifactResources(artifact, this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Log.i("ZigZag/MediaCarousel", "Stopping");
         Controller.getInstance(getActivity()).deregisterArtifactResources(artifact, this);
     }
 
@@ -72,16 +68,14 @@ public class MediaCarouselFragment extends Fragment
     @Override
     public void onResourcesForArtifact(Artifact artifact, int photoDescriptionIdx,
             int tileOrFrameIdx, Bitmap image) {
-        Log.i("ZigZag/MediaCarousel", String.format("ResourcesForArtifact for photo %d and tile %d",
-                photoDescriptionIdx, tileOrFrameIdx));
 
         if (artifact != this.artifact) {
-            Log.e("ZigZag/MediaCarousel", "Got out of sync photo update");
+            Log.e("ZigZag/MediaCarouselF", "Got out of sync photo update");
             return;
         }
 
         if (photoDescriptionIdx < 0 || photoDescriptionIdx >= artifact.getPhoto_descriptionsSize()) {
-            Log.e("ZigZag/MediaCarousel", String.format("Out of bounds photo at %d, but only"
+            Log.e("ZigZag/MediaCarouselF", String.format("Out of bounds photo at %d, but only"
                     + " %d photos", photoDescriptionIdx, artifact.getPhoto_descriptionsSize()));
             return;
         }
@@ -91,12 +85,12 @@ public class MediaCarouselFragment extends Fragment
         PhotoData photoData = photoDescription.getPhoto_data();
 
         if (photoData.isSetToo_big_photo_data()) {
-            Log.e("ZigZag/MediaCarousel", "Received image data for a very large image");
+            Log.e("ZigZag/MediaCarouselF", "Received image data for a very large image");
         } else if (photoData.isSetImage_photo_data()){
             ImagePhotoData imagePhotoData = photoDescription.getPhoto_data().getImage_photo_data();
 
             if (tileOrFrameIdx < 0 || tileOrFrameIdx >= imagePhotoData.getTilesSize()) {
-                Log.e("ZigZag/MediaCarousel", String.format("Out of bounds tile index at %d,"
+                Log.e("ZigZag/MediaCarouselF", String.format("Out of bounds tile index at %d,"
                         + " but only %d tiles, for photo %d", tileOrFrameIdx,
                         imagePhotoData.getTilesSize(), photoDescriptionIdx));
                 return;
@@ -105,7 +99,7 @@ public class MediaCarouselFragment extends Fragment
             artifactView.setBitmapForTile(photoDescriptionIdx, tileOrFrameIdx, image);
         } else if (photoData.isSetVideo_photo_data()) {
             if (tileOrFrameIdx != 0) {
-                Log.e("ZigZag/MediaCarousel", String.format("Non-zero tile index %d,"
+                Log.e("ZigZag/MediaCarouselF", String.format("Non-zero tile index %d,"
                         + " for photo %d", tileOrFrameIdx, photoDescriptionIdx));
                 return;
             }
@@ -117,16 +111,14 @@ public class MediaCarouselFragment extends Fragment
     @Override
     public void onVideoResourcesForArtifact(Artifact artifact, int photoDescriptionIdx,
             String localPathToVideo) {
-        Log.i("ZigZag/MediaCarousel", String.format("VideoResourcesForArtifact for photo %d",
-                photoDescriptionIdx));
 
         if (artifact != this.artifact) {
-            Log.e("ZigZag/MediaCarousel", "Got out of sync photo update");
+            Log.e("ZigZag/MediaCarouselF", "Got out of sync photo update");
             return;
         }
 
         if (photoDescriptionIdx < 0 || photoDescriptionIdx >= artifact.getPhoto_descriptionsSize()) {
-            Log.e("ZigZag/MediaCarousel", String.format("Out of bounds photo at %d, but only"
+            Log.e("ZigZag/MediaCarouselF", String.format("Out of bounds photo at %d, but only"
                     + " %d photos", photoDescriptionIdx, artifact.getPhoto_descriptionsSize()));
             return;
         }
@@ -136,7 +128,7 @@ public class MediaCarouselFragment extends Fragment
         PhotoData photoData = photoDescription.getPhoto_data();
 
         if (!photoData.isSetVideo_photo_data()) {
-            Log.e("ZigZag/MediaCarousel", "Received video update for something which is not a video");
+            Log.e("ZigZag/MediaCarouselF", "Received video update for something which is not a video");
             return;
         }
 
@@ -145,7 +137,7 @@ public class MediaCarouselFragment extends Fragment
 
     @Override
     public void onError(String errorDescription) {
-        Log.i("ZigZag/MediaCarousel", String.format("Error %s", errorDescription));
+        Log.i("ZigZag/MediaCarouselF", String.format("Error %s", errorDescription));
     }
 
     public static MediaCarouselFragment newInstance(Artifact artifact) {
