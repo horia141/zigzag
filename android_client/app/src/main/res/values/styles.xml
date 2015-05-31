@@ -2,10 +2,18 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="ZigZagTheme" parent="@android:style/Theme.Holo.Light">
+    <style name="ZigZagStartUpTheme" parent="@android:style/Theme.Holo.NoActionBar">
+        <item name="android:background">@drawable/startup_background</item>
+    </style>
+
+    <style name="ZigZagMediaCarouselTheme" parent="@android:style/Theme.Holo.Light">
         <item name="android:actionBarStyle">@style/ZigZagActionBarTheme</item>
         <item name="android:colorBackground">@color/background_white</item>
         <item name="android:windowBackground">@color/background_white</item>
+    </style>
+
+    <style name="StartUpTransparentBackground">
+        <item name="android:background">@color/background_white_transparent</item>
     </style>
 
     <!-- Action bar theme. -->

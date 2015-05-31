@@ -2,6 +2,8 @@
 <resources>
 
     <string name="app_name">ZigZag</string>
+    <string name="startup_icon_description">Application icon</string>
+    <string name="startup_logo_description">ZigZag</string>
     <string name="activity_media_carousel_action_title">Latest news</string>
     <string name="activity_media_carousel_action_save_title">Save</string>
     <string name="activity_media_carousel_action_share_title">Share</string>
@@ -21,6 +23,7 @@
     <color name="text_gray">#bababa</color>
     <color name="background_gray">#f7f7f7</color>
     <color name="background_white">#ffffff</color>
+    <color name="background_white_transparent">#00ffffff</color>
     <color name="border_black_transparent">#e7e7e7</color>
 
 </resources>

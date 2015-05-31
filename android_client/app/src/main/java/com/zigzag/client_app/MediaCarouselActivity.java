@@ -37,7 +37,10 @@ public class MediaCarouselActivity extends Activity
         viewPager = (ViewPager) findViewById(R.id.artifacts_pager);
         viewPager.setAdapter(artifactsAdapter);
 
-        getActionBar().setTitle(getString(R.string.activity_media_carousel_action_title));
+        // We know we have some artifacts, because we usually end up here because of a
+        // StartUpActivity invoking us. That happens when there is some data.
+        artifacts.addAll(Controller.getInstance(this).getArtifacts());
+        artifactsAdapter.notifyDataSetChanged();
     }
 
     @Override

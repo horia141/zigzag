@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -150,6 +151,10 @@ public final class Controller {
         this.modelDecoder = new ModelDecoder();
         this.allArtifactsListener = null;
         this.resourcesListeners = new HashMap<>();
+    }
+
+    public List<Artifact> getArtifacts() {
+        return Collections.unmodifiableList(artifacts);
     }
 
     public void fetchArtifacts(final AllArtifactsListener listener) {
