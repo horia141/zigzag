@@ -115,7 +115,7 @@ public class VideoPhotoView extends ViewGroup {
     }
 
     public void setSourcePathForLocalVideo(String sourcePathForLocalVideo) {
-        if (state != State.VIDEO_PHOTO_DATA_SET) {
+        if (state != State.VIDEO_PHOTO_DATA_SET && state != State.SOURCE_PATH_FOR_LOCAL_VIDEO_SET) {
             throw new IllegalStateException("Not in source path for local video setting state");
         }
 
