@@ -2,11 +2,17 @@
 <resources>
 
     <string name="app_name">ZigZag</string>
+    <string name="copyright">©ZigZag 2015</string>
     <string name="startup_icon_description">Application icon</string>
     <string name="startup_logo_description">ZigZag</string>
     <string name="activity_media_carousel_action_title">Latest news</string>
     <string name="activity_media_carousel_action_save_title">Save</string>
     <string name="activity_media_carousel_action_share_title">Share</string>
+    <string name="activity_media_carousel_drawer_home">Home</string>
+    <string name="activity_media_carousel_drawer_preferences">My preferences</string>
+    <string name="activity_media_carousel_drawer_terms_and_conditions">Terms and conditions</string>
+    <string name="activity_media_carousel_drawer_about">About</string>
+    <string name="activity_media_carousel_drawer_share_app">Share ZigZag</string>
     <string name="fragment_media_carousel_title">Title</string>
     <string name="fragment_media_carousel_source_name">zigzag</string>
     <string name="fragment_media_carousel_time_added">1 Jan 1970</string>
