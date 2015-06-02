@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,6 +20,7 @@ public class MediaCarouselActivity extends Activity{
 
     @Nullable DrawerLayout drawerAndMainContent = null;
     @Nullable LinearLayout drawerContent = null;
+    @Nullable ActionBarDrawerToggle drawerToggle = null;
     @Nullable TextView drawerArtifactCarouselView = null;
     @Nullable TextView drawerPreferencesView = null;
     @Nullable TextView drawerTermsAndConditionsView = null;
@@ -38,6 +40,23 @@ public class MediaCarouselActivity extends Activity{
 
         drawerAndMainContent = (DrawerLayout) findViewById(R.id.drawer_and_main_content_layout);
         drawerContent = (LinearLayout) findViewById(R.id.drawer_content);
+
+        drawerToggle = new ActionBarDrawerToggle(this, drawerAndMainContent,
+                R.string.drawer_action_open, R.string.drawer_action_close) {
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                invalidateOptionsMenu();
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                invalidateOptionsMenu();
+            }
+        };
+
+        drawerAndMainContent.setDrawerListener(drawerToggle);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
 
         drawerArtifactCarouselView = (TextView) findViewById(R.id.drawer_artifact_carousel);
         drawerArtifactCarouselView.setOnClickListener(new View.OnClickListener() {
@@ -79,6 +98,13 @@ public class MediaCarouselActivity extends Activity{
     }
 
     @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        drawerToggle.syncState();
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         Controller.getInstance(this).stopEverything();
@@ -87,6 +113,7 @@ public class MediaCarouselActivity extends Activity{
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        drawerToggle.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -98,6 +125,10 @@ public class MediaCarouselActivity extends Activity{
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (drawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
         switch (item.getItemId()) {
             case R.id.action_share:
                 // shareArtifact(viewPager.getCurrentItem());

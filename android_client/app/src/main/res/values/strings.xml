@@ -17,6 +17,9 @@
     <string name="share_title">\"%1$s\" via %2$s</string>
     <string name="share_body">%1$s</string>
 
+    <string name="drawer_action_open">Opening drawer menu</string>
+    <string name="drawer_action_close">Closing drawer menu</string>
+
     <string name="artifact_carousel_title">Latest news</string>
     <string name="preferences_title">Preferences</string>
     <string name="terms_and_conditions_title">Terms and conditions</string>
