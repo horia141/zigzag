@@ -127,6 +127,7 @@ public class MediaCarouselActivity extends Activity{
                 .replace(R.id.main_content, new ArtifactCarouselFragment())
                 .commit();
         drawerAndMainContent.closeDrawer(drawerContent);
+        setTitle(getString(R.string.artifact_carousel_title));
     }
 
     private void clickDrawerPreferences() {
@@ -136,6 +137,7 @@ public class MediaCarouselActivity extends Activity{
                 .replace(R.id.main_content, new PreferencesFragment())
                 .commit();
         drawerAndMainContent.closeDrawer(drawerContent);
+        setTitle(getString(R.string.preferences_title));
     }
 
     private void clickDrawerTermsAndConditions() {
@@ -145,6 +147,7 @@ public class MediaCarouselActivity extends Activity{
                 .replace(R.id.main_content, new TermsAndConditionsFragment())
                 .commit();
         drawerAndMainContent.closeDrawer(drawerContent);
+        setTitle(getString(R.string.terms_and_conditions_title));
     }
 
     private void clickDrawerAbout() {
@@ -154,6 +157,7 @@ public class MediaCarouselActivity extends Activity{
                 .replace(R.id.main_content, new AboutFragment())
                 .commit();
         drawerAndMainContent.closeDrawer(drawerContent);
+        setTitle(getString(R.string.about_title));
     }
 
     private void clickDrawerShareApp() {

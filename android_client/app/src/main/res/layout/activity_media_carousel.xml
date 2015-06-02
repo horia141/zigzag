@@ -35,7 +35,7 @@
 
         <TextView
             android:id="@+id/drawer_home"
-            android:text="@string/activity_media_carousel_drawer_home"
+            android:text="@string/artifact_carousel_title"
             android:clickable="true"
             android:layout_width="240dp"
             android:layout_height="32dp"
@@ -45,7 +45,7 @@
 
         <TextView
             android:id="@+id/drawer_preferences"
-            android:text="@string/activity_media_carousel_drawer_preferences"
+            android:text="@string/preferences_title"
             android:clickable="true"
             android:layout_width="240dp"
             android:layout_height="32dp"
@@ -55,7 +55,7 @@
 
         <TextView
             android:id="@+id/drawer_terms_and_conditions"
-            android:text="@string/activity_media_carousel_drawer_terms_and_conditions"
+            android:text="@string/terms_and_conditions_title"
             android:clickable="true"
             android:layout_width="240dp"
             android:layout_height="32dp"
@@ -65,7 +65,7 @@
 
         <TextView
             android:id="@+id/drawer_about"
-            android:text="@string/activity_media_carousel_drawer_about"
+            android:text="@string/about_title"
             android:clickable="true"
             android:layout_width="240dp"
             android:layout_height="32dp"
@@ -75,7 +75,7 @@
 
         <TextView
             android:id="@+id/drawer_share_app"
-            android:text="@string/activity_media_carousel_drawer_share_app"
+            android:text="@string/share_app_title"
             android:clickable="true"
             android:layout_width="240dp"
             android:layout_height="32dp"
