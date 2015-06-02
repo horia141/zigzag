@@ -1,34 +1,29 @@
 package com.zigzag.client_app;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.annotation.Nullable;
-import android.support.v4.view.ViewPager;
-import android.support.v13.app.FragmentStatePagerAdapter;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zigzag.client_app.controller.Controller;
-import com.zigzag.common.model.Artifact;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MediaCarouselActivity extends Activity{
 
     @Nullable DrawerLayout drawerAndMainContent = null;
     @Nullable LinearLayout drawerContent = null;
+    @Nullable TextView drawerArtifactCarouselView = null;
+    @Nullable TextView drawerPreferencesView = null;
+    @Nullable TextView drawerTermsAndConditionsView = null;
+    @Nullable TextView drawerAboutView = null;
+    @Nullable TextView drawerShareAppView = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,15 +39,15 @@ public class MediaCarouselActivity extends Activity{
         drawerAndMainContent = (DrawerLayout) findViewById(R.id.drawer_and_main_content_layout);
         drawerContent = (LinearLayout) findViewById(R.id.drawer_content);
 
-        TextView drawerHomeView = (TextView) findViewById(R.id.drawer_home);
-        drawerHomeView.setOnClickListener(new View.OnClickListener() {
+        drawerArtifactCarouselView = (TextView) findViewById(R.id.drawer_artifact_carousel);
+        drawerArtifactCarouselView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 clickDrawerHome();
             }
         });
         
-        TextView drawerPreferencesView = (TextView) findViewById(R.id.drawer_preferences);
+        drawerPreferencesView = (TextView) findViewById(R.id.drawer_preferences);
         drawerPreferencesView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,19 +55,25 @@ public class MediaCarouselActivity extends Activity{
             }
         });
         
-        TextView drawerTermsAndConditionsView = (TextView) findViewById(R.id.drawer_terms_and_conditions);
+        drawerTermsAndConditionsView = (TextView) findViewById(R.id.drawer_terms_and_conditions);
         drawerTermsAndConditionsView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                clickDrawerTermsAndConditions();
-            }
+            public void onClick(View v) { clickDrawerTermsAndConditions(); }
         });
 
-        TextView drawerAboutView = (TextView) findViewById(R.id.drawer_about);
+        drawerAboutView = (TextView) findViewById(R.id.drawer_about);
         drawerAboutView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 clickDrawerAbout();
+            }
+        });
+
+        drawerShareAppView = (TextView) findViewById(R.id.drawer_share_app);
+        drawerShareAppView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickDrawerShareApp();
             }
         });
     }
@@ -128,16 +129,15 @@ public class MediaCarouselActivity extends Activity{
                 .commit();
         drawerAndMainContent.closeDrawer(drawerContent);
         setTitle(getString(R.string.artifact_carousel_title));
+        drawerArtifactCarouselView.setBackgroundResource(R.color.action_bar_blue);
+        drawerArtifactCarouselView.setTextAppearance(this, R.style.MediaCarouselDrawerSelected);
+        drawerTermsAndConditionsView.setBackgroundResource(R.color.background_white);
+        drawerTermsAndConditionsView.setTextAppearance(this, R.style.MediaCarouselDrawerUnselected);
+        drawerAboutView.setBackgroundResource(R.color.background_white);
+        drawerAboutView.setTextAppearance(this, R.style.MediaCarouselDrawerUnselected);
     }
 
     private void clickDrawerPreferences() {
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager
-                .beginTransaction()
-                .replace(R.id.main_content, new PreferencesFragment())
-                .commit();
-        drawerAndMainContent.closeDrawer(drawerContent);
-        setTitle(getString(R.string.preferences_title));
     }
 
     private void clickDrawerTermsAndConditions() {
@@ -148,6 +148,12 @@ public class MediaCarouselActivity extends Activity{
                 .commit();
         drawerAndMainContent.closeDrawer(drawerContent);
         setTitle(getString(R.string.terms_and_conditions_title));
+        drawerArtifactCarouselView.setBackgroundResource(R.color.background_white);
+        drawerArtifactCarouselView.setTextAppearance(this, R.style.MediaCarouselDrawerUnselected);
+        drawerTermsAndConditionsView.setBackgroundResource(R.color.action_bar_blue);
+        drawerTermsAndConditionsView.setTextAppearance(this, R.style.MediaCarouselDrawerSelected);
+        drawerAboutView.setBackgroundResource(R.color.background_white);
+        drawerAboutView.setTextAppearance(this, R.style.MediaCarouselDrawerUnselected);
     }
 
     private void clickDrawerAbout() {
@@ -158,6 +164,12 @@ public class MediaCarouselActivity extends Activity{
                 .commit();
         drawerAndMainContent.closeDrawer(drawerContent);
         setTitle(getString(R.string.about_title));
+        drawerArtifactCarouselView.setBackgroundResource(R.color.background_white);
+        drawerArtifactCarouselView.setTextAppearance(this, R.style.MediaCarouselDrawerUnselected);
+        drawerTermsAndConditionsView.setBackgroundResource(R.color.background_white);
+        drawerTermsAndConditionsView.setTextAppearance(this, R.style.MediaCarouselDrawerUnselected);
+        drawerAboutView.setBackgroundResource(R.color.action_bar_blue);
+        drawerAboutView.setTextAppearance(this, R.style.MediaCarouselDrawerSelected);
     }
 
     private void clickDrawerShareApp() {

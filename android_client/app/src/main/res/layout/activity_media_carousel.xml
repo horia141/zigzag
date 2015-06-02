@@ -31,57 +31,61 @@
             android:paddingBottom="54dp"
             android:layout_width="240dp"
             android:layout_height="180dp"
+            android:layout_marginBottom="8dp"
             style="@style/StartUpImageBackground" />
 
         <TextView
-            android:id="@+id/drawer_home"
+            android:id="@+id/drawer_artifact_carousel"
             android:text="@string/artifact_carousel_title"
             android:clickable="true"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:gravity="center_vertical"
             android:layout_width="240dp"
-            android:layout_height="32dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp" />
+            android:layout_height="40dp"
+            style="@style/MediaCarouselDrawerSelected" />
 
         <TextView
             android:id="@+id/drawer_preferences"
             android:text="@string/preferences_title"
             android:clickable="true"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:gravity="center_vertical"
             android:layout_width="240dp"
-            android:layout_height="32dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp" />
+            android:layout_height="40dp"
+            style="@style/MediaCarouselDrawerInactive"  />
 
         <TextView
             android:id="@+id/drawer_terms_and_conditions"
             android:text="@string/terms_and_conditions_title"
             android:clickable="true"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:gravity="center_vertical"
             android:layout_width="240dp"
-            android:layout_height="32dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp" />
+            android:layout_height="40dp" />
 
         <TextView
             android:id="@+id/drawer_about"
             android:text="@string/about_title"
             android:clickable="true"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:gravity="center_vertical"
             android:layout_width="240dp"
-            android:layout_height="32dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp" />
+            android:layout_height="40dp" />
 
         <TextView
             android:id="@+id/drawer_share_app"
             android:text="@string/share_app_title"
             android:clickable="true"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:gravity="center_vertical"
             android:layout_width="240dp"
-            android:layout_height="32dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp" />
+            android:layout_height="40dp"
+            style="@style/MediaCarouselDrawerInactive" />
 
         <Space
             android:layout_width="240dp"
