@@ -9,10 +9,15 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.zigzag.client_app.controller.Controller;
 import com.zigzag.common.model.Artifact;
@@ -20,39 +25,61 @@ import com.zigzag.common.model.Artifact;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MediaCarouselActivity extends Activity
-        implements Controller.AllArtifactsListener {
-    private static final int START_PREFETCH_BEFORE_END = 3;
+public class MediaCarouselActivity extends Activity{
 
-    private final List<Artifact> artifacts = new ArrayList<>();
-    @Nullable private ViewPager viewPager = null;
-    @Nullable private ArtifactsAdapter artifactsAdapter = null;
+    @Nullable DrawerLayout drawerAndMainContent = null;
+    @Nullable LinearLayout drawerContent = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_media_carousel);
 
-        artifactsAdapter = new ArtifactsAdapter(getFragmentManager());
-        viewPager = (ViewPager) findViewById(R.id.artifacts_pager);
-        viewPager.setAdapter(artifactsAdapter);
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager
+                .beginTransaction()
+                .replace(R.id.main_content, new ArtifactCarouselFragment())
+                .commit();
 
-        // We know we have some artifacts, because we usually end up here because of a
-        // StartUpActivity invoking us. That happens when there is some data.
-        artifacts.addAll(Controller.getInstance(this).getArtifacts());
-        artifactsAdapter.notifyDataSetChanged();
-    }
+        drawerAndMainContent = (DrawerLayout) findViewById(R.id.drawer_and_main_content_layout);
+        drawerContent = (LinearLayout) findViewById(R.id.drawer_content);
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        Controller.getInstance(this).fetchArtifacts(this);
+        TextView drawerHomeView = (TextView) findViewById(R.id.drawer_home);
+        drawerHomeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickDrawerHome();
+            }
+        });
+        
+        TextView drawerPreferencesView = (TextView) findViewById(R.id.drawer_preferences);
+        drawerPreferencesView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickDrawerPreferences();
+            }
+        });
+        
+        TextView drawerTermsAndConditionsView = (TextView) findViewById(R.id.drawer_terms_and_conditions);
+        drawerTermsAndConditionsView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickDrawerTermsAndConditions();
+            }
+        });
+
+        TextView drawerAboutView = (TextView) findViewById(R.id.drawer_about);
+        drawerAboutView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickDrawerAbout();
+            }
+        });
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Controller.getInstance(this).deregisterAllArtifactsListener(this);
         Controller.getInstance(this).stopEverything();
     }
 
@@ -72,61 +99,64 @@ public class MediaCarouselActivity extends Activity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_share:
-                shareArtifact(viewPager.getCurrentItem());
+                // shareArtifact(viewPager.getCurrentItem());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void shareArtifact(int artifactIdx) {
-        Artifact artifact = artifacts.get(artifactIdx);
-        String subject = getString(R.string.share_title, artifact.getTitle(),
-                getString(R.string.app_name));
-        String text = getString(R.string.share_body, artifact.getPage_uri());
-        Intent i = new Intent(Intent.ACTION_SEND);
-        i.setType("text/plain");
-        i.putExtra(Intent.EXTRA_SUBJECT, subject);
-        i.putExtra(Intent.EXTRA_TEXT, text);
-        startActivity(Intent.createChooser(i, getString(R.string.activity_media_carousel_action_share_title)));
+//    private void shareArtifact(int artifactIdx) {
+//        Artifact artifact = artifacts.get(artifactIdx);
+//        String subject = getString(R.string.share_title, artifact.getTitle(),
+//                getString(R.string.app_name));
+//        String text = getString(R.string.share_body, artifact.getPage_uri());
+//        Intent i = new Intent(Intent.ACTION_SEND);
+//        i.setType("text/plain");
+//        i.putExtra(Intent.EXTRA_SUBJECT, subject);
+//        i.putExtra(Intent.EXTRA_TEXT, text);
+//        startActivity(Intent.createChooser(i, getString(R.string.activity_media_carousel_action_share_title)));
+//    }
+
+    private void clickDrawerHome() {
+        // Notice that only this is added to the back-stack so we can return to it. It does not
+        // apply to the others.
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager
+                .beginTransaction()
+                .replace(R.id.main_content, new ArtifactCarouselFragment())
+                .commit();
+        drawerAndMainContent.closeDrawer(drawerContent);
     }
 
-    @Override
-    public void onNewArtifacts(List<Artifact> newArtifacts) {
-        artifacts.addAll(newArtifacts);
-        artifactsAdapter.notifyDataSetChanged();
+    private void clickDrawerPreferences() {
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager
+                .beginTransaction()
+                .replace(R.id.main_content, new PreferencesFragment())
+                .commit();
+        drawerAndMainContent.closeDrawer(drawerContent);
     }
 
-    @Override
-    public void onError(String errorDescription) {
-        Log.e("ZigZag/MediaCarouselA", String.format("Error %s", errorDescription));
+    private void clickDrawerTermsAndConditions() {
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager
+                .beginTransaction()
+                .replace(R.id.main_content, new TermsAndConditionsFragment())
+                .commit();
+        drawerAndMainContent.closeDrawer(drawerContent);
     }
 
-    private class ArtifactsAdapter extends FragmentStatePagerAdapter {
-        public ArtifactsAdapter(FragmentManager fragmentManager) {
-            super(fragmentManager);
-        }
+    private void clickDrawerAbout() {
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager
+                .beginTransaction()
+                .replace(R.id.main_content, new AboutFragment())
+                .commit();
+        drawerAndMainContent.closeDrawer(drawerContent);
+    }
 
-        @Override
-        public Fragment getItem(int artifactIdx) {
-            if (artifactIdx + START_PREFETCH_BEFORE_END >= artifacts.size()) {
-                Controller.getInstance(MediaCarouselActivity.this)
-                        .fetchArtifacts(MediaCarouselActivity.this);
-            }
-
-            Artifact artifact = artifacts.get(artifactIdx);
-            return MediaCarouselFragment.newInstance(artifact);
-        }
-
-        @Override
-        public int getCount() {
-            return artifacts.size();
-        }
-
-        @Override
-        public CharSequence getPageTitle(int artifactIdx) {
-            Artifact artifact = artifacts.get(artifactIdx);
-            return artifact.getTitle();
-        }
+    private void clickDrawerShareApp() {
+        
     }
 }

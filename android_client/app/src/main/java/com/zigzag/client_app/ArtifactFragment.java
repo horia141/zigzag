@@ -20,12 +20,12 @@ import com.zigzag.common.model.PhotoDescription;
 
 import java.util.Date;
 
-public class MediaCarouselFragment extends Fragment
+public class ArtifactFragment extends Fragment
         implements Controller.ArtifactResourcesListener {
 
     @Nullable private Artifact artifact;
 
-    public MediaCarouselFragment() {
+    public ArtifactFragment() {
         artifact = null;
     }
 
@@ -42,7 +42,7 @@ public class MediaCarouselFragment extends Fragment
         Date dateAdded = Controller.getInstance(getActivity()).getDateForArtifact(artifact);
 
         final ArtifactView rootView = (ArtifactView) inflater.inflate(
-                R.layout.fragment_media_carousel, container, false);
+                R.layout.fragment_artifact, container, false);
         rootView.setArtifact(artifact, artifactSource, dateAdded);
 
         return rootView;
@@ -140,8 +140,8 @@ public class MediaCarouselFragment extends Fragment
         Log.i("ZigZag/MediaCarouselF", String.format("Error %s", errorDescription));
     }
 
-    public static MediaCarouselFragment newInstance(Artifact artifact) {
-        MediaCarouselFragment fragment = new MediaCarouselFragment();
+    public static ArtifactFragment newInstance(Artifact artifact) {
+        ArtifactFragment fragment = new ArtifactFragment();
         Bundle args = new Bundle();
         args.putString("artifact_id", artifact.getPage_uri());
         fragment.setArguments(args);

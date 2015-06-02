@@ -12,6 +12,10 @@
         <item name="android:windowBackground">@color/background_white</item>
     </style>
 
+    <style name="PrincipalFragmentBackground">
+        <item name="android:background">@color/background_white</item>
+    </style>
+
     <style name="MediaCarouselDrawer">
         <item name="android:background">@color/background_white</item>
     </style>
