@@ -3,6 +3,7 @@ package com.zigzag.client_app.ui;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
+import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -24,6 +25,10 @@ import java.util.Locale;
 
 public class ArtifactView extends ScrollView {
 
+    public interface OnLongClickListener {
+        void onLongClick(int photoDescriptionIdx);
+    }
+
     private enum State {
         CREATED,
         ARTIFACT_SET
@@ -35,6 +40,7 @@ public class ArtifactView extends ScrollView {
     @Nullable private Artifact artifact;
     @Nullable private ArtifactSource artifactSource;
     @Nullable private Date dateAdded;
+    @Nullable private OnLongClickListener onLongClickListener;
     private final LinearLayout contentView;
     private final TextView sourceNameView;
     private final TextView dateAddedView;
@@ -52,6 +58,7 @@ public class ArtifactView extends ScrollView {
         artifact = null;
         artifactSource = null;
         dateAdded = null;
+        onLongClickListener = null;
 
         inflate(getContext(), R.layout.artifact_view, this);
         contentView = (LinearLayout) findViewById(R.id.content);
@@ -82,7 +89,8 @@ public class ArtifactView extends ScrollView {
 
         final ArtifactView parent = this;
 
-        for (PhotoDescription photoDescription : newArtifact.getPhoto_descriptions()) {
+        for (int ii = 0; ii < newArtifact.getPhoto_descriptionsSize(); ii++) {
+            PhotoDescription photoDescription = newArtifact.getPhoto_descriptions().get(ii);
             final PhotoDescriptionView photoDescriptionView = (PhotoDescriptionView) inflater.inflate(
                     R.layout.artifact_view_photo_description, contentView, false);
             photoDescriptionView.setPhotoDescription(photoDescription);
@@ -106,6 +114,14 @@ public class ArtifactView extends ScrollView {
                     }
                 });
             }
+
+            final int photoDescriptionIdx = ii;
+            photoDescriptionView.setOnLongClickListener(new PhotoDescriptionView.OnLongClickListener() {
+                @Override
+                public void onLongClick() {
+                    onPhotoDescriptionLongClick(photoDescriptionIdx);
+                }
+            });
         }
 
         // Request new drawing and layout.
@@ -163,5 +179,17 @@ public class ArtifactView extends ScrollView {
         // Request new drawing and layout.
         invalidate();
         requestLayout();
+    }
+
+    public void setOnLongClickListener(@Nullable OnLongClickListener newOnLongClickListener) {
+        onLongClickListener = newOnLongClickListener;
+    }
+
+    public void onPhotoDescriptionLongClick(int photoDescriptionIdx) {
+        if (onLongClickListener == null) {
+            return;
+        }
+
+        onLongClickListener.onLongClick(photoDescriptionIdx);
     }
 }

@@ -14,7 +14,7 @@ import com.zigzag.common.model.PhotoDescription;
 public class PhotoDescriptionView extends LinearLayout {
 
     public interface OnLongClickListener {
-        public void onLongClick();
+        void onLongClick();
     }
 
     private enum State {
