@@ -2,6 +2,7 @@ package com.zigzag.client_app;
 
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.annotation.Nullable;
@@ -66,6 +67,9 @@ public class ArtifactCarouselFragment extends MediaCarouselFragment
             case R.id.action_share:
                 shareArtifact(viewPager.getCurrentItem());
                 return true;
+            case R.id.action_open_in_browser:
+                openArtifactInBrowser(viewPager.getCurrentItem());
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -81,6 +85,14 @@ public class ArtifactCarouselFragment extends MediaCarouselFragment
         i.putExtra(Intent.EXTRA_SUBJECT, subject);
         i.putExtra(Intent.EXTRA_TEXT, text);
         startActivity(Intent.createChooser(i, getString(R.string.activity_media_carousel_action_share_title)));
+    }
+
+    private void openArtifactInBrowser(int artifactIdx) {
+        Artifact artifact = artifacts.get(artifactIdx);
+        String url = artifact.getPage_uri();
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        startActivity(intent);
     }
 
     @Override

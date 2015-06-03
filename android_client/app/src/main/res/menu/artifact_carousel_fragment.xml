@@ -5,6 +5,12 @@
     <item android:id="@+id/action_share"
         android:icon="@drawable/ic_share"
         android:title="@string/activity_media_carousel_action_share_title"
-        android:orderInCategory="200"
+        android:orderInCategory="100"
         android:showAsAction="always" />
+
+    <item android:id="@+id/action_open_in_browser"
+        android:icon="@drawable/ic_open_in_browser"
+        android:title="@string/activity_media_carousel_action_open_in_browser_title"
+        android:orderInCategory="200"
+        android:showAsAction="ifRoom" />
 </menu>

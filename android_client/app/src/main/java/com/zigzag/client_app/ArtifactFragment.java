@@ -159,8 +159,8 @@ public class ArtifactFragment extends Fragment
 
     private void onPhotoDescriptionLongClick(int photoDescriptionIdx) {
         String url = artifact.getPhoto_descriptions().get(photoDescriptionIdx).getSource_uri();
-        Intent i = new Intent(Intent.ACTION_VIEW);
-        i.setData(Uri.parse(url));
-        startActivity(i);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        startActivity(intent);
     }
 }
