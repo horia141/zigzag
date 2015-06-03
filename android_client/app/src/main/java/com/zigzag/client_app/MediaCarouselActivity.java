@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,16 +18,42 @@ import android.widget.TextView;
 
 import com.zigzag.client_app.controller.Controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MediaCarouselActivity extends Activity{
+
+    private static class DrawerItemDescriptor {
+        final Class<? extends MediaCarouselFragment> fragmentClass;
+        final int textViewId;
+        final boolean active;
+
+        DrawerItemDescriptor(Class<? extends MediaCarouselFragment> newFragmentClass, int newTextViewId,
+                boolean newActive) {
+            fragmentClass = newFragmentClass;
+            textViewId = newTextViewId;
+            active = newActive;
+        }
+    }
 
     @Nullable DrawerLayout drawerAndMainContent = null;
     @Nullable LinearLayout drawerContent = null;
     @Nullable ActionBarDrawerToggle drawerToggle = null;
-    @Nullable TextView drawerArtifactCarouselView = null;
-    @Nullable TextView drawerPreferencesView = null;
-    @Nullable TextView drawerTermsAndConditionsView = null;
-    @Nullable TextView drawerAboutView = null;
-    @Nullable TextView drawerShareAppView = null;
+
+    private static final List<DrawerItemDescriptor> drawerItemDescriptors;
+    static {
+        drawerItemDescriptors = new ArrayList<>();
+        drawerItemDescriptors.add(new DrawerItemDescriptor(
+                ArtifactCarouselFragment.class, R.id.drawer_artifact_carousel, true));
+        drawerItemDescriptors.add(new DrawerItemDescriptor(
+                PreferencesFragment.class, R.id.drawer_preferences, false));
+        drawerItemDescriptors.add(new DrawerItemDescriptor(
+                TermsAndConditionsFragment.class, R.id.drawer_terms_and_conditions, true));
+        drawerItemDescriptors.add(new DrawerItemDescriptor(
+                AboutFragment.class, R.id.drawer_about, true));
+        drawerItemDescriptors.add(new DrawerItemDescriptor(
+                AboutFragment.class, R.id.drawer_share_app, false));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,43 +86,19 @@ public class MediaCarouselActivity extends Activity{
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
 
-        drawerArtifactCarouselView = (TextView) findViewById(R.id.drawer_artifact_carousel);
-        drawerArtifactCarouselView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clickDrawerHome();
+        for (final DrawerItemDescriptor descriptor : drawerItemDescriptors) {
+            if (!descriptor.active) {
+                continue;
             }
-        });
-        
-        drawerPreferencesView = (TextView) findViewById(R.id.drawer_preferences);
-        drawerPreferencesView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clickDrawerPreferences();
-            }
-        });
-        
-        drawerTermsAndConditionsView = (TextView) findViewById(R.id.drawer_terms_and_conditions);
-        drawerTermsAndConditionsView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) { clickDrawerTermsAndConditions(); }
-        });
 
-        drawerAboutView = (TextView) findViewById(R.id.drawer_about);
-        drawerAboutView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clickDrawerAbout();
-            }
-        });
-
-        drawerShareAppView = (TextView) findViewById(R.id.drawer_share_app);
-        drawerShareAppView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clickDrawerShareApp();
-            }
-        });
+            TextView descriptorView = (TextView) findViewById(descriptor.textViewId);
+            descriptorView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onDrawerItemClick(descriptor);
+                }
+            });
+        }
     }
 
     @Override
@@ -136,65 +139,34 @@ public class MediaCarouselActivity extends Activity{
         return super.onOptionsItemSelected(item);
     }
 
-    private void clickDrawerHome() {
-        // Notice that only this is added to the back-stack so we can return to it. It does not
-        // apply to the others.
-        MediaCarouselFragment fragment = new ArtifactCarouselFragment();
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager
-                .beginTransaction()
-                .replace(R.id.main_content, fragment)
-                .commit();
-        drawerAndMainContent.closeDrawer(drawerContent);
-        setTitle(getString(fragment.getTitleResId()));
-        drawerArtifactCarouselView.setBackgroundResource(R.color.action_bar_blue);
-        drawerArtifactCarouselView.setTextAppearance(this, R.style.MediaCarouselDrawerSelected);
-        drawerTermsAndConditionsView.setBackgroundResource(R.color.background_white);
-        drawerTermsAndConditionsView.setTextAppearance(this, R.style.MediaCarouselDrawerUnselected);
-        drawerAboutView.setBackgroundResource(R.color.background_white);
-        drawerAboutView.setTextAppearance(this, R.style.MediaCarouselDrawerUnselected);
-        invalidateOptionsMenu();
-    }
+    private void onDrawerItemClick(DrawerItemDescriptor clickedDescriptor) {
+        for (DrawerItemDescriptor descriptor : drawerItemDescriptors) {
+            if (!descriptor.active) {
+                continue;
+            }
 
-    private void clickDrawerPreferences() {
-    }
+            TextView descriptorView = (TextView) findViewById(descriptor.textViewId);
+            descriptorView.setBackgroundResource(R.color.background_white);
+            descriptorView.setTextAppearance(this, R.style.MediaCarouselDrawerUnselected);
+        }
 
-    private void clickDrawerTermsAndConditions() {
-        MediaCarouselFragment fragment = new TermsAndConditionsFragment();
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager
-                .beginTransaction()
-                .replace(R.id.main_content, fragment)
-                .commit();
-        drawerAndMainContent.closeDrawer(drawerContent);
-        setTitle(getString(fragment.getTitleResId()));
-        drawerArtifactCarouselView.setBackgroundResource(R.color.background_white);
-        drawerArtifactCarouselView.setTextAppearance(this, R.style.MediaCarouselDrawerUnselected);
-        drawerTermsAndConditionsView.setBackgroundResource(R.color.action_bar_blue);
-        drawerTermsAndConditionsView.setTextAppearance(this, R.style.MediaCarouselDrawerSelected);
-        drawerAboutView.setBackgroundResource(R.color.background_white);
-        drawerAboutView.setTextAppearance(this, R.style.MediaCarouselDrawerUnselected);
-        invalidateOptionsMenu();
-    }
-
-    private void clickDrawerAbout() {
-        MediaCarouselFragment fragment = new AboutFragment();
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager
-                .beginTransaction()
-                .replace(R.id.main_content, fragment)
-                .commit();
-        drawerAndMainContent.closeDrawer(drawerContent);
-        setTitle(getString(fragment.getTitleResId()));
-        drawerArtifactCarouselView.setBackgroundResource(R.color.background_white);
-        drawerArtifactCarouselView.setTextAppearance(this, R.style.MediaCarouselDrawerUnselected);
-        drawerTermsAndConditionsView.setBackgroundResource(R.color.background_white);
-        drawerTermsAndConditionsView.setTextAppearance(this, R.style.MediaCarouselDrawerUnselected);
-        drawerAboutView.setBackgroundResource(R.color.action_bar_blue);
-        drawerAboutView.setTextAppearance(this, R.style.MediaCarouselDrawerSelected);
-        invalidateOptionsMenu();
-    }
-
-    private void clickDrawerShareApp() {
+        try {
+            MediaCarouselFragment fragment = clickedDescriptor.fragmentClass.newInstance();
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager
+                    .beginTransaction()
+                    .replace(R.id.main_content, fragment)
+                    .commit();
+            setTitle(fragment.getTitleResId());
+            invalidateOptionsMenu();
+            TextView clickedDescriptorView = (TextView) findViewById(clickedDescriptor.textViewId);
+            clickedDescriptorView.setBackgroundResource(R.color.action_bar_blue);
+            clickedDescriptorView.setTextAppearance(this, R.style.MediaCarouselDrawerSelected);
+            drawerAndMainContent.closeDrawer(drawerContent);
+        } catch (InstantiationException e) {
+            Log.e("ZigZag/MediaCarouselA", "Cannot create fragment");
+        } catch (IllegalAccessException e) {
+            Log.e("ZigZag/MediaCarouselA", "Cannot create fragment");
+        }
     }
 }
