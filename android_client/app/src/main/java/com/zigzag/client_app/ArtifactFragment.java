@@ -1,8 +1,10 @@
 package com.zigzag.client_app;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -44,6 +46,12 @@ public class ArtifactFragment extends Fragment
         final ArtifactView rootView = (ArtifactView) inflater.inflate(
                 R.layout.fragment_artifact, container, false);
         rootView.setArtifact(artifact, artifactSource, dateAdded);
+        rootView.setOnLongClickListener(new ArtifactView.OnLongClickListener() {
+            @Override
+            public void onLongClick(int photoDescriptionIdx) {
+                onPhotoDescriptionLongClick(photoDescriptionIdx);
+            }
+        });
 
         return rootView;
     }
@@ -137,7 +145,7 @@ public class ArtifactFragment extends Fragment
 
     @Override
     public void onError(String errorDescription) {
-        Log.i("ZigZag/MediaCarouselF", String.format("Error %s", errorDescription));
+        Log.e("ZigZag/MediaCarouselF", String.format("Error %s", errorDescription));
     }
 
     public static ArtifactFragment newInstance(Artifact artifact) {
@@ -147,5 +155,12 @@ public class ArtifactFragment extends Fragment
         fragment.setArguments(args);
 
         return fragment;
+    }
+
+    private void onPhotoDescriptionLongClick(int photoDescriptionIdx) {
+        String url = artifact.getPhoto_descriptions().get(photoDescriptionIdx).getSource_uri();
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse(url));
+        startActivity(i);
     }
 }

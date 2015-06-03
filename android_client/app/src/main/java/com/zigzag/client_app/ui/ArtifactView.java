@@ -3,7 +3,6 @@ package com.zigzag.client_app.ui;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
