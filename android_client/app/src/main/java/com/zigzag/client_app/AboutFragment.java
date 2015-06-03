@@ -11,7 +11,7 @@ import com.zigzag.client_app.R;
 public class AboutFragment extends MediaCarouselFragment {
 
     public AboutFragment() {
-        super(R.string.about_title);
+        super(R.string.about_title, R.menu.about_fragment);
     }
 
     @Override

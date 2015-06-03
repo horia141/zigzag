@@ -3,6 +3,7 @@ package com.zigzag.client_app;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.res.Configuration;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -117,19 +118,14 @@ public class MediaCarouselActivity extends Activity{
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.media_carousel_activity, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         boolean drawerOpen = drawerAndMainContent.isDrawerOpen(drawerContent);
-        menu.findItem(R.id.action_share).setVisible(!drawerOpen);
+        for (int ii = 0; ii < menu.size(); ii++) {
+            menu.getItem(ii).setVisible(!drawerOpen);
+        }
+
         return super.onPrepareOptionsMenu(menu);
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -137,26 +133,8 @@ public class MediaCarouselActivity extends Activity{
             return true;
         }
 
-        switch (item.getItemId()) {
-            case R.id.action_share:
-                // shareArtifact(viewPager.getCurrentItem());
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+        return super.onOptionsItemSelected(item);
     }
-
-//    private void shareArtifact(int artifactIdx) {
-//        Artifact artifact = artifacts.get(artifactIdx);
-//        String subject = getString(R.string.share_title, artifact.getTitle(),
-//                getString(R.string.app_name));
-//        String text = getString(R.string.share_body, artifact.getPage_uri());
-//        Intent i = new Intent(Intent.ACTION_SEND);
-//        i.setType("text/plain");
-//        i.putExtra(Intent.EXTRA_SUBJECT, subject);
-//        i.putExtra(Intent.EXTRA_TEXT, text);
-//        startActivity(Intent.createChooser(i, getString(R.string.activity_media_carousel_action_share_title)));
-//    }
 
     private void clickDrawerHome() {
         // Notice that only this is added to the back-stack so we can return to it. It does not
@@ -175,6 +153,7 @@ public class MediaCarouselActivity extends Activity{
         drawerTermsAndConditionsView.setTextAppearance(this, R.style.MediaCarouselDrawerUnselected);
         drawerAboutView.setBackgroundResource(R.color.background_white);
         drawerAboutView.setTextAppearance(this, R.style.MediaCarouselDrawerUnselected);
+        invalidateOptionsMenu();
     }
 
     private void clickDrawerPreferences() {
@@ -195,6 +174,7 @@ public class MediaCarouselActivity extends Activity{
         drawerTermsAndConditionsView.setTextAppearance(this, R.style.MediaCarouselDrawerSelected);
         drawerAboutView.setBackgroundResource(R.color.background_white);
         drawerAboutView.setTextAppearance(this, R.style.MediaCarouselDrawerUnselected);
+        invalidateOptionsMenu();
     }
 
     private void clickDrawerAbout() {
@@ -212,9 +192,9 @@ public class MediaCarouselActivity extends Activity{
         drawerTermsAndConditionsView.setTextAppearance(this, R.style.MediaCarouselDrawerUnselected);
         drawerAboutView.setBackgroundResource(R.color.action_bar_blue);
         drawerAboutView.setTextAppearance(this, R.style.MediaCarouselDrawerSelected);
+        invalidateOptionsMenu();
     }
 
     private void clickDrawerShareApp() {
-        
     }
 }

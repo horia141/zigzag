@@ -1,6 +1,7 @@
 package com.zigzag.client_app;
 
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.annotation.Nullable;
@@ -8,6 +9,7 @@ import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -27,7 +29,7 @@ public class ArtifactCarouselFragment extends MediaCarouselFragment
     @Nullable private ArtifactsAdapter artifactsAdapter = null;
 
     public ArtifactCarouselFragment() {
-        super(R.string.artifact_carousel_title);
+        super(R.string.artifact_carousel_title, R.menu.artifact_carousel_fragment);
     }
 
     @Override
@@ -58,7 +60,28 @@ public class ArtifactCarouselFragment extends MediaCarouselFragment
         super.onStop();
         Controller.getInstance(getActivity()).deregisterAllArtifactsListener(this);
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_share:
+                shareArtifact(viewPager.getCurrentItem());
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
+    private void shareArtifact(int artifactIdx) {
+        Artifact artifact = artifacts.get(artifactIdx);
+        String subject = getString(R.string.share_title, artifact.getTitle(),
+                getString(R.string.app_name));
+        String text = getString(R.string.share_body, artifact.getPage_uri());
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("text/plain");
+        i.putExtra(Intent.EXTRA_SUBJECT, subject);
+        i.putExtra(Intent.EXTRA_TEXT, text);
+        startActivity(Intent.createChooser(i, getString(R.string.activity_media_carousel_action_share_title)));
+    }
 
     @Override
     public void onNewArtifacts(List<Artifact> newArtifacts) {
