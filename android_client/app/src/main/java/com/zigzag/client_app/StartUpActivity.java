@@ -36,6 +36,7 @@ public class StartUpActivity extends Activity
     public void onNewArtifacts(List<Artifact> newArtifacts) {
         Intent intent = new Intent(this, MediaCarouselActivity.class);
         startActivity(intent);
+        finish();
     }
 
     @Override
