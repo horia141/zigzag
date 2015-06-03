@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -12,6 +13,10 @@ import com.zigzag.common.model.PhotoDescription;
 
 public class PhotoDescriptionView extends LinearLayout {
 
+    public interface OnLongClickListener {
+        public void onLongClick();
+    }
+
     private enum State {
         CREATED,
         PHOTO_DESCRIPTION_SET
@@ -19,6 +24,7 @@ public class PhotoDescriptionView extends LinearLayout {
 
     private State state;
     @Nullable private PhotoDescription photoDescription;
+    @Nullable private OnLongClickListener onLongClickListener;
     private final ImagePhotoView imagePhotoView;
     private final VideoPhotoView videoPhotoView;
     private final TextView subtitleView;
@@ -33,6 +39,7 @@ public class PhotoDescriptionView extends LinearLayout {
 
         state = State.CREATED;
         photoDescription = null;
+        onLongClickListener = null;
 
         setOrientation(VERTICAL);
 
@@ -41,6 +48,19 @@ public class PhotoDescriptionView extends LinearLayout {
         videoPhotoView = (VideoPhotoView) findViewById(R.id.video_photo);
         subtitleView = (TextView) findViewById(R.id.subtitle);
         descriptionView = (TextView) findViewById(R.id.description);
+
+        imagePhotoView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                return onImageOrPhotoLongClick();
+            }
+        });
+        videoPhotoView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                return onImageOrPhotoLongClick();
+            }
+        });
     }
 
     public void setPhotoDescription(PhotoDescription newPhotoDescription) {
@@ -135,5 +155,18 @@ public class PhotoDescriptionView extends LinearLayout {
 
         // Update view components.
         videoPhotoView.disable();
+    }
+
+    public void setOnLongClickListener(@Nullable OnLongClickListener newOnLongClickListener) {
+        onLongClickListener = newOnLongClickListener;
+    }
+
+    private boolean onImageOrPhotoLongClick() {
+        if (onLongClickListener == null) {
+            return false;
+        }
+
+        onLongClickListener.onLongClick();
+        return true;
     }
 }
