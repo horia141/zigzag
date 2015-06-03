@@ -8,9 +8,10 @@ import android.view.ViewGroup;
 
 import com.zigzag.client_app.R;
 
-public class AboutFragment extends Fragment {
+public class AboutFragment extends MediaCarouselFragment {
 
     public AboutFragment() {
+        super(R.string.about_title);
     }
 
     @Override

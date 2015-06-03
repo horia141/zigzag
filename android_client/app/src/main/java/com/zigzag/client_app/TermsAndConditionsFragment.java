@@ -8,9 +8,10 @@ import android.view.ViewGroup;
 
 import com.zigzag.client_app.R;
 
-public class TermsAndConditionsFragment extends Fragment {
+public class TermsAndConditionsFragment extends MediaCarouselFragment {
 
     public TermsAndConditionsFragment() {
+        super(R.string.terms_and_conditions_title);
     }
 
     @Override

@@ -17,7 +17,7 @@ import com.zigzag.common.model.Artifact;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArtifactCarouselFragment extends Fragment
+public class ArtifactCarouselFragment extends MediaCarouselFragment
         implements Controller.AllArtifactsListener {
 
     private static final int START_PREFETCH_BEFORE_END = 3;
@@ -27,6 +27,7 @@ public class ArtifactCarouselFragment extends Fragment
     @Nullable private ArtifactsAdapter artifactsAdapter = null;
 
     public ArtifactCarouselFragment() {
+        super(R.string.artifact_carousel_title);
     }
 
     @Override

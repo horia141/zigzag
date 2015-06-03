@@ -161,13 +161,14 @@ public class MediaCarouselActivity extends Activity{
     private void clickDrawerHome() {
         // Notice that only this is added to the back-stack so we can return to it. It does not
         // apply to the others.
+        MediaCarouselFragment fragment = new ArtifactCarouselFragment();
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager
                 .beginTransaction()
-                .replace(R.id.main_content, new ArtifactCarouselFragment())
+                .replace(R.id.main_content, fragment)
                 .commit();
         drawerAndMainContent.closeDrawer(drawerContent);
-        setTitle(getString(R.string.artifact_carousel_title));
+        setTitle(getString(fragment.getTitleResId()));
         drawerArtifactCarouselView.setBackgroundResource(R.color.action_bar_blue);
         drawerArtifactCarouselView.setTextAppearance(this, R.style.MediaCarouselDrawerSelected);
         drawerTermsAndConditionsView.setBackgroundResource(R.color.background_white);
@@ -180,13 +181,14 @@ public class MediaCarouselActivity extends Activity{
     }
 
     private void clickDrawerTermsAndConditions() {
+        MediaCarouselFragment fragment = new TermsAndConditionsFragment();
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager
                 .beginTransaction()
-                .replace(R.id.main_content, new TermsAndConditionsFragment())
+                .replace(R.id.main_content, fragment)
                 .commit();
         drawerAndMainContent.closeDrawer(drawerContent);
-        setTitle(getString(R.string.terms_and_conditions_title));
+        setTitle(getString(fragment.getTitleResId()));
         drawerArtifactCarouselView.setBackgroundResource(R.color.background_white);
         drawerArtifactCarouselView.setTextAppearance(this, R.style.MediaCarouselDrawerUnselected);
         drawerTermsAndConditionsView.setBackgroundResource(R.color.action_bar_blue);
@@ -196,13 +198,14 @@ public class MediaCarouselActivity extends Activity{
     }
 
     private void clickDrawerAbout() {
+        MediaCarouselFragment fragment = new AboutFragment();
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager
                 .beginTransaction()
-                .replace(R.id.main_content, new AboutFragment())
+                .replace(R.id.main_content, fragment)
                 .commit();
         drawerAndMainContent.closeDrawer(drawerContent);
-        setTitle(getString(R.string.about_title));
+        setTitle(getString(fragment.getTitleResId()));
         drawerArtifactCarouselView.setBackgroundResource(R.color.background_white);
         drawerArtifactCarouselView.setTextAppearance(this, R.style.MediaCarouselDrawerUnselected);
         drawerTermsAndConditionsView.setBackgroundResource(R.color.background_white);

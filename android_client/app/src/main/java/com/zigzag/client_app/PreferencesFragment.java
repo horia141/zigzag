@@ -8,9 +8,10 @@ import android.view.ViewGroup;
 
 import com.zigzag.client_app.R;
 
-public class PreferencesFragment extends Fragment {
+public class PreferencesFragment extends MediaCarouselFragment {
 
     public PreferencesFragment() {
+        super(R.string.preferences_title);
     }
 
     @Override
