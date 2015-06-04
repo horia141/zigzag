@@ -6,8 +6,6 @@ import android.util.Log;
 import com.zigzag.common.model.PhotoDescription;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
