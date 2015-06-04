@@ -5,7 +5,9 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -122,6 +124,22 @@ public class ArtifactView extends ScrollView {
                 }
             });
         }
+
+        // TODO(horia141): why this code? why here? It has to do with VideoViews. They steal the
+        // focus or something like that. When an artifact view becomes visible, if there are videos,
+        // the screen will become focused on the last of them. This is usually a bad thing to do, as
+        // well as being non-uniform. This code seems to fix it. Rather, a scrollTo anytime after
+        // the video views have done their thing. This location was good enough. It does not get
+        // called that many times, so it is not a performance problem.
+        // Also, why here? It is the lowest point where we can address it. It is a "ui" thing and
+        // should be dealt with here.
+        final ArtifactView capturedThis = this;
+        this.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                capturedThis.scrollTo(0, 0);
+            }
+        });
 
         // Request new drawing and layout.
         invalidate();
