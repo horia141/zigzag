@@ -24,6 +24,7 @@ import com.zigzag.common.model.PhotoData;
 import com.zigzag.common.model.PhotoDescription;
 import com.zigzag.common.model.TileData;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -35,7 +36,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public final class Controller {
 
@@ -51,6 +51,7 @@ public final class Controller {
     }
 
     private static class ImageCache implements ImageLoader.ImageCache {
+
         private final LruCache<String, Bitmap> cache = new LruCache<>(IMAGE_CACHE_SIZE);
 
         public void putBitmap(String url, Bitmap bitmap) {
@@ -64,6 +65,7 @@ public final class Controller {
     }
 
     private static class ThriftRequest extends Request<ByteBuffer> {
+
         private final Response.Listener<ByteBuffer> listener;
 
         public ThriftRequest(String url, Response.Listener<ByteBuffer> listener,
@@ -85,12 +87,17 @@ public final class Controller {
     }
 
     private static class VideoRequest extends Request<String> {
-        private final Response.Listener<String> listener;
 
-        public VideoRequest(String url, Response.Listener<String> listener,
-                            Response.ErrorListener errorListener) {
+        private final Response.Listener<String> listener;
+        private final PhotoDescription photoDescription;
+        private final FileSystem fileSystem;
+
+        public VideoRequest(String url, PhotoDescription photoDescription, FileSystem fileSystem,
+                            Response.Listener<String> listener, Response.ErrorListener errorListener) {
             super(Method.GET, url, errorListener);
             this.listener = listener;
+            this.photoDescription = photoDescription;
+            this.fileSystem = fileSystem;
         }
 
         @Override
@@ -101,34 +108,25 @@ public final class Controller {
         @Override
         protected Response<String> parseNetworkResponse(NetworkResponse response) {
             String path = Uri.parse(getUrl()).getPath();
-            File movies = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES);
-            File applicationData = new File(movies, NAME);
-            File externalCache = new File(applicationData, EXTERNAL_CACHE_PATH);
-            File video = new File(externalCache, path);
+            File video = fileSystem.register(photoDescription, path);
 
-            try {
-                movies.mkdirs();
-                applicationData.mkdirs();
-                externalCache.mkdirs();
-
-                if (!video.exists()) {
-                    OutputStream outputStream = new FileOutputStream(video);
+            if (!video.exists()) {
+                try {
+                    OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(video));
                     outputStream.write(response.data);
                     outputStream.close();
+                } catch(IOException error){
+                    Log.e("ZigZag/Controller", "Error processing video", error);
+                    return Response.error(new VolleyError("Error saving video", error));
                 }
-
-                Log.d("ZigZag/VideoRequest", video.getAbsolutePath());
-                return Response.success(video.getAbsolutePath(), HttpHeaderParser.parseCacheHeaders(response));
-            } catch (IOException error) {
-                Log.e("ZigZag/Controller", "Error processing video", error);
-                return Response.error(new VolleyError("Error saving video", error));
             }
+
+            return Response.success(video.getAbsolutePath(), HttpHeaderParser.parseCacheHeaders(response));
         }
     }
 
     private static final String NAME = "ZizZag";
     private static final String REQUESTS_TAG = NAME;
-    private static final String EXTERNAL_CACHE_PATH = "External";
     private static final String API_NEXTGEN_URL_PATTERN = "http://horia141.com:9000/api/v1/nextgen?from=%s&output=thrift";
     private static final String API_RES_URL_PATTERN = "http://horia141.com:9001/%s";
     private static final int IMAGE_CACHE_SIZE = 20;
@@ -141,6 +139,7 @@ public final class Controller {
     private final ModelDecoder modelDecoder;
     @Nullable private AllArtifactsListener allArtifactsListener;
     private Map<String, ArtifactResourcesListener> resourcesListeners;
+    private final FileSystem fileSystem;
 
     private Controller(Context context) {
         this.requestQueue = Volley.newRequestQueue(context);
@@ -151,6 +150,7 @@ public final class Controller {
         this.modelDecoder = new ModelDecoder();
         this.allArtifactsListener = null;
         this.resourcesListeners = new HashMap<>();
+        this.fileSystem = new FileSystem(NAME);
     }
 
     public List<Artifact> getArtifacts() {
@@ -276,7 +276,7 @@ public final class Controller {
 
             if (photoData.isSetVideo_photo_data()) {
                 final String resUrl = translateVideoPath(photoData.getVideo_photo_data().getVideo().getUri_path());
-                final VideoRequest request = new VideoRequest(resUrl,
+                final VideoRequest request = new VideoRequest(resUrl, photoDescription, fileSystem,
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String localPathToVideo) {
@@ -298,6 +298,17 @@ public final class Controller {
 
     public void deregisterArtifactResources(Artifact artifact, ArtifactResourcesListener listener) {
         resourcesListeners.remove(artifact.getPage_uri());
+
+        // We are also going to use the fact that at most one listener for an artifact exists, and
+        // if this is called, that listener is being destroyed. So we can remove the locally saved
+        // videos for the video artifacts.
+        for (PhotoDescription photoDescription : artifact.getPhoto_descriptions()) {
+            if (!photoDescription.getPhoto_data().isSetVideo_photo_data()) {
+                continue;
+            }
+
+            fileSystem.release(photoDescription);
+        }
     }
 
     public void stopEverything() {
