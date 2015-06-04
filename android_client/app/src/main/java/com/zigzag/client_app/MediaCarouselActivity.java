@@ -111,7 +111,7 @@ public class MediaCarouselActivity extends Activity{
     @Override
     public void onStop() {
         super.onStop();
-        Controller.getInstance(this).stopEverything();
+        Controller.getInstance().stopEverything();
     }
 
     @Override

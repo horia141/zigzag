@@ -3,8 +3,6 @@ package com.zigzag.client_app.controller;
 import android.os.Environment;
 import android.util.Log;
 
-import com.zigzag.common.model.PhotoDescription;
-
 import java.io.File;
 import java.util.Map;
 import java.util.Set;
@@ -58,11 +56,11 @@ public class FileSystem {
 
     private class TargetedGCTask implements Runnable {
 
-        private final PhotoDescription photoDescription;
+        private final Object tag;
         private final String knownPath;
 
-        public TargetedGCTask(PhotoDescription newPhotoDescription, String newKnownPath) {
-            photoDescription = newPhotoDescription;
+        public TargetedGCTask(Object newTag, String newKnownPath) {
+            tag = newTag;
             knownPath = newKnownPath;
         }
 
@@ -74,7 +72,7 @@ public class FileSystem {
             }
 
             knownFile.delete();
-            knownPaths.remove(photoDescription);
+            knownPaths.remove(tag);
             knownPathsFilter.remove(knownFile.getAbsolutePath());
         }
     }
@@ -83,7 +81,7 @@ public class FileSystem {
 
     private final String specificName;
     private final ScheduledThreadPoolExecutor executor;
-    private final Map<PhotoDescription, String> knownPaths;
+    private final Map<Object, String> knownPaths;
     private final Set<String> knownPathsFilter;
     private final File specificDir;
 
@@ -100,24 +98,24 @@ public class FileSystem {
                 TimeUnit.MINUTES);
     }
 
-    public File register(PhotoDescription photoDescription, String path) {
-        File photoDescriptionFile;
+    public File register(Object tag, String path) {
+        File tagFile;
         synchronized (specificDir) {
-            photoDescriptionFile = new File(specificDir, path);
+            tagFile = new File(specificDir, path);
         }
 
-        knownPaths.put(photoDescription, path);
-        knownPathsFilter.add(photoDescriptionFile.getAbsolutePath());
+        knownPaths.put(tag, path);
+        knownPathsFilter.add(tagFile.getAbsolutePath());
 
-        return photoDescriptionFile;
+        return tagFile;
     }
 
-    public void release(PhotoDescription photoDescription) {
-        String path = knownPaths.get(photoDescription);
+    public void release(Object tag) {
+        String path = knownPaths.get(tag);
         if (path == null) {
             return;
         }
 
-        executor.schedule(new TargetedGCTask(photoDescription, path), 0, TimeUnit.SECONDS);
+        executor.schedule(new TargetedGCTask(tag, path), 0, TimeUnit.SECONDS);
     }
 }

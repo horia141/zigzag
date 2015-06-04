@@ -44,7 +44,7 @@ public class ArtifactCarouselFragment extends MediaCarouselFragment
 
         // We know we have some artifacts, because we usually end up here because of a
         // StartUpActivity invoking us. That happens when there is some data.
-        artifacts.addAll(Controller.getInstance(getActivity()).getArtifacts());
+        artifacts.addAll(Controller.getInstance().getArtifacts());
         artifactsAdapter.notifyDataSetChanged();
 
         return rootView;
@@ -53,13 +53,13 @@ public class ArtifactCarouselFragment extends MediaCarouselFragment
     @Override
     public void onStart() {
         super.onStart();
-        Controller.getInstance(getActivity()).fetchArtifacts(this);
+        Controller.getInstance().fetchArtifacts(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Controller.getInstance(getActivity()).deregisterAllArtifactsListener(this);
+        Controller.getInstance().deregisterAllArtifactsListener(this);
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -114,8 +114,7 @@ public class ArtifactCarouselFragment extends MediaCarouselFragment
         @Override
         public Fragment getItem(int artifactIdx) {
             if (artifactIdx + START_PREFETCH_BEFORE_END >= artifacts.size()) {
-                Controller.getInstance(ArtifactCarouselFragment.this.getActivity())
-                        .fetchArtifacts(ArtifactCarouselFragment.this);
+                Controller.getInstance().fetchArtifacts(ArtifactCarouselFragment.this);
             }
 
             Artifact artifact = artifacts.get(artifactIdx);

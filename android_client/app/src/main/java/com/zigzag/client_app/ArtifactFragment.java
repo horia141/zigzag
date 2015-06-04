@@ -38,10 +38,9 @@ public class ArtifactFragment extends Fragment
         // an artifact URI, and (2) that said URI exists in the system.
         Bundle args = getArguments();
         String artifactPageUri = args.getString("artifact_id");
-        artifact = Controller.getInstance(getActivity()).getArtifactByPageUri(artifactPageUri);
-        ArtifactSource artifactSource = Controller.getInstance(getActivity())
-                .getSourceForArtifact(artifact);
-        Date dateAdded = Controller.getInstance(getActivity()).getDateForArtifact(artifact);
+        artifact = Controller.getInstance().getArtifactByPageUri(artifactPageUri);
+        ArtifactSource artifactSource = Controller.getInstance().getSourceForArtifact(artifact);
+        Date dateAdded = Controller.getInstance().getDateForArtifact(artifact);
 
         final ArtifactView rootView = (ArtifactView) inflater.inflate(
                 R.layout.fragment_artifact, container, false);
@@ -59,13 +58,13 @@ public class ArtifactFragment extends Fragment
     @Override
     public void onStart() {
         super.onStart();
-        Controller.getInstance(getActivity()).fetchArtifactResources(artifact, this);
+        Controller.getInstance().fetchArtifactResources(artifact, this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Controller.getInstance(getActivity()).deregisterArtifactResources(artifact, this);
+        Controller.getInstance().deregisterArtifactResources(artifact, this);
     }
 
     @Override

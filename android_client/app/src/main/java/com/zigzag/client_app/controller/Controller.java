@@ -8,12 +8,17 @@ import android.support.annotation.Nullable;
 import android.support.v4.util.LruCache;
 import android.util.Log;
 
+import com.android.volley.Cache;
+import com.android.volley.Network;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.BasicNetwork;
+import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import com.zigzag.common.api.NextGenResponse;
@@ -126,11 +131,14 @@ public final class Controller {
     }
 
     private static final String NAME = "ZizZag";
+    private static final String CACHE_PATH = "cache";
+    private static final int CACHE_SIZE_MB = 10 * 1024 * 1024;
     private static final String REQUESTS_TAG = NAME;
     private static final String API_NEXTGEN_URL_PATTERN = "http://horia141.com:9000/api/v1/nextgen?from=%s&output=thrift";
     private static final String API_RES_URL_PATTERN = "http://horia141.com:9001/%s";
     private static final int IMAGE_CACHE_SIZE = 20;
 
+    private final FileSystem fileSystem;
     private final RequestQueue requestQueue;
     private final ImageLoader imageLoader;
     private final Map<Long, ArtifactSource> artifactSources;
@@ -139,10 +147,13 @@ public final class Controller {
     private final ModelDecoder modelDecoder;
     @Nullable private AllArtifactsListener allArtifactsListener;
     private Map<String, ArtifactResourcesListener> resourcesListeners;
-    private final FileSystem fileSystem;
 
-    private Controller(Context context) {
-        this.requestQueue = Volley.newRequestQueue(context);
+    private Controller() {
+        this.fileSystem = new FileSystem(NAME);
+        Cache cache = new DiskBasedCache(fileSystem.register(this, CACHE_PATH), CACHE_SIZE_MB);
+        Network network = new BasicNetwork(new HurlStack());
+        this.requestQueue = new RequestQueue(cache, network);
+        this.requestQueue.start();
         this.imageLoader = new ImageLoader(this.requestQueue, new ImageCache());
         this.artifactSources = new HashMap<>();
         this.generations = new ArrayList<>();
@@ -150,7 +161,6 @@ public final class Controller {
         this.modelDecoder = new ModelDecoder();
         this.allArtifactsListener = null;
         this.resourcesListeners = new HashMap<>();
-        this.fileSystem = new FileSystem(NAME);
     }
 
     public List<Artifact> getArtifacts() {
@@ -380,9 +390,9 @@ public final class Controller {
 
     private static Controller instance = null;
 
-    public static synchronized Controller getInstance(Context context) {
+    public static synchronized Controller getInstance() {
         if (instance == null) {
-            instance = new Controller(context);
+            instance = new Controller();
         }
 
         return instance;
