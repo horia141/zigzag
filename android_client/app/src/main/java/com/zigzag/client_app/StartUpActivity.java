@@ -23,13 +23,13 @@ public class StartUpActivity extends Activity
     @Override
     public void onStart() {
         super.onStart();
-        Controller.getInstance().fetchArtifacts(this);
+        Controller.getInstance(this).fetchArtifacts(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Controller.getInstance().deregisterAllArtifactsListener(this);
+        Controller.getInstance(this).deregisterAllArtifactsListener(this);
     }
 
     @Override

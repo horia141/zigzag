@@ -131,7 +131,7 @@ public final class Controller {
     }
 
     private static final String NAME = "ZizZag";
-    private static final String CACHE_PATH = "cache";
+    private static final String CACHE_PATH = "volley-cache";
     private static final int CACHE_SIZE_MB = 10 * 1024 * 1024;
     private static final String REQUESTS_TAG = NAME;
     private static final String API_NEXTGEN_URL_PATTERN = "http://horia141.com:9000/api/v1/nextgen?from=%s&output=thrift";
@@ -148,9 +148,9 @@ public final class Controller {
     @Nullable private AllArtifactsListener allArtifactsListener;
     private Map<String, ArtifactResourcesListener> resourcesListeners;
 
-    private Controller() {
+    private Controller(Context context) {
         this.fileSystem = new FileSystem(NAME);
-        Cache cache = new DiskBasedCache(fileSystem.register(this, CACHE_PATH), CACHE_SIZE_MB);
+        Cache cache = new DiskBasedCache(new File(context.getCacheDir(), CACHE_PATH), CACHE_SIZE_MB);
         Network network = new BasicNetwork(new HurlStack());
         this.requestQueue = new RequestQueue(cache, network);
         this.requestQueue.start();
@@ -251,7 +251,7 @@ public final class Controller {
 
             for (int jj = 0; jj < uriPathsToFetch.size(); jj++) {
                 final int tileOrFrameIdx = jj;
-                String resUrl = translateImagePath(uriPathsToFetch.get(jj));
+                final String resUrl = translateImagePath(uriPathsToFetch.get(jj));
 
                 imageLoader.get(resUrl, new ImageLoader.ImageListener() {
                     @Override
@@ -267,6 +267,8 @@ public final class Controller {
                         if (response.getBitmap() == null) {
                             return;
                         }
+
+                        Log.i("ZigZag/Here", ((DiskBasedCache) requestQueue.getCache()).getFileForKey(resUrl).getAbsolutePath());
 
                         listener.onResourcesForArtifact(artifact, imageIdx, tileOrFrameIdx, response.getBitmap());
                     }
@@ -360,6 +362,18 @@ public final class Controller {
         throw new RuntimeException("Cannot find artifact! This should not happen");
     }
 
+    public File getCacheFileForPhotoDescription(PhotoDescription photoDescription) {
+        String desiredPath = null;
+        if (photoDescription.getPhoto_data().isSetToo_big_photo_data()) {
+            throw new IllegalArgumentException("Cannot get path for too big images");
+        } else if (photoDescription.getPhoto_data().isSetImage_photo_data()) {
+            desiredPath = photoDescription.getPhoto_data().getImage_photo_data().getTiles().get(0).getUri_path();
+        } else {
+            desiredPath = photoDescription.getPhoto_data().getVideo_photo_data().getFirst_frame().getUri_path();
+        }
+        return ((DiskBasedCache) requestQueue.getCache()).getFileForKey(desiredPath);
+    }
+
     private static String translateImagePath(String urlPath) {
         return String.format(API_RES_URL_PATTERN, urlPath);
     }
@@ -390,9 +404,9 @@ public final class Controller {
 
     private static Controller instance = null;
 
-    public static synchronized Controller getInstance() {
+    public static synchronized Controller getInstance(Context context) {
         if (instance == null) {
-            instance = new Controller();
+            instance = new Controller(context);
         }
 
         return instance;

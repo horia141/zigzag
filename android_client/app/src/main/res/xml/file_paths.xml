@@ -3,6 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Must be synchronized with Controller.CACHE_PATH -->
-    <cache-path name="VolleyCache" path="volley-cache" />
+    <cache-path name="volley-cache" path="volley-cache/" />
 
 </paths>

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.support.annotation.Nullable;
 import android.support.v13.app.FragmentStatePagerAdapter;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 import com.zigzag.client_app.controller.Controller;
 import com.zigzag.common.model.Artifact;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +47,7 @@ public class ArtifactCarouselFragment extends MediaCarouselFragment
 
         // We know we have some artifacts, because we usually end up here because of a
         // StartUpActivity invoking us. That happens when there is some data.
-        artifacts.addAll(Controller.getInstance().getArtifacts());
+        artifacts.addAll(Controller.getInstance(getActivity()).getArtifacts());
         artifactsAdapter.notifyDataSetChanged();
 
         return rootView;
@@ -54,19 +56,19 @@ public class ArtifactCarouselFragment extends MediaCarouselFragment
     @Override
     public void onStart() {
         super.onStart();
-        Controller.getInstance().fetchArtifacts(this);
+        Controller.getInstance(getActivity()).fetchArtifacts(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Controller.getInstance().deregisterAllArtifactsListener(this);
+        Controller.getInstance(getActivity()).deregisterAllArtifactsListener(this);
     }
 
     @Override
     public void onPageSelected(int artifactIdx) {
         if (artifactIdx + START_PREFETCH_BEFORE_END >= artifacts.size()) {
-            Controller.getInstance().fetchArtifacts(ArtifactCarouselFragment.this);
+            Controller.getInstance(getActivity()).fetchArtifacts(ArtifactCarouselFragment.this);
         }
     }
 
@@ -93,15 +95,25 @@ public class ArtifactCarouselFragment extends MediaCarouselFragment
     }
 
     private void shareArtifact(int artifactIdx) {
-        Artifact artifact = artifacts.get(artifactIdx);
-        String subject = getString(R.string.share_title, artifact.getTitle(),
-                getString(R.string.app_name));
-        String text = getString(R.string.share_body, artifact.getPage_uri());
-        Intent i = new Intent(Intent.ACTION_SEND);
-        i.setType("text/plain");
-        i.putExtra(Intent.EXTRA_SUBJECT, subject);
-        i.putExtra(Intent.EXTRA_TEXT, text);
-        startActivity(Intent.createChooser(i, getString(R.string.activity_media_carousel_action_share_title)));
+        // File crom = Controller.getInstance(getActivity()).getCacheFileForPhotoDescription(artifacts.get(artifactIdx).getPhoto_descriptions().get(0));
+        File crom = new File("/data/data/com.zigzag.client_app/cache/volley-cache/864467229-1431939313");
+        Uri som = FileProvider.getUriForFile(getActivity(), "com.zigzag.client_app.fileprovider", crom);
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_STREAM, som);
+        intent.setType("image/jpeg");
+        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        startActivity(Intent.createChooser(intent, getString(R.string.activity_media_carousel_action_share_title)));
+
+
+//        Artifact artifact = artifacts.get(artifactIdx);
+//        String subject = getString(R.string.share_title, artifact.getTitle(),
+//                getString(R.string.app_name));
+//        String text = getString(R.string.share_body, artifact.getPage_uri());
+//        Intent i = new Intent(Intent.ACTION_SEND);
+//        i.setType("text/plain");
+//        i.putExtra(Intent.EXTRA_SUBJECT, subject);
+//        i.putExtra(Intent.EXTRA_TEXT, text);
+//        startActivity(Intent.createChooser(i, getString(R.string.activity_media_carousel_action_share_title)));
     }
 
     private void openArtifactInBrowser(int artifactIdx) {
