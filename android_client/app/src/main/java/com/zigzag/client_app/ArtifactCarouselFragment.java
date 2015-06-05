@@ -21,9 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ArtifactCarouselFragment extends MediaCarouselFragment
-        implements Controller.AllArtifactsListener {
+        implements Controller.AllArtifactsListener, ViewPager.OnPageChangeListener {
 
-    private static final int START_PREFETCH_BEFORE_END = 3;
+    private static final int START_PREFETCH_BEFORE_END = 10;
 
     private final List<Artifact> artifacts = new ArrayList<>();
     @Nullable private ViewPager viewPager = null;
@@ -41,6 +41,7 @@ public class ArtifactCarouselFragment extends MediaCarouselFragment
         artifactsAdapter = new ArtifactsAdapter(getFragmentManager());
         viewPager = (ViewPager) rootView.findViewById(R.id.artifacts_pager);
         viewPager.setAdapter(artifactsAdapter);
+        viewPager.setOnPageChangeListener(this);
 
         // We know we have some artifacts, because we usually end up here because of a
         // StartUpActivity invoking us. That happens when there is some data.
@@ -61,6 +62,22 @@ public class ArtifactCarouselFragment extends MediaCarouselFragment
         super.onStop();
         Controller.getInstance().deregisterAllArtifactsListener(this);
     }
+
+    @Override
+    public void onPageSelected(int artifactIdx) {
+        if (artifactIdx + START_PREFETCH_BEFORE_END >= artifacts.size()) {
+            Controller.getInstance().fetchArtifacts(ArtifactCarouselFragment.this);
+        }
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -113,10 +130,6 @@ public class ArtifactCarouselFragment extends MediaCarouselFragment
 
         @Override
         public Fragment getItem(int artifactIdx) {
-            if (artifactIdx + START_PREFETCH_BEFORE_END >= artifacts.size()) {
-                Controller.getInstance().fetchArtifacts(ArtifactCarouselFragment.this);
-            }
-
             Artifact artifact = artifacts.get(artifactIdx);
             return ArtifactFragment.newInstance(artifact);
         }
