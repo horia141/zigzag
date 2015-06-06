@@ -4,12 +4,17 @@ import android.util.Pair;
 
 import com.android.volley.Cache;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,15 +49,24 @@ public class PhotoCache implements Cache {
         }
 
         if (entry.data == null) {
-            entry.data = readContent(contentFileForKey(key));
+            try {
+                entry.data = readContent(contentFileForKey(key));
+            } catch (IOException e) {
+                return null;
+            }
         }
 
         return entry;
     }
 
     public void put(String key, Entry entry) {
-        writeHeaders(headersFileForKey(key), key, entry);
-        writeContent(contentFileForKey(key), entry);
+        try {
+            writeHeaders(headersFileForKey(key), key, entry);
+            writeContent(contentFileForKey(key), entry);
+        } catch (IOException e) {
+            throw new RuntimeException("Could not write cache entry");
+        }
+
         entries.put(key, entry);
     }
 
@@ -79,28 +93,14 @@ public class PhotoCache implements Cache {
 
             for (int ii = 0; ii < maxNumberOfElements; ii++) {
                 File headersFile = new File(rootDirectory, String.format(HEADERS_FILE_PATH_PATTERN, ii));
-                Pair<String, Entry> headersInfo = null;
-
-                if (headersFile.exists()) {
-                    headersInfo = readHeaders(headersFile);
-                } else {
-                    boolean created = headersFile.createNewFile();
-                    if (!created) {
-                        throw new RuntimeException("Could not create headers file");
-                    }
-                }
-
                 File contentFile = new File(rootDirectory, String.format(CONTENT_FILE_PATH_PATTERN, ii));
-                if (!contentFile.exists()) {
-                    boolean created = contentFile.createNewFile();
-                    if (!created) {
-                        throw new RuntimeException("Could not create content file");
-                    }
+
+                if (!headersFile.exists() || !contentFile.exists()) {
+                    continue;
                 }
 
-                if (headersInfo != null) {
-                    entries.put(headersInfo.first, headersInfo.second);
-                }
+                Pair<String, Entry> headersInfo = readHeaders(headersFile);
+                entries.put(headersInfo.first, headersInfo.second);
             }
         } catch (IOException e) {
             throw new RuntimeException("Could not create cache structures");
@@ -108,7 +108,18 @@ public class PhotoCache implements Cache {
     }
 
     public void invalidate(String key, boolean fullExpire) {
+        Entry entry = get(key);
 
+        if (entry == null) {
+            return;
+        }
+
+        entry.softTtl = 0;
+        if (fullExpire) {
+            entry.ttl = 0;
+        }
+
+        put(key, entry);
     }
 
     public void remove(String key) {
@@ -151,19 +162,79 @@ public class PhotoCache implements Cache {
         }
     }
 
-    private static Pair<String, Entry> readHeaders(File headersFile) {
-        return null;
+    private static Pair<String, Entry> readHeaders(File headersFile) throws IOException {
+        DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(headersFile)));
+        String key = dis.readUTF();
+        Entry entry = new Entry();
+        entry.etag = dis.readUTF();
+        if (entry.etag.equals("")) {
+            entry.etag = null;
+        }
+        entry.serverDate = dis.readLong();
+        entry.ttl = dis.readLong();
+        entry.softTtl = dis.readLong();
+        entry.responseHeaders = readStringStringMap(dis);
+        dis.close();
+        return new Pair<>(key, entry);
     }
 
-    private static void writeHeaders(File headersFile, String key, Entry entry) {
-
+    private static Map<String, String> readStringStringMap(DataInputStream dis) throws IOException {
+        int size = dis.readInt();
+        Map<String, String> result = (size == 0) ? Collections.<String, String>emptyMap()
+                : new HashMap<String, String>(size);
+        for (int i = 0; i < size; i++) {
+            String key = dis.readUTF();
+            String value = dis.readUTF();
+            result.put(key, value);
+        }
+        return result;
     }
 
-    private static byte[] readContent(File contentFile) {
-        return null;
+    private static void writeHeaders(File headersFile, String key, Entry entry) throws IOException {
+        DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(headersFile)));
+        dos.writeUTF(key);
+        dos.writeUTF(entry.etag == null ? "" : entry.etag);
+        dos.writeLong(entry.serverDate);
+        dos.writeLong(entry.ttl);
+        dos.writeLong(entry.softTtl);
+        writeStringStringMap(dos, entry.responseHeaders);
+        dos.close();
     }
 
-    private static void writeContent(File contentFile, Entry entry) {
+    private static void writeStringStringMap(DataOutputStream dos, Map<String, String> map) throws IOException {
+        if (map == null) {
+            dos.writeInt(0);
+            return;
+        }
 
+        dos.writeInt(map.size());
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            dos.writeUTF(entry.getKey());
+            dos.writeUTF(entry.getValue());
+        }
+    }
+
+    private static byte[] readContent(File contentFile) throws IOException {
+        int contentSize = (int)contentFile.length();
+        byte[] content = new byte[contentSize];
+
+        InputStream ios = new BufferedInputStream(new FileInputStream(contentFile));
+        int readSize = ios.read(content, 0, contentSize);
+        ios.close();
+        if (readSize != contentSize) {
+            throw new IOException("Could not read full data for content file");
+        }
+
+        return content;
+    }
+
+    private static void writeContent(File contentFile, Entry entry) throws IOException {
+        if (entry.data == null) {
+            throw new IOException("No data to write to content file");
+        }
+
+        OutputStream fos = new BufferedOutputStream(new FileOutputStream(contentFile));
+        fos.write(entry.data);
+        fos.close();
     }
 }
