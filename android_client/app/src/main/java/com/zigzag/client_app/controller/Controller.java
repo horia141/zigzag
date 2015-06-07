@@ -41,6 +41,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public final class Controller {
 
@@ -150,7 +151,8 @@ public final class Controller {
 
     private Controller(Context context) {
         this.fileSystem = new FileSystem(NAME);
-        Cache cache = new DiskBasedCache(new File(context.getCacheDir(), CACHE_PATH), CACHE_SIZE_MB);
+        // Cache cache = new DiskBasedCache(new File(context.getCacheDir(), CACHE_PATH), CACHE_SIZE_MB);
+        Cache cache = new PhotoCache(new File(context.getCacheDir(), CACHE_PATH), 100, Pattern.compile("^.*(jpg|mp4)$"));
         Network network = new BasicNetwork(new HurlStack());
         this.requestQueue = new RequestQueue(cache, network);
         this.requestQueue.start();
@@ -268,7 +270,7 @@ public final class Controller {
                             return;
                         }
 
-                        Log.i("ZigZag/Here", ((DiskBasedCache) requestQueue.getCache()).getFileForKey(resUrl).getAbsolutePath());
+                        // Log.i("ZigZag/Here", ((DiskBasedCache) requestQueue.getCache()).getFileForKey(resUrl).getAbsolutePath());
 
                         listener.onResourcesForArtifact(artifact, imageIdx, tileOrFrameIdx, response.getBitmap());
                     }

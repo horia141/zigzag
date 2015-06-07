@@ -17,6 +17,8 @@ import java.io.OutputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class PhotoCache implements Cache {
 
@@ -26,11 +28,14 @@ public class PhotoCache implements Cache {
 
     private final File rootDirectory;
     private final int maxNumberOfElements;
+    private final Pattern allowedKeys;
     private final Map<String, Entry> entries;
 
-    public PhotoCache(File newRootDirectory, int newMaxNumberOfElements) {
+    public PhotoCache(File newRootDirectory, int newMaxNumberOfElements, Pattern newAllowedKeys) {
+        assert newMaxNumberOfElements >= 1;
         rootDirectory = newRootDirectory;
         maxNumberOfElements = newMaxNumberOfElements;
+        allowedKeys = newAllowedKeys;
         entries = new HashMap<>();
 
         if (!rootDirectory.exists()) {
@@ -60,6 +65,11 @@ public class PhotoCache implements Cache {
     }
 
     public void put(String key, Entry entry) {
+        Matcher keyMatcher = allowedKeys.matcher(key);
+        if (!keyMatcher.matches()) {
+            return;
+        }
+
         try {
             writeHeaders(headersFileForKey(key), key, entry);
             writeContent(contentFileForKey(key), entry);
@@ -79,7 +89,7 @@ public class PhotoCache implements Cache {
             previousMaxNumberOfElements = countStream.readInt();
             countStream.close();
         } catch (IOException e) {
-            previousMaxNumberOfElements = maxNumberOfElements;
+            // Do nothing.
         }
 
         if (maxNumberOfElements != previousMaxNumberOfElements) {
@@ -142,14 +152,14 @@ public class PhotoCache implements Cache {
     }
 
     private int bucketForKey(String key) {
-        return key.hashCode() % maxNumberOfElements;
+        return Math.abs(key.hashCode() % maxNumberOfElements);
     }
 
     private File headersFileForKey(String key) {
         return new File(rootDirectory, String.format(HEADERS_FILE_PATH_PATTERN, bucketForKey(key)));
     }
 
-    private File contentFileForKey(String key) {
+    public File contentFileForKey(String key) {
         return new File(rootDirectory, String.format(CONTENT_FILE_PATH_PATTERN, bucketForKey(key)));
     }
 
