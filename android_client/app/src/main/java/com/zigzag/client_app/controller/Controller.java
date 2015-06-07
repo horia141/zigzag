@@ -294,7 +294,8 @@ public final class Controller {
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String localPathToVideo) {
-                                listener.onVideoResourcesForArtifact(artifact, imageIdx, localPathToVideo);
+                                File cacheFile = ((PhotoCache) requestQueue.getCache()).contentFileForKey(resUrl);
+                                listener.onVideoResourcesForArtifact(artifact, imageIdx, cacheFile.getAbsolutePath());
                             }
                         },
                         new Response.ErrorListener() {
