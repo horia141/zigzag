@@ -1,5 +1,6 @@
 package com.zigzag.client_app.controller;
 
+import android.util.Log;
 import android.util.Pair;
 
 import com.android.volley.Cache;
@@ -30,6 +31,7 @@ public class PhotoCache implements Cache {
     private final int maxNumberOfElements;
     private final Pattern allowedKeys;
     private int currentIndex;
+    private final Map<Integer, String> reverseAllocatedIdxs;
     private final Map<String, Integer> allocatedIdxs;
     private final Map<String, Entry> entries;
 
@@ -39,6 +41,7 @@ public class PhotoCache implements Cache {
         maxNumberOfElements = newMaxNumberOfElements;
         allowedKeys = newAllowedKeys;
         currentIndex = 0;
+        reverseAllocatedIdxs = new HashMap<>();
         allocatedIdxs = new HashMap<>();
         entries = new HashMap<>();
 
@@ -75,8 +78,20 @@ public class PhotoCache implements Cache {
         }
 
         synchronized (this) {
+            // First, remove any existing key.
+            String previousKey = reverseAllocatedIdxs.get(currentIndex);
+            if (previousKey != null) {
+                reverseAllocatedIdxs.remove(currentIndex);
+                allocatedIdxs.remove(previousKey);
+                entries.remove(previousKey);
+            }
+
+            // Then, update the index with it.
+            reverseAllocatedIdxs.put(currentIndex, key);
             allocatedIdxs.put(key, currentIndex);
             entries.put(key, entry);
+
+            // Modul update the counter.
             currentIndex = (currentIndex + 1) % maxNumberOfElements;
         }
 
@@ -103,8 +118,7 @@ public class PhotoCache implements Cache {
             // Do nothing.
         }
 
-        removeAllFiles();
-        if (maxNumberOfElements != previousMaxNumberOfElements) {
+        if (maxNumberOfElements != previousMaxNumberOfElements || currentIndex >= maxNumberOfElements) {
             removeAllFiles();
         }
 
@@ -120,6 +134,7 @@ public class PhotoCache implements Cache {
                 }
 
                 Pair<String, Entry> headersInfo = readHeaders(headersFile);
+                reverseAllocatedIdxs.put(ii, headersInfo.first);
                 allocatedIdxs.put(headersInfo.first, ii);
                 entries.put(headersInfo.first, headersInfo.second);
             }
@@ -154,13 +169,27 @@ public class PhotoCache implements Cache {
         headersFile.delete();
         File contentFile = contentFileForKey(key);
         contentFile.delete();
-        allocatedIdxs.remove(key);
-        entries.remove(key);
+        synchronized (this) {
+            int allocatedIdx = allocatedIdxs.get(key);
+            reverseAllocatedIdxs.remove(allocatedIdx);
+            allocatedIdxs.remove(key);
+            entries.remove(key);
+        }
     }
 
     public void clear() {
+        synchronized (this) {
+            reverseAllocatedIdxs.clear();
+            allocatedIdxs.clear();
+            entries.clear();
+            currentIndex = 0;
+        }
         removeAllFiles();
-        entries.clear();
+        try {
+            updateCountStatus();
+        } catch (IOException e) {
+            // Do nothing.
+        }
     }
 
     private void updateCountStatus() throws IOException {

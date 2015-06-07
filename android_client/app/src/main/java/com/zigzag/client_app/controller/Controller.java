@@ -116,7 +116,7 @@ public final class Controller {
 
     private static final String NAME = "ZizZag";
     private static final String CACHE_PATH = "volley-cache";
-    private static final int CACHE_SIZE = 100;
+    private static final int CACHE_SIZE = 20;
     private static final Pattern CACHEABLE_FILES = Pattern.compile(definesConstants.CACHEABLE_FILES_PATTERN);
     private static final String REQUESTS_TAG = NAME;
     private static final String API_NEXTGEN_URL_PATTERN = "http://horia141.com:9000/api/v1/nextgen?from=%s&output=thrift";
