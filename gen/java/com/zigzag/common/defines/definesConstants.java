@@ -40,6 +40,12 @@ public class definesConstants {
 
   public static final int MAX_ARTIFACTS_PER_GENERATION = 32;
 
+  public static final String CACHEABLE_FILES_PATTERN = "^.*(jpg|mp4)";
+
+  public static final String STANDARD_IMAGE_MIMETYPE = "image/jpeg";
+
+  public static final String STANDARD_VIDEO_MIMETYPE = "video/mp4";
+
   public static final Set<String> WEBPAGE_MIMETYPES = new HashSet<String>();
   static {
     WEBPAGE_MIMETYPES.add("application/xhtml+xml");

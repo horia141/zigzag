@@ -11,6 +11,9 @@ from ttypes import *
 
 TIME_FORMAT = "%B %d, %Y %I:%M:%S %p %Z"
 MAX_ARTIFACTS_PER_GENERATION = 32
+CACHEABLE_FILES_PATTERN = "^.*(jpg|mp4)"
+STANDARD_IMAGE_MIMETYPE = "image/jpeg"
+STANDARD_VIDEO_MIMETYPE = "video/mp4"
 WEBPAGE_MIMETYPES = set([
   "application/xhtml+xml",
   "text/html",

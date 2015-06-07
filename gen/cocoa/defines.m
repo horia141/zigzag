@@ -21,6 +21,9 @@
 
 static NSString * common.definesTIME_FORMAT = @"%B %d, %Y %I:%M:%S %p %Z";
 static int32_t common.definesMAX_ARTIFACTS_PER_GENERATION = 32;
+static NSString * common.definesCACHEABLE_FILES_PATTERN = @"^.*(jpg|mp4)";
+static NSString * common.definesSTANDARD_IMAGE_MIMETYPE = @"image/jpeg";
+static NSString * common.definesSTANDARD_VIDEO_MIMETYPE = @"video/mp4";
 static NSMutableSet * common.definesWEBPAGE_MIMETYPES;
 static NSMutableSet * common.definesPHOTO_MIMETYPES;
 static NSMutableDictionary * common.definesPHOTO_MIMETYPES_TO_EXTENSION;
@@ -123,6 +126,15 @@ static int64_t common.definesMAXIMUM_FETCHED_PHOTO_SIZE_IN_BYTES = 5242880;
 }
 + (int32_t) MAX_ARTIFACTS_PER_GENERATION{
   return common.definesMAX_ARTIFACTS_PER_GENERATION;
+}
++ (NSString *) CACHEABLE_FILES_PATTERN{
+  return common.definesCACHEABLE_FILES_PATTERN;
+}
++ (NSString *) STANDARD_IMAGE_MIMETYPE{
+  return common.definesSTANDARD_IMAGE_MIMETYPE;
+}
++ (NSString *) STANDARD_VIDEO_MIMETYPE{
+  return common.definesSTANDARD_VIDEO_MIMETYPE;
 }
 + (NSMutableSet *) WEBPAGE_MIMETYPES{
   return common.definesWEBPAGE_MIMETYPES;

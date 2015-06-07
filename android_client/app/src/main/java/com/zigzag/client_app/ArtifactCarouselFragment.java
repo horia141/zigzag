@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.zigzag.client_app.controller.Controller;
 import com.zigzag.common.model.Artifact;
@@ -95,25 +96,16 @@ public class ArtifactCarouselFragment extends MediaCarouselFragment
     }
 
     private void shareArtifact(int artifactIdx) {
-        // File crom = Controller.getInstance(getActivity()).getCacheFileForPhotoDescription(artifacts.get(artifactIdx).getPhoto_descriptions().get(0));
-        File crom = new File("/data/data/com.zigzag.client_app/cache/volley-cache/864467229-1431939313");
-        Uri som = FileProvider.getUriForFile(getActivity(), "com.zigzag.client_app.fileprovider", crom);
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.putExtra(Intent.EXTRA_STREAM, som);
-        intent.setType("image/jpeg");
-        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        startActivity(Intent.createChooser(intent, getString(R.string.activity_media_carousel_action_share_title)));
+        Intent sharingIntent = Controller.getInstance(getActivity())
+                .getSharingIntentForArtifact(getActivity(), artifacts.get(artifactIdx));
 
+        if (sharingIntent == null) {
+            Toast.makeText(getActivity(), getString(R.string.cannot_share_artifact), Toast.LENGTH_LONG)
+                    .show();
+            return;
+        }
 
-//        Artifact artifact = artifacts.get(artifactIdx);
-//        String subject = getString(R.string.share_title, artifact.getTitle(),
-//                getString(R.string.app_name));
-//        String text = getString(R.string.share_body, artifact.getPage_uri());
-//        Intent i = new Intent(Intent.ACTION_SEND);
-//        i.setType("text/plain");
-//        i.putExtra(Intent.EXTRA_SUBJECT, subject);
-//        i.putExtra(Intent.EXTRA_TEXT, text);
-//        startActivity(Intent.createChooser(i, getString(R.string.activity_media_carousel_action_share_title)));
+        startActivity(Intent.createChooser(sharingIntent, getString(R.string.activity_media_carousel_action_share_title)));
     }
 
     private void openArtifactInBrowser(int artifactIdx) {

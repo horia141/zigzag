@@ -1,10 +1,11 @@
 package com.zigzag.client_app.controller;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Environment;
 import android.support.annotation.Nullable;
+import android.support.v4.content.FileProvider;
 import android.support.v4.util.LruCache;
 import android.util.Log;
 
@@ -16,12 +17,12 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.BasicNetwork;
-import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.Volley;
+import com.zigzag.client_app.R;
 import com.zigzag.common.api.NextGenResponse;
+import com.zigzag.common.defines.definesConstants;
 import com.zigzag.common.model.Artifact;
 import com.zigzag.common.model.ArtifactSource;
 import com.zigzag.common.model.Generation;
@@ -45,12 +46,12 @@ import java.util.regex.Pattern;
 
 public final class Controller {
 
-    public static interface AllArtifactsListener {
+    public interface AllArtifactsListener {
         void onNewArtifacts(List<Artifact> newArtifacts);
         void onError(String errorDescription);
     }
 
-    public static interface ArtifactResourcesListener {
+    public interface ArtifactResourcesListener {
         void onResourcesForArtifact(Artifact artifact, int photoDescriptionIdx, int tileOrFrameIdx, Bitmap image);
         void onVideoResourcesForArtifact(Artifact artifact, int photoDescriptionIdx, String localPathToVideo);
         void onError(String errorDescription);
@@ -133,11 +134,13 @@ public final class Controller {
 
     private static final String NAME = "ZizZag";
     private static final String CACHE_PATH = "volley-cache";
-    private static final int CACHE_SIZE_MB = 10 * 1024 * 1024;
+    private static final int CACHE_SIZE = 100;
+    private static final Pattern CACHEABLE_FILES = Pattern.compile(definesConstants.CACHEABLE_FILES_PATTERN);
     private static final String REQUESTS_TAG = NAME;
     private static final String API_NEXTGEN_URL_PATTERN = "http://horia141.com:9000/api/v1/nextgen?from=%s&output=thrift";
     private static final String API_RES_URL_PATTERN = "http://horia141.com:9001/%s";
     private static final int IMAGE_CACHE_SIZE = 20;
+    private static final String FILEPROVIDER_AUTHORITY = "com.zigzag.client_app.fileprovider";
 
     private final FileSystem fileSystem;
     private final RequestQueue requestQueue;
@@ -151,8 +154,7 @@ public final class Controller {
 
     private Controller(Context context) {
         this.fileSystem = new FileSystem(NAME);
-        // Cache cache = new DiskBasedCache(new File(context.getCacheDir(), CACHE_PATH), CACHE_SIZE_MB);
-        Cache cache = new PhotoCache(new File(context.getCacheDir(), CACHE_PATH), 100, Pattern.compile("^.*(jpg|mp4)$"));
+        Cache cache = new PhotoCache(new File(context.getCacheDir(), CACHE_PATH), CACHE_SIZE, CACHEABLE_FILES);
         Network network = new BasicNetwork(new HurlStack());
         this.requestQueue = new RequestQueue(cache, network);
         this.requestQueue.start();
@@ -253,7 +255,7 @@ public final class Controller {
 
             for (int jj = 0; jj < uriPathsToFetch.size(); jj++) {
                 final int tileOrFrameIdx = jj;
-                final String resUrl = translateImagePath(uriPathsToFetch.get(jj));
+                final String resUrl = translatePhotoPath(uriPathsToFetch.get(jj));
 
                 imageLoader.get(resUrl, new ImageLoader.ImageListener() {
                     @Override
@@ -269,8 +271,6 @@ public final class Controller {
                         if (response.getBitmap() == null) {
                             return;
                         }
-
-                        // Log.i("ZigZag/Here", ((DiskBasedCache) requestQueue.getCache()).getFileForKey(resUrl).getAbsolutePath());
 
                         listener.onResourcesForArtifact(artifact, imageIdx, tileOrFrameIdx, response.getBitmap());
                     }
@@ -289,7 +289,7 @@ public final class Controller {
             }
 
             if (photoData.isSetVideo_photo_data()) {
-                final String resUrl = translateVideoPath(photoData.getVideo_photo_data().getVideo().getUri_path());
+                final String resUrl = translatePhotoPath(photoData.getVideo_photo_data().getVideo().getUri_path());
                 final VideoRequest request = new VideoRequest(resUrl, photoDescription, fileSystem,
                         new Response.Listener<String>() {
                             @Override
@@ -364,24 +364,43 @@ public final class Controller {
         throw new RuntimeException("Cannot find artifact! This should not happen");
     }
 
-    public File getCacheFileForPhotoDescription(PhotoDescription photoDescription) {
-        String desiredPath = null;
-        if (photoDescription.getPhoto_data().isSetToo_big_photo_data()) {
+    public Intent getSharingIntentForArtifact(Context context, Artifact artifact) {
+        PhotoDescription firstPhotoDescription = artifact.getPhoto_descriptions().get(0);
+        String uriPath;
+        String contentType;
+        if (firstPhotoDescription.getPhoto_data().isSetToo_big_photo_data()) {
             throw new IllegalArgumentException("Cannot get path for too big images");
-        } else if (photoDescription.getPhoto_data().isSetImage_photo_data()) {
-            desiredPath = photoDescription.getPhoto_data().getImage_photo_data().getTiles().get(0).getUri_path();
+        } else if (firstPhotoDescription.getPhoto_data().isSetImage_photo_data()) {
+            contentType = definesConstants.STANDARD_IMAGE_MIMETYPE;
+            uriPath = firstPhotoDescription.getPhoto_data().getImage_photo_data().getTiles().get(0).getUri_path();
         } else {
-            desiredPath = photoDescription.getPhoto_data().getVideo_photo_data().getFirst_frame().getUri_path();
+            contentType = definesConstants.STANDARD_VIDEO_MIMETYPE;
+            uriPath = firstPhotoDescription.getPhoto_data().getVideo_photo_data().getVideo().getUri_path();
         }
-        return ((DiskBasedCache) requestQueue.getCache()).getFileForKey(desiredPath);
+        String uri = translatePhotoPath(uriPath);
+
+        File cacheFile = ((PhotoCache) requestQueue.getCache()).contentFileForKey(uri);
+        if (!cacheFile.exists()) {
+            return null;
+        }
+
+        String subject = context.getString(R.string.share_title, artifact.getTitle(),
+                context.getString(R.string.app_name));
+        String text = context.getString(R.string.share_body, artifact.getPage_uri());
+
+        Uri contentUri = FileProvider.getUriForFile(context, FILEPROVIDER_AUTHORITY, cacheFile);
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        intent.putExtra(Intent.EXTRA_TEXT, text);
+        intent.putExtra(Intent.EXTRA_STREAM, contentUri);
+        intent.setType(contentType);
+        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        return intent;
     }
 
-    private static String translateImagePath(String urlPath) {
-        return String.format(API_RES_URL_PATTERN, urlPath);
-    }
-
-    private static String translateVideoPath(String urlPath) {
-        return String.format(API_RES_URL_PATTERN, urlPath);
+    private static String translatePhotoPath(String photoUrlPath) {
+        return String.format(API_RES_URL_PATTERN, photoUrlPath);
     }
 
     private static List<String> getUriPathsToFetch(PhotoData photoData) {
