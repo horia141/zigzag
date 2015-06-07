@@ -96,13 +96,11 @@ public final class Controller {
     private static class VideoRequest extends Request<String> {
 
         private final Response.Listener<String> listener;
-        private final PhotoDescription photoDescription;
 
-        public VideoRequest(String url, PhotoDescription photoDescription,
-                            Response.Listener<String> listener, Response.ErrorListener errorListener) {
+        public VideoRequest(String url, Response.Listener<String> listener,
+                Response.ErrorListener errorListener) {
             super(Method.GET, url, errorListener);
             this.listener = listener;
-            this.photoDescription = photoDescription;
         }
 
         @Override
@@ -156,13 +154,7 @@ public final class Controller {
     public void fetchArtifacts(final AllArtifactsListener listener) {
         allArtifactsListener = listener;
 
-        String apiNextGenUrl;
-        if (generations.size() == 0) {
-            apiNextGenUrl = String.format(API_NEXTGEN_URL_PATTERN, "latest");
-        } else {
-            final Generation latestGeneration = generations.get(generations.size()-1);
-            apiNextGenUrl = String.format(API_NEXTGEN_URL_PATTERN, latestGeneration.getId());
-        }
+        String apiNextGenUrl = translateNextGenPath(generations);
 
         ThriftRequest request = new ThriftRequest(apiNextGenUrl,
             new Response.Listener<ByteBuffer>() {
@@ -272,10 +264,16 @@ public final class Controller {
 
             if (photoData.isSetVideo_photo_data()) {
                 final String resUrl = translatePhotoPath(photoData.getVideo_photo_data().getVideo().getUri_path());
-                final VideoRequest request = new VideoRequest(resUrl, photoDescription,
+                final VideoRequest request = new VideoRequest(resUrl,
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String localPathToVideo) {
+                                // Either {@link stopEverything} has been called, or the listener has changed. In either
+                                // case there's no point in continuing.
+                                if (resourcesListeners.get(artifact.getPage_uri()) == null || resourcesListeners.get(artifact.getPage_uri()) != listener) {
+                                    return;
+                                }
+
                                 File cacheFile = ((PhotoCache) requestQueue.getCache()).contentFileForKey(resUrl);
                                 listener.onVideoResourcesForArtifact(artifact, imageIdx, cacheFile.getAbsolutePath());
                             }
@@ -283,6 +281,12 @@ public final class Controller {
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
+                                // Either {@link stopEverything} has been called, or the listener has changed. In either
+                                // case there's no point in continuing.
+                                if (resourcesListeners.get(artifact.getPage_uri()) == null || resourcesListeners.get(artifact.getPage_uri()) != listener) {
+                                    return;
+                                }
+
                                 listener.onError(error.getMessage());
                             }
                         });
@@ -339,15 +343,12 @@ public final class Controller {
     public Intent getSharingIntentForArtifact(Context context, Artifact artifact) {
         PhotoDescription firstPhotoDescription = artifact.getPhoto_descriptions().get(0);
         String uriPath;
-        String contentType;
         if (firstPhotoDescription.getPhoto_data().isSetToo_big_photo_data()) {
             throw new IllegalArgumentException("Cannot get path for too big images");
         } else if (firstPhotoDescription.getPhoto_data().isSetImage_photo_data()) {
-            contentType = definesConstants.STANDARD_IMAGE_MIMETYPE;
             uriPath = firstPhotoDescription.getPhoto_data().getImage_photo_data().getTiles().get(0).getUri_path();
         } else {
-            contentType = definesConstants.STANDARD_VIDEO_MIMETYPE;
-            uriPath = firstPhotoDescription.getPhoto_data().getVideo_photo_data().getVideo().getUri_path();
+            uriPath = firstPhotoDescription.getPhoto_data().getVideo_photo_data().getFirst_frame().getUri_path();
         }
         String uri = translatePhotoPath(uriPath);
 
@@ -358,17 +359,27 @@ public final class Controller {
 
         String subject = context.getString(R.string.share_title, artifact.getTitle(),
                 context.getString(R.string.app_name));
-        String text = context.getString(R.string.share_body, artifact.getPage_uri());
+        String text = context.getString(R.string.share_body, artifact.getTitle(),
+                context.getString(R.string.app_name), artifact.getPage_uri());
 
         Uri contentUri = FileProvider.getUriForFile(context, FILEPROVIDER_AUTHORITY, cacheFile);
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
         intent.putExtra(Intent.EXTRA_TEXT, text);
         intent.putExtra(Intent.EXTRA_STREAM, contentUri);
-        intent.setType(contentType);
+        intent.setType(definesConstants.STANDARD_IMAGE_MIMETYPE);
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
         return intent;
+    }
+
+    private static String translateNextGenPath(List<Generation> generations) {
+        if (generations.size() == 0) {
+            return String.format(API_NEXTGEN_URL_PATTERN, "latest");
+        } else {
+            final Generation latestGeneration = generations.get(generations.size()-1);
+            return String.format(API_NEXTGEN_URL_PATTERN, latestGeneration.getId());
+        }
     }
 
     private static String translatePhotoPath(String photoUrlPath) {

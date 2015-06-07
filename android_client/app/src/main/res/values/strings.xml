@@ -16,7 +16,7 @@
     <string name="fragment_media_carousel_one_image_description">Description</string>
 
     <string name="share_title">\"%1$s\" via %2$s</string>
-    <string name="share_body">%1$s</string>
+    <string name="share_body">\"%1$s\" via %2$s from %3$s</string>
     <string name="cannot_share_artifact">Cannot share</string>
 
     <string name="drawer_action_open">Opening drawer menu</string>
