@@ -29,6 +29,8 @@ public class PhotoCache implements Cache {
     private final File rootDirectory;
     private final int maxNumberOfElements;
     private final Pattern allowedKeys;
+    private int currentIndex;
+    private final Map<String, Integer> allocatedIdxs;
     private final Map<String, Entry> entries;
 
     public PhotoCache(File newRootDirectory, int newMaxNumberOfElements, Pattern newAllowedKeys) {
@@ -36,6 +38,8 @@ public class PhotoCache implements Cache {
         rootDirectory = newRootDirectory;
         maxNumberOfElements = newMaxNumberOfElements;
         allowedKeys = newAllowedKeys;
+        currentIndex = 0;
+        allocatedIdxs = new HashMap<>();
         entries = new HashMap<>();
 
         if (!rootDirectory.exists()) {
@@ -70,36 +74,42 @@ public class PhotoCache implements Cache {
             return;
         }
 
+        synchronized (this) {
+            allocatedIdxs.put(key, currentIndex);
+            entries.put(key, entry);
+            currentIndex = (currentIndex + 1) % maxNumberOfElements;
+        }
+
         try {
+            updateCountStatus();
             writeHeaders(headersFileForKey(key), key, entry);
             writeContent(contentFileForKey(key), entry);
         } catch (IOException e) {
             throw new RuntimeException("Could not write cache entry");
         }
-
-        entries.put(key, entry);
     }
 
     public void initialize() {
-        File countFile = new File(rootDirectory, COUNT_FILE_PATH);
         int previousMaxNumberOfElements = -1;
+        currentIndex = 0;
 
         try {
+            File countFile = new File(rootDirectory, COUNT_FILE_PATH);
             DataInputStream countStream = new DataInputStream(new FileInputStream(countFile));
             previousMaxNumberOfElements = countStream.readInt();
+            currentIndex = countStream.readInt();
             countStream.close();
         } catch (IOException e) {
             // Do nothing.
         }
 
+        removeAllFiles();
         if (maxNumberOfElements != previousMaxNumberOfElements) {
             removeAllFiles();
         }
 
         try {
-            DataOutputStream countStream = new DataOutputStream(new FileOutputStream(countFile));
-            countStream.writeInt(maxNumberOfElements);
-            countStream.close();
+            updateCountStatus();
 
             for (int ii = 0; ii < maxNumberOfElements; ii++) {
                 File headersFile = new File(rootDirectory, String.format(HEADERS_FILE_PATH_PATTERN, ii));
@@ -110,6 +120,7 @@ public class PhotoCache implements Cache {
                 }
 
                 Pair<String, Entry> headersInfo = readHeaders(headersFile);
+                allocatedIdxs.put(headersInfo.first, ii);
                 entries.put(headersInfo.first, headersInfo.second);
             }
         } catch (IOException e) {
@@ -143,6 +154,7 @@ public class PhotoCache implements Cache {
         headersFile.delete();
         File contentFile = contentFileForKey(key);
         contentFile.delete();
+        allocatedIdxs.remove(key);
         entries.remove(key);
     }
 
@@ -151,16 +163,20 @@ public class PhotoCache implements Cache {
         entries.clear();
     }
 
-    private int bucketForKey(String key) {
-        return Math.abs(key.hashCode() % maxNumberOfElements);
+    private void updateCountStatus() throws IOException {
+        File countsFile = new File(rootDirectory, COUNT_FILE_PATH);
+        DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(countsFile)));
+        dos.writeInt(maxNumberOfElements);
+        dos.writeInt(currentIndex);
+        dos.close();
     }
 
     private File headersFileForKey(String key) {
-        return new File(rootDirectory, String.format(HEADERS_FILE_PATH_PATTERN, bucketForKey(key)));
+        return new File(rootDirectory, String.format(HEADERS_FILE_PATH_PATTERN, allocatedIdxs.get(key)));
     }
 
     public File contentFileForKey(String key) {
-        return new File(rootDirectory, String.format(CONTENT_FILE_PATH_PATTERN, bucketForKey(key)));
+        return new File(rootDirectory, String.format(CONTENT_FILE_PATH_PATTERN, allocatedIdxs.get(key)));
     }
 
     private void removeAllFiles() {
