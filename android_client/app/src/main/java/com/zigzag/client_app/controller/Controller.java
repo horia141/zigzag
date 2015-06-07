@@ -97,14 +97,12 @@ public final class Controller {
 
         private final Response.Listener<String> listener;
         private final PhotoDescription photoDescription;
-        private final FileSystem fileSystem;
 
-        public VideoRequest(String url, PhotoDescription photoDescription, FileSystem fileSystem,
+        public VideoRequest(String url, PhotoDescription photoDescription,
                             Response.Listener<String> listener, Response.ErrorListener errorListener) {
             super(Method.GET, url, errorListener);
             this.listener = listener;
             this.photoDescription = photoDescription;
-            this.fileSystem = fileSystem;
         }
 
         @Override
@@ -114,21 +112,7 @@ public final class Controller {
 
         @Override
         protected Response<String> parseNetworkResponse(NetworkResponse response) {
-            String path = Uri.parse(getUrl()).getPath();
-            File video = fileSystem.register(photoDescription, path);
-
-            if (!video.exists()) {
-                try {
-                    OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(video));
-                    outputStream.write(response.data);
-                    outputStream.close();
-                } catch(IOException error){
-                    Log.e("ZigZag/Controller", "Error processing video", error);
-                    return Response.error(new VolleyError("Error saving video", error));
-                }
-            }
-
-            return Response.success(video.getAbsolutePath(), HttpHeaderParser.parseCacheHeaders(response));
+            return Response.success("", HttpHeaderParser.parseCacheHeaders(response));
         }
     }
 
@@ -142,7 +126,6 @@ public final class Controller {
     private static final int IMAGE_CACHE_SIZE = 20;
     private static final String FILEPROVIDER_AUTHORITY = "com.zigzag.client_app.fileprovider";
 
-    private final FileSystem fileSystem;
     private final RequestQueue requestQueue;
     private final ImageLoader imageLoader;
     private final Map<Long, ArtifactSource> artifactSources;
@@ -153,7 +136,6 @@ public final class Controller {
     private Map<String, ArtifactResourcesListener> resourcesListeners;
 
     private Controller(Context context) {
-        this.fileSystem = new FileSystem(NAME);
         Cache cache = new PhotoCache(new File(context.getCacheDir(), CACHE_PATH), CACHE_SIZE, CACHEABLE_FILES);
         Network network = new BasicNetwork(new HurlStack());
         this.requestQueue = new RequestQueue(cache, network);
@@ -290,7 +272,7 @@ public final class Controller {
 
             if (photoData.isSetVideo_photo_data()) {
                 final String resUrl = translatePhotoPath(photoData.getVideo_photo_data().getVideo().getUri_path());
-                final VideoRequest request = new VideoRequest(resUrl, photoDescription, fileSystem,
+                final VideoRequest request = new VideoRequest(resUrl, photoDescription,
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String localPathToVideo) {
@@ -313,17 +295,6 @@ public final class Controller {
 
     public void deregisterArtifactResources(Artifact artifact, ArtifactResourcesListener listener) {
         resourcesListeners.remove(artifact.getPage_uri());
-
-        // We are also going to use the fact that at most one listener for an artifact exists, and
-        // if this is called, that listener is being destroyed. So we can remove the locally saved
-        // videos for the video artifacts.
-        for (PhotoDescription photoDescription : artifact.getPhoto_descriptions()) {
-            if (!photoDescription.getPhoto_data().isSetVideo_photo_data()) {
-                continue;
-            }
-
-            fileSystem.release(photoDescription);
-        }
     }
 
     public void stopEverything() {
