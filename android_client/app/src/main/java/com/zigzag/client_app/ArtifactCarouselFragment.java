@@ -110,10 +110,16 @@ public class ArtifactCarouselFragment extends MediaCarouselFragment
 
     private void openArtifactInBrowser(int artifactIdx) {
         Artifact artifact = artifacts.get(artifactIdx);
-        String url = artifact.getPage_uri();
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse(url));
-        startActivity(intent);
+        Intent openInBrowserIntent = Controller.getInstance(getActivity())
+                .getOpenBrowserIntentForArtifact(getActivity(), artifact);
+
+        if (openInBrowserIntent == null) {
+            Toast.makeText(getActivity(), getString(R.string.cannot_open_in_browser), Toast.LENGTH_LONG)
+                    .show();
+            return;
+        }
+
+        startActivity(openInBrowserIntent);
     }
 
     @Override

@@ -340,6 +340,7 @@ public final class Controller {
         throw new RuntimeException("Cannot find artifact! This should not happen");
     }
 
+    @Nullable
     public Intent getSharingIntentForArtifact(Context context, Artifact artifact) {
         PhotoDescription firstPhotoDescription = artifact.getPhoto_descriptions().get(0);
         String uriPath;
@@ -369,6 +370,25 @@ public final class Controller {
         intent.putExtra(Intent.EXTRA_STREAM, contentUri);
         intent.setType(definesConstants.STANDARD_IMAGE_MIMETYPE);
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        return intent;
+    }
+
+    @Nullable
+    public Intent getOpenBrowserIntentForArtifact(Context context, Artifact artifact) {
+        String url = artifact.getPage_uri();
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+
+        return intent;
+    }
+
+    @Nullable
+    public Intent getOpenBrowserIntentForPhotoDescription(Context context,
+            PhotoDescription photoDescription) {
+        String url = photoDescription.getSource_uri();
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
 
         return intent;
     }

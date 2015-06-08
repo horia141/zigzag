@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.zigzag.client_app.controller.Controller;
 import com.zigzag.client_app.ui.ArtifactView;
@@ -148,6 +149,20 @@ public class ArtifactFragment extends Fragment
         Log.e("ZigZag/MediaCarouselF", String.format("Error %s", errorDescription));
     }
 
+    private void onPhotoDescriptionLongClick(int idx) {
+        PhotoDescription photoDescription = artifact.getPhoto_descriptions().get(idx);
+        Intent openInBrowserIntent = Controller.getInstance(getActivity())
+                .getOpenBrowserIntentForPhotoDescription(getActivity(), photoDescription);
+
+        if (openInBrowserIntent == null) {
+            Toast.makeText(getActivity(), getString(R.string.cannot_open_in_browser), Toast.LENGTH_LONG)
+                    .show();
+            return;
+        }
+
+        startActivity(openInBrowserIntent);
+    }
+
     public static ArtifactFragment newInstance(Artifact artifact) {
         ArtifactFragment fragment = new ArtifactFragment();
         Bundle args = new Bundle();
@@ -155,12 +170,5 @@ public class ArtifactFragment extends Fragment
         fragment.setArguments(args);
 
         return fragment;
-    }
-
-    private void onPhotoDescriptionLongClick(int photoDescriptionIdx) {
-        String url = artifact.getPhoto_descriptions().get(photoDescriptionIdx).getSource_uri();
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse(url));
-        startActivity(intent);
     }
 }
