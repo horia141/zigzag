@@ -141,7 +141,7 @@ public class ArtifactCarouselFragment extends MediaCarouselFragment
         @Override
         public Fragment getItem(int artifactIdx) {
             Artifact artifact = artifacts.get(artifactIdx);
-            return ArtifactFragment.newInstance(artifact);
+            return ArtifactFragment.newInstance(artifact, artifactIdx);
         }
 
         @Override

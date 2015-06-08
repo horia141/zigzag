@@ -26,6 +26,9 @@ import java.util.Date;
 public class ArtifactFragment extends Fragment
         implements Controller.ArtifactResourcesListener {
 
+    private static final String ARTIFACT_LOCAL_ID = "artifact_local_id";
+    private static final String ARTIFACT_PAGE_URI = "artifact_page_uri";
+
     @Nullable private Artifact artifact;
 
     public ArtifactFragment() {
@@ -38,15 +41,17 @@ public class ArtifactFragment extends Fragment
         // Next section assumes that (1) args contains "artifact_id", which is a String representing
         // an artifact URI, and (2) that said URI exists in the system.
         Bundle args = getArguments();
-        String artifactPageUri = args.getString("artifact_id");
+        int artifactLocalId = args.getInt(ARTIFACT_LOCAL_ID);
+        String artifactPageUri = args.getString(ARTIFACT_PAGE_URI);
         artifact = Controller.getInstance(getActivity()).getArtifactByPageUri(artifactPageUri);
         ArtifactSource artifactSource = Controller.getInstance(getActivity())
                 .getSourceForArtifact(artifact);
         Date dateAdded = Controller.getInstance(getActivity()).getDateForArtifact(artifact);
 
+        boolean firstArtifact = artifactLocalId == 0;
         final ArtifactView rootView = (ArtifactView) inflater.inflate(
                 R.layout.fragment_artifact, container, false);
-        rootView.setArtifact(artifact, artifactSource, dateAdded);
+        rootView.setArtifact(artifact, artifactSource, dateAdded, firstArtifact);
         rootView.setOnLongClickListener(new ArtifactView.OnLongClickListener() {
             @Override
             public void onLongClick(int photoDescriptionIdx) {
@@ -163,10 +168,11 @@ public class ArtifactFragment extends Fragment
         startActivity(openInBrowserIntent);
     }
 
-    public static ArtifactFragment newInstance(Artifact artifact) {
+    public static ArtifactFragment newInstance(Artifact artifact, int artifactLocalId) {
         ArtifactFragment fragment = new ArtifactFragment();
         Bundle args = new Bundle();
-        args.putString("artifact_id", artifact.getPage_uri());
+        args.putInt(ARTIFACT_LOCAL_ID, artifactLocalId);
+        args.putString(ARTIFACT_PAGE_URI, artifact.getPage_uri());
         fragment.setArguments(args);
 
         return fragment;

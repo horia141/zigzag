@@ -69,7 +69,8 @@ public class ArtifactView extends ScrollView {
         photoDescriptionViews = new ArrayList<>();
     }
 
-    public void setArtifact(Artifact newArtifact, ArtifactSource newArtifactSource, Date newDateAdded) {
+    public void setArtifact(Artifact newArtifact, ArtifactSource newArtifactSource,
+            Date newDateAdded, boolean firstArtifact) {
         if (state != State.CREATED) {
             throw new IllegalStateException("Not in artifact setting state");
         }
@@ -101,6 +102,10 @@ public class ArtifactView extends ScrollView {
             // VideoPhotoViews need some extra care. They should only start playing when we scroll
             // to them. The ArtifactView controls when this happens.
             if (photoDescription.getPhoto_data().isSetVideo_photo_data()) {
+                if (firstArtifact) {
+                    photoDescriptionView.enableVideo();
+                }
+
                 photoDescriptionView.getViewTreeObserver().addOnScrollChangedListener(
                         new ViewTreeObserver.OnScrollChangedListener() {
                     @Override
