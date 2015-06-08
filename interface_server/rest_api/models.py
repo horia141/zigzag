@@ -91,6 +91,7 @@ def serialize_response_as_json(next_gen_response):
 
         artifact_source_json['id'] = artifact_source.id
         artifact_source_json['name'] = artifact_source.name
+        artifact_source_json['artifact_title_name'] = artifact_source.artifact_title_name
         artifact_source_json['start_page_uri'] = artifact_source.start_page_uri
         if artifact_source.subdomains is not None:
             artifact_source_json['subdomains'] = list(artifact_source.subdomains)

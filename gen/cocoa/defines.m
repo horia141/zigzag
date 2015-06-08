@@ -21,6 +21,9 @@
 
 static NSString * common.definesTIME_FORMAT = @"%B %d, %Y %I:%M:%S %p %Z";
 static int32_t common.definesMAX_ARTIFACTS_PER_GENERATION = 32;
+static NSString * common.definesCACHEABLE_FILES_PATTERN = @"^.*(jpg|mp4)";
+static NSString * common.definesSTANDARD_IMAGE_MIMETYPE = @"image/jpeg";
+static NSString * common.definesSTANDARD_VIDEO_MIMETYPE = @"video/mp4";
 static NSMutableSet * common.definesWEBPAGE_MIMETYPES;
 static NSMutableSet * common.definesPHOTO_MIMETYPES;
 static NSMutableDictionary * common.definesPHOTO_MIMETYPES_TO_EXTENSION;
@@ -62,6 +65,7 @@ static int64_t common.definesMAXIMUM_FETCHED_PHOTO_SIZE_IN_BYTES = 5242880;
   common.modelArtifactSource * tmp0 = [[[common.modelArtifactSource alloc] init] autorelease_stub];
   [tmp0 setId:1];
   [tmp0 setName:@"Reddit"];
+  [tmp0 setArtifact_title_name:@"reddit.com"];
   [tmp0 setStart_page_uri:@"http://reddit.com/r/%s"];
   NSMutableSet *tmp1 = [[[NSMutableSet alloc] initWithCapacity:16] autorelease_stub];
   [tmp1 addObject:@"pics"];
@@ -87,12 +91,14 @@ static int64_t common.definesMAXIMUM_FETCHED_PHOTO_SIZE_IN_BYTES = 5242880;
   common.modelArtifactSource * tmp2 = [[[common.modelArtifactSource alloc] init] autorelease_stub];
   [tmp2 setId:2];
   [tmp2 setName:@"Imgur"];
+  [tmp2 setArtifact_title_name:@"imgur"];
   [tmp2 setStart_page_uri:@"http://imgur.com"];
 
   [common.definesARTIFACT_SOURCES setObject:tmp2 forKey:[NSNumber numberWithLongLong: 2]];
   common.modelArtifactSource * tmp3 = [[[common.modelArtifactSource alloc] init] autorelease_stub];
   [tmp3 setId:3];
   [tmp3 setName:@"9GAG"];
+  [tmp3 setArtifact_title_name:@"9gag"];
   [tmp3 setStart_page_uri:@"http://9gag.com/%s"];
   NSMutableSet *tmp4 = [[[NSMutableSet alloc] initWithCapacity:3] autorelease_stub];
   [tmp4 addObject:@"hot"];
@@ -120,6 +126,15 @@ static int64_t common.definesMAXIMUM_FETCHED_PHOTO_SIZE_IN_BYTES = 5242880;
 }
 + (int32_t) MAX_ARTIFACTS_PER_GENERATION{
   return common.definesMAX_ARTIFACTS_PER_GENERATION;
+}
++ (NSString *) CACHEABLE_FILES_PATTERN{
+  return common.definesCACHEABLE_FILES_PATTERN;
+}
++ (NSString *) STANDARD_IMAGE_MIMETYPE{
+  return common.definesSTANDARD_IMAGE_MIMETYPE;
+}
++ (NSString *) STANDARD_VIDEO_MIMETYPE{
+  return common.definesSTANDARD_VIDEO_MIMETYPE;
 }
 + (NSMutableSet *) WEBPAGE_MIMETYPES{
   return common.definesWEBPAGE_MIMETYPES;

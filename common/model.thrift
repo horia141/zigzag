@@ -46,12 +46,13 @@ struct PhotoDescription {
   5: required PhotoData photo_data;
 }
 
-// Next id: 5
+// Next id: 6
 struct ArtifactSource {
   1: required EntityId id;
   2: required string name;
-  3: required string start_page_uri;
-  4: optional set<string> subdomains;
+  3: required string artifact_title_name;
+  4: required string start_page_uri;
+  5: optional set<string> subdomains;
 }
 
 // Next id: 3

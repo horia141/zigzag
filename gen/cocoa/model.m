@@ -1301,13 +1301,15 @@
   return self;
 }
 
-- (id) initWithId: (common.modelEntityId) id name: (NSString *) name start_page_uri: (NSString *) start_page_uri subdomains: (NSMutableSet *) subdomains
+- (id) initWithId: (common.modelEntityId) id name: (NSString *) name artifact_title_name: (NSString *) artifact_title_name start_page_uri: (NSString *) start_page_uri subdomains: (NSMutableSet *) subdomains
 {
   self = [super init];
   __id = id;
   __id_isset = YES;
   __name = [name retain_stub];
   __name_isset = YES;
+  __artifact_title_name = [artifact_title_name retain_stub];
+  __artifact_title_name_isset = YES;
   __start_page_uri = [start_page_uri retain_stub];
   __start_page_uri_isset = YES;
   __subdomains = [subdomains retain_stub];
@@ -1327,6 +1329,11 @@
   {
     __name = [[decoder decodeObjectForKey: @"name"] retain_stub];
     __name_isset = YES;
+  }
+  if ([decoder containsValueForKey: @"artifact_title_name"])
+  {
+    __artifact_title_name = [[decoder decodeObjectForKey: @"artifact_title_name"] retain_stub];
+    __artifact_title_name_isset = YES;
   }
   if ([decoder containsValueForKey: @"start_page_uri"])
   {
@@ -1351,6 +1358,10 @@
   {
     [encoder encodeObject: __name forKey: @"name"];
   }
+  if (__artifact_title_name_isset)
+  {
+    [encoder encodeObject: __artifact_title_name forKey: @"artifact_title_name"];
+  }
   if (__start_page_uri_isset)
   {
     [encoder encodeObject: __start_page_uri forKey: @"start_page_uri"];
@@ -1364,6 +1375,7 @@
 - (void) dealloc
 {
   [__name release_stub];
+  [__artifact_title_name release_stub];
   [__start_page_uri release_stub];
   [__subdomains release_stub];
   [super dealloc_stub];
@@ -1405,6 +1417,27 @@
   [__name release_stub];
   __name = nil;
   __name_isset = NO;
+}
+
+- (NSString *) artifact_title_name {
+  return [[__artifact_title_name retain_stub] autorelease_stub];
+}
+
+- (void) setArtifact_title_name: (NSString *) artifact_title_name {
+  [artifact_title_name retain_stub];
+  [__artifact_title_name release_stub];
+  __artifact_title_name = artifact_title_name;
+  __artifact_title_name_isset = YES;
+}
+
+- (BOOL) artifact_title_nameIsSet {
+  return __artifact_title_name_isset;
+}
+
+- (void) unsetArtifact_title_name {
+  [__artifact_title_name release_stub];
+  __artifact_title_name = nil;
+  __artifact_title_name_isset = NO;
 }
 
 - (NSString *) start_page_uri {
@@ -1483,12 +1516,20 @@
       case 3:
         if (fieldType == TType_STRING) {
           NSString * fieldValue = [inProtocol readString];
-          [self setStart_page_uri: fieldValue];
+          [self setArtifact_title_name: fieldValue];
         } else { 
           [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
         }
         break;
       case 4:
+        if (fieldType == TType_STRING) {
+          NSString * fieldValue = [inProtocol readString];
+          [self setStart_page_uri: fieldValue];
+        } else { 
+          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
+        }
+        break;
+      case 5:
         if (fieldType == TType_SET) {
           int _size5;
           [inProtocol readSetBeginReturningElementType: NULL size: &_size5];
@@ -1529,16 +1570,23 @@
       [outProtocol writeFieldEnd];
     }
   }
+  if (__artifact_title_name_isset) {
+    if (__artifact_title_name != nil) {
+      [outProtocol writeFieldBeginWithName: @"artifact_title_name" type: TType_STRING fieldID: 3];
+      [outProtocol writeString: __artifact_title_name];
+      [outProtocol writeFieldEnd];
+    }
+  }
   if (__start_page_uri_isset) {
     if (__start_page_uri != nil) {
-      [outProtocol writeFieldBeginWithName: @"start_page_uri" type: TType_STRING fieldID: 3];
+      [outProtocol writeFieldBeginWithName: @"start_page_uri" type: TType_STRING fieldID: 4];
       [outProtocol writeString: __start_page_uri];
       [outProtocol writeFieldEnd];
     }
   }
   if (__subdomains_isset) {
     if (__subdomains != nil) {
-      [outProtocol writeFieldBeginWithName: @"subdomains" type: TType_SET fieldID: 4];
+      [outProtocol writeFieldBeginWithName: @"subdomains" type: TType_SET fieldID: 5];
       {
         [outProtocol writeSetBeginWithElementType: TType_STRING size: [__subdomains count]];
         NSEnumerator * _iter8 = [__subdomains objectEnumerator];
@@ -1566,6 +1614,10 @@
     @throw [TProtocolException exceptionWithName: @"TProtocolException"
                                reason: @"Required field 'name' is not set."];
   }
+  if (!__artifact_title_name_isset) {
+    @throw [TProtocolException exceptionWithName: @"TProtocolException"
+                               reason: @"Required field 'artifact_title_name' is not set."];
+  }
   if (!__start_page_uri_isset) {
     @throw [TProtocolException exceptionWithName: @"TProtocolException"
                                reason: @"Required field 'start_page_uri' is not set."];
@@ -1578,6 +1630,8 @@
   [ms appendFormat: @"%qi", __id];
   [ms appendString: @",name:"];
   [ms appendFormat: @"\"%@\"", __name];
+  [ms appendString: @",artifact_title_name:"];
+  [ms appendFormat: @"\"%@\"", __artifact_title_name];
   [ms appendString: @",start_page_uri:"];
   [ms appendFormat: @"\"%@\"", __start_page_uri];
   [ms appendString: @",subdomains:"];

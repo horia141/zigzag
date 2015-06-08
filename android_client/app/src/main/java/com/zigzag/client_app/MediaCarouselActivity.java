@@ -1,94 +1,172 @@
 package com.zigzag.client_app;
 
+import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.res.Configuration;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.zigzag.client_app.controller.Controller;
-import com.zigzag.common.model.Artifact;
 
 import java.util.ArrayList;
 import java.util.List;
 
+public class MediaCarouselActivity extends Activity{
 
-public class MediaCarouselActivity extends ActionBarActivity implements Controller.AllArtifactsListener {
-    private static final int START_PREFETCH_BEFORE_END = 3;
+    private static class DrawerItemDescriptor {
+        final Class<? extends MediaCarouselFragment> fragmentClass;
+        final int textViewId;
+        final boolean active;
 
-    private final List<Artifact> artifacts = new ArrayList<>();
-    @Nullable private ArtifactsAdapter artifactsAdapter = null;
+        DrawerItemDescriptor(Class<? extends MediaCarouselFragment> newFragmentClass, int newTextViewId,
+                boolean newActive) {
+            fragmentClass = newFragmentClass;
+            textViewId = newTextViewId;
+            active = newActive;
+        }
+    }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        Log.i("ZigZag/MediaCarouselActivity", "Create");
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_media_carousel);
+    @Nullable DrawerLayout drawerAndMainContent = null;
+    @Nullable LinearLayout drawerContent = null;
+    @Nullable ActionBarDrawerToggle drawerToggle = null;
 
-        artifactsAdapter = new ArtifactsAdapter(getSupportFragmentManager());
-        ViewPager viewPager = (ViewPager) findViewById(R.id.artifacts_pager);
-        viewPager.setAdapter(artifactsAdapter);
+    private static final List<DrawerItemDescriptor> drawerItemDescriptors;
+    static {
+        drawerItemDescriptors = new ArrayList<>();
+        drawerItemDescriptors.add(new DrawerItemDescriptor(
+                ArtifactCarouselFragment.class, R.id.drawer_artifact_carousel, true));
+        drawerItemDescriptors.add(new DrawerItemDescriptor(
+                PreferencesFragment.class, R.id.drawer_preferences, false));
+        drawerItemDescriptors.add(new DrawerItemDescriptor(
+                TermsAndConditionsFragment.class, R.id.drawer_terms_and_conditions, true));
+        drawerItemDescriptors.add(new DrawerItemDescriptor(
+                AboutFragment.class, R.id.drawer_about, true));
+        drawerItemDescriptors.add(new DrawerItemDescriptor(
+                AboutFragment.class, R.id.drawer_share_app, false));
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        Controller.getInstance(this).fetchArtifacts(this);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_media_carousel);
+
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager
+                .beginTransaction()
+                .replace(R.id.main_content, new ArtifactCarouselFragment())
+                .commit();
+
+        drawerAndMainContent = (DrawerLayout) findViewById(R.id.drawer_and_main_content_layout);
+        drawerContent = (LinearLayout) findViewById(R.id.drawer_content);
+
+        drawerToggle = new ActionBarDrawerToggle(this, drawerAndMainContent,
+                R.string.drawer_action_open, R.string.drawer_action_close) {
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                invalidateOptionsMenu();
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                invalidateOptionsMenu();
+            }
+        };
+
+        drawerAndMainContent.setDrawerListener(drawerToggle);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+
+        for (final DrawerItemDescriptor descriptor : drawerItemDescriptors) {
+            if (!descriptor.active) {
+                continue;
+            }
+
+            TextView descriptorView = (TextView) findViewById(descriptor.textViewId);
+            descriptorView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onDrawerItemClick(descriptor);
+                }
+            });
+        }
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        drawerToggle.syncState();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Controller.getInstance(this).deregisterAllArtifactsListener(this);
         Controller.getInstance(this).stopEverything();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        drawerToggle.onConfigurationChanged(newConfig);
     }
 
     @Override
-    public void onNewArtifacts(List<Artifact> newArtifacts) {
-        artifacts.addAll(newArtifacts);
-        artifactsAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onError(String errorDescription) {
-        Log.e("ZigZag/MediaCarouselActivity", String.format("Error %s", errorDescription));
-    }
-
-    private class ArtifactsAdapter extends FragmentStatePagerAdapter {
-        public ArtifactsAdapter(FragmentManager fragmentManager) {
-            super(fragmentManager);
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        boolean drawerOpen = drawerAndMainContent.isDrawerOpen(drawerContent);
+        for (int ii = 0; ii < menu.size(); ii++) {
+            menu.getItem(ii).setVisible(!drawerOpen);
         }
 
-        @Override
-        public Fragment getItem(int i) {
-            if (i + START_PREFETCH_BEFORE_END >= artifacts.size()) {
-                Controller.getInstance(MediaCarouselActivity.this).fetchArtifacts(MediaCarouselActivity.this);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (drawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void onDrawerItemClick(DrawerItemDescriptor clickedDescriptor) {
+        for (DrawerItemDescriptor descriptor : drawerItemDescriptors) {
+            if (!descriptor.active) {
+                continue;
             }
 
-            Artifact artifact = artifacts.get(i);
-            Fragment fragment = MediaCarouselFragment.newInstance(artifact);
-            return fragment;
+            TextView descriptorView = (TextView) findViewById(descriptor.textViewId);
+            descriptorView.setBackgroundResource(R.color.background_white);
+            descriptorView.setTextAppearance(this, R.style.MediaCarouselDrawerUnselected);
         }
 
-        @Override
-        public int getCount() {
-            return artifacts.size();
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return "Default Title";
+        try {
+            MediaCarouselFragment fragment = clickedDescriptor.fragmentClass.newInstance();
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager
+                    .beginTransaction()
+                    .replace(R.id.main_content, fragment)
+                    .commit();
+            setTitle(fragment.getTitleResId());
+            invalidateOptionsMenu();
+            TextView clickedDescriptorView = (TextView) findViewById(clickedDescriptor.textViewId);
+            clickedDescriptorView.setBackgroundResource(R.color.action_bar_blue);
+            clickedDescriptorView.setTextAppearance(this, R.style.MediaCarouselDrawerSelected);
+            drawerAndMainContent.closeDrawer(drawerContent);
+        } catch (InstantiationException e) {
+            Log.e("ZigZag/MediaCarouselA", "Cannot create fragment");
+        } catch (IllegalAccessException e) {
+            Log.e("ZigZag/MediaCarouselA", "Cannot create fragment");
         }
     }
 }

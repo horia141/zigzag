@@ -1,32 +1,34 @@
 package com.zigzag.client_app.ui;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.VideoView;
 
-import com.zigzag.client_app.R;
 import com.zigzag.common.model.VideoPhotoData;
 
-public class VideoPhotoView extends LinearLayout implements BitmapSetListener {
+public class VideoPhotoView extends ViewGroup {
 
     private enum State {
         CREATED,
-        DATA_SET,
-        SHOW_FIRST_FRAME,
-        SHOW_VIDEO
+        VIDEO_PHOTO_DATA_SET,
+        SOURCE_PATH_FOR_LOCAL_VIDEO_SET
     }
 
-    @Nullable private BitmapSetAdapter adapter;
-    @Nullable private VideoPhotoData videoPhotoData;
-    @Nullable private String localPathToVideo;
-    private boolean videoEnabled;
     private State state;
+    @Nullable private VideoPhotoData data;
+    @Nullable private ProgressBar progressBar;
+    @Nullable private ImageView imageForFirstFrame;
+    @Nullable private VideoView video;
+    private boolean videoLoaded;
+    private boolean enabled;
 
     public VideoPhotoView(Context context) {
         this(context, null);
@@ -34,170 +36,153 @@ public class VideoPhotoView extends LinearLayout implements BitmapSetListener {
 
     public VideoPhotoView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        adapter = null;
-        videoPhotoData = null;
-        localPathToVideo = null;
-        videoEnabled = false;
+
         state = State.CREATED;
-
-        setOrientation(LinearLayout.VERTICAL);
-        setGravity(Gravity.CENTER_VERTICAL);
+        data = null;
+        progressBar = null;
+        imageForFirstFrame = null;
+        video = null;
+        videoLoaded = false;
+        enabled = false;
     }
 
-    @Override
-    public void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-
-        if (adapter != null) {
-            adapter.removeListener(this);
+    public void setVideoPhotoData(VideoPhotoData newData) {
+        if (state != State.CREATED) {
+            throw new IllegalStateException("Not in video photo data setting state");
         }
 
-        adapter = null;
-        videoPhotoData = null;
-        localPathToVideo = null;
-        state = State.CREATED;
-    }
+        // Update state.
+        state = State.VIDEO_PHOTO_DATA_SET;
+        data = newData;
 
-    public void setAdapter(BitmapSetAdapter newAdapter, VideoPhotoData newVideoPhotoData, @Nullable String newLocalPathToVideo) {
-        if (adapter != null) {
-            adapter.removeListener(this);
-        }
+        // Update view.
+        progressBar = new ProgressBar(getContext());
+        progressBar.setIndeterminate(true);
 
-        adapter = newAdapter;
-        adapter.addListener(this);
-        videoPhotoData = newVideoPhotoData;
-        localPathToVideo = newLocalPathToVideo;
-        state = State.DATA_SET;
-        notifyDataSetChanged();
-    }
+        imageForFirstFrame = new ImageView(getContext());
 
-    public void enableVideo() {
-        if (videoEnabled) {
-            return;
-        }
-
-        videoEnabled = true;
-        notifyDataSetChanged();
-    }
-
-    public void disableVideo() {
-        if (!videoEnabled) {
-            return;
-        }
-
-        videoEnabled = false;
-        notifyDataSetChanged();
-    }
-
-    @Override
-    public void notifyDataSetChanged() {
-        switch (state) {
-            case CREATED:
-                // This should be an error
-                break;
-            case DATA_SET:
-                BitmapSetAdapter.TileInfo tileInfo = adapter.getTileInfo(0);
-                if (localPathToVideo != null) {
-                    setupVideo();
-                    state = State.SHOW_VIDEO;
-                } else if (tileInfo.getBitmap() != null) {
-                    state = State.SHOW_FIRST_FRAME;
-                }
-                break;
-            case SHOW_FIRST_FRAME:
-                if (localPathToVideo != null) {
-                    setupVideo();
-                    state = State.SHOW_VIDEO;
-                }
-                break;
-            case SHOW_VIDEO:
-                break;
-        }
-
-        draw();
-    }
-
-    public void draw() {
-        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        View tileView = getChildAt(0);
-
-        if (tileView == null) {
-            tileView = inflater.inflate(R.layout.video_photo_view_tile, VideoPhotoView.this);
-        }
-
-        final ResizableProgressBar progressBar = (ResizableProgressBar) tileView.findViewById(R.id.waiting);
-        final ResizableImageView imageView = (ResizableImageView) tileView.findViewById(R.id.image);
-        final ResizableVideoView videoView = (ResizableVideoView) tileView.findViewById(R.id.video);
-
-        switch (state) {
-            case CREATED:
-                progressBar.setVisibility(View.VISIBLE);
-                imageView.setVisibility(View.GONE);
-                videoView.setVisibility(View.GONE);
-                break;
-            case DATA_SET:
-                BitmapSetAdapter.TileInfo tileInfo1 = adapter.getTileInfo(0);
-                progressBar.setVisibility(View.VISIBLE);
-                progressBar.setTileWidthAndHeight(tileInfo1.getWidth(), tileInfo1.getHeight());
-                imageView.setVisibility(View.GONE);
-                videoView.setVisibility(View.GONE);
-                break;
-            case SHOW_FIRST_FRAME:
-                BitmapSetAdapter.TileInfo tileInfo2 = adapter.getTileInfo(0);
-                progressBar.setVisibility(View.GONE);
-                imageView.setVisibility(View.VISIBLE);
-                imageView.setImageBitmap(tileInfo2.getBitmap());
-                videoView.setVisibility(View.GONE);
-                break;
-            case SHOW_VIDEO:
-                BitmapSetAdapter.TileInfo tileInfo3 = adapter.getTileInfo(0);
-                progressBar.setVisibility(View.GONE);
-                if (videoEnabled) {
-                    imageView.setVisibility(View.GONE);
-                    videoView.setVisibility(View.VISIBLE);
-                    videoView.setTileWidthAndHeight(videoPhotoData.getVideo().getWidth(), videoPhotoData.getVideo().getHeight());
-                } else {
-                    imageView.setVisibility(View.VISIBLE);
-                    imageView.setImageBitmap(tileInfo3.getBitmap());
-                    videoView.setVisibility(View.GONE);
-                }
-                break;
-        }
-
-        tileView.requestLayout();
-    }
-
-    private void setupVideo() {
-        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View tileView = getChildAt(0);
-        if (tileView == null) {
-            tileView = inflater.inflate(R.layout.video_photo_view_tile, VideoPhotoView.this);
-        }
-        final ResizableVideoView videoView = (ResizableVideoView) tileView.findViewById(R.id.video);
-        videoView.setVideoPath(localPathToVideo);
-        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+        video = new VideoView(getContext());
+        video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
-                if (videoEnabled) {
-                    videoView.start();
+                videoLoaded = true;
+                if (enabled) {
+                    video.start();
                 }
             }
         });
-        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+        video.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                if (videoEnabled) {
-                    videoView.start();
+                if (enabled) {
+                    video.start();
                 }
             }
         });
-        videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+        video.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(MediaPlayer mp, int what, int extra) {
                 Log.e("ZigZag/VideoPhotoView", String.format("Error %d %d", what, extra));
                 return true;
             }
         });
+
+        addView(progressBar);
+
+        // Request new drawing and layout.
+        invalidate();
+        requestLayout();
+    }
+
+    public void setBitmapForFirstFrame(Bitmap bitmap) {
+        if (state != State.VIDEO_PHOTO_DATA_SET) {
+            if (state == State.SOURCE_PATH_FOR_LOCAL_VIDEO_SET) {
+                return;
+            }
+
+            throw new IllegalStateException("Not in bitmap for first frame setting state");
+        }
+
+        // Update view components.
+        removeViewAt(0);
+        progressBar = null;
+        imageForFirstFrame.setImageBitmap(bitmap);
+        addView(imageForFirstFrame);
+
+        // Request new drawing and layout.
+        invalidate();
+        requestLayout();
+    }
+
+    public void setSourcePathForLocalVideo(String sourcePathForLocalVideo) {
+        if (state != State.VIDEO_PHOTO_DATA_SET && state != State.SOURCE_PATH_FOR_LOCAL_VIDEO_SET) {
+            throw new IllegalStateException("Not in source path for local video setting state");
+        }
+
+        // Update state.
+        state = State.SOURCE_PATH_FOR_LOCAL_VIDEO_SET;
+
+        // Update view components.
+        removeViewAt(0);
+        progressBar = null;
+        imageForFirstFrame = null;
+        video.setVideoPath(sourcePathForLocalVideo);
+        addView(video);
+        videoLoaded = false;
+
+        // Request new drawing and layout.
+        invalidate();
+        requestLayout();
+    }
+
+    public void enable() {
+        if (state != State.VIDEO_PHOTO_DATA_SET && state != State.SOURCE_PATH_FOR_LOCAL_VIDEO_SET) {
+            throw new IllegalStateException("Not in enabling state");
+        }
+
+        // Update view components.
+        enabled = true;
+        if (videoLoaded && !video.isPlaying()) {
+            video.start();
+        }
+    }
+
+    public void disable() {
+        if (state != State.VIDEO_PHOTO_DATA_SET && state != State.SOURCE_PATH_FOR_LOCAL_VIDEO_SET) {
+            throw new IllegalStateException("Not in disabling state");
+        }
+
+        // Update view components.
+        enabled = false;
+        if (videoLoaded && video.isPlaying()) {
+            video.pause();
+        }
+    }
+
+    @Override
+    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        assert widthMode == MeasureSpec.EXACTLY;
+        assert heightMode == MeasureSpec.UNSPECIFIED;
+
+        View view = getChildAt(0);
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+        float aspectRatio = (float) data.getFirst_frame().getHeight() / (float) data.getFirst_frame().getWidth();
+        int height = (int) (width * aspectRatio);
+        int newHeightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
+        MarginLayoutParams layoutParams = new ViewGroup.MarginLayoutParams(widthMeasureSpec, newHeightMeasureSpec);
+        layoutParams.setMargins(0, 0, 0, 0);
+        view.setLayoutParams(layoutParams);
+        view.setPadding(0, 0, 0, 0);
+        measureChild(view, widthMeasureSpec, newHeightMeasureSpec);
+
+        setMeasuredDimension(width, height);
+    }
+
+    @Override
+    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        View view = getChildAt(0);
+        view.layout(left, top, right, bottom);
     }
 }

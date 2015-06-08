@@ -9,6 +9,10 @@ const string TIME_FORMAT = '%B %d, %Y %I:%M:%S %p %Z';
 
 const i32 MAX_ARTIFACTS_PER_GENERATION = 32;
 
+const string CACHEABLE_FILES_PATTERN = '^.*(jpg|mp4)';
+
+const string STANDARD_IMAGE_MIMETYPE = 'image/jpeg';
+const string STANDARD_VIDEO_MIMETYPE = 'video/mp4';
 const set<string> WEBPAGE_MIMETYPES = ['application/xhtml+xml', 'text/html', 'text/plain'];
 const set<string> PHOTO_MIMETYPES = ['image/gif', 'image/jpeg', 'image/png'];
 const map<string, string> PHOTO_MIMETYPES_TO_EXTENSION = {'image/gif': 'gif', 'image/jpeg': 'jpg', 'image/png': 'png', 'video/mp4': 'mp4'};
@@ -17,6 +21,7 @@ const map<i64, model.ArtifactSource> ARTIFACT_SOURCES = {
     1: {
         'id': 1,
         'name': 'Reddit',
+	'artifact_title_name': 'reddit.com',
         'start_page_uri': 'http://reddit.com/r/%s',
         'subdomains': ['pics', 'comics', 'fffffffuuuuuuuuuuuu', 'ragecomics'
             'lolcats', 'AdviceAnimals', 'Demotivational', 'memes', 'images',
@@ -26,11 +31,13 @@ const map<i64, model.ArtifactSource> ARTIFACT_SOURCES = {
     2: {
         'id': 2,
         'name': 'Imgur',
+	'artifact_title_name': 'imgur',
         'start_page_uri': 'http://imgur.com'
     },
     3: {
         'id': 3,
         'name': '9GAG',
+	'artifact_title_name': '9gag',
         'start_page_uri': 'http://9gag.com/%s',
         'subdomains': ['hot', 'trending', 'gif']
     }

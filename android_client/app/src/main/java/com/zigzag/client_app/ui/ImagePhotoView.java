@@ -1,19 +1,31 @@
 package com.zigzag.client_app.ui;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
-import com.zigzag.client_app.R;
+import com.zigzag.common.model.ImagePhotoData;
+import com.zigzag.common.model.TileData;
 
-public class ImagePhotoView extends LinearLayout implements BitmapSetListener {
+import java.util.ArrayList;
+import java.util.List;
 
-    @Nullable private BitmapSetAdapter adapter;
+public class ImagePhotoView extends ViewGroup {
+
+    private enum State {
+        CREATED,
+        IMAGE_PHOTO_DATA_SET
+    }
+
+    private State state;
+    @Nullable private ImagePhotoData data;
+    private final List<ProgressBar> progressBarsForTiles;
+    private final List<ImageView> imagesForTiles;
 
     public ImagePhotoView(Context context) {
         this(context, null);
@@ -21,66 +33,98 @@ public class ImagePhotoView extends LinearLayout implements BitmapSetListener {
 
     public ImagePhotoView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        adapter = null;
 
-        setOrientation(LinearLayout.VERTICAL);
-        setGravity(Gravity.CENTER_VERTICAL);
+        state = State.CREATED;
+        data = null;
+        progressBarsForTiles = new ArrayList<>();
+        imagesForTiles = new ArrayList<>();
+    }
+
+    public void setImagePhotoData(ImagePhotoData newData) {
+        if (state != State.CREATED) {
+            throw new IllegalStateException("Not in image photo data setting state");
+        }
+
+        // Update state.
+        state = State.IMAGE_PHOTO_DATA_SET;
+        data = newData;
+
+        // Update view.
+        for (int ii = 0; ii < newData.getTilesSize(); ii++) {
+            ProgressBar progressBarForTile = new ProgressBar(getContext());
+            progressBarForTile.setIndeterminate(true);
+            progressBarsForTiles.add(progressBarForTile);
+
+            ImageView imageForTile = new ImageView(getContext());
+            imagesForTiles.add(imageForTile);
+        }
+
+        for (ProgressBar progressBarForTile : progressBarsForTiles) {
+            addView(progressBarForTile);
+        }
+
+        // Request new drawing and layout.
+        invalidate();
+        requestLayout();
+    }
+
+    public void setBitmapForTile(int tileIdx, Bitmap bitmap) {
+        if (state != State.IMAGE_PHOTO_DATA_SET) {
+            throw new IllegalStateException("Not in bitmap setting state");
+        }
+
+        if (tileIdx < 0 || tileIdx >= data.getTilesSize()) {
+            throw new IndexOutOfBoundsException("Tile index out of bounds");
+        }
+
+        // Update view components.
+        removeViewAt(tileIdx);
+        progressBarsForTiles.set(tileIdx, null);
+        ImageView imageForTile = imagesForTiles.get(tileIdx);
+        imageForTile.setImageBitmap(bitmap);
+        addView(imageForTile, tileIdx);
+
+        // Request new drawing and layout.
+        invalidate();
+        requestLayout();
     }
 
     @Override
-    public void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
+    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        assert widthMode == MeasureSpec.EXACTLY;
+        assert heightMode == MeasureSpec.UNSPECIFIED;
 
-        if (adapter != null) {
-            adapter.removeListener(this);
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+        int height = 0;
+
+        for (int ii = 0; ii < data.getTilesSize(); ii++) {
+            TileData tile = data.getTiles().get(ii);
+            View viewForTile = getChildAt(ii);
+            float tileAspectRatio = (float) tile.getHeight() / (float) tile.getWidth();
+            int tileHeight = (int)(width * tileAspectRatio);
+            int tileHeightMeasureSpec = MeasureSpec.makeMeasureSpec(tileHeight, MeasureSpec.EXACTLY);
+            MarginLayoutParams tileLayoutParams = new ViewGroup.MarginLayoutParams(widthMeasureSpec, tileHeightMeasureSpec);
+            tileLayoutParams.setMargins(0, 0, 0, 0);
+            viewForTile.setLayoutParams(tileLayoutParams);
+            viewForTile.setPadding(0, 0, 0, 0);
+            measureChild(viewForTile, widthMeasureSpec, tileHeightMeasureSpec);
+            height += tileHeight;
         }
 
-        adapter = null;
-    }
-
-    public void setAdapter(BitmapSetAdapter newAdapter) {
-        if (adapter != null) {
-            adapter.removeListener(this);
-        }
-
-        adapter = newAdapter;
-        adapter.addListener(this);
-        notifyDataSetChanged();
+        setMeasuredDimension(width, height);
     }
 
     @Override
-    public void notifyDataSetChanged() {
-        drawTiles();
-    }
+    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        int currentTop = top;
 
-    private void drawTiles() {
-        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        for (int ii = adapter.getCount(); ii < getChildCount(); ii++) {
-            removeViewAt(ii);
-        }
-
-        for (int ii = 0; ii < adapter.getCount(); ii++) {
-            BitmapSetAdapter.TileInfo tileInfo = adapter.getTileInfo(ii);
-
-            View tileView = getChildAt(ii);
-
-            if (tileView == null) {
-                tileView = inflater.inflate(R.layout.image_photo_view_tile, this);
-            }
-
-            ResizableProgressBar progressBar = (ResizableProgressBar) tileView.findViewById(R.id.waiting);
-            ImageView imageView = (ImageView) tileView.findViewById(R.id.image);
-
-            if (tileInfo.getBitmap() != null) {
-                progressBar.setVisibility(View.GONE);
-                imageView.setVisibility(View.VISIBLE);
-                imageView.setImageBitmap(tileInfo.getBitmap());
-            } else {
-                progressBar.setVisibility(View.VISIBLE);
-                progressBar.setTileWidthAndHeight(tileInfo.getWidth(), tileInfo.getHeight());
-                imageView.setVisibility(View.GONE);
-            }
+        for (int ii = 0; ii < data.getTilesSize(); ii++) {
+            View viewForTile = getChildAt(ii);
+            int nextTop = currentTop + viewForTile.getMeasuredHeight();
+            viewForTile.layout(left, currentTop, right, nextTop);
+            currentTop = nextTop;
         }
     }
 }
