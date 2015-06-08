@@ -30,11 +30,7 @@ import com.zigzag.common.model.PhotoData;
 import com.zigzag.common.model.PhotoDescription;
 import com.zigzag.common.model.TileData;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -116,8 +112,8 @@ public final class Controller {
 
     private static final String NAME = "ZizZag";
     private static final String CACHE_PATH = "volley-cache";
-    private static final int CACHE_SIZE = 20;
-    private static final Pattern CACHEABLE_FILES = Pattern.compile(definesConstants.CACHEABLE_FILES_PATTERN);
+    private static final int CACHE_SIZE = 100;
+    private static final Pattern CACHEABLE_FILES_PATTERN = Pattern.compile(definesConstants.CACHEABLE_FILES_PATTERN);
     private static final String REQUESTS_TAG = NAME;
     private static final String API_NEXTGEN_URL_PATTERN = "http://horia141.com:9000/api/v1/nextgen?from=%s&output=thrift";
     private static final String API_RES_URL_PATTERN = "http://horia141.com:9001/%s";
@@ -134,7 +130,7 @@ public final class Controller {
     private Map<String, ArtifactResourcesListener> resourcesListeners;
 
     private Controller(Context context) {
-        Cache cache = new PhotoCache(new File(context.getCacheDir(), CACHE_PATH), CACHE_SIZE, CACHEABLE_FILES);
+        Cache cache = new PhotoCache(new File(context.getCacheDir(), CACHE_PATH), CACHE_SIZE, CACHEABLE_FILES_PATTERN);
         Network network = new BasicNetwork(new HurlStack());
         this.requestQueue = new RequestQueue(cache, network);
         this.requestQueue.start();

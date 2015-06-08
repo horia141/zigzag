@@ -1,5 +1,6 @@
 package com.zigzag.client_app.controller;
 
+import android.net.Uri;
 import android.util.Log;
 import android.util.Pair;
 
@@ -77,9 +78,10 @@ public class PhotoCache implements Cache {
             return;
         }
 
+        String previousKey = null;
         synchronized (this) {
             // First, remove any existing key.
-            String previousKey = reverseAllocatedIdxs.get(currentIndex);
+            previousKey = reverseAllocatedIdxs.get(currentIndex);
             if (previousKey != null) {
                 reverseAllocatedIdxs.remove(currentIndex);
                 allocatedIdxs.remove(previousKey);
@@ -96,6 +98,11 @@ public class PhotoCache implements Cache {
         }
 
         try {
+            if (previousKey != null) {
+                headersFileForKey(previousKey).delete();
+                contentFileForKey(previousKey).delete();
+            }
+
             updateCountStatus();
             writeHeaders(headersFileForKey(key), key, entry);
             writeContent(contentFileForKey(key), entry);
@@ -127,9 +134,8 @@ public class PhotoCache implements Cache {
 
             for (int ii = 0; ii < maxNumberOfElements; ii++) {
                 File headersFile = new File(rootDirectory, String.format(HEADERS_FILE_PATH_PATTERN, ii));
-                File contentFile = new File(rootDirectory, String.format(CONTENT_FILE_PATH_PATTERN, ii));
 
-                if (!headersFile.exists() || !contentFile.exists()) {
+                if (!headersFile.exists()) {
                     continue;
                 }
 
@@ -205,7 +211,9 @@ public class PhotoCache implements Cache {
     }
 
     public File contentFileForKey(String key) {
-        return new File(rootDirectory, String.format(CONTENT_FILE_PATH_PATTERN, allocatedIdxs.get(key)));
+        // This function assumes the keys are something like http://[host]/[path].(jpg|mp4).
+        Uri keyAsUri = Uri.parse(key);
+        return new File(rootDirectory, keyAsUri.getPath());
     }
 
     private void removeAllFiles() {
