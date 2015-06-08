@@ -100,7 +100,8 @@ public class ArtifactView extends ScrollView {
             contentView.addView(photoDescriptionView);
 
             // VideoPhotoViews need some extra care. They should only start playing when we scroll
-            // to them. The ArtifactView controls when this happens.
+            // to them. The ArtifactView controls when this happens. Also, if this is the first
+            // artifact, we'll always play it, since otherwise there is no scroll to trigger it.
             if (photoDescription.getPhoto_data().isSetVideo_photo_data()) {
                 if (firstArtifact) {
                     photoDescriptionView.enableVideo();
