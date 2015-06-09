@@ -6,8 +6,8 @@
 start () {
     echo "Starting <%= node.default['application']['api_server']['app']['name'] %>... "
     daemon --name='<%= node.default['application']['api_server']['app']['name'] %>' \
-           --command='<%= node.default['application']['virtual_env'] %>/bin/python <%= node.default['application']['sources_dir'] %>/interface_server/manage.py runfcgi daemonize=false method=threaded host=<%= node.default['application']['api_server']['app']['fastcgi_host'] %> port=<%= node.default['application']['api_server']['app']['fastcgi_port'] %> workdir=<%= node.default['application']['work_dir'] %> outlog=<%= node.default['application']['api_server']['app']['output_log'] %> errlog=<%= node.default['application']['api_server']['app']['error_log'] %> pidfile=<%= node.default['application']['api_server']['app']['pid_file'] %>' \
-           --env='PYTHONPATH=<%= node.default['application']['python_env']['PYTHONPATH'] %>' \
+           --command='<%= node.default['application']['virtual_env'] %>/bin/gunicorn -c <%= node.default['application']['api_server']['app']['gunicorn_config_ln'] %> <%= node.default['application']['api_server']['app']['wsgi_module'] %>' \
+           --env='PYTHONPATH=<%= node.default['application']['python_env']['PYTHONPATH_GUNICORN'] %>' \
            --env='DJANGO_SETTINGS_MODULE=<%= node.default['application']['python_env']['DJANGO_SETTINGS_MODULE'] %>' \
            --env='PYTHON_EGG_CACHE=<%= node.default['application']['python_env']['PYTHON_EGG_CACHE'] %>' \
            --pidfile='<%= node.default['application']['api_server']['app']['daemon']['pid_file'] %>' \

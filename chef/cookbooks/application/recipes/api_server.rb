@@ -32,7 +32,13 @@ template node.default['application']['api_server']['app']['gunicorn_config'] do
   owner node.default['application']['api_server']['user']
   group node.default['application']['group']
   mode '0440'
-  # verify "#{node.default['application']['virtual_env']}/bin/gunicorn --check-config %{file}"
+end
+
+link node.default['application']['api_server']['app']['gunicorn_config_ln'] do
+  owner node.default['application']['user'] # Owned by application.user, like all sources
+  group node.default['application']['group']
+  mode '0440'
+  to node.default['application']['api_server']['app']['gunicorn_config']
 end
 
 template node.default['application']['api_server']['app']['django_config'] do

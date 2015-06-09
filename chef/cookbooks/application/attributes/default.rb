@@ -44,12 +44,15 @@ default['application']['api_server']['frontend']['daemon']['pid_file'] = File.jo
 default['application']['api_server']['frontend']['daemon']['error_log'] = File.join(default['application']['var_dir'], 'api_server.frontend_daemon.error.log')
 default['application']['api_server']['frontend']['daemon']['debug_log'] = File.join(default['application']['var_dir'], 'api_server.frontend_daemon.debug.log')
 default['application']['api_server']['app']['name'] = 'zigzag_api_server_app'
+default['application']['api_server']['app']['wsgi_module'] = 'interface_server.wsgi'
 default['application']['api_server']['app']['django_config'] = File.join(default['application']['sources_dir'], 'interface_server', 'interface_server', 'settings.py')
-default['application']['api_server']['app']['gunicorn_config'] = File.join(default['application']['config_dir'], 'app_gunicorn')
+default['application']['api_server']['app']['gunicorn_work_dir'] = File.join(default['application']['sources_dir'], 'interface_server')
+default['application']['api_server']['app']['gunicorn_config_ln'] = File.join(default['application']['sources_dir'], 'interface_server', 'gunicorn.py')
+default['application']['api_server']['app']['gunicorn_config'] = File.join(default['application']['config_dir'], 'api_server.app_gunicorn.py')
 default['application']['api_server']['app']['fastcgi_host'] = '127.0.0.1'
 default['application']['api_server']['app']['fastcgi_port'] = 9002
 default['application']['api_server']['app']['pid_file'] = File.join(default['application']['var_dir'], 'api_server.app.pid')
-default['application']['api_server']['app']['output_log'] = File.join(default['application']['var_dir'], 'api_server.app.output.log')
+default['application']['api_server']['app']['access_log'] = File.join(default['application']['var_dir'], 'api_server.app.access.log')
 default['application']['api_server']['app']['error_log'] = File.join(default['application']['var_dir'], 'api_server.app.error.log')
 default['application']['api_server']['app']['daemon']['script'] = '/etc/init.d/zigzag_api_server_app'
 default['application']['api_server']['app']['daemon']['pid_file'] = File.join(default['application']['var_dir'], 'api_server.app_daemon.pid')
@@ -126,6 +129,7 @@ default['application']['postgresql']['postgres_path'] = '/usr/local/pgsql/bin/po
 default['application']['postgresql']['psql_path'] = '/usr/local/pgsql/bin/psql'
 
 default['application']['python_env']['PYTHONPATH'] = "#{default['application']['sources_dir']}:#{default['application']['sources_dir']}/interface_server:#{node.default['application']['sources_dir']}/gen/py"
+default['application']['python_env']['PYTHONPATH_GUNICORN'] = "#{default['application']['sources_dir']}:#{node.default['application']['sources_dir']}/gen/py"
 default['application']['python_env']['DJANGO_SETTINGS_MODULE'] = 'interface_server.settings'
 default['application']['python_env']['PYTHON_EGG_CACHE'] = default['application']['egg_cache']
 
