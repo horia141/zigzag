@@ -16,17 +16,15 @@ from thrift.transport import TSSLSocket
 from thrift.transport import THttpClient
 from thrift.protocol import TBinaryProtocol
 
-from fetcher import Service
-from fetcher.ttypes import *
+from photo_save_pb import Service
+from photo_save_pb.ttypes import *
 
 if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print('')
   print('Usage: ' + sys.argv[0] + ' [-h host[:port]] [-u url] [-f[ramed]] [-s[sl]] function [arg1 [arg2...]]')
   print('')
   print('Functions:')
-  print('  Response fetch_url(string page_url)')
-  print('  Response fetch_url_mimetype(string page_url)')
-  print('  Response fetch_photo(string photo_url)')
+  print('  PhotoDescription process_one_photo(string subtitle, string description, string source_uri)')
   print('')
   sys.exit(0)
 
@@ -83,23 +81,11 @@ protocol = TBinaryProtocol.TBinaryProtocol(transport)
 client = Service.Client(protocol)
 transport.open()
 
-if cmd == 'fetch_url':
-  if len(args) != 1:
-    print('fetch_url requires 1 args')
+if cmd == 'process_one_photo':
+  if len(args) != 3:
+    print('process_one_photo requires 3 args')
     sys.exit(1)
-  pp.pprint(client.fetch_url(args[0],))
-
-elif cmd == 'fetch_url_mimetype':
-  if len(args) != 1:
-    print('fetch_url_mimetype requires 1 args')
-    sys.exit(1)
-  pp.pprint(client.fetch_url_mimetype(args[0],))
-
-elif cmd == 'fetch_photo':
-  if len(args) != 1:
-    print('fetch_photo requires 1 args')
-    sys.exit(1)
-  pp.pprint(client.fetch_photo(args[0],))
+  pp.pprint(client.process_one_photo(args[0],args[1],args[2],))
 
 else:
   print('Unrecognized method %s' % cmd)

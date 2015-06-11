@@ -9,7 +9,7 @@ import photo_save.decoders as decoders
 from PIL import Image
 
 
-class Decoder(object):
+class Decoder(decoders.Decoder):
     def decode(self, screen_config_key, screen_config, image, image_path, unique_photo_path_fn):
         logging.info('Handling the photo as a (possibly tiled) image for screen config "%s"' % screen_config_key)
 

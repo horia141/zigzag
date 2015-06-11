@@ -10,18 +10,14 @@ from thrift.protocol import TBinaryProtocol
 from thrift.transport import TSocket
 from thrift.transport import TTransport
 
-import comlink
-import comlink.serializer.pickle as serializer
-import comlink.transport.localipc as comlink_transport
-
 import common.defines.constants as defines
 import common.model.ttypes as model
 import explorer.analyzers as analyzers
 import explorer.analyzers.imgur as imgur
 import explorer.analyzers.ninegag as ninegag
 import explorer.analyzers.reddit as reddit
-import fetcher.Service
-import photo_save
+import fetcher_pb.Service
+import photo_save_pb.Service
 import rest_api.models as datastore
 import utils.pidfile as pidfile
 
@@ -34,8 +30,10 @@ def main():
         help='Host on which the fetcher server is listening')
     parser.add_argument('--fetcher_port', type=int, required=True,
         help='Port on which the fetcher server is listening')
+    parser.add_argument('--photo_save_host', type=str, required=True,
+        help='Host on which the photo_save server is listening')
     parser.add_argument('--photo_save_port', type=int, required=True,
-        help='Port on which the photo_save Comlink server is listening')
+        help='Port on which the photo_save server is listening')
     parser.add_argument('--log_path', type=str, required=True,
         help='Path to the log file')
     parser.add_argument('--pidfile_path', type=str, required=True,
@@ -52,15 +50,17 @@ def main():
 
     right_now_0 = datetime.datetime.now(pytz.utc)
 
-    ser = serializer.Serializer()
-    client = comlink_transport.Client(args.photo_save_port, ser)
-    photo_save_client = photo_save.Service.client(client)
+    fetcher_transport = TSocket.TSocket(args.fetcher_host, args.fetcher_port)
+    fetcher_transport = TTransport.TBufferedTransport(fetcher_transport)
+    fetcher_protocol = TBinaryProtocol.TBinaryProtocol(fetcher_transport)
+    fetcher_client = fetcher_pb.Service.Client(fetcher_protocol)
+    fetcher_transport.open()
 
-    transport = TSocket.TSocket(args.fetcher_host, args.fetcher_port)
-    transport = TTransport.TBufferedTransport(transport)
-    protocol = TBinaryProtocol.TBinaryProtocol(transport)
-    fetcher_client = fetcher.Service.Client(protocol)
-    transport.open()
+    photo_save_transport = TSocket.TSocket(args.photo_save_host, args.photo_save_port)
+    photo_save_transport = TTransport.TBufferedTransport(photo_save_transport)
+    photo_save_protocol = TBinaryProtocol.TBinaryProtocol(photo_save_transport)
+    photo_save_client = photo_save_pb.Service.Client(photo_save_protocol)
+    photo_save_transport.open()
 
     logging.info('Starting crawl and analysis service on %s', right_now_0.strftime(defines.TIME_FORMAT))
 
@@ -110,10 +110,7 @@ def main():
                             subtitle, description, source_uri))
                 except Exception as e:
                     logging.error('Encountered an error in processing artifact "%s"', artifact_desc['title'])
-                    if comlink.is_remote_exception(e):
-                        logging.error(comlink.format_stacktrace_for_remote_exception(e))
-                    else:
-                        logging.exception(e)
+                    logging.error(str(e))
                     continue
     
                 logging.info('Saving artifact "%s" to database', artifact_desc['title'])
@@ -164,11 +161,4 @@ def main():
 
 
 if __name__ == '__main__':
-    try:
-        main()
-    except Exception as e:
-        if comlink.is_remote_exception(e):
-            logging.error(comlink.format_stacktrace_for_remote_exception(e))
-        else:
-            logging.exception(e)
-        raise
+    main()

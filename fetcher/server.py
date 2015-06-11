@@ -5,14 +5,13 @@ import logging
 import urllib2
 
 from thrift.protocol import TBinaryProtocol
+from thrift.server import TServer
 from thrift.transport import TSocket
 from thrift.transport import TTransport
-from thrift.server import TServer
 
 import common.defines.constants as defines
-import fetcher
-import fetcher.Service
-import fetcher.ttypes as fetcher_types
+import fetcher_pb.Service
+import fetcher_pb.ttypes as fetcher_types
 import utils.pidfile as pidfile
 
 
@@ -98,7 +97,7 @@ def main():
     logging.basicConfig(level=logging.INFO, filename=args.log_path)
 
     service_handler = ServiceHandler()
-    processor = fetcher.Service.Processor(service_handler)
+    processor = fetcher_pb.Service.Processor(service_handler)
     transport = TSocket.TServerSocket(host=args.host, port=args.port)
     transport_factory = TTransport.TBufferedTransportFactory()
     protocol_factory = TBinaryProtocol.TBinaryProtocolFactory()

@@ -85,6 +85,7 @@ default['application']['explorer']['fetcher']['daemon']['pid_file'] = File.join(
 default['application']['explorer']['fetcher']['daemon']['error_log'] = File.join(default['application']['var_dir'], 'explorer.fetcher_daemon.error.log')
 default['application']['explorer']['fetcher']['daemon']['debug_log'] = File.join(default['application']['var_dir'], 'explorer.fetcher_daemon.debug.log')
 default['application']['explorer']['photo_save']['name'] = 'zigzag_explorer_photo_save'
+default['application']['explorer']['photo_save']['host'] = '127.0.0.1'
 default['application']['explorer']['photo_save']['port'] = 16100
 default['application']['explorer']['photo_save']['pid_file'] = File.join(default['application']['var_dir'], 'explorer.photo_save.pid')
 default['application']['explorer']['photo_save']['log'] = File.join(default['application']['var_dir'], 'explorer.photo_save.log')

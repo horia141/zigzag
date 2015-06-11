@@ -1,4 +1,4 @@
-namespace py fetcher
+namespace py fetcher_pb
 
 exception IOError {
   1: required string message

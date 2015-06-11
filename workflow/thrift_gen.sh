@@ -7,6 +7,7 @@ DEFINITIONS=(
   common/api.thrift=py:java:cocoa
   fetcher/fetcher.thrift=py
   log_analyzer/log_analyzer.thrift=py
+  photo_save/photo_save.thrift=py
 )
 
 mkdir -p gen
@@ -21,9 +22,9 @@ do
     mkdir -p gen/$lang
     if [ "$lang" = "py" ]
     then
-      thrift -out gen/$lang --gen py:new_style $thrift_file
+      thrift -I `pwd` -out gen/$lang --gen py:new_style $thrift_file
     else
-      thrift -out gen/$lang --gen $lang $thrift_file
+      thrift -I `pwd` -out gen/$lang --gen $lang $thrift_file
     fi
   done
 done
