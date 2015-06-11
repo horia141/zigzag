@@ -22,6 +22,7 @@ import photo_save_pb.Service
 import photo_save_pb.ttypes as photo_save_types
 import rest_api.models as datastore
 import utils.pidfile as pidfile
+import utils.rpc as rpc
 
 
 def main():
@@ -79,7 +80,7 @@ def main():
             try:
                 artifact_descs = analyzer.analyze()
             except (analyzers.Error, fetcher_types.Error) as e:
-                logging.warn('Could not analyze "%s" - %s', analyzer_name, str(e))
+                logging.error('Could not analyze "%s" - %s', analyzer_name, str(e))
                 continue
     
                 logging.info('Have %d possibly new artifacts', len(artifact_descs))
@@ -98,15 +99,10 @@ def main():
                         subtitle = image_raw_description['subtitle']
                         description = image_raw_description['description']
                         source_uri = image_raw_description['uri_path']
-                        photo_save_transport = TSocket.TSocket(args.photo_save_host, args.photo_save_port)
-                        photo_save_transport = TTransport.TBufferedTransport(photo_save_transport)
-                        photo_save_protocol = TBinaryProtocol.TBinaryProtocol(photo_save_transport)
-                        photo_save_client = photo_save_pb.Service.Client(photo_save_protocol)
-                        photo_save_transport.open()
-                        photo_description.append(photo_save_client.process_one_photo(
-                            subtitle, description, source_uri))
-                        photo_save_transport.close()
-                except Exception as e:
+                        with rpc.to(photo_save_pb.Service, args.photo_save_host, args.photo_save_port) as photo_save_client:
+                            photo_description.append(photo_save_client.process_one_photo(
+                                subtitle, description, source_uri))
+                except (photo_save_types.Error, Exception) as e:
                     logging.error('Encountered an error in processing artifact "%s"', artifact_desc['title'])
                     logging.error(str(e))
                     continue

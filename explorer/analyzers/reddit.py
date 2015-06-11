@@ -4,15 +4,14 @@ import logging
 import urllib2
 
 import bs4 as bs
-from thrift.protocol import TBinaryProtocol
-from thrift.transport import TSocket
-from thrift.transport import TTransport
 
 import common.defines.constants as defines
 import explorer.analyzers as analyzers
 import explorer.analyzers.imgur as imgur
 import fetcher_pb.Service
 import fetcher_pb.ttypes as fetcher_types
+import utils.rpc as rpc
+
 
 class Analyzer(analyzers.Analyzer):
     """Class for performing analysis of the Reddit artifact source."""
@@ -32,16 +31,11 @@ class Analyzer(analyzers.Analyzer):
             category_url = self.source.start_page_uri % category
             logging.info('Fetching main page at "%s"', category_url)
             try:
-                fetcher_transport = TSocket.TSocket(self._fetcher_host, self._fetcher_port)
-                fetcher_transport = TTransport.TBufferedTransport(fetcher_transport)
-                fetcher_protocol = TBinaryProtocol.TBinaryProtocol(fetcher_transport)
-                fetcher_client = fetcher_pb.Service.Client(fetcher_protocol)
-                fetcher_transport.open()
-                category_page = fetcher_client.fetch_url(category_url)
-                fetcher_transport.close()
-                if category_page.mime_type not in defines.WEBPAGE_MIMETYPES:
-                    logging.warn('Main page is of wrong MIME type')
-                    continue
+                with rpc.to(fetcher_pb.Service, self._fetcher_host, self._fetcher_port) as fetcher_client:
+                    category_page = fetcher_client.fetch_url(category_url)
+                    if category_page.mime_type not in defines.WEBPAGE_MIMETYPES:
+                        logging.warn('Main page is of wrong MIME type')
+                        continue
             except (urllib2.URLError, ValueError) as e:
                 logging.warn('Could not fetch - %s', str(e))
                 continue
@@ -95,17 +89,12 @@ class Analyzer(analyzers.Analyzer):
         try_other_analyzer = False
 
         try:
-            fetcher_transport = TSocket.TSocket(self._fetcher_host, self._fetcher_port)
-            fetcher_transport = TTransport.TBufferedTransport(fetcher_transport)
-            fetcher_protocol = TBinaryProtocol.TBinaryProtocol(fetcher_transport)
-            fetcher_client = fetcher_pb.Service.Client(fetcher_protocol)
-            fetcher_transport.open()
-            image = fetcher_client.fetch_url_mimetype(artifact_page_url)
-            fetcher_transport.close()
-            if image.mime_type not in defines.PHOTO_MIMETYPES:
-                # Try to parse things with the Imgur analyzer.
-                try_other_analyzer = True
-                logging.warn('Could not fetch as image, trying with another analyzer')
+            with rpc.to(fetcher_pb.Service, self._fetcher_host, self._fetcher_port) as fetcher_client:
+                image = fetcher_client.fetch_url_mimetype(artifact_page_url)
+                if image.mime_type not in defines.PHOTO_MIMETYPES:
+                    # Try to parse things with the Imgur analyzer.
+                    try_other_analyzer = True
+                    logging.warn('Could not fetch as image, trying with another analyzer')
         except (urllib2.URLError, ValueError) as e:
             raise analyzers.Error('Could not fetch - %s' % str(e))
 

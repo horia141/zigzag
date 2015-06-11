@@ -39,6 +39,7 @@ class ServiceHandler(object):
             mime_type = file_obj.info().gettype()
             file_obj.close()
         except (ValueError, IOError) as e:
+            logging.error('IO Error "%s"' % str(e))
             raise fetcher_types.IOError(message=str(e))
 
         logging.info('Successfully fetched "%s"' % page_url)
@@ -54,6 +55,7 @@ class ServiceHandler(object):
             mime_type = file_obj.info().gettype()
             file_obj.close()
         except (ValueError, IOError) as e:
+            logging.error('IO Error "%s"' % str(e))
             raise fetcher_types.IOError(message=str(e))
 
         logging.info('Successfully fetched mimetype for "%s"' % page_url)
@@ -68,11 +70,13 @@ class ServiceHandler(object):
             file_obj = urllib2.urlopen(request)
             content_length = int(file_obj.headers['content-length'], 10)
             if content_length > defines.MAXIMUM_FETCHED_PHOTO_SIZE_IN_BYTES:
+                logging.error('Photo at "%s" is too large at %d bytes' % (photo_url, content_length))
                 raise fetcher_types.PhotoTooBigError(message='Photo at "%s" is too large at %d bytes' % (photo_url, content_length))
             content = file_obj.read()
             mime_type = file_obj.info().gettype()
             file_obj.close()
         except (ValueError, IOError) as e:
+            logging.error('IO Error "%s"' % str(e))
             raise fetcher_types.IOError(message=str(e))
 
         logging.info('Successfully fetched photo "%s"' % photo_url)

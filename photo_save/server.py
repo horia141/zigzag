@@ -21,6 +21,7 @@ import photo_save_pb.ttypes as photo_save_types
 import photo_save.decoders.gif
 import photo_save.decoders.generic_image
 import utils.pidfile as pidfile
+import utils.rpc as rpc
 
 
 class ServiceHandler(object):
@@ -43,18 +44,15 @@ class ServiceHandler(object):
 
         logging.info('Fetching from remote source')
 
-        fetcher_transport = TSocket.TSocket(self._fetcher_host, self._fetcher_port)
-        fetcher_transport = TTransport.TBufferedTransport(fetcher_transport)
-        fetcher_protocol = TBinaryProtocol.TBinaryProtocol(fetcher_transport)
-        fetcher_client = fetcher_pb.Service.Client(fetcher_protocol)
-        fetcher_transport.open()
         try:
-            photo_raw_data = fetcher_client.fetch_photo(source_uri)
+            with rpc.to(fetcher_pb.Service, self._fetcher_host, self._fetcher_port) as fetcher_client:
+                photo_raw_data = fetcher_client.fetch_photo(source_uri)
         except fetcher_types.PhotoTooBigError as e:
+            logger.error(e.message)
             raise photo_save_types.Error(message=e.message)
-        fetcher_transport.close()
-
+    
         if photo_raw_data.mime_type not in defines.PHOTO_MIMETYPES:
+            logger.error('Unrecognized photo type - "%s"' % photo_raw_data.mime_type)
             raise photo_save_types.Error(message='Unrecognized photo type - "%s"' % photo_raw_data.mime_type)
 
         logging.info('Saving the original locally')
@@ -67,7 +65,11 @@ class ServiceHandler(object):
         photo_raw_file.close()
 
         logging.info('Decoding image')
-        photo = Image.open(StringIO.StringIO(photo_raw_data.content))
+        try:
+            photo = Image.open(StringIO.StringIO(photo_raw_data.content))
+        except Exception as e:
+            logging.error('Could not parse image "%s"' % str(e))
+            raise photo_save_types.Error(message='Could not parse image "%s"' % str(e))
 
         if self._is_video(photo):
             logging.info('Detected animation')
