@@ -44,33 +44,3 @@ execute 'sources' do
   
           "/bin/true"
 end
-
-file "#{Chef::Config[:file_cache_path]}/git_ssh_wrapper.sh" do
-  owner node.default['application']['user']
-  group node.default['application']['group']
-  mode '0755'
-  content "#!/bin/sh\nexec /usr/bin/ssh -i /home/horiacoman/.ssh/id_rsa -o StrictHostKeyChecking=no -o PubkeyAuthentication=yes -o PasswordAuthentication=no \"$@\""
-end
-
-# TODO(horia141): this should not rely on the built in keys. but rather on protected keys in the data bag.
-# TODO(horia141): factor out the repository name.
-git "#{Chef::Config[:file_cache_path]}/comlink" do
-  repository node.default['application']['git']['comlink']['repo']
-  reference node.default['application']['git']['comlink']['branch']
-  action :sync
-  notifies :run, 'bash[install_comlink]', :delayed
-  # user node.default['application']['user']
-  # group node.default['application']['group']
-  ssh_wrapper "#{Chef::Config[:file_cache_path]}/git_ssh_wrapper.sh"
-end
-
-bash 'install_comlink' do
-  cwd "#{Chef::Config[:file_cache_path]}/comlink"
-  code <<-EOH
-    (#{node.default['application']['virtual_env']}/bin/python setup.py install)
-    (chown -R #{node.default['application']['user']} #{File.join(node.default['application']['virtual_env'], 'local', 'lib', 'python2.7', 'site-packages', 'comlink-0.1-py2.7.egg')})
-    (chgrp -R #{node.default['application']['group']} #{File.join(node.default['application']['virtual_env'], 'local', 'lib', 'python2.7', 'site-packages', 'comlink-0.1-py2.7.egg')})
-  EOH
-
-  not_if { FileTest.exists?(File.join(node.default['application']['virtual_env'], 'local', 'lib', 'python2.7', 'site-packages', 'comlink-0.1-py2.7.egg')) }
-end

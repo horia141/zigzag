@@ -116,9 +116,6 @@ default['application']['virtual_env'] = File.join(default['application']['source
 default['application']['egg_cache'] = File.join(default['application']['tmp_dir'], 'egg-cache')
 default['application']['pip_cache'] = File.join(default['application']['tmp_dir'], 'pip-cache')
 
-default['application']['git']['comlink']['repo'] = 'git@github.com:horia141/comlink.git'
-default['application']['git']['comlink']['branch'] = 'master'
-
 default['thrift']['version'] = '0.9.2'
 default['thrift']['mirror'] = 'http://apache.mirror.anlx.net'
 default['thrift']['checksum'] = 'cef50d3934c41db5fa7724440cc6f10a732e7a77fe979b98c23ce45725349570'
