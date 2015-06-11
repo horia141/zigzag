@@ -24,8 +24,9 @@ import utils.pidfile as pidfile
 
 
 class ServiceHandler(object):
-    def __init__(self, fetcher, original_photos_dir, processed_photos_dir):
-        self._fetcher = fetcher
+    def __init__(self, fetcher_host, fetcher_port, original_photos_dir, processed_photos_dir):
+        self._fetcher_host = fetcher_host
+        self._fetcher_port = fetcher_port
         self._original_photos_dir = original_photos_dir
         self._processed_photos_dir = processed_photos_dir
         self._image_decoders = {
@@ -42,9 +43,19 @@ class ServiceHandler(object):
 
         logging.info('Fetching from remote source')
 
-        photo_raw_data = self._fetcher.fetch_photo(source_uri)
+        fetcher_transport = TSocket.TSocket(self._fetcher_host, self._fetcher_port)
+        fetcher_transport = TTransport.TBufferedTransport(fetcher_transport)
+        fetcher_protocol = TBinaryProtocol.TBinaryProtocol(fetcher_transport)
+        fetcher_client = fetcher_pb.Service.Client(fetcher_protocol)
+        fetcher_transport.open()
+        try:
+            photo_raw_data = fetcher_client.fetch_photo(source_uri)
+        except fetcher_types.PhotoTooBigError as e:
+            raise photo_save_types.Error(message=e.message)
+        fetcher_transport.close()
+
         if photo_raw_data.mime_type not in defines.PHOTO_MIMETYPES:
-            raise Error('Unrecognized photo type - "%s"' % photo_raw_data.mime_type)
+            raise photo_save_types.Error(message='Unrecognized photo type - "%s"' % photo_raw_data.mime_type)
 
         logging.info('Saving the original locally')
 
@@ -112,13 +123,7 @@ def main():
 
     logging.basicConfig(level=logging.INFO, filename=args.log_path)
 
-    fetcher_transport = TSocket.TSocket(args.fetcher_host, args.fetcher_port)
-    fetcher_transport = TTransport.TBufferedTransport(fetcher_transport)
-    fetcher_protocol = TBinaryProtocol.TBinaryProtocol(fetcher_transport)
-    fetcher_client = fetcher_pb.Service.Client(fetcher_protocol)
-    fetcher_transport.open()
-
-    service_handler = ServiceHandler(fetcher_client, args.original_photos_dir, 
+    service_handler = ServiceHandler(args.fetcher_host, args.fetcher_port, args.original_photos_dir, 
         args.processed_photos_dir)
     processor = photo_save_pb.Service.Processor(service_handler)
     transport = TSocket.TServerSocket(host=args.host, port=args.port)

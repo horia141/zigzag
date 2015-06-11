@@ -11,10 +11,11 @@ class Error(Exception):
 class Analyzer(object):
     """Base class for artifact source and artifact analyzers."""
 
-    def __init__(self, source, fetcher):
+    def __init__(self, source, fetcher_host, fetcher_port):
         """Construct an analyzer."""
-        self._fetcher = fetcher
         self._source = source
+        self._fetcher_host = fetcher_host
+        self._fetcher_port = fetcher_port
 
     def analyze(self):
         raise Exception('Not implemented')

@@ -17,7 +17,9 @@ import explorer.analyzers.imgur as imgur
 import explorer.analyzers.ninegag as ninegag
 import explorer.analyzers.reddit as reddit
 import fetcher_pb.Service
+import fetcher_pb.ttypes as fetcher_types
 import photo_save_pb.Service
+import photo_save_pb.ttypes as photo_save_types
 import rest_api.models as datastore
 import utils.pidfile as pidfile
 
@@ -50,26 +52,14 @@ def main():
 
     right_now_0 = datetime.datetime.now(pytz.utc)
 
-    fetcher_transport = TSocket.TSocket(args.fetcher_host, args.fetcher_port)
-    fetcher_transport = TTransport.TBufferedTransport(fetcher_transport)
-    fetcher_protocol = TBinaryProtocol.TBinaryProtocol(fetcher_transport)
-    fetcher_client = fetcher_pb.Service.Client(fetcher_protocol)
-    fetcher_transport.open()
-
-    photo_save_transport = TSocket.TSocket(args.photo_save_host, args.photo_save_port)
-    photo_save_transport = TTransport.TBufferedTransport(photo_save_transport)
-    photo_save_protocol = TBinaryProtocol.TBinaryProtocol(photo_save_transport)
-    photo_save_client = photo_save_pb.Service.Client(photo_save_protocol)
-    photo_save_transport.open()
-
     logging.info('Starting crawl and analysis service on %s', right_now_0.strftime(defines.TIME_FORMAT))
 
     logging.info('Building analyzers')
 
     all_analyzers = {
-        'Reddit': reddit.Analyzer(defines.ARTIFACT_SOURCES[1], fetcher_client),
-        'Imgur': imgur.Analyzer(defines.ARTIFACT_SOURCES[2], fetcher_client),
-        '9GAG': ninegag.Analyzer(defines.ARTIFACT_SOURCES[3], fetcher_client)
+        'Reddit': reddit.Analyzer(defines.ARTIFACT_SOURCES[1], args.fetcher_host, args.fetcher_port),
+        'Imgur': imgur.Analyzer(defines.ARTIFACT_SOURCES[2], args.fetcher_host, args.fetcher_port),
+        '9GAG': ninegag.Analyzer(defines.ARTIFACT_SOURCES[3], args.fetcher_host, args.fetcher_port)
     }
 
     iter_nr = 1
@@ -88,7 +78,7 @@ def main():
     
             try:
                 artifact_descs = analyzer.analyze()
-            except analyzers.Error as e:
+            except (analyzers.Error, fetcher_types.Error) as e:
                 logging.warn('Could not analyze "%s" - %s', analyzer_name, str(e))
                 continue
     
@@ -99,15 +89,23 @@ def main():
                     logging.info('Found already existing artifact "%s"', artifact_desc['page_uri'])
                     continue
     
+                logging.info('Fetching photos for artifact')
                 photo_description = []
     
                 try:
                     for image_raw_description in artifact_desc['photo_description']:
+                        logging.info('Fetching photo "%s"' % image_raw_description['uri_path'])
                         subtitle = image_raw_description['subtitle']
                         description = image_raw_description['description']
                         source_uri = image_raw_description['uri_path']
+                        photo_save_transport = TSocket.TSocket(args.photo_save_host, args.photo_save_port)
+                        photo_save_transport = TTransport.TBufferedTransport(photo_save_transport)
+                        photo_save_protocol = TBinaryProtocol.TBinaryProtocol(photo_save_transport)
+                        photo_save_client = photo_save_pb.Service.Client(photo_save_protocol)
+                        photo_save_transport.open()
                         photo_description.append(photo_save_client.process_one_photo(
                             subtitle, description, source_uri))
+                        photo_save_transport.close()
                 except Exception as e:
                     logging.error('Encountered an error in processing artifact "%s"', artifact_desc['title'])
                     logging.error(str(e))

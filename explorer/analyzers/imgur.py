@@ -5,16 +5,21 @@ import urllib2
 import urlparse
 
 import bs4 as bs
+from thrift.protocol import TBinaryProtocol
+from thrift.transport import TSocket
+from thrift.transport import TTransport
 
 import common.defines.constants as defines
 import explorer.analyzers as analyzers
+import fetcher_pb.Service
+import fetcher_pb.ttypes as fetcher_types
 
 
 class Analyzer(analyzers.Analyzer):
     """Class for performing analysis of the Imgur artifact source."""
 
-    def __init__(self, source, fetcher):
-        super(Analyzer, self).__init__(source, fetcher)
+    def __init__(self, source, fetcher_host, fetcher_port):
+        super(Analyzer, self).__init__(source, fetcher_host, fetcher_port)
 
     def analyze(self):
         logging.info('Analyzing Imgur')
@@ -24,7 +29,13 @@ class Analyzer(analyzers.Analyzer):
         logging.info('Fetching main page')
 
         try:
-            main_page = self._fetcher.fetch_url(self.source.start_page_uri)
+            fetcher_transport = TSocket.TSocket(self._fetcher_host, self._fetcher_port)
+            fetcher_transport = TTransport.TBufferedTransport(fetcher_transport)
+            fetcher_protocol = TBinaryProtocol.TBinaryProtocol(fetcher_transport)
+            fetcher_client = fetcher_pb.Service.Client(fetcher_protocol)
+            fetcher_transport.open()
+            main_page = fetcher_client.fetch_url(self.source.start_page_uri)
+            fetcher_transport.close()
             if main_page.mime_type not in defines.WEBPAGE_MIMETYPES:
                 logging.warn('Main page is of wrong MIME type')
                 return []
@@ -69,7 +80,13 @@ class Analyzer(analyzers.Analyzer):
         logging.info('Analyzing "%s"', artifact_page_url)
 
         try:
-            page = self._fetcher.fetch_url(artifact_page_url)
+            fetcher_transport = TSocket.TSocket(self._fetcher_host, self._fetcher_port)
+            fetcher_transport = TTransport.TBufferedTransport(fetcher_transport)
+            fetcher_protocol = TBinaryProtocol.TBinaryProtocol(fetcher_transport)
+            fetcher_client = fetcher_pb.Service.Client(fetcher_protocol)
+            fetcher_transport.open()
+            page = fetcher_client.fetch_url(artifact_page_url)
+            fetcher_transport.close()
             if page.mime_type not in defines.WEBPAGE_MIMETYPES:
                 raise analyzers.Error('Page is of wrong MIME type')
         except (urllib2.URLError, ValueError) as e:
@@ -162,7 +179,13 @@ class Analyzer(analyzers.Analyzer):
         logging.info('Analyzing "%s"', artifact_page_url)
 
         try:
-            page = self._fetcher.fetch_url(artifact_page_url)
+            fetcher_transport = TSocket.TSocket(self._fetcher_host, self._fetcher_port)
+            fetcher_transport = TTransport.TBufferedTransport(fetcher_transport)
+            fetcher_protocol = TBinaryProtocol.TBinaryProtocol(fetcher_transport)
+            fetcher_client = fetcher_pb.Service.Client(fetcher_protocol)
+            fetcher_transport.open()
+            page = fetcher_client.fetch_url(artifact_page_url)
+            fetcher_transport.close()
             if page.mime_type not in defines.WEBPAGE_MIMETYPES:
                 raise analyzers.Error('Page is of wrong MIME type')
         except (urllib2.URLError, ValueError) as e:

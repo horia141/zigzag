@@ -6,8 +6,6 @@ import pytz
 import re
 import time
 
-import comlink
-
 import rest_api.models as models
 import log_analyzer.protos.ttypes as log_analyzer_protos
 import utils.pidfile as pidfile
@@ -123,11 +121,4 @@ def main():
 
 
 if __name__ == '__main__':
-    try:
-        main()
-    except Exception as e:
-        if comlink.is_remote_exception(e):
-            logging.error(comlink.format_stacktrace_for_remote_exception(e))
-        else:
-            logging.exception(e)
-        raise
+    main()
