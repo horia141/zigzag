@@ -14,15 +14,6 @@ service node.default['application']['explorer']['fetcher']['name'] do
   provider Chef::Provider::Service::Init::Debian
 end
 
-firewall_rule node.default['application']['explorer']['fetcher']['name'] do
-  source node.default['application']['explorer']['fetcher']['host']
-  destination node.default['application']['explorer']['fetcher']['host']
-  port node.default['application']['explorer']['fetcher']['port']
-  protocol :tcp
-  action :allow
-  notifies :enable, 'firewall[ufw]', :delayed
-end
-
 # Setup photo_save service.
 
 template node.default['application']['explorer']['photo_save']['daemon']['script'] do
