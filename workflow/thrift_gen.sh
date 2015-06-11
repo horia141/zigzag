@@ -1,27 +1,29 @@
 #!/bin/bash
 # Generate all Thrift definitions for the supported languages.
 
-LANGUAGES=(py java cocoa)
 DEFINITIONS=(
-  common/model.thrift
-  common/defines.thrift
-  common/api.thrift
-  log_analyzer/log_analyzer.thrift
+  common/model.thrift=py:java:cocoa
+  common/defines.thrift=py:java:cocoa
+  common/api.thrift=py:java:cocoa
+  fetcher/fetcher.thrift=py
+  log_analyzer/log_analyzer.thrift=py
 )
 
 mkdir -p gen
 
-for lang in ${LANGUAGES[*]}
+for defn in ${DEFINITIONS[*]}
 do
-  mkdir -p gen/$lang
-
-  for defn in ${DEFINITIONS[*]}
+  sp1=(${defn//=/ })
+  thrift_file=${sp1[0]}
+  langs=(${sp1[1]//:/ })
+  for lang in ${langs[*]}
   do
+    mkdir -p gen/$lang
     if [ "$lang" = "py" ]
     then
-      thrift -out gen/$lang --gen py:new_style $defn
+      thrift -out gen/$lang --gen py:new_style $thrift_file
     else
-      thrift -out gen/$lang --gen $lang $defn
+      thrift -out gen/$lang --gen $lang $thrift_file
     fi
   done
 done

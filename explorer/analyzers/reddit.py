@@ -13,9 +13,9 @@ import explorer.analyzers.imgur as imgur
 class Analyzer(analyzers.Analyzer):
     """Class for performing analysis of the Reddit artifact source."""
 
-    def __init__(self, source, fetcher_port):
-        super(Analyzer, self).__init__(source, fetcher_port)
-        self._imgur_analyzer = imgur.Analyzer(defines.ARTIFACT_SOURCES[2], fetcher_port)
+    def __init__(self, source, fetcher):
+        super(Analyzer, self).__init__(source, fetcher)
+        self._imgur_analyzer = imgur.Analyzer(defines.ARTIFACT_SOURCES[2], fetcher)
 
     def analyze(self):
         logging.info('Analyzing Reddit')
@@ -28,8 +28,8 @@ class Analyzer(analyzers.Analyzer):
             category_url = self.source.start_page_uri % category
             logging.info('Fetching main page at "%s"', category_url)
             try:
-                (category_page_raw_content, category_page_type) = self._fetcher.fetch_url(category_url)
-                if category_page_type not in defines.WEBPAGE_MIMETYPES:
+                category_page = self._fetcher.fetch_url(category_url)
+                if category_page.mime_type not in defines.WEBPAGE_MIMETYPES:
                     logging.warn('Main page is of wrong MIME type')
                     continue
             except (urllib2.URLError, ValueError) as e:
@@ -37,7 +37,7 @@ class Analyzer(analyzers.Analyzer):
                 continue
 
             logging.info('Parse structure')
-            soup = bs.BeautifulSoup(category_page_raw_content)
+            soup = bs.BeautifulSoup(category_page.content)
 
             if soup is None:
                 raise analyzers.Error('Could not parse structure')
@@ -85,8 +85,8 @@ class Analyzer(analyzers.Analyzer):
         try_other_analyzer = False
 
         try:
-            image_mime_type = self._fetcher.fetch_url_mimetype(artifact_page_url)
-            if image_mime_type not in defines.PHOTO_MIMETYPES:
+            image = self._fetcher.fetch_url_mimetype(artifact_page_url)
+            if image.mime_type not in defines.PHOTO_MIMETYPES:
                 # Try to parse things with the Imgur analyzer.
                 try_other_analyzer = True
                 logging.warn('Could not fetch as image, trying with another analyzer')

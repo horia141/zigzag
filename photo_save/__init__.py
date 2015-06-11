@@ -6,6 +6,9 @@ import logging
 import os.path
 import uuid
 
+from thrift.protocol import TBinaryProtocol
+from thrift.transport import TSocket
+from thrift.transport import TTransport
 import comlink
 import comlink.serializer.pickle as serializer
 import comlink.transport.localipc as transport
@@ -13,7 +16,7 @@ from PIL import Image
 
 import common.defines.constants as defines
 import common.model.ttypes as model
-import fetcher
+import fetcher.Service
 import photo_save.decoders.gif
 import photo_save.decoders.generic_image
 import utils.pidfile as pidfile
@@ -28,12 +31,14 @@ class GifTooLargeError(Error):
 
 
 class Service(comlink.Service):
-    def __init__(self, ser, fetcher_port, original_photos_dir, processed_photos_dir):
+    def __init__(self, ser, fetcher_host, fetcher_port, original_photos_dir, processed_photos_dir):
         super(Service, self).__init__()
-        client = transport.Client(fetcher_port, ser)
+        transport = TSocket.TSocket(fetcher_host, fetcher_port)
+        transport = TTransport.TBufferedTransport(transport)
+        protocol = TBinaryProtocol.TBinaryProtocol(transport)
         self._original_photos_dir = original_photos_dir
         self._processed_photos_dir = processed_photos_dir
-        self._fetcher = fetcher.Service.client(client)
+        self._fetcher = fetcher.Service.Client(protocol)
         self._image_decoders = {
             'image/jpeg': photo_save.decoders.generic_image.Decoder(),
             'image/png': photo_save.decoders.generic_image.Decoder(),
@@ -42,6 +47,7 @@ class Service(comlink.Service):
         self._video_decoders = {
             'image/gif': photo_save.decoders.gif.Decoder()
         }
+        transport.open()
 
     @comlink.call
     def process_one_photo(self, subtitle, description, source_uri):
@@ -49,31 +55,31 @@ class Service(comlink.Service):
 
         logging.info('Fetching from remote source')
 
-        (photo_raw_data, photo_raw_mime_type) = self._fetcher.fetch_photo(source_uri)
-        if photo_raw_mime_type not in defines.PHOTO_MIMETYPES:
-            raise Error('Unrecognized photo type - "%s"' % photo_raw_mime_type)
+        photo_raw_data = self._fetcher.fetch_photo(source_uri)
+        if photo_raw_data.mime_type not in defines.PHOTO_MIMETYPES:
+            raise Error('Unrecognized photo type - "%s"' % photo_raw_data.mime_type)
 
         logging.info('Saving the original locally')
 
         (storage_path, original_photo_uri_path) = self._unique_photo_path(
-            self._original_photos_dir, photo_raw_mime_type)
+            self._original_photos_dir, photo_raw_data.mime_type)
 
         photo_raw_file = open(storage_path, 'w')
-        photo_raw_file.write(photo_raw_data)
+        photo_raw_file.write(photo_raw_data.content)
         photo_raw_file.close()
 
         logging.info('Decoding image')
-        photo = Image.open(StringIO.StringIO(photo_raw_data))
+        photo = Image.open(StringIO.StringIO(photo_raw_data.content))
 
         if self._is_video(photo):
             logging.info('Detected animation')
             screen_config = defines.VIDEO_SCREEN_CONFIG
-            photo_data = self._video_decoders[photo_raw_mime_type].decode(
+            photo_data = self._video_decoders[photo_raw_data.mime_type].decode(
                 defines.VIDEO_SCREEN_CONFIG.name, defines.VIDEO_SCREEN_CONFIG, photo, storage_path,
                 lambda mime_type: self._unique_photo_path(self._processed_photos_dir, mime_type))
         else:
             logging.info('Detected regular')
-            photo_data = self._image_decoders[photo_raw_mime_type].decode(
+            photo_data = self._image_decoders[photo_raw_data.mime_type].decode(
                 defines.IMAGE_SCREEN_CONFIG.name, defines.IMAGE_SCREEN_CONFIG, photo, storage_path,
                 lambda mime_type: self._unique_photo_path(self._processed_photos_dir, mime_type))
 
@@ -99,8 +105,10 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--port', type=int, required=True,
         help='Port on which the Comlink server is listening')
+    parser.add_argument('--fetcher_host', type=str, required=True,
+        help='Host on which the fetcher server is listening')
     parser.add_argument('--fetcher_port', type=int, required=True,
-        help='Port on which the fetcher Comlink server is listening')
+        help='Port on which the fetcher server is listening')
     parser.add_argument('--original_photos_dir', type=str, required=True,
         help='Directory to store the original photos')
     parser.add_argument('--processed_photos_dir', type=str, required=True,
@@ -116,8 +124,8 @@ def main():
     logging.basicConfig(level=logging.INFO, filename=args.log_path)
 
     ser = serializer.Serializer()
-    photo_save_service = Service(ser, args.fetcher_port, args.original_photos_dir,
-        args.processed_photos_dir)
+    photo_save_service = Service(ser, args.fetcher_host, args.fetcher_port,
+        args.original_photos_dir, args.processed_photos_dir)
 
     server = transport.Server(args.port, ser)
     server.add_service(photo_save_service)

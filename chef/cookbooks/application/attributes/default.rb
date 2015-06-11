@@ -76,6 +76,7 @@ default['application']['res_server']['daemon']['debug_log'] = File.join(default[
 default['application']['explorer']['name'] = 'zigzag_explorer'
 default['application']['explorer']['user'] = 'zigzag_explorer'
 default['application']['explorer']['fetcher']['name'] = 'zigzag_explorer_fetcher'
+default['application']['explorer']['fetcher']['host'] = '127.0.0.1'
 default['application']['explorer']['fetcher']['port'] = 16000
 default['application']['explorer']['fetcher']['pid_file'] = File.join(default['application']['var_dir'], 'explorer.fetcher.pid')
 default['application']['explorer']['fetcher']['log'] = File.join(default['application']['var_dir'], 'explorer.fetcher.log')

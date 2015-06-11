@@ -6,7 +6,7 @@
 start () {
     echo "Starting <%= node.default['application']['explorer']['explorer']['name'] %>... "
     daemon --name='<%= node.default['application']['explorer']['explorer']['name'] %>' \
-           --command='<%= node.default['application']['virtual_env'] %>/bin/python <%= node.default['application']['sources_dir'] %>/explorer/server.py --sleep_sec=<%= node.default['application']['explorer']['explorer']['sleep_sec'] %> --fetcher_port=<%= node.default['application']['explorer']['fetcher']['port'] %> --photo_save_port=<%= node.default['application']['explorer']['photo_save']['port'] %> --log_path=<%= node.default['application']['explorer']['explorer']['log'] %> --pidfile_path=<%= node.default['application']['explorer']['explorer']['pid_file'] %>' \
+           --command='<%= node.default['application']['virtual_env'] %>/bin/python <%= node.default['application']['sources_dir'] %>/explorer/server.py --sleep_sec=<%= node.default['application']['explorer']['explorer']['sleep_sec'] %> --fetcher_host=<%= node.default['application']['explorer']['fetcher']['host'] %> --fetcher_port=<%= node.default['application']['explorer']['fetcher']['port'] %> --photo_save_port=<%= node.default['application']['explorer']['photo_save']['port'] %> --log_path=<%= node.default['application']['explorer']['explorer']['log'] %> --pidfile_path=<%= node.default['application']['explorer']['explorer']['pid_file'] %>' \
            --env='PYTHONPATH=<%= node.default['application']['python_env']['PYTHONPATH'] %>' \
            --env='DJANGO_SETTINGS_MODULE=<%= node.default['application']['python_env']['DJANGO_SETTINGS_MODULE'] %>' \
            --env='PYTHON_EGG_CACHE=<%= node.default['application']['python_env']['PYTHON_EGG_CACHE'] %>' \

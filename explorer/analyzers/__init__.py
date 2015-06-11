@@ -2,11 +2,6 @@
 
 import urlparse
 
-import comlink.serializer.pickle as serializer
-import comlink.transport.localipc as transport
-
-import fetcher
-
 
 class Error(Exception):
     """Error raised by analyzers."""
@@ -16,11 +11,9 @@ class Error(Exception):
 class Analyzer(object):
     """Base class for artifact source and artifact analyzers."""
 
-    def __init__(self, source, fetcher_port):
+    def __init__(self, source, fetcher):
         """Construct an analyzer."""
-        ser = serializer.Serializer()
-        client = transport.Client(fetcher_port, ser)
-        self._fetcher = fetcher.Service.client(client)
+        self._fetcher = fetcher
         self._source = source
 
     def analyze(self):

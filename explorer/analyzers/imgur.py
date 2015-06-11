@@ -13,8 +13,8 @@ import explorer.analyzers as analyzers
 class Analyzer(analyzers.Analyzer):
     """Class for performing analysis of the Imgur artifact source."""
 
-    def __init__(self, source, fetcher_port):
-        super(Analyzer, self).__init__(source, fetcher_port)
+    def __init__(self, source, fetcher):
+        super(Analyzer, self).__init__(source, fetcher)
 
     def analyze(self):
         logging.info('Analyzing Imgur')
@@ -24,8 +24,8 @@ class Analyzer(analyzers.Analyzer):
         logging.info('Fetching main page')
 
         try:
-            (main_page_raw_content, main_page_mime_type) = self._fetcher.fetch_url(self.source.start_page_uri)
-            if main_page_mime_type not in defines.WEBPAGE_MIMETYPES:
+            main_page = self._fetcher.fetch_url(self.source.start_page_uri)
+            if main_page.mime_type not in defines.WEBPAGE_MIMETYPES:
                 logging.warn('Main page is of wrong MIME type')
                 return []
         except (urllib2.URLError, ValueError) as e:
@@ -33,7 +33,7 @@ class Analyzer(analyzers.Analyzer):
             return []
 
         logging.info('Parse structure')
-        soup = bs.BeautifulSoup(main_page_raw_content)
+        soup = bs.BeautifulSoup(main_page.content)
 
         if soup is None:
             raise analyzers.Error('Could not parse structure')
@@ -69,18 +69,15 @@ class Analyzer(analyzers.Analyzer):
         logging.info('Analyzing "%s"', artifact_page_url)
 
         try:
-            res = self._fetcher.fetch_url(artifact_page_url)
-            if res is None:
-                raise analyzers.Error('Unknown error')
-            (page_raw_content, page_mime_type) = res
-            if page_mime_type not in defines.WEBPAGE_MIMETYPES:
+            page = self._fetcher.fetch_url(artifact_page_url)
+            if page.mime_type not in defines.WEBPAGE_MIMETYPES:
                 raise analyzers.Error('Page is of wrong MIME type')
         except (urllib2.URLError, ValueError) as e:
             raise analyzers.Error('Could not fetch - %s' % str(e))
 
         logging.info('Parse structure')
         try:
-            soup = bs.BeautifulSoup(page_raw_content)
+            soup = bs.BeautifulSoup(page.content)
         except TypeError as e:
             # TODO(horia141): I think there's a bug in BeautifulSoup.
             raise analyzers.Error('Could not process - %s' % str(e))
@@ -165,14 +162,14 @@ class Analyzer(analyzers.Analyzer):
         logging.info('Analyzing "%s"', artifact_page_url)
 
         try:
-            (page_raw_content, page_mime_type) = self._fetcher.fetch_url(artifact_page_url)
-            if page_mime_type not in defines.WEBPAGE_MIMETYPES:
+            page = self._fetcher.fetch_url(artifact_page_url)
+            if page.mime_type not in defines.WEBPAGE_MIMETYPES:
                 raise analyzers.Error('Page is of wrong MIME type')
         except (urllib2.URLError, ValueError) as e:
             raise analyzers.Error('Could not fetch - %s' % str(e))
 
         logging.info('Parse structure')
-        soup = bs.BeautifulSoup(page_raw_content)
+        soup = bs.BeautifulSoup(page.content)
 
         if soup is None:
             raise analyzers.Error('Could not parse structure')
