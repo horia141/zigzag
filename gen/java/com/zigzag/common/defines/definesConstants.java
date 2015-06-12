@@ -86,21 +86,28 @@ public class definesConstants {
     tmp2.setName("Imgur");
     tmp2.setArtifact_title_name("imgur");
     tmp2.setStart_page_uri("http://imgur.com");
+    Set<String> tmp3 = new HashSet<String>();
+    tmp3.add("hot:viral");
+    tmp3.add("hot:top");
+    tmp3.add("top:viral");
+    tmp3.add("top:top");
+
+    tmp2.setSubdomains(tmp3);
 
     ARTIFACT_SOURCES.put(2L, tmp2);
-    com.zigzag.common.model.ArtifactSource tmp3 = new com.zigzag.common.model.ArtifactSource();
-    tmp3.setId(3L);
-    tmp3.setName("9GAG");
-    tmp3.setArtifact_title_name("9gag");
-    tmp3.setStart_page_uri("http://9gag.com/%s");
-    Set<String> tmp4 = new HashSet<String>();
-    tmp4.add("hot");
-    tmp4.add("trending");
-    tmp4.add("gif");
+    com.zigzag.common.model.ArtifactSource tmp4 = new com.zigzag.common.model.ArtifactSource();
+    tmp4.setId(3L);
+    tmp4.setName("9GAG");
+    tmp4.setArtifact_title_name("9gag");
+    tmp4.setStart_page_uri("http://9gag.com/%s");
+    Set<String> tmp5 = new HashSet<String>();
+    tmp5.add("hot");
+    tmp5.add("trending");
+    tmp5.add("gif");
 
-    tmp3.setSubdomains(tmp4);
+    tmp4.setSubdomains(tmp5);
 
-    ARTIFACT_SOURCES.put(3L, tmp3);
+    ARTIFACT_SOURCES.put(3L, tmp4);
   }
 
   public static final com.zigzag.common.model.ScreenConfig IMAGE_SCREEN_CONFIG = new com.zigzag.common.model.ScreenConfig();
@@ -132,5 +139,9 @@ public class definesConstants {
   public static final long BANDWIDTH_ALERT_BYTES_PER_MONTH = 1073741824L;
 
   public static final long MAXIMUM_FETCHED_PHOTO_SIZE_IN_BYTES = 5242880L;
+
+  public static final String IMGUR_CLIENT_ID = "0df7ad16acdd582";
+
+  public static final String IMGUR_CLIENT_SECRET = "67d3131c430b25d393e55f2eaa63252249b734df";
 
 }

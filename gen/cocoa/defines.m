@@ -39,6 +39,8 @@ static int32_t common.definesPHOTO_MAX_WIDTH = 2048;
 static int32_t common.definesPHOTO_MAX_HEIGHT = 2048;
 static int64_t common.definesBANDWIDTH_ALERT_BYTES_PER_MONTH = 1073741824;
 static int64_t common.definesMAXIMUM_FETCHED_PHOTO_SIZE_IN_BYTES = 5242880;
+static NSString * common.definesIMGUR_CLIENT_ID = @"0df7ad16acdd582";
+static NSString * common.definesIMGUR_CLIENT_SECRET = @"67d3131c430b25d393e55f2eaa63252249b734df";
 
 @implementation common.definesdefinesConstants
 + (void) initialize {
@@ -78,21 +80,28 @@ static int64_t common.definesMAXIMUM_FETCHED_PHOTO_SIZE_IN_BYTES = 5242880;
   [tmp2 setName:@"Imgur"];
   [tmp2 setArtifact_title_name:@"imgur"];
   [tmp2 setStart_page_uri:@"http://imgur.com"];
+  NSMutableSet *tmp3 = [[[NSMutableSet alloc] initWithCapacity:4] autorelease_stub];
+  [tmp3 addObject:@"hot:viral"];
+  [tmp3 addObject:@"hot:top"];
+  [tmp3 addObject:@"top:viral"];
+  [tmp3 addObject:@"top:top"];
+
+  [tmp2 setSubdomains:tmp3];
 
   [common.definesARTIFACT_SOURCES setObject:tmp2 forKey:[NSNumber numberWithLongLong: 2]];
-  common.modelArtifactSource * tmp3 = [[[common.modelArtifactSource alloc] init] autorelease_stub];
-  [tmp3 setId:3];
-  [tmp3 setName:@"9GAG"];
-  [tmp3 setArtifact_title_name:@"9gag"];
-  [tmp3 setStart_page_uri:@"http://9gag.com/%s"];
-  NSMutableSet *tmp4 = [[[NSMutableSet alloc] initWithCapacity:3] autorelease_stub];
-  [tmp4 addObject:@"hot"];
-  [tmp4 addObject:@"trending"];
-  [tmp4 addObject:@"gif"];
+  common.modelArtifactSource * tmp4 = [[[common.modelArtifactSource alloc] init] autorelease_stub];
+  [tmp4 setId:3];
+  [tmp4 setName:@"9GAG"];
+  [tmp4 setArtifact_title_name:@"9gag"];
+  [tmp4 setStart_page_uri:@"http://9gag.com/%s"];
+  NSMutableSet *tmp5 = [[[NSMutableSet alloc] initWithCapacity:3] autorelease_stub];
+  [tmp5 addObject:@"hot"];
+  [tmp5 addObject:@"trending"];
+  [tmp5 addObject:@"gif"];
 
-  [tmp3 setSubdomains:tmp4];
+  [tmp4 setSubdomains:tmp5];
 
-  [common.definesARTIFACT_SOURCES setObject:tmp3 forKey:[NSNumber numberWithLongLong: 3]];
+  [common.definesARTIFACT_SOURCES setObject:tmp4 forKey:[NSNumber numberWithLongLong: 3]];
 
 ;
   common.definesIMAGE_SCREEN_CONFIG = [[common.modelScreenConfig alloc] init];
@@ -165,6 +174,12 @@ static int64_t common.definesMAXIMUM_FETCHED_PHOTO_SIZE_IN_BYTES = 5242880;
 }
 + (int64_t) MAXIMUM_FETCHED_PHOTO_SIZE_IN_BYTES{
   return common.definesMAXIMUM_FETCHED_PHOTO_SIZE_IN_BYTES;
+}
++ (NSString *) IMGUR_CLIENT_ID{
+  return common.definesIMGUR_CLIENT_ID;
+}
++ (NSString *) IMGUR_CLIENT_SECRET{
+  return common.definesIMGUR_CLIENT_SECRET;
 }
 @end
 

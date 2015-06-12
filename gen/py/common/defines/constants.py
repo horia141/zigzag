@@ -45,6 +45,12 @@ ARTIFACT_SOURCES = {
     "name" : "Imgur",
     "artifact_title_name" : "imgur",
     "start_page_uri" : "http://imgur.com",
+    "subdomains" : set([
+      "hot:viral",
+      "hot:top",
+      "top:viral",
+      "top:top",
+    ]),
   }),
   3 : common.model.ttypes.ArtifactSource(**{
     "id" : 3,
@@ -75,3 +81,5 @@ PHOTO_MAX_WIDTH = 2048
 PHOTO_MAX_HEIGHT = 2048
 BANDWIDTH_ALERT_BYTES_PER_MONTH = 1073741824
 MAXIMUM_FETCHED_PHOTO_SIZE_IN_BYTES = 5242880
+IMGUR_CLIENT_ID = "0df7ad16acdd582"
+IMGUR_CLIENT_SECRET = "67d3131c430b25d393e55f2eaa63252249b734df"

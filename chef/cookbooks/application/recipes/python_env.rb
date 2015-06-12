@@ -56,3 +56,9 @@ bash 'install_thrift_python' do
   EOF
   not_if { FileTest.exists?(File.join(node.default['application']['virtual_env'], 'local', 'lib', 'python2.7', 'site-packages', "thrift-#{node.default['thrift']['version']}-py2.7-linux-x86_64.egg")) }
 end
+
+# TODO(horia141): figure out how to write this as the appropriate user and group.
+python_pip 'imgurpython' do
+  virtualenv node.default['application']['virtual_env']
+  options "--cache-dir #{node.default['application']['pip_cache']}"
+end

@@ -34,6 +34,7 @@ const map<i64, model.ArtifactSource> ARTIFACT_SOURCES = {
         'name': 'Imgur',
 	'artifact_title_name': 'imgur',
         'start_page_uri': 'http://imgur.com'
+	'subdomains': ['hot:viral', 'hot:top', 'top:viral', 'top:top'],
     },
     3: {
         'id': 3,
@@ -74,3 +75,8 @@ const i64 BANDWIDTH_ALERT_BYTES_PER_MONTH = 1073741824; // 1GB
 // Comlink for some reason. Luckly, images larger than this comprise less than 1% of the total,
 // based on a 2000 image sample. They are mostly GIFs as well.
 const i64 MAXIMUM_FETCHED_PHOTO_SIZE_IN_BYTES = 5242880; // 5MB
+
+
+// TODO(horia141): perhaps this should not be here.
+const string IMGUR_CLIENT_ID = '0df7ad16acdd582'
+const string IMGUR_CLIENT_SECRET = '67d3131c430b25d393e55f2eaa63252249b734df'
