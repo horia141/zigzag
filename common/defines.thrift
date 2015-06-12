@@ -49,6 +49,8 @@ const model.ScreenConfig IMAGE_SCREEN_CONFIG = {
     'width': 800
 };
 
+# The width MUST be a multiple of 2. This is because the video encoder used to convert Gifs to
+# videos demands it. It is a good practice as well, I imagine.
 const model.ScreenConfig VIDEO_SCREEN_CONFIG = {
     'name': '480',
     'width': 480

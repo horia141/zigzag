@@ -48,11 +48,11 @@ class ServiceHandler(object):
             with rpc.to(fetcher_pb.Service, self._fetcher_host, self._fetcher_port) as fetcher_client:
                 photo_raw_data = fetcher_client.fetch_photo(source_uri)
         except fetcher_types.PhotoTooBigError as e:
-            logger.error(e.message)
+            logging.error(e.message)
             raise photo_save_types.Error(message=e.message)
     
         if photo_raw_data.mime_type not in defines.PHOTO_MIMETYPES:
-            logger.error('Unrecognized photo type - "%s"' % photo_raw_data.mime_type)
+            logging.error('Unrecognized photo type - "%s"' % photo_raw_data.mime_type)
             raise photo_save_types.Error(message='Unrecognized photo type - "%s"' % photo_raw_data.mime_type)
 
         logging.info('Saving the original locally')

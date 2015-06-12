@@ -7,6 +7,7 @@ import subprocess
 
 import common.defines.constants as defines
 import common.model.ttypes as model
+import photo_save_pb.ttypes as photo_save_types
 import photo_save.decoders as decoders
 from PIL import Image
 
@@ -19,8 +20,11 @@ class Decoder(decoders.Decoder):
         aspect_ratio = float(height) / float(width)
 
         desired_width = screen_config.width
+        assert desired_width % 2 == 0
         assert desired_width <= defines.PHOTO_MAX_WIDTH
         desired_height = int(aspect_ratio * desired_width)
+        # Ensure that desired_height is a multiple of 2, by rounding up.
+        desired_height += desired_height % 2
 
         if desired_height > defines.PHOTO_MAX_HEIGHT:
             return model.PhotoData(too_big_photo_data=model.TooBigPhotoData())
@@ -39,9 +43,14 @@ class Decoder(decoders.Decoder):
         else:
             time_between_frames_ms = defines.DEFAULT_TIME_BETWEEN_FRAMES_MS
         frames_per_sec = math.ceil(1000.0 / time_between_frames_ms)
-        subprocess.check_output(['sources/photo_save/decoders/gif_to_mp4.sh', video_path, '%d' % frames_per_sec,
-                                 '%d' % desired_width, '%d' % desired_height, defines.VIDEO_SAVE_BITRATE,
-                                 video_storage_path])
+        try:
+            cmd_line = ['sources/photo_save/decoders/gif_to_mp4.sh', video_path,
+                '%d' % frames_per_sec, '%d' % desired_width, '%d' % desired_height, 
+                defines.VIDEO_SAVE_BITRATE, video_storage_path]
+            logging.info('Conversion command line "%s"', ' '.join(cmd_line))
+            subprocess.check_output(cmd_line)
+        except subprocess.CalledProcessError as e:
+            raise photo_save_types.Error(message='Could not decode gif')
 
         first_frame = model.TileData(desired_width, desired_height, first_frame_uri_path)
         video = model.TileData(desired_width, desired_height, video_uri_path)
