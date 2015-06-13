@@ -80,11 +80,8 @@ static NSString * common.definesIMGUR_CLIENT_SECRET = @"67d3131c430b25d393e55f2e
   [tmp2 setName:@"Imgur"];
   [tmp2 setArtifact_title_name:@"imgur"];
   [tmp2 setStart_page_uri:@"http://imgur.com"];
-  NSMutableSet *tmp3 = [[[NSMutableSet alloc] initWithCapacity:4] autorelease_stub];
+  NSMutableSet *tmp3 = [[[NSMutableSet alloc] initWithCapacity:1] autorelease_stub];
   [tmp3 addObject:@"hot:viral"];
-  [tmp3 addObject:@"hot:top"];
-  [tmp3 addObject:@"top:viral"];
-  [tmp3 addObject:@"top:top"];
 
   [tmp2 setSubdomains:tmp3];
 

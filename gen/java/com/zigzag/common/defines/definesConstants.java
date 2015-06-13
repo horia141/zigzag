@@ -88,9 +88,6 @@ public class definesConstants {
     tmp2.setStart_page_uri("http://imgur.com");
     Set<String> tmp3 = new HashSet<String>();
     tmp3.add("hot:viral");
-    tmp3.add("hot:top");
-    tmp3.add("top:viral");
-    tmp3.add("top:top");
 
     tmp2.setSubdomains(tmp3);
 

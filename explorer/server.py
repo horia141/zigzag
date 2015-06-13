@@ -79,11 +79,11 @@ def main():
     
             try:
                 artifact_descs = analyzer.analyze()
-            except (analyzers.Error, fetcher_types.Error) as e:
+            except (analyzers.Error, fetcher_types.IOError) as e:
                 logging.error('Could not analyze "%s" - %s', analyzer_name, str(e))
                 continue
     
-                logging.info('Have %d possibly new artifacts', len(artifact_descs))
+            logging.info('Have %d possibly new artifacts', len(artifact_descs))
     
             for artifact_desc in artifact_descs:
                 if datastore.artifact_exists_by_page_uri(artifact_desc['page_uri']):

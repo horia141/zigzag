@@ -47,9 +47,6 @@ ARTIFACT_SOURCES = {
     "start_page_uri" : "http://imgur.com",
     "subdomains" : set([
       "hot:viral",
-      "hot:top",
-      "top:viral",
-      "top:top",
     ]),
   }),
   3 : common.model.ttypes.ArtifactSource(**{
