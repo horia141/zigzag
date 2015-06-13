@@ -57,10 +57,14 @@ class Analyzer(analyzers.Analyzer):
 
         for image in album.images:
             photo_description = {}
-            if 'title' in image:
-                photo_description['title'] = image['title']
-            if 'description' in image:
+            if 'title' in image and image['title'] is not None:
+                photo_description['subtitle'] = image['title']
+            else:
+                photo_description['subtitle'] = ''
+            if 'description' in image and image['description'] is not None:
                 photo_description['description'] = image['description']
+            else:
+                photo_description['description'] = ''
             photo_description['uri_path'] = image['link']
             photo_descriptions.append(photo_description)
 

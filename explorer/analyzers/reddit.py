@@ -18,7 +18,7 @@ class Analyzer(analyzers.Analyzer):
 
     def __init__(self, source, fetcher_host, fetcher_port):
         super(Analyzer, self).__init__(source, fetcher_host, fetcher_port)
-        self._imgur_analyzer = imgur.Analyzer(defines.ARTIFACT_SOURCES[2], fetcher_host, fetcher_port)
+        # self._imgur_analyzer = imgur.Analyzer(defines.ARTIFACT_SOURCES[2], fetcher_host, fetcher_port)
 
     def analyze(self):
         logging.info('Analyzing Reddit')
