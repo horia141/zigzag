@@ -42,7 +42,6 @@ end
 service node.default['application']['explorer']['explorer']['name'] do
   init_command node.default['application']['explorer']['explorer']['daemon']['script']
   supports :start => true, :stop => true, :restart => true, :status => true
-  # action [:enable, :start, :restart]
-  action :nothing
+  action [:enable, :start, :restart]
   provider Chef::Provider::Service::Init::Debian
 end

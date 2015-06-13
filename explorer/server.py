@@ -15,7 +15,7 @@ import common.model.ttypes as model
 import explorer.analyzers as analyzers
 import explorer.analyzers.imgur as imgur
 import explorer.analyzers.ninegag as ninegag
-import explorer.analyzers.reddit2 as reddit
+import explorer.analyzers.reddit as reddit
 import fetcher_pb.Service
 import fetcher_pb.ttypes as fetcher_types
 import photo_save_pb.Service
