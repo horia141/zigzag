@@ -15,7 +15,7 @@ import common.model.ttypes as model
 import explorer.analyzers as analyzers
 import explorer.analyzers.imgur as imgur
 import explorer.analyzers.ninegag as ninegag
-import explorer.analyzers.reddit as reddit
+import explorer.analyzers.reddit2 as reddit
 import fetcher_pb.Service
 import fetcher_pb.ttypes as fetcher_types
 import photo_save_pb.Service
@@ -58,7 +58,7 @@ def main():
     logging.info('Building analyzers')
 
     all_analyzers = {
-        # 'Reddit': reddit.Analyzer(defines.ARTIFACT_SOURCES[1], args.fetcher_host, args.fetcher_port),
+        'Reddit': reddit.Analyzer(defines.ARTIFACT_SOURCES[1], args.fetcher_host, args.fetcher_port),
         'Imgur': imgur.Analyzer(defines.ARTIFACT_SOURCES[2], args.fetcher_host, args.fetcher_port),
         '9GAG': ninegag.Analyzer(defines.ARTIFACT_SOURCES[3], args.fetcher_host, args.fetcher_port)
     }
@@ -102,7 +102,7 @@ def main():
                         with rpc.to(photo_save_pb.Service, args.photo_save_host, args.photo_save_port) as photo_save_client:
                             photo_description.append(photo_save_client.process_one_photo(
                                 subtitle, description, source_uri))
-                except (photo_save_types.Error) as e:
+                except (photo_save_types.Error, Exception) as e:
                     logging.error('Encountered an error in processing artifact "%s"', artifact_desc['title'])
                     logging.error(str(e))
                     continue

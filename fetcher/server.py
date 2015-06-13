@@ -16,7 +16,7 @@ import utils.pidfile as pidfile
 
 
 BOT_HEADERS = {
-    'User-Agent': 'ZigZagBot'
+    'User-Agent': defines.EXPLORER_USER_AGENT
 }
 
 

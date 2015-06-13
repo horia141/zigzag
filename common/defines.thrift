@@ -23,11 +23,10 @@ const map<i64, model.ArtifactSource> ARTIFACT_SOURCES = {
         'name': 'Reddit',
 	'artifact_title_name': 'reddit.com',
         'start_page_uri': 'http://reddit.com/r/%s',
-	'subdomains': ['pics'],
-        # 'subdomains': ['pics', 'comics', 'fffffffuuuuuuuuuuuu', 'ragecomics'
-        #     'lolcats', 'AdviceAnimals', 'Demotivational', 'memes', 'images',
-        #     'aww', 'cats', 'foxes', 'dogpictures', 'sloths', 'gifs',
-        #     'reactiongifs']
+        'subdomains': ['pics', 'comics', 'fffffffuuuuuuuuuuuu', 'ragecomics'
+            'lolcats', 'AdviceAnimals', 'Demotivational', 'memes', 'images',
+            'aww', 'cats', 'foxes', 'dogpictures', 'sloths', 'gifs',
+            'reactiongifs']
     },
     2: {
         'id': 2,
@@ -80,3 +79,5 @@ const i64 MAXIMUM_FETCHED_PHOTO_SIZE_IN_BYTES = 5242880; // 5MB
 // TODO(horia141): perhaps this should not be here.
 const string IMGUR_CLIENT_ID = '0df7ad16acdd582'
 const string IMGUR_CLIENT_SECRET = '67d3131c430b25d393e55f2eaa63252249b734df'
+
+const string EXPLORER_USER_AGENT = 'ZigZag Explorer v1'

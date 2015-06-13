@@ -41,6 +41,7 @@ static int64_t common.definesBANDWIDTH_ALERT_BYTES_PER_MONTH = 1073741824;
 static int64_t common.definesMAXIMUM_FETCHED_PHOTO_SIZE_IN_BYTES = 5242880;
 static NSString * common.definesIMGUR_CLIENT_ID = @"0df7ad16acdd582";
 static NSString * common.definesIMGUR_CLIENT_SECRET = @"67d3131c430b25d393e55f2eaa63252249b734df";
+static NSString * common.definesEXPLORER_USER_AGENT = @"ZigZag Explorer v1";
 
 @implementation common.definesdefinesConstants
 + (void) initialize {
@@ -69,8 +70,23 @@ static NSString * common.definesIMGUR_CLIENT_SECRET = @"67d3131c430b25d393e55f2e
   [tmp0 setName:@"Reddit"];
   [tmp0 setArtifact_title_name:@"reddit.com"];
   [tmp0 setStart_page_uri:@"http://reddit.com/r/%s"];
-  NSMutableSet *tmp1 = [[[NSMutableSet alloc] initWithCapacity:1] autorelease_stub];
+  NSMutableSet *tmp1 = [[[NSMutableSet alloc] initWithCapacity:16] autorelease_stub];
   [tmp1 addObject:@"pics"];
+  [tmp1 addObject:@"comics"];
+  [tmp1 addObject:@"fffffffuuuuuuuuuuuu"];
+  [tmp1 addObject:@"ragecomics"];
+  [tmp1 addObject:@"lolcats"];
+  [tmp1 addObject:@"AdviceAnimals"];
+  [tmp1 addObject:@"Demotivational"];
+  [tmp1 addObject:@"memes"];
+  [tmp1 addObject:@"images"];
+  [tmp1 addObject:@"aww"];
+  [tmp1 addObject:@"cats"];
+  [tmp1 addObject:@"foxes"];
+  [tmp1 addObject:@"dogpictures"];
+  [tmp1 addObject:@"sloths"];
+  [tmp1 addObject:@"gifs"];
+  [tmp1 addObject:@"reactiongifs"];
 
   [tmp0 setSubdomains:tmp1];
 
@@ -80,8 +96,11 @@ static NSString * common.definesIMGUR_CLIENT_SECRET = @"67d3131c430b25d393e55f2e
   [tmp2 setName:@"Imgur"];
   [tmp2 setArtifact_title_name:@"imgur"];
   [tmp2 setStart_page_uri:@"http://imgur.com"];
-  NSMutableSet *tmp3 = [[[NSMutableSet alloc] initWithCapacity:1] autorelease_stub];
+  NSMutableSet *tmp3 = [[[NSMutableSet alloc] initWithCapacity:4] autorelease_stub];
   [tmp3 addObject:@"hot:viral"];
+  [tmp3 addObject:@"hot:top"];
+  [tmp3 addObject:@"top:viral"];
+  [tmp3 addObject:@"top:top"];
 
   [tmp2 setSubdomains:tmp3];
 
@@ -177,6 +196,9 @@ static NSString * common.definesIMGUR_CLIENT_SECRET = @"67d3131c430b25d393e55f2e
 }
 + (NSString *) IMGUR_CLIENT_SECRET{
   return common.definesIMGUR_CLIENT_SECRET;
+}
++ (NSString *) EXPLORER_USER_AGENT{
+  return common.definesEXPLORER_USER_AGENT;
 }
 @end
 

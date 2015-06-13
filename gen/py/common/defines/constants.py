@@ -38,6 +38,21 @@ ARTIFACT_SOURCES = {
     "start_page_uri" : "http://reddit.com/r/%s",
     "subdomains" : set([
       "pics",
+      "comics",
+      "fffffffuuuuuuuuuuuu",
+      "ragecomics",
+      "lolcats",
+      "AdviceAnimals",
+      "Demotivational",
+      "memes",
+      "images",
+      "aww",
+      "cats",
+      "foxes",
+      "dogpictures",
+      "sloths",
+      "gifs",
+      "reactiongifs",
     ]),
   }),
   2 : common.model.ttypes.ArtifactSource(**{
@@ -47,6 +62,9 @@ ARTIFACT_SOURCES = {
     "start_page_uri" : "http://imgur.com",
     "subdomains" : set([
       "hot:viral",
+      "hot:top",
+      "top:viral",
+      "top:top",
     ]),
   }),
   3 : common.model.ttypes.ArtifactSource(**{
@@ -80,3 +98,4 @@ BANDWIDTH_ALERT_BYTES_PER_MONTH = 1073741824
 MAXIMUM_FETCHED_PHOTO_SIZE_IN_BYTES = 5242880
 IMGUR_CLIENT_ID = "0df7ad16acdd582"
 IMGUR_CLIENT_SECRET = "67d3131c430b25d393e55f2eaa63252249b734df"
+EXPLORER_USER_AGENT = "ZigZag Explorer v1"

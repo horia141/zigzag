@@ -104,7 +104,7 @@ default['application']['explorer']['explorer']['daemon']['debug_log'] = File.joi
 
 default['application']['log_analyzer']['name'] = 'zigzag_log_analyzer'
 default['application']['log_analyzer']['user'] = 'zigzag_log_analyzer'
-default['application']['log_analyzer']['sleep_sec'] = 30 * 60
+default['application']['log_analyzer']['sleep_sec'] = 60 * 60
 default['application']['log_analyzer']['pid_file'] = File.join(default['application']['var_dir'], 'log_analyzer.pid')
 default['application']['log_analyzer']['log'] = File.join(default['application']['var_dir'], 'log_analyzer.log')
 default['application']['log_analyzer']['daemon']['script'] = '/etc/init.d/zigzag_log_analyzer'
