@@ -10,7 +10,7 @@ from PIL import Image
 
 
 class Decoder(decoders.Decoder):
-    def decode(self, screen_config_key, screen_config, image, image_path, unique_photo_path_fn):
+    def decode(self, screen_config_key, screen_config, image, unique_photo_path_fn):
         logging.info('Handling the photo as a (possibly tiled) image for screen config "%s"' % screen_config_key)
 
         image_rgba = image.convert('RGBA')

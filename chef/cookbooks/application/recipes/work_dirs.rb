@@ -36,20 +36,6 @@ directory node.default['application']['photos_dir'] do
   action :create
 end
 
-directory node.default['application']['original_photos_dir'] do
-  owner node.default['application']['user']
-  group node.default['application']['group']
-  mode '0770'
-  action :create
-end
-
-directory node.default['application']['processed_photos_dir'] do
-  owner node.default['application']['user']
-  group node.default['application']['group']
-  mode '0770'
-  action :create
-end
-
 directory node.default['application']['sources_dir'] do
   owner node.default['application']['user']
   group node.default['application']['group']

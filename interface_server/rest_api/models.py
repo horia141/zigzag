@@ -129,7 +129,6 @@ def serialize_response_as_json(next_gen_response):
         photo_description_json['subtitle'] = photo_description.subtitle
         photo_description_json['description'] = photo_description.description
         photo_description_json['source_uri'] = photo_description.source_uri
-        photo_description_json['original_uri_path'] = photo_description.original_uri_path
         photo_description_json['photo_data'] = do_photo_data(photo_description.photo_data)
 
         return photo_description_json

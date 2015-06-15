@@ -37,13 +37,12 @@ union PhotoData {
   3: optional VideoPhotoData video_photo_data;
 }
 
-// Next id: 6
+// Next id: 5
 struct PhotoDescription {
   1: optional string subtitle;
   2: optional string description;
   3: required string source_uri;
-  4: required string original_uri_path;
-  5: required PhotoData photo_data;
+  4: required PhotoData photo_data;
 }
 
 // Next id: 6

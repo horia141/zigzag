@@ -201,13 +201,11 @@ typedef int64_t common.modelEntityId;
   NSString * __subtitle;
   NSString * __description;
   NSString * __source_uri;
-  NSString * __original_uri_path;
   common.modelPhotoData * __photo_data;
 
   BOOL __subtitle_isset;
   BOOL __description_isset;
   BOOL __source_uri_isset;
-  BOOL __original_uri_path_isset;
   BOOL __photo_data_isset;
 }
 
@@ -215,12 +213,11 @@ typedef int64_t common.modelEntityId;
 @property (nonatomic, retain, getter=subtitle, setter=setSubtitle:) NSString * subtitle;
 @property (nonatomic, retain, getter=description, setter=setDescription:) NSString * description;
 @property (nonatomic, retain, getter=source_uri, setter=setSource_uri:) NSString * source_uri;
-@property (nonatomic, retain, getter=original_uri_path, setter=setOriginal_uri_path:) NSString * original_uri_path;
 @property (nonatomic, retain, getter=photo_data, setter=setPhoto_data:) common.modelPhotoData * photo_data;
 #endif
 
 - (id) init;
-- (id) initWithSubtitle: (NSString *) subtitle description: (NSString *) description source_uri: (NSString *) source_uri original_uri_path: (NSString *) original_uri_path photo_data: (common.modelPhotoData *) photo_data;
+- (id) initWithSubtitle: (NSString *) subtitle description: (NSString *) description source_uri: (NSString *) source_uri photo_data: (common.modelPhotoData *) photo_data;
 
 - (void) read: (id <TProtocol>) inProtocol;
 - (void) write: (id <TProtocol>) outProtocol;
@@ -244,12 +241,6 @@ typedef int64_t common.modelEntityId;
 - (void) setSource_uri: (NSString *) source_uri;
 #endif
 - (BOOL) source_uriIsSet;
-
-#if !__has_feature(objc_arc)
-- (NSString *) original_uri_path;
-- (void) setOriginal_uri_path: (NSString *) original_uri_path;
-#endif
-- (BOOL) original_uri_pathIsSet;
 
 #if !__has_feature(objc_arc)
 - (common.modelPhotoData *) photo_data;

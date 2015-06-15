@@ -450,7 +450,6 @@ class PhotoDescription(object):
    - subtitle
    - description
    - source_uri
-   - original_uri_path
    - photo_data
   """
 
@@ -459,15 +458,13 @@ class PhotoDescription(object):
     (1, TType.STRING, 'subtitle', None, None, ), # 1
     (2, TType.STRING, 'description', None, None, ), # 2
     (3, TType.STRING, 'source_uri', None, None, ), # 3
-    (4, TType.STRING, 'original_uri_path', None, None, ), # 4
-    (5, TType.STRUCT, 'photo_data', (PhotoData, PhotoData.thrift_spec), None, ), # 5
+    (4, TType.STRUCT, 'photo_data', (PhotoData, PhotoData.thrift_spec), None, ), # 4
   )
 
-  def __init__(self, subtitle=None, description=None, source_uri=None, original_uri_path=None, photo_data=None,):
+  def __init__(self, subtitle=None, description=None, source_uri=None, photo_data=None,):
     self.subtitle = subtitle
     self.description = description
     self.source_uri = source_uri
-    self.original_uri_path = original_uri_path
     self.photo_data = photo_data
 
   def read(self, iprot):
@@ -495,11 +492,6 @@ class PhotoDescription(object):
         else:
           iprot.skip(ftype)
       elif fid == 4:
-        if ftype == TType.STRING:
-          self.original_uri_path = iprot.readString();
-        else:
-          iprot.skip(ftype)
-      elif fid == 5:
         if ftype == TType.STRUCT:
           self.photo_data = PhotoData()
           self.photo_data.read(iprot)
@@ -527,12 +519,8 @@ class PhotoDescription(object):
       oprot.writeFieldBegin('source_uri', TType.STRING, 3)
       oprot.writeString(self.source_uri)
       oprot.writeFieldEnd()
-    if self.original_uri_path is not None:
-      oprot.writeFieldBegin('original_uri_path', TType.STRING, 4)
-      oprot.writeString(self.original_uri_path)
-      oprot.writeFieldEnd()
     if self.photo_data is not None:
-      oprot.writeFieldBegin('photo_data', TType.STRUCT, 5)
+      oprot.writeFieldBegin('photo_data', TType.STRUCT, 4)
       self.photo_data.write(oprot)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -541,8 +529,6 @@ class PhotoDescription(object):
   def validate(self):
     if self.source_uri is None:
       raise TProtocol.TProtocolException(message='Required field source_uri is unset!')
-    if self.original_uri_path is None:
-      raise TProtocol.TProtocolException(message='Required field original_uri_path is unset!')
     if self.photo_data is None:
       raise TProtocol.TProtocolException(message='Required field photo_data is unset!')
     return
@@ -553,7 +539,6 @@ class PhotoDescription(object):
     value = (value * 31) ^ hash(self.subtitle)
     value = (value * 31) ^ hash(self.description)
     value = (value * 31) ^ hash(self.source_uri)
-    value = (value * 31) ^ hash(self.original_uri_path)
     value = (value * 31) ^ hash(self.photo_data)
     return value
 

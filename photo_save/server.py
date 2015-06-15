@@ -25,11 +25,10 @@ import utils.rpc as rpc
 
 
 class ServiceHandler(object):
-    def __init__(self, fetcher_host, fetcher_port, original_photos_dir, processed_photos_dir):
+    def __init__(self, fetcher_host, fetcher_port, photos_dir):
         self._fetcher_host = fetcher_host
         self._fetcher_port = fetcher_port
-        self._original_photos_dir = original_photos_dir
-        self._processed_photos_dir = processed_photos_dir
+        self._photos_dir = photos_dir
         self._image_decoders = {
             'image/jpeg': photo_save.decoders.generic_image.Decoder(),
             'image/png': photo_save.decoders.generic_image.Decoder(),
@@ -55,15 +54,6 @@ class ServiceHandler(object):
             logging.error('Unrecognized photo type - "%s"' % photo_raw_data.mime_type)
             raise photo_save_types.Error(message='Unrecognized photo type - "%s"' % photo_raw_data.mime_type)
 
-        logging.info('Saving the original locally')
-
-        (storage_path, original_photo_uri_path) = self._unique_photo_path(
-            self._original_photos_dir, photo_raw_data.mime_type)
-
-        photo_raw_file = open(storage_path, 'w')
-        photo_raw_file.write(photo_raw_data.content)
-        photo_raw_file.close()
-
         logging.info('Decoding image')
         try:
             photo = Image.open(StringIO.StringIO(photo_raw_data.content))
@@ -75,17 +65,17 @@ class ServiceHandler(object):
             logging.info('Detected animation')
             screen_config = defines.VIDEO_SCREEN_CONFIG
             photo_data = self._video_decoders[photo_raw_data.mime_type].decode(
-                defines.VIDEO_SCREEN_CONFIG.name, defines.VIDEO_SCREEN_CONFIG, photo, storage_path,
-                lambda mime_type: self._unique_photo_path(self._processed_photos_dir, mime_type))
+                defines.VIDEO_SCREEN_CONFIG.name, defines.VIDEO_SCREEN_CONFIG, photo, photo_raw_data.content,
+                lambda mime_type: self._unique_photo_path(self._photos_dir, mime_type))
         else:
             logging.info('Detected regular')
             photo_data = self._image_decoders[photo_raw_data.mime_type].decode(
-                defines.IMAGE_SCREEN_CONFIG.name, defines.IMAGE_SCREEN_CONFIG, photo, storage_path,
-                lambda mime_type: self._unique_photo_path(self._processed_photos_dir, mime_type))
+                defines.IMAGE_SCREEN_CONFIG.name, defines.IMAGE_SCREEN_CONFIG, photo,
+                lambda mime_type: self._unique_photo_path(self._photos_dir, mime_type))
 
         logging.info('Done')
         return model.PhotoDescription(subtitle.encode('utf-8'), description.encode('utf-8'),
-            source_uri, original_photo_uri_path, photo_data)
+            source_uri, photo_data)
 
     def _unique_photo_path(self, photos_dir, mime_type):
         extension = defines.PHOTO_MIMETYPES_TO_EXTENSION[mime_type]
@@ -111,9 +101,7 @@ def main():
         help='Host on which the fetcher server is listening')
     parser.add_argument('--fetcher_port', type=int, required=True,
         help='Port on which the fetcher server is listening')
-    parser.add_argument('--original_photos_dir', type=str, required=True,
-        help='Directory to store the original photos')
-    parser.add_argument('--processed_photos_dir', type=str, required=True,
+    parser.add_argument('--photos_dir', type=str, required=True,
         help='Directory to store the processed/derived photos')
     parser.add_argument('--log_path', type=str, required=True,
         help='Path to the log file')
@@ -125,8 +113,7 @@ def main():
 
     logging.basicConfig(level=logging.INFO, filename=args.log_path)
 
-    service_handler = ServiceHandler(args.fetcher_host, args.fetcher_port, args.original_photos_dir, 
-        args.processed_photos_dir)
+    service_handler = ServiceHandler(args.fetcher_host, args.fetcher_port, args.photos_dir)
     processor = photo_save_pb.Service.Processor(service_handler)
     transport = TSocket.TServerSocket(host=args.host, port=args.port)
     transport_factory = TTransport.TBufferedTransportFactory()

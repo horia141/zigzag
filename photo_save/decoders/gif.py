@@ -3,7 +3,9 @@
 import cStringIO as StringIO
 import logging
 import math
+import os
 import subprocess
+import tempfile
 
 import common.defines.constants as defines
 import common.model.ttypes as model
@@ -13,7 +15,7 @@ from PIL import Image
 
 
 class Decoder(decoders.Decoder):
-    def decode(self, screen_config_key, screen_config, video, video_path, unique_video_path_fn):
+    def decode(self, screen_config_key, screen_config, video, video_raw_content, unique_video_path_fn):
         logging.info('Handling the photo as an animation for screen config "%s"' % screen_config_key)
 
         (width, height) = video.size
@@ -44,13 +46,21 @@ class Decoder(decoders.Decoder):
             time_between_frames_ms = defines.DEFAULT_TIME_BETWEEN_FRAMES_MS
         frames_per_sec = math.ceil(1000.0 / time_between_frames_ms)
         try:
-            cmd_line = ['sources/photo_save/decoders/gif_to_mp4.sh', video_path,
+            (tmp_video_fd, tmp_video_path) = tempfile.mkstemp()
+            with os.fdopen(tmp_video_fd) as tmp_video_file:
+                tmp_video_file.write(video_raw_content)
+            cmd_line = ['sources/photo_save/decoders/gif_to_mp4.sh', tmp_video_path,
                 '%d' % frames_per_sec, '%d' % desired_width, '%d' % desired_height, 
                 defines.VIDEO_SAVE_BITRATE, video_storage_path]
             logging.info('Conversion command line "%s"', ' '.join(cmd_line))
             subprocess.check_output(cmd_line)
-        except subprocess.CalledProcessError as e:
-            raise photo_save_types.Error(message='Could not decode gif')
+        except (IOError, subprocess.CalledProcessError) as e:
+            raise photo_save_types.Error(message='Could not decode gif because "%s"' % str(e))
+        finally:
+            try:
+                os.remove(tmp_video_path)
+            except Exception as e:
+                pass
 
         first_frame = model.TileData(desired_width, desired_height, first_frame_uri_path)
         video = model.TileData(desired_width, desired_height, video_uri_path)

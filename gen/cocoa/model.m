@@ -964,7 +964,7 @@
   return self;
 }
 
-- (id) initWithSubtitle: (NSString *) subtitle description: (NSString *) description source_uri: (NSString *) source_uri original_uri_path: (NSString *) original_uri_path photo_data: (common.modelPhotoData *) photo_data
+- (id) initWithSubtitle: (NSString *) subtitle description: (NSString *) description source_uri: (NSString *) source_uri photo_data: (common.modelPhotoData *) photo_data
 {
   self = [super init];
   __subtitle = [subtitle retain_stub];
@@ -973,8 +973,6 @@
   __description_isset = YES;
   __source_uri = [source_uri retain_stub];
   __source_uri_isset = YES;
-  __original_uri_path = [original_uri_path retain_stub];
-  __original_uri_path_isset = YES;
   __photo_data = [photo_data retain_stub];
   __photo_data_isset = YES;
   return self;
@@ -998,11 +996,6 @@
     __source_uri = [[decoder decodeObjectForKey: @"source_uri"] retain_stub];
     __source_uri_isset = YES;
   }
-  if ([decoder containsValueForKey: @"original_uri_path"])
-  {
-    __original_uri_path = [[decoder decodeObjectForKey: @"original_uri_path"] retain_stub];
-    __original_uri_path_isset = YES;
-  }
   if ([decoder containsValueForKey: @"photo_data"])
   {
     __photo_data = [[decoder decodeObjectForKey: @"photo_data"] retain_stub];
@@ -1025,10 +1018,6 @@
   {
     [encoder encodeObject: __source_uri forKey: @"source_uri"];
   }
-  if (__original_uri_path_isset)
-  {
-    [encoder encodeObject: __original_uri_path forKey: @"original_uri_path"];
-  }
   if (__photo_data_isset)
   {
     [encoder encodeObject: __photo_data forKey: @"photo_data"];
@@ -1040,7 +1029,6 @@
   [__subtitle release_stub];
   [__description release_stub];
   [__source_uri release_stub];
-  [__original_uri_path release_stub];
   [__photo_data release_stub];
   [super dealloc_stub];
 }
@@ -1108,27 +1096,6 @@
   __source_uri_isset = NO;
 }
 
-- (NSString *) original_uri_path {
-  return [[__original_uri_path retain_stub] autorelease_stub];
-}
-
-- (void) setOriginal_uri_path: (NSString *) original_uri_path {
-  [original_uri_path retain_stub];
-  [__original_uri_path release_stub];
-  __original_uri_path = original_uri_path;
-  __original_uri_path_isset = YES;
-}
-
-- (BOOL) original_uri_pathIsSet {
-  return __original_uri_path_isset;
-}
-
-- (void) unsetOriginal_uri_path {
-  [__original_uri_path release_stub];
-  __original_uri_path = nil;
-  __original_uri_path_isset = NO;
-}
-
 - (common.modelPhotoData *) photo_data {
   return [[__photo_data retain_stub] autorelease_stub];
 }
@@ -1190,14 +1157,6 @@
         }
         break;
       case 4:
-        if (fieldType == TType_STRING) {
-          NSString * fieldValue = [inProtocol readString];
-          [self setOriginal_uri_path: fieldValue];
-        } else { 
-          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
-        }
-        break;
-      case 5:
         if (fieldType == TType_STRUCT) {
           common.modelPhotoData *fieldValue = [[common.modelPhotoData alloc] init];
           [fieldValue read: inProtocol];
@@ -1239,16 +1198,9 @@
       [outProtocol writeFieldEnd];
     }
   }
-  if (__original_uri_path_isset) {
-    if (__original_uri_path != nil) {
-      [outProtocol writeFieldBeginWithName: @"original_uri_path" type: TType_STRING fieldID: 4];
-      [outProtocol writeString: __original_uri_path];
-      [outProtocol writeFieldEnd];
-    }
-  }
   if (__photo_data_isset) {
     if (__photo_data != nil) {
-      [outProtocol writeFieldBeginWithName: @"photo_data" type: TType_STRUCT fieldID: 5];
+      [outProtocol writeFieldBeginWithName: @"photo_data" type: TType_STRUCT fieldID: 4];
       [__photo_data write: outProtocol];
       [outProtocol writeFieldEnd];
     }
@@ -1262,10 +1214,6 @@
   if (!__source_uri_isset) {
     @throw [TProtocolException exceptionWithName: @"TProtocolException"
                                reason: @"Required field 'source_uri' is not set."];
-  }
-  if (!__original_uri_path_isset) {
-    @throw [TProtocolException exceptionWithName: @"TProtocolException"
-                               reason: @"Required field 'original_uri_path' is not set."];
   }
   if (!__photo_data_isset) {
     @throw [TProtocolException exceptionWithName: @"TProtocolException"
@@ -1281,8 +1229,6 @@
   [ms appendFormat: @"\"%@\"", __description];
   [ms appendString: @",source_uri:"];
   [ms appendFormat: @"\"%@\"", __source_uri];
-  [ms appendString: @",original_uri_path:"];
-  [ms appendFormat: @"\"%@\"", __original_uri_path];
   [ms appendString: @",photo_data:"];
   [ms appendFormat: @"%@", __photo_data];
   [ms appendString: @")"];

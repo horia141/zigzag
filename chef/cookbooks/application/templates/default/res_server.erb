@@ -4,7 +4,7 @@ server.modules = (
   "mod_expire"
 )
 
-server.document-root = "<%= node.default['application']['processed_photos_dir'] %>"
+server.document-root = "<%= node.default['application']['photos_dir'] %>"
 
 server.port = <%= node.default['application']['res_server']['port'] %>
 
