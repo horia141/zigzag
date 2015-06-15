@@ -47,7 +47,7 @@ class Decoder(decoders.Decoder):
         frames_per_sec = math.ceil(1000.0 / time_between_frames_ms)
         try:
             (tmp_video_fd, tmp_video_path) = tempfile.mkstemp()
-            with os.fdopen(tmp_video_fd) as tmp_video_file:
+            with os.fdopen(tmp_video_fd, 'w') as tmp_video_file:
                 tmp_video_file.write(video_raw_content)
             cmd_line = ['sources/photo_save/decoders/gif_to_mp4.sh', tmp_video_path,
                 '%d' % frames_per_sec, '%d' % desired_width, '%d' % desired_height, 
