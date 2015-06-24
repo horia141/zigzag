@@ -81,3 +81,5 @@ const string IMGUR_CLIENT_ID = '0df7ad16acdd582'
 const string IMGUR_CLIENT_SECRET = '67d3131c430b25d393e55f2eaa63252249b734df'
 
 const string EXPLORER_USER_AGENT = 'ZigZag Explorer v1'
+
+const double PHOTO_DEDUP_KEEP_SIZE_FACTOR = 0.25

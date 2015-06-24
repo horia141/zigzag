@@ -102,11 +102,17 @@ def main():
                         with rpc.to(photo_save_pb.Service, args.photo_save_host, args.photo_save_port) as photo_save_client:
                             photo_description.append(photo_save_client.process_one_photo(
                                 subtitle, description, source_uri))
+                except photo_save_types.PhotoAlreadyExists as e:
+                    logging.error('Photo "%s" already exists in the photo database' % image_raw_description['uri_path'])
                 except (photo_save_types.Error, Exception) as e:
                     logging.error('Encountered an error in processing artifact "%s"', artifact_desc['title'])
                     logging.error(str(e))
                     continue
-    
+
+                if len(photo_description) <= defines.PHOTO_DEDUP_KEEP_SIZE_FACTOR * len(artifact_desc['photo_description']):
+                    logging.error('Not enough new photos in artifact to keep it')
+                    continue
+
                 logging.info('Saving artifact "%s" to database', artifact_desc['title'])
                 artifact = model.Artifact(artifact_desc['page_uri'], artifact_desc['title'].encode('utf-8'),
                     analyzer.source.id, photo_description)

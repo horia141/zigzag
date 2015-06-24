@@ -42,4 +42,5 @@
 + (NSString *) IMGUR_CLIENT_ID;
 + (NSString *) IMGUR_CLIENT_SECRET;
 + (NSString *) EXPLORER_USER_AGENT;
++ (double) PHOTO_DEDUP_KEEP_SIZE_FACTOR;
 @end

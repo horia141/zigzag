@@ -70,6 +70,8 @@ class Client(Iface):
       return result.success
     if result.e is not None:
       raise result.e
+    if result.pae is not None:
+      raise result.pae
     raise TApplicationException(TApplicationException.MISSING_RESULT, "process_one_photo failed: unknown result");
 
 
@@ -103,6 +105,8 @@ class Processor(Iface, TProcessor):
       result.success = self._handler.process_one_photo(args.subtitle, args.description, args.source_uri)
     except Error, e:
       result.e = e
+    except PhotoAlreadyExists, pae:
+      result.pae = pae
     oprot.writeMessageBegin("process_one_photo", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
@@ -207,16 +211,19 @@ class process_one_photo_result(object):
   Attributes:
    - success
    - e
+   - pae
   """
 
   thrift_spec = (
     (0, TType.STRUCT, 'success', (common.model.ttypes.PhotoDescription, common.model.ttypes.PhotoDescription.thrift_spec), None, ), # 0
     (1, TType.STRUCT, 'e', (Error, Error.thrift_spec), None, ), # 1
+    (2, TType.STRUCT, 'pae', (PhotoAlreadyExists, PhotoAlreadyExists.thrift_spec), None, ), # 2
   )
 
-  def __init__(self, success=None, e=None,):
+  def __init__(self, success=None, e=None, pae=None,):
     self.success = success
     self.e = e
+    self.pae = pae
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -239,6 +246,12 @@ class process_one_photo_result(object):
           self.e.read(iprot)
         else:
           iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRUCT:
+          self.pae = PhotoAlreadyExists()
+          self.pae.read(iprot)
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -257,6 +270,10 @@ class process_one_photo_result(object):
       oprot.writeFieldBegin('e', TType.STRUCT, 1)
       self.e.write(oprot)
       oprot.writeFieldEnd()
+    if self.pae is not None:
+      oprot.writeFieldBegin('pae', TType.STRUCT, 2)
+      self.pae.write(oprot)
+      oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
@@ -268,6 +285,7 @@ class process_one_photo_result(object):
     value = 17
     value = (value * 31) ^ hash(self.success)
     value = (value * 31) ^ hash(self.e)
+    value = (value * 31) ^ hash(self.pae)
     return value
 
   def __repr__(self):

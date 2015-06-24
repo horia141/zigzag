@@ -161,4 +161,6 @@ public class definesConstants {
 
   public static final String EXPLORER_USER_AGENT = "ZigZag Explorer v1";
 
+  public static final double PHOTO_DEDUP_KEEP_SIZE_FACTOR = 0.25;
+
 }

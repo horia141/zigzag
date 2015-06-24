@@ -42,6 +42,7 @@ static int64_t common.definesMAXIMUM_FETCHED_PHOTO_SIZE_IN_BYTES = 5242880;
 static NSString * common.definesIMGUR_CLIENT_ID = @"0df7ad16acdd582";
 static NSString * common.definesIMGUR_CLIENT_SECRET = @"67d3131c430b25d393e55f2eaa63252249b734df";
 static NSString * common.definesEXPLORER_USER_AGENT = @"ZigZag Explorer v1";
+static double common.definesPHOTO_DEDUP_KEEP_SIZE_FACTOR = 0.25;
 
 @implementation common.definesdefinesConstants
 + (void) initialize {
@@ -199,6 +200,9 @@ static NSString * common.definesEXPLORER_USER_AGENT = @"ZigZag Explorer v1";
 }
 + (NSString *) EXPLORER_USER_AGENT{
   return common.definesEXPLORER_USER_AGENT;
+}
++ (double) PHOTO_DEDUP_KEEP_SIZE_FACTOR{
+  return common.definesPHOTO_DEDUP_KEEP_SIZE_FACTOR;
 }
 @end
 
