@@ -68,3 +68,15 @@ python_pip 'praw' do
   virtualenv node.default['application']['virtual_env']
   options "--cache-dir #{node.default['application']['pip_cache']}"
 end
+
+# TODO(horia141): figure out how to write this as the appropriate user and group.
+python_pip 'numpy' do
+  virtualenv node.default['application']['virtual_env']
+  options "--cache-dir #{node.default['application']['pip_cache']}"
+end
+
+# TODO(horia141): figure out how to write this as the appropriate user and group.
+python_pip 'scipy' do
+  virtualenv node.default['application']['virtual_env']
+  options "--cache-dir #{node.default['application']['pip_cache']}"
+end

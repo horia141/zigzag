@@ -7,11 +7,13 @@ import os
 import subprocess
 import tempfile
 
+from PIL import Image
+
 import common.defines.constants as defines
 import common.model.ttypes as model
 import photo_save_pb.ttypes as photo_save_types
 import photo_save.decoders as decoders
-from PIL import Image
+import utils.photos as photos
 
 
 class Decoder(decoders.Decoder):
@@ -33,7 +35,7 @@ class Decoder(decoders.Decoder):
 
         logging.info('Saving first frame')
         (first_frame_storage_path, first_frame_uri_path) = unique_video_path_fn('image/jpeg')
-        first_frame = video.convert('RGBA').resize((desired_width, desired_height), Image.ANTIALIAS)
+        first_frame = photos.resize_to_width(video.convert('RGBA'), desired_width)
         first_frame.save(first_frame_storage_path, quality=defines.IMAGE_SAVE_JPEG_OPTIONS_QUALITY,
                            optimize=defines.IMAGE_SAVE_JPEG_OPTIONS_OPTIMIZE,
                            progressive=defines.IMAGE_SAVE_JPEG_OPTIONS_PROGRESSIVE)

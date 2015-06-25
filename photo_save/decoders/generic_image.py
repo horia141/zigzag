@@ -3,10 +3,12 @@
 import logging
 import cStringIO as StringIO
 
+from PIL import Image
+
 import common.defines.constants as defines
 import common.model.ttypes as model
 import photo_save.decoders as decoders
-from PIL import Image
+import utils.photos as photos
 
 
 class Decoder(decoders.Decoder):
@@ -14,15 +16,12 @@ class Decoder(decoders.Decoder):
         logging.info('Handling the photo as a (possibly tiled) image for screen config "%s"' % screen_config_key)
 
         image_rgba = image.convert('RGBA')
-        (width, height) = image_rgba.size
-        aspect_ratio = float(height) / float(width)
 
         logging.info('Resizing to screen config width')
 
         desired_width = screen_config.width
         assert desired_width <= defines.PHOTO_MAX_WIDTH
-        desired_height = int(aspect_ratio * desired_width)
-        image_resized = image_rgba.resize((desired_width, desired_height), Image.ANTIALIAS)
+        image_resized = photos.resize_to_width(image_rgba, desired_width)
 
         tile_count = desired_height / defines.PHOTO_MAX_HEIGHT + 1
         tiles = []

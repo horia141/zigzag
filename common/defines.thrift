@@ -83,3 +83,5 @@ const string IMGUR_CLIENT_SECRET = '67d3131c430b25d393e55f2eaa63252249b734df'
 const string EXPLORER_USER_AGENT = 'ZigZag Explorer v1'
 
 const double PHOTO_DEDUP_KEEP_SIZE_FACTOR = 0.25
+const list<i32> PHOTO_DEDUP_KEY_FRAMES = [0, 4, 9, 14, 19]
+const i32 PHOTO_DEDUP_SMALL_WIDTH = 128

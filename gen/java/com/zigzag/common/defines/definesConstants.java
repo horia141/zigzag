@@ -163,4 +163,15 @@ public class definesConstants {
 
   public static final double PHOTO_DEDUP_KEEP_SIZE_FACTOR = 0.25;
 
+  public static final List<Integer> PHOTO_DEDUP_KEY_FRAMES = new ArrayList<Integer>();
+  static {
+    PHOTO_DEDUP_KEY_FRAMES.add(0);
+    PHOTO_DEDUP_KEY_FRAMES.add(4);
+    PHOTO_DEDUP_KEY_FRAMES.add(9);
+    PHOTO_DEDUP_KEY_FRAMES.add(14);
+    PHOTO_DEDUP_KEY_FRAMES.add(19);
+  }
+
+  public static final int PHOTO_DEDUP_SMALL_WIDTH = 128;
+
 }

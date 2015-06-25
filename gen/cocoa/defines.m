@@ -43,6 +43,8 @@ static NSString * common.definesIMGUR_CLIENT_ID = @"0df7ad16acdd582";
 static NSString * common.definesIMGUR_CLIENT_SECRET = @"67d3131c430b25d393e55f2eaa63252249b734df";
 static NSString * common.definesEXPLORER_USER_AGENT = @"ZigZag Explorer v1";
 static double common.definesPHOTO_DEDUP_KEEP_SIZE_FACTOR = 0.25;
+static NSMutableArray * common.definesPHOTO_DEDUP_KEY_FRAMES;
+static int32_t common.definesPHOTO_DEDUP_SMALL_WIDTH = 128;
 
 @implementation common.definesdefinesConstants
 + (void) initialize {
@@ -131,6 +133,14 @@ static double common.definesPHOTO_DEDUP_KEEP_SIZE_FACTOR = 0.25;
   [common.definesVIDEO_SCREEN_CONFIG setWidth:480];
 
 ;
+  common.definesPHOTO_DEDUP_KEY_FRAMES = [[NSMutableArray alloc] initWithCapacity:5];
+  [common.definesPHOTO_DEDUP_KEY_FRAMES addObject:[NSNumber numberWithLong: 0]];
+  [common.definesPHOTO_DEDUP_KEY_FRAMES addObject:[NSNumber numberWithLong: 4]];
+  [common.definesPHOTO_DEDUP_KEY_FRAMES addObject:[NSNumber numberWithLong: 9]];
+  [common.definesPHOTO_DEDUP_KEY_FRAMES addObject:[NSNumber numberWithLong: 14]];
+  [common.definesPHOTO_DEDUP_KEY_FRAMES addObject:[NSNumber numberWithLong: 19]];
+
+;
 }
 + (NSString *) TIME_FORMAT{
   return common.definesTIME_FORMAT;
@@ -203,6 +213,12 @@ static double common.definesPHOTO_DEDUP_KEEP_SIZE_FACTOR = 0.25;
 }
 + (double) PHOTO_DEDUP_KEEP_SIZE_FACTOR{
   return common.definesPHOTO_DEDUP_KEEP_SIZE_FACTOR;
+}
++ (NSMutableArray *) PHOTO_DEDUP_KEY_FRAMES{
+  return common.definesPHOTO_DEDUP_KEY_FRAMES;
+}
++ (int32_t) PHOTO_DEDUP_SMALL_WIDTH{
+  return common.definesPHOTO_DEDUP_SMALL_WIDTH;
 }
 @end
 

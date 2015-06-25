@@ -22,6 +22,7 @@ import photo_save.decoders.gif
 import photo_save.decoders.generic_image
 import utils.pidfile as pidfile
 import utils.rpc as rpc
+import utils.photos as photos
 
 
 class ServiceHandler(object):
@@ -61,7 +62,7 @@ class ServiceHandler(object):
             logging.error('Could not parse image "%s"' % str(e))
             raise photo_save_types.Error(message='Could not parse image "%s"' % str(e))
 
-        if self._is_video(photo):
+        if photos.is_video(photo):
             logging.info('Detected animation')
             screen_config = defines.VIDEO_SCREEN_CONFIG
             photo_data = self._video_decoders[photo_raw_data.mime_type].decode(
@@ -81,14 +82,6 @@ class ServiceHandler(object):
         extension = defines.PHOTO_MIMETYPES_TO_EXTENSION[mime_type]
         unique_file_name = '%s.%s' % (str(uuid.uuid4()), extension)
         return (os.path.join(photos_dir, unique_file_name), unique_file_name)
-
-    def _is_video(self, photo):
-        try:
-            photo.seek(1)
-        except EOFError:
-            return False
-        photo.seek(0)
-        return True
 
 
 def main():
