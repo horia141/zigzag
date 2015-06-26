@@ -56,7 +56,7 @@ def _frame_hash(hasher, frame):
     (frame_small, _) = photos.resize_to_width(frame_gray, defines.PHOTO_DEDUP_SMALL_WIDTH)
     mat = numpy.array(frame_small, dtype=numpy.float) - 128
     mat_dct = fftpack.dct(fftpack.dct(mat, norm='ortho').T, norm='ortho').T
-    hasher.update('%04d' % extract_coeff(mat_dct[0][0]))
-    hasher.update('%04d' % extract_coeff(mat_dct[0][1]))
-    hasher.update('%04d' % extract_coeff(mat_dct[1][0]))
-    hasher.update('%04d' % extract_coeff(mat_dct[1][1]))
+
+    for ii in range(0, 4):
+        for jj in range(0, 4):
+            hasher.update('%04d' % extract_coeff(mat_dct[ii][jj]))

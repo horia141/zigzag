@@ -11,6 +11,7 @@ from PIL import Image
 
 import common.defines.constants as defines
 import common.model.ttypes as model
+import photo_dedup
 import photo_save_pb.ttypes as photo_save_types
 import photo_save.decoders as decoders
 import rest_api.models as datastore
