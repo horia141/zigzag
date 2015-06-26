@@ -7,7 +7,7 @@ import common.defines.constants as defines
 import utils.photos as photos
 
 
-def photo_hash(photo):
+def dedup_hash(photo):
     hasher = hashlib.md5()
 
     if not photos.is_video(photo):

@@ -99,11 +99,12 @@ def main():
                         subtitle = image_raw_description['subtitle']
                         description = image_raw_description['description']
                         source_uri = image_raw_description['uri_path']
-                        with rpc.to(photo_save_pb.Service, args.photo_save_host, args.photo_save_port) as photo_save_client:
-                            photo_description.append(photo_save_client.process_one_photo(
-                                subtitle, description, source_uri))
-                except photo_save_types.PhotoAlreadyExists as e:
-                    logging.error('Photo "%s" already exists in the photo database' % image_raw_description['uri_path'])
+                        try:
+                            with rpc.to(photo_save_pb.Service, args.photo_save_host, args.photo_save_port) as photo_save_client:
+                                photo_description.append(photo_save_client.process_one_photo(
+                                    subtitle, description, source_uri))
+                        except photo_save_types.PhotoAlreadyExists as e:
+                            logging.error('Photo "%s" already exists in the photo database' % image_raw_description['uri_path'])
                 except (photo_save_types.Error, Exception) as e:
                     logging.error('Encountered an error in processing artifact "%s"', artifact_desc['title'])
                     logging.error(str(e))

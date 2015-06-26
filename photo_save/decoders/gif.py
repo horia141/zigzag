@@ -13,6 +13,7 @@ import common.defines.constants as defines
 import common.model.ttypes as model
 import photo_save_pb.ttypes as photo_save_types
 import photo_save.decoders as decoders
+import rest_api.models as datastore
 import utils.photos as photos
 
 
@@ -33,6 +34,11 @@ class Decoder(decoders.Decoder):
         if desired_height > defines.PHOTO_MAX_HEIGHT:
             return model.PhotoData(too_big_photo_data=model.TooBigPhotoData())
 
+        logging.info('Checking that the video does not exist')
+        dedup_hash = photo_dedup.dedup_hash(video)
+        if datastore.photo_exists_by_dedup_hash(dedup_hash):
+            raise photo_save_types.PhotoAlreadyExists('Photo already exists in database')
+
         logging.info('Saving first frame')
         (first_frame_storage_path, first_frame_uri_path) = unique_video_path_fn('image/jpeg')
         first_frame = photos.resize_to_width(video.convert('RGBA'), desired_width)
@@ -40,8 +46,10 @@ class Decoder(decoders.Decoder):
                            optimize=defines.IMAGE_SAVE_JPEG_OPTIONS_OPTIMIZE,
                            progressive=defines.IMAGE_SAVE_JPEG_OPTIONS_PROGRESSIVE)
 
-        logging.info('Converting image sequence to video')
+        logging.info('Generating storage and uri path')
         (video_storage_path, video_uri_path) = unique_video_path_fn('video/mp4')
+
+        logging.info('Converting image sequence to video')
         if 'duration' in video.info and video.info['duration'] > 0:
             time_between_frames_ms = video.info['duration']
         else:
@@ -63,6 +71,11 @@ class Decoder(decoders.Decoder):
                 os.remove(tmp_video_path)
             except Exception as e:
                 pass
+
+        # Mark the video as "existing" only after we're sure of it being properly processed. One
+        # can argue that we can still lose it in downstream errors, and that is true. But then we'd 
+        # need something like a transaction. A garbage collector would be better here.
+        datastore.mark_photo_as_existing(dedup_hash, video_uri_path)
 
         first_frame = model.TileData(desired_width, desired_height, first_frame_uri_path)
         video = model.TileData(desired_width, desired_height, video_uri_path)

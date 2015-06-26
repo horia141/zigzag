@@ -26,6 +26,14 @@ class ArtifactUrlQuery(models.Model):
     artifact_idx = models.IntegerField()
 
 
+class PhotoHashes(models.Model):
+    # The length of 32 is because the photo hash uses the md5 hash function which has a 32 character
+    # output, when represented as hex strings.
+    dedup_hash = models.CharField(max_length=32, primary_key=True, db_index=True, unique=True)
+    # The length of 40 is because that's the length the system for generating paths builds them.
+    uri_path = models.CharField(max_length=40)
+
+
 class LogAnalyzerAnalysisResultStore(models.Model):
     analysis_result_ser = models.BinaryField()
 
@@ -58,6 +66,23 @@ def mark_artifact_as_existing(generation, artifact):
     url_query.save()
 
     return url_query
+
+
+def photo_exists_by_dedup_hash(dedup_hash):
+    try:
+        PhotoHashes.objects.get(dedup_hash=dedup_hash)
+        return True
+    except PhotoHashes.DoesNotExists as e:
+        return False
+
+
+def mark_photo_as_existing(dedup_hash, uri_path):
+    photo_hash = PhotoHashes()
+    photo_hash.dedup_hash = dedup_hash
+    photo_hash.uri_path = uri_path
+    photo_hash.save()
+
+    return photo_hash
 
 
 def serialize_response_as_json(next_gen_response):
