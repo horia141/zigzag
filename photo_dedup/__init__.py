@@ -53,7 +53,7 @@ def _frame_hash(hasher, frame):
         return max(min(int(coeff), 1023), -1024) / 16
 
     frame_gray = frame.convert('L')
-    frame_small = photos.resize_to_width(frame_gray, defines.PHOTO_DEDUP_SMALL_WIDTH)
+    (frame_small, _) = photos.resize_to_width(frame_gray, defines.PHOTO_DEDUP_SMALL_WIDTH)
     mat = numpy.array(frame_small, dtype=numpy.float) - 128
     mat_dct = fftpack.dct(fftpack.dct(mat, norm='ortho').T, norm='ortho').T
     hasher.update('%04d' % extract_coeff(mat_dct[0][0]))

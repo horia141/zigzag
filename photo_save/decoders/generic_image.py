@@ -24,7 +24,7 @@ class Decoder(decoders.Decoder):
 
         desired_width = screen_config.width
         assert desired_width <= defines.PHOTO_MAX_WIDTH
-        image_resized = photos.resize_to_width(image_rgba, desired_width)
+        (image_resized, desired_height) = photos.resize_to_width(image_rgba, desired_width)
 
         tile_count = desired_height / defines.PHOTO_MAX_HEIGHT + 1
         tiles = []

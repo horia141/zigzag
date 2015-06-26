@@ -31,6 +31,11 @@ execute 'sources' do
           "chown -R #{node.default['application']['user']} #{node.default['application']['sources_dir']}/log_analyzer && " + 
           "chgrp -R #{node.default['application']['group']} #{node.default['application']['sources_dir']}/log_analyzer && " +
           "chmod -R g+w #{node.default['application']['sources_dir']}/log_analyzer && " +
+
+          "cp -r #{node.default['application']['DUMB_project_path']}/photo_dedup #{node.default['application']['sources_dir']} && " +
+          "chown -R #{node.default['application']['user']} #{node.default['application']['sources_dir']}/photo_dedup && " + 
+          "chgrp -R #{node.default['application']['group']} #{node.default['application']['sources_dir']}/photo_dedup && " +
+          "chmod -R g+w #{node.default['application']['sources_dir']}/photo_dedup && " +
   
           "cp -r #{node.default['application']['DUMB_project_path']}/photo_save #{node.default['application']['sources_dir']} && " +
           "chown -R #{node.default['application']['user']} #{node.default['application']['sources_dir']}/photo_save && " + 

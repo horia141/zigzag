@@ -22,17 +22,10 @@ class Decoder(decoders.Decoder):
         logging.info('Handling the photo as an animation for screen config "%s"' % screen_config_key)
 
         (width, height) = video.size
-        aspect_ratio = float(height) / float(width)
 
         desired_width = screen_config.width
         assert desired_width % 2 == 0
         assert desired_width <= defines.PHOTO_MAX_WIDTH
-        desired_height = int(aspect_ratio * desired_width)
-        # Ensure that desired_height is a multiple of 2, by rounding up.
-        desired_height += desired_height % 2
-
-        if desired_height > defines.PHOTO_MAX_HEIGHT:
-            return model.PhotoData(too_big_photo_data=model.TooBigPhotoData())
 
         logging.info('Checking that the video does not exist')
         dedup_hash = photo_dedup.dedup_hash(video)
@@ -43,7 +36,11 @@ class Decoder(decoders.Decoder):
 
         logging.info('Saving first frame')
         (first_frame_storage_path, first_frame_uri_path) = unique_video_path_fn('image/jpeg')
-        first_frame = photos.resize_to_width(video.convert('RGBA'), desired_width)
+        (first_frame, desired_height) = photos.resize_to_width(video.convert('RGBA'), desired_width)
+
+        if desired_height > defines.PHOTO_MAX_HEIGHT:
+            return model.PhotoData(too_big_photo_data=model.TooBigPhotoData())
+
         first_frame.save(first_frame_storage_path, quality=defines.IMAGE_SAVE_JPEG_OPTIONS_QUALITY,
                            optimize=defines.IMAGE_SAVE_JPEG_OPTIONS_OPTIMIZE,
                            progressive=defines.IMAGE_SAVE_JPEG_OPTIONS_PROGRESSIVE)

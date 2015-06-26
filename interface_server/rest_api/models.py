@@ -72,7 +72,7 @@ def mark_artifact_as_existing(generation, artifact):
 def photo_exists_by_dedup_hash(dedup_hash):
     try:
         return PhotoHashes.objects.get(dedup_hash=dedup_hash)
-    except PhotoHashes.DoesNotExists as e:
+    except PhotoHashes.DoesNotExist as e:
         return None
 
 
