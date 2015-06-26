@@ -26,13 +26,23 @@ def photo_hash(photo):
         _, height = photo.size
         hasher.update('%d' % (height / 5))
 
-        # Add the contents of each key frame to the hash.
-        for key_frame in defines.PHOTO_DEDUP_KEY_FRAMES:
+        # Add the contents of each key frame to the hash. Algorithm is kind of ugly.
+        # We can only seek to consecutive frames. So this means we have to do the
+        # sequence 0,1,2,... . Whenever we encounter a key frame, we hash it. We stop if
+        # ther are no more frames in the video or no more key frames.
+        frame_idx = 0
+        key_frame_idx = 0
+        while True:
             try:
-                photo.seek(key_frame)
-                _frame_hash(hasher, photo)
+                photo.seek(frame_idx)
             except EOFError:
                 break
+            if frame_idx == defines.PHOTO_DEDUP_KEY_FRAMES[key_frame_idx]:
+                _frame_hash(hasher, photo)
+                key_frame_idx += 1
+                if key_frame_idx >= len(defines.PHOTO_DEDUP_KEY_FRAMES):
+                    break
+            frame_idx += 1
         photo.seek(0)
 
     return hasher.hexdigest()
