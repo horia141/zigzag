@@ -32,6 +32,7 @@ class PhotoHashes(models.Model):
     dedup_hash = models.CharField(max_length=32, primary_key=True, db_index=True, unique=True)
     # The length of 40 is because that's the length the system for generating paths builds them.
     uri_path = models.CharField(max_length=40)
+    dup_count = models.IntegerField()
 
 
 class LogAnalyzerAnalysisResultStore(models.Model):
@@ -70,16 +71,23 @@ def mark_artifact_as_existing(generation, artifact):
 
 def photo_exists_by_dedup_hash(dedup_hash):
     try:
-        PhotoHashes.objects.get(dedup_hash=dedup_hash)
-        return True
+        return PhotoHashes.objects.get(dedup_hash=dedup_hash)
     except PhotoHashes.DoesNotExists as e:
-        return False
+        return None
+
+
+def increment_photo_dup_count(photo_hash):
+    photo_hash.dup_count += 1
+    photo_hash.save()
+
+    return photo_hash
 
 
 def mark_photo_as_existing(dedup_hash, uri_path):
     photo_hash = PhotoHashes()
     photo_hash.dedup_hash = dedup_hash
     photo_hash.uri_path = uri_path
+    photo_hash.dup_count = 1
     photo_hash.save()
 
     return photo_hash

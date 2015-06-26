@@ -36,7 +36,9 @@ class Decoder(decoders.Decoder):
 
         logging.info('Checking that the video does not exist')
         dedup_hash = photo_dedup.dedup_hash(video)
-        if datastore.photo_exists_by_dedup_hash(dedup_hash):
+        photo_hash = datastore.photo_exists_by_dedup_hash(dedup_hash)
+        if photo_hash is not None:
+            datastore.increment_photo_dup_count(photo_hash)
             raise photo_save_types.PhotoAlreadyExists('Photo already exists in database')
 
         logging.info('Saving first frame')

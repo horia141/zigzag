@@ -46,7 +46,9 @@ class Decoder(decoders.Decoder):
             if ii == 0:
                 logging.info('Checking that the image does not exist')
                 dedup_hash = photo_dedup.dedup_hash(image_tile)
-                if datastore.photo_exists_by_dedup_hash(dedup_hash):
+                photo_hash = datastore.photo_exists_by_dedup_hash(dedup_hash)
+                if photo_hash is not None:
+                    datastore.increment_photo_dup_count(photo_hash)
                     raise photo_save_types.PhotoAlreadyExists('Photo already exists in database')
                 first_tile_uri_path = tile_uri_path
             logging.info('Optimizing and saving tile')
