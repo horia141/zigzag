@@ -16,8 +16,8 @@ package 'libav-tools'
 package 'libpq-dev'
 package 'libreadline6'
 package 'libreadline6-dev'
-package 'libatlas-base-dev'
-package 'gfortran'
+package 'python-numpy'
+package 'python-scipy'
 
 # Install PostgreSQL from sources.
 
