@@ -18,6 +18,227 @@
 
 #import "model.h"
 
+@implementation common.modelUser
+
+- (id) init
+{
+  self = [super init];
+#if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
+#endif
+  return self;
+}
+
+- (id) initWithId: (NSString *) id client_type: (int) client_type datetime_joined_ts: (int32_t) datetime_joined_ts
+{
+  self = [super init];
+  __id = [id retain_stub];
+  __id_isset = YES;
+  __client_type = client_type;
+  __client_type_isset = YES;
+  __datetime_joined_ts = datetime_joined_ts;
+  __datetime_joined_ts_isset = YES;
+  return self;
+}
+
+- (id) initWithCoder: (NSCoder *) decoder
+{
+  self = [super init];
+  if ([decoder containsValueForKey: @"id"])
+  {
+    __id = [[decoder decodeObjectForKey: @"id"] retain_stub];
+    __id_isset = YES;
+  }
+  if ([decoder containsValueForKey: @"client_type"])
+  {
+    __client_type = [decoder decodeIntForKey: @"client_type"];
+    __client_type_isset = YES;
+  }
+  if ([decoder containsValueForKey: @"datetime_joined_ts"])
+  {
+    __datetime_joined_ts = [decoder decodeInt32ForKey: @"datetime_joined_ts"];
+    __datetime_joined_ts_isset = YES;
+  }
+  return self;
+}
+
+- (void) encodeWithCoder: (NSCoder *) encoder
+{
+  if (__id_isset)
+  {
+    [encoder encodeObject: __id forKey: @"id"];
+  }
+  if (__client_type_isset)
+  {
+    [encoder encodeInt: __client_type forKey: @"client_type"];
+  }
+  if (__datetime_joined_ts_isset)
+  {
+    [encoder encodeInt32: __datetime_joined_ts forKey: @"datetime_joined_ts"];
+  }
+}
+
+- (void) dealloc
+{
+  [__id release_stub];
+  [super dealloc_stub];
+}
+
+- (NSString *) id {
+  return [[__id retain_stub] autorelease_stub];
+}
+
+- (void) setId: (NSString *) id {
+  [id retain_stub];
+  [__id release_stub];
+  __id = id;
+  __id_isset = YES;
+}
+
+- (BOOL) idIsSet {
+  return __id_isset;
+}
+
+- (void) unsetId {
+  [__id release_stub];
+  __id = nil;
+  __id_isset = NO;
+}
+
+- (int) client_type {
+  return __client_type;
+}
+
+- (void) setClient_type: (int) client_type {
+  __client_type = client_type;
+  __client_type_isset = YES;
+}
+
+- (BOOL) client_typeIsSet {
+  return __client_type_isset;
+}
+
+- (void) unsetClient_type {
+  __client_type_isset = NO;
+}
+
+- (int32_t) datetime_joined_ts {
+  return __datetime_joined_ts;
+}
+
+- (void) setDatetime_joined_ts: (int32_t) datetime_joined_ts {
+  __datetime_joined_ts = datetime_joined_ts;
+  __datetime_joined_ts_isset = YES;
+}
+
+- (BOOL) datetime_joined_tsIsSet {
+  return __datetime_joined_ts_isset;
+}
+
+- (void) unsetDatetime_joined_ts {
+  __datetime_joined_ts_isset = NO;
+}
+
+- (void) read: (id <TProtocol>) inProtocol
+{
+  NSString * fieldName;
+  int fieldType;
+  int fieldID;
+
+  [inProtocol readStructBeginReturningName: NULL];
+  while (true)
+  {
+    [inProtocol readFieldBeginReturningName: &fieldName type: &fieldType fieldID: &fieldID];
+    if (fieldType == TType_STOP) { 
+      break;
+    }
+    switch (fieldID)
+    {
+      case 1:
+        if (fieldType == TType_STRING) {
+          NSString * fieldValue = [inProtocol readString];
+          [self setId: fieldValue];
+        } else { 
+          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
+        }
+        break;
+      case 2:
+        if (fieldType == TType_I32) {
+          int fieldValue = [inProtocol readI32];
+          [self setClient_type: fieldValue];
+        } else { 
+          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
+        }
+        break;
+      case 3:
+        if (fieldType == TType_I32) {
+          int32_t fieldValue = [inProtocol readI32];
+          [self setDatetime_joined_ts: fieldValue];
+        } else { 
+          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
+        }
+        break;
+      default:
+        [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
+        break;
+    }
+    [inProtocol readFieldEnd];
+  }
+  [inProtocol readStructEnd];
+}
+
+- (void) write: (id <TProtocol>) outProtocol {
+  [outProtocol writeStructBeginWithName: @"User"];
+  if (__id_isset) {
+    if (__id != nil) {
+      [outProtocol writeFieldBeginWithName: @"id" type: TType_STRING fieldID: 1];
+      [outProtocol writeString: __id];
+      [outProtocol writeFieldEnd];
+    }
+  }
+  if (__client_type_isset) {
+    [outProtocol writeFieldBeginWithName: @"client_type" type: TType_I32 fieldID: 2];
+    [outProtocol writeI32: __client_type];
+    [outProtocol writeFieldEnd];
+  }
+  if (__datetime_joined_ts_isset) {
+    [outProtocol writeFieldBeginWithName: @"datetime_joined_ts" type: TType_I32 fieldID: 3];
+    [outProtocol writeI32: __datetime_joined_ts];
+    [outProtocol writeFieldEnd];
+  }
+  [outProtocol writeFieldStop];
+  [outProtocol writeStructEnd];
+}
+
+- (void) validate {
+  // check for required fields
+  if (!__id_isset) {
+    @throw [TProtocolException exceptionWithName: @"TProtocolException"
+                               reason: @"Required field 'id' is not set."];
+  }
+  if (!__client_type_isset) {
+    @throw [TProtocolException exceptionWithName: @"TProtocolException"
+                               reason: @"Required field 'client_type' is not set."];
+  }
+  if (!__datetime_joined_ts_isset) {
+    @throw [TProtocolException exceptionWithName: @"TProtocolException"
+                               reason: @"Required field 'datetime_joined_ts' is not set."];
+  }
+}
+
+- (NSString *) description {
+  NSMutableString * ms = [NSMutableString stringWithString: @"common.modelUser("];
+  [ms appendString: @"id:"];
+  [ms appendFormat: @"\"%@\"", __id];
+  [ms appendString: @",client_type:"];
+  [ms appendFormat: @"%i", __client_type];
+  [ms appendString: @",datetime_joined_ts:"];
+  [ms appendFormat: @"%i", __datetime_joined_ts];
+  [ms appendString: @")"];
+  return [NSString stringWithString: ms];
+}
+
+@end
+
 @implementation common.modelTileData
 
 - (id) init

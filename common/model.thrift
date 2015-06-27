@@ -7,6 +7,20 @@ namespace cocoa common.model
 typedef i64 EntityId
 
 // Next id: 4
+enum ClientType {
+  ANDROID = 1,
+  IOS = 2,
+  WEB = 3
+}
+
+// Next id: 4
+struct User {
+  1: required string id;
+  2: required ClientType client_type;
+  3: required i32 datetime_joined_ts;
+}
+
+// Next id: 4
 struct TileData {
   1: required i32 width;
   2: required i32 height;

@@ -16,6 +16,120 @@ except:
   fastbinary = None
 
 
+class ClientType(object):
+  ANDROID = 1
+  IOS = 2
+  WEB = 3
+
+  _VALUES_TO_NAMES = {
+    1: "ANDROID",
+    2: "IOS",
+    3: "WEB",
+  }
+
+  _NAMES_TO_VALUES = {
+    "ANDROID": 1,
+    "IOS": 2,
+    "WEB": 3,
+  }
+
+
+class User(object):
+  """
+  Attributes:
+   - id
+   - client_type
+   - datetime_joined_ts
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'id', None, None, ), # 1
+    (2, TType.I32, 'client_type', None, None, ), # 2
+    (3, TType.I32, 'datetime_joined_ts', None, None, ), # 3
+  )
+
+  def __init__(self, id=None, client_type=None, datetime_joined_ts=None,):
+    self.id = id
+    self.client_type = client_type
+    self.datetime_joined_ts = datetime_joined_ts
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.id = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.I32:
+          self.client_type = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.I32:
+          self.datetime_joined_ts = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('User')
+    if self.id is not None:
+      oprot.writeFieldBegin('id', TType.STRING, 1)
+      oprot.writeString(self.id)
+      oprot.writeFieldEnd()
+    if self.client_type is not None:
+      oprot.writeFieldBegin('client_type', TType.I32, 2)
+      oprot.writeI32(self.client_type)
+      oprot.writeFieldEnd()
+    if self.datetime_joined_ts is not None:
+      oprot.writeFieldBegin('datetime_joined_ts', TType.I32, 3)
+      oprot.writeI32(self.datetime_joined_ts)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    if self.id is None:
+      raise TProtocol.TProtocolException(message='Required field id is unset!')
+    if self.client_type is None:
+      raise TProtocol.TProtocolException(message='Required field client_type is unset!')
+    if self.datetime_joined_ts is None:
+      raise TProtocol.TProtocolException(message='Required field datetime_joined_ts is unset!')
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.id)
+    value = (value * 31) ^ hash(self.client_type)
+    value = (value * 31) ^ hash(self.datetime_joined_ts)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
 
 class TileData(object):
   """

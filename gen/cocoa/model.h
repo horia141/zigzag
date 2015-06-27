@@ -16,7 +16,57 @@
 #import "TBase.h"
 
 
+enum common.modelClientType {
+  ClientType_ANDROID = 1,
+  ClientType_IOS = 2,
+  ClientType_WEB = 3
+};
+
 typedef int64_t common.modelEntityId;
+
+@interface common.modelUser : NSObject <TBase, NSCoding> {
+  NSString * __id;
+  int __client_type;
+  int32_t __datetime_joined_ts;
+
+  BOOL __id_isset;
+  BOOL __client_type_isset;
+  BOOL __datetime_joined_ts_isset;
+}
+
+#if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
+@property (nonatomic, retain, getter=id, setter=setId:) NSString * id;
+@property (nonatomic, getter=client_type, setter=setClient_type:) int client_type;
+@property (nonatomic, getter=datetime_joined_ts, setter=setDatetime_joined_ts:) int32_t datetime_joined_ts;
+#endif
+
+- (id) init;
+- (id) initWithId: (NSString *) id client_type: (int) client_type datetime_joined_ts: (int32_t) datetime_joined_ts;
+
+- (void) read: (id <TProtocol>) inProtocol;
+- (void) write: (id <TProtocol>) outProtocol;
+
+- (void) validate;
+
+#if !__has_feature(objc_arc)
+- (NSString *) id;
+- (void) setId: (NSString *) id;
+#endif
+- (BOOL) idIsSet;
+
+#if !__has_feature(objc_arc)
+- (int) client_type;
+- (void) setClient_type: (int) client_type;
+#endif
+- (BOOL) client_typeIsSet;
+
+#if !__has_feature(objc_arc)
+- (int32_t) datetime_joined_ts;
+- (void) setDatetime_joined_ts: (int32_t) datetime_joined_ts;
+#endif
+- (BOOL) datetime_joined_tsIsSet;
+
+@end
 
 @interface common.modelTileData : NSObject <TBase, NSCoding> {
   int32_t __width;
