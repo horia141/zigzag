@@ -16,6 +16,12 @@ class Error(Exception):
     pass
 
 
+class UserStore(models.Model):
+    # The length of 36 is because that's the length the system for generating ids builds them.
+    user_id = models.CharField(max_length=36, primary_key=True, db_index=True, unique=True)
+    user_ser = models.BinaryField()
+
+
 class GenerationStore(models.Model):
     generation_ser = models.BinaryField()
 
@@ -43,54 +49,6 @@ def canonical_uri(uri):
     res = urlparse.urlparse(uri)
     rev_domain = '.'.join(reversed(res.hostname.split('.')))
     return urlparse.urlunparse(('', rev_domain, res.path, res.params, res.query, res.fragment))[2:]
-
-
-def artifact_exists_by_page_uri(page_uri):
-    try:
-        ArtifactUrlQuery.objects.get(page_uri=canonical_uri(page_uri))
-        return True
-    except ArtifactUrlQuery.DoesNotExist as e:
-        return False
-
-
-def mark_artifact_as_existing(generation, artifact):
-    artifact_idx = 0
-    for a in generation.artifacts:
-        if a.page_uri == artifact.page_uri:
-           break
-        artifact_idx += 1
-
-    url_query = ArtifactUrlQuery()
-    url_query.page_uri = canonical_uri(artifact.page_uri)
-    url_query.generation_id = generation.id
-    url_query.artifact_idx = artifact_idx
-    url_query.save()
-
-    return url_query
-
-
-def photo_exists_by_dedup_hash(dedup_hash):
-    try:
-        return PhotoHashes.objects.get(dedup_hash=dedup_hash)
-    except PhotoHashes.DoesNotExist as e:
-        return None
-
-
-def increment_photo_dup_count(photo_hash):
-    photo_hash.dup_count += 1
-    photo_hash.save()
-
-    return photo_hash
-
-
-def mark_photo_as_existing(dedup_hash, uri_path):
-    photo_hash = PhotoHashes()
-    photo_hash.dedup_hash = dedup_hash
-    photo_hash.uri_path = uri_path
-    photo_hash.dup_count = 1
-    photo_hash.save()
-
-    return photo_hash
 
 
 def serialize_response_as_json(next_gen_response):
@@ -287,6 +245,54 @@ def load_next_generation(next_id):
     generation.id = generation_store.id
 
     return generation
+
+
+def artifact_exists_by_page_uri(page_uri):
+    try:
+        ArtifactUrlQuery.objects.get(page_uri=canonical_uri(page_uri))
+        return True
+    except ArtifactUrlQuery.DoesNotExist as e:
+        return False
+
+
+def mark_artifact_as_existing(generation, artifact):
+    artifact_idx = 0
+    for a in generation.artifacts:
+        if a.page_uri == artifact.page_uri:
+           break
+        artifact_idx += 1
+
+    url_query = ArtifactUrlQuery()
+    url_query.page_uri = canonical_uri(artifact.page_uri)
+    url_query.generation_id = generation.id
+    url_query.artifact_idx = artifact_idx
+    url_query.save()
+
+    return url_query
+
+
+def photo_exists_by_dedup_hash(dedup_hash):
+    try:
+        return PhotoHashes.objects.get(dedup_hash=dedup_hash)
+    except PhotoHashes.DoesNotExist as e:
+        return None
+
+
+def increment_photo_dup_count(photo_hash):
+    photo_hash.dup_count += 1
+    photo_hash.save()
+
+    return photo_hash
+
+
+def mark_photo_as_existing(dedup_hash, uri_path):
+    photo_hash = PhotoHashes()
+    photo_hash.dedup_hash = dedup_hash
+    photo_hash.uri_path = uri_path
+    photo_hash.dup_count = 1
+    photo_hash.save()
+
+    return photo_hash
 
 
 def save_analysis_result(analysis_result):
