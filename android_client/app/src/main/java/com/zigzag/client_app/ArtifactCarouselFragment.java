@@ -2,12 +2,11 @@ package com.zigzag.client_app;
 
 import android.app.FragmentManager;
 import android.content.Intent;
-import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.annotation.Nullable;
 import android.support.v13.app.FragmentStatePagerAdapter;
-import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,18 +18,53 @@ import android.widget.Toast;
 import com.zigzag.client_app.controller.Controller;
 import com.zigzag.common.model.Artifact;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ArtifactCarouselFragment extends MediaCarouselFragment
         implements Controller.AllArtifactsListener, ViewPager.OnPageChangeListener {
 
-    private static final int START_PREFETCH_BEFORE_END = 10;
+    private class UiPhotoHolderClearingTask extends AsyncTask<Void, Void, Void> {
+        private final int artifactIdx;
+
+        public UiPhotoHolderClearingTask(int newArtifactIdx) {
+            artifactIdx = newArtifactIdx;
+        }
+
+        @Override
+        public Void doInBackground(Void... p) {
+            try {
+                Thread.sleep(UI_PHOTO_HOLDER_CLEARING_TASK_WAIT_MS);
+            } catch (InterruptedException e) {
+                // Do nothing.
+            }
+
+            return null;
+        }
+
+        @Override
+        public void onPostExecute(Void unused) {
+            // This happens in the UI thread, so no synchronization is needed.
+            Artifact artifact = artifacts.get(artifactIdx);
+            ArtifactFragment artifactFragment = artifactsAdapter.getFragmentFor(artifactIdx);
+            if (artifactFragment == null) {
+                Log.w("ZigZag/ClearingTask", String.format("Fragment for artifact " +
+                        "%s could not be found. A memory leak might occur", artifact.getPage_uri()));
+                return;
+            }
+
+            artifactFragment.clearPhotoResources();
+        }
+    }
+
+    private static final int START_PREFETCH_BEFORE_END_COUNT = 10;
+    private static final int VIEW_PAGER_PREVIEW_COUNT = 3;
+    private static final int UI_PHOTO_HOLDER_CLEARING_TASK_WAIT_MS = 200;
 
     private final List<Artifact> artifacts = new ArrayList<>();
     @Nullable private ViewPager viewPager = null;
     @Nullable private ArtifactsAdapter artifactsAdapter = null;
+    private int previousArtifactIdx = 0;
 
     public ArtifactCarouselFragment() {
         super(R.string.artifact_carousel_title, R.menu.artifact_carousel_fragment);
@@ -45,6 +79,7 @@ public class ArtifactCarouselFragment extends MediaCarouselFragment
         viewPager = (ViewPager) rootView.findViewById(R.id.artifacts_pager);
         viewPager.setAdapter(artifactsAdapter);
         viewPager.setOnPageChangeListener(this);
+        viewPager.setOffscreenPageLimit(VIEW_PAGER_PREVIEW_COUNT);
 
         // We know we have some artifacts, because we usually end up here because of a
         // StartUpActivity invoking us. That happens when there is some data.
@@ -68,9 +103,13 @@ public class ArtifactCarouselFragment extends MediaCarouselFragment
 
     @Override
     public void onPageSelected(int artifactIdx) {
-        if (artifactIdx + START_PREFETCH_BEFORE_END >= artifacts.size()) {
+        if (artifactIdx + START_PREFETCH_BEFORE_END_COUNT >= artifacts.size()) {
             Controller.getInstance(getActivity()).fetchArtifacts(ArtifactCarouselFragment.this);
         }
+
+        artifactsAdapter.getFragmentFor(artifactIdx).attachPhotoResources();
+        (new UiPhotoHolderClearingTask(previousArtifactIdx)).execute();
+        previousArtifactIdx = artifactIdx;
     }
 
     @Override
@@ -134,14 +173,28 @@ public class ArtifactCarouselFragment extends MediaCarouselFragment
     }
 
     private class ArtifactsAdapter extends FragmentStatePagerAdapter {
+        private List<ArtifactFragment> fragments;
+
         public ArtifactsAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
+            fragments = new ArrayList<>();
         }
 
         @Override
         public Fragment getItem(int artifactIdx) {
             Artifact artifact = artifacts.get(artifactIdx);
-            return ArtifactFragment.newInstance(artifact, artifactIdx);
+            ArtifactFragment artifactFragment = ArtifactFragment.newInstance(artifact, artifactIdx);
+            while (fragments.size() <= artifactIdx) {
+                fragments.add(null);
+            }
+            fragments.set(artifactIdx, artifactFragment);
+            return artifactFragment;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int artifactIdx, Object object) {
+            super.destroyItem(container, artifactIdx, object);
+            fragments.set(artifactIdx, null);
         }
 
         @Override
@@ -153,6 +206,10 @@ public class ArtifactCarouselFragment extends MediaCarouselFragment
         public CharSequence getPageTitle(int artifactIdx) {
             Artifact artifact = artifacts.get(artifactIdx);
             return artifact.getTitle();
+        }
+
+        public ArtifactFragment getFragmentFor(int artifactIdx) {
+            return fragments.get(artifactIdx);
         }
     }
 }

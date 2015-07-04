@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.zigzag.client_app.R;
 import com.zigzag.common.model.PhotoDescription;
 
-public class PhotoDescriptionView extends LinearLayout {
+public class PhotoDescriptionView extends LinearLayout implements UiPhotoHolder {
 
     public interface OnLongClickListener {
         void onLongClick();
@@ -75,7 +75,7 @@ public class PhotoDescriptionView extends LinearLayout {
         // Update view components.
         if (newPhotoDescription.getPhoto_data().isSetToo_big_photo_data()) {
             // Nothing to do here.
-        } else if (photoDescription.getPhoto_data().isSetImage_photo_data()) {
+        } else if (newPhotoDescription.getPhoto_data().isSetImage_photo_data()) {
             imagePhotoView.setVisibility(VISIBLE);
             imagePhotoView.setImagePhotoData(newPhotoDescription.getPhoto_data().getImage_photo_data());
         } else if (newPhotoDescription.getPhoto_data().isSetVideo_photo_data()) {
@@ -155,6 +155,24 @@ public class PhotoDescriptionView extends LinearLayout {
 
         // Update view components.
         videoPhotoView.disable();
+    }
+
+    @Override
+    public void clearPhotoResources() {
+        if (state != State.PHOTO_DESCRIPTION_SET) {
+            throw new IllegalStateException("Not in resource clearing state");
+        }
+
+        // Update view components.
+        if (photoDescription.getPhoto_data().isSetToo_big_photo_data()) {
+            // Nothing to do here.
+        } else if (photoDescription.getPhoto_data().isSetImage_photo_data()) {
+            imagePhotoView.clearPhotoResources();
+        } else if (photoDescription.getPhoto_data().isSetVideo_photo_data()) {
+            videoPhotoView.clearPhotoResources();
+        } else {
+            throw new IllegalStateException("No valid photo data found");
+        }
     }
 
     public void setOnLongClickListener(@Nullable OnLongClickListener newOnLongClickListener) {

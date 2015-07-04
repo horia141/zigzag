@@ -14,7 +14,7 @@ import android.widget.VideoView;
 
 import com.zigzag.common.model.VideoPhotoData;
 
-public class VideoPhotoView extends ViewGroup {
+public class VideoPhotoView extends ViewGroup implements UiPhotoHolder {
 
     private enum State {
         CREATED,
@@ -125,6 +125,10 @@ public class VideoPhotoView extends ViewGroup {
         // Update view components.
         removeViewAt(0);
         progressBar = null;
+        if (imageForFirstFrame != null) {
+            // This might be null if we're already in the SOURCE_PATH_FOR_LOCAL_VIDEO_SET state.
+            imageForFirstFrame.setImageBitmap(null); // Also clear the resources for this image.
+        }
         imageForFirstFrame = null;
         video.setVideoPath(sourcePathForLocalVideo);
         addView(video);
@@ -156,6 +160,19 @@ public class VideoPhotoView extends ViewGroup {
         enabled = false;
         if (videoLoaded && video.isPlaying()) {
             video.pause();
+        }
+    }
+
+    @Override
+    public void clearPhotoResources() {
+        if (state != State.VIDEO_PHOTO_DATA_SET && state != State.SOURCE_PATH_FOR_LOCAL_VIDEO_SET) {
+            throw new IllegalStateException("Not in resources clearing state");
+        }
+
+        if (state == State.VIDEO_PHOTO_DATA_SET) {
+            imageForFirstFrame.setImageBitmap(null);
+        } else if (state == State.SOURCE_PATH_FOR_LOCAL_VIDEO_SET) {
+            // TODO(horia141): do something to stop the video here.
         }
     }
 

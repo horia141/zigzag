@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class ArtifactView extends ScrollView {
+public class ArtifactView extends ScrollView implements UiPhotoHolder {
 
     public interface OnLongClickListener {
         void onLongClick(int photoDescriptionIdx);
@@ -202,6 +202,17 @@ public class ArtifactView extends ScrollView {
         // Request new drawing and layout.
         invalidate();
         requestLayout();
+    }
+
+    @Override
+    public void clearPhotoResources() {
+        if (state != State.ARTIFACT_SET) {
+            throw new IllegalStateException("Not in resources clearing state");
+        }
+
+        for (PhotoDescriptionView view : photoDescriptionViews) {
+            view.clearPhotoResources();
+        }
     }
 
     public void setOnLongClickListener(@Nullable OnLongClickListener newOnLongClickListener) {

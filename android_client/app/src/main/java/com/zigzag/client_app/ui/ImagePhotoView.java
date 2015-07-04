@@ -2,8 +2,11 @@ package com.zigzag.client_app.ui;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -15,7 +18,7 @@ import com.zigzag.common.model.TileData;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ImagePhotoView extends ViewGroup {
+public class ImagePhotoView extends ViewGroup implements UiPhotoHolder {
 
     private enum State {
         CREATED,
@@ -87,6 +90,17 @@ public class ImagePhotoView extends ViewGroup {
         // Request new drawing and layout.
         invalidate();
         requestLayout();
+    }
+
+    @Override
+    public void clearPhotoResources() {
+        if (state != State.IMAGE_PHOTO_DATA_SET) {
+            throw new IllegalStateException("Not in resources clearing state");
+        }
+
+        for (ImageView view : imagesForTiles) {
+            view.setImageBitmap(null);
+        }
     }
 
     @Override

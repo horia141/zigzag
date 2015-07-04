@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.zigzag.client_app.controller.Controller;
 import com.zigzag.client_app.ui.ArtifactView;
+import com.zigzag.client_app.ui.UiPhotoHolder;
 import com.zigzag.common.model.Artifact;
 import com.zigzag.common.model.ArtifactSource;
 import com.zigzag.common.model.ImagePhotoData;
@@ -24,15 +25,17 @@ import com.zigzag.common.model.PhotoDescription;
 import java.util.Date;
 
 public class ArtifactFragment extends Fragment
-        implements Controller.ArtifactResourcesListener {
+        implements Controller.ArtifactResourcesListener, UiPhotoHolder {
 
     private static final String ARTIFACT_LOCAL_ID = "artifact_local_id";
     private static final String ARTIFACT_PAGE_URI = "artifact_page_uri";
 
     @Nullable private Artifact artifact;
+    private boolean photoResourcesAttached;
 
     public ArtifactFragment() {
         artifact = null;
+        photoResourcesAttached = false;
     }
 
     @Override
@@ -65,7 +68,7 @@ public class ArtifactFragment extends Fragment
     @Override
     public void onStart() {
         super.onStart();
-        Controller.getInstance(getActivity()).fetchArtifactResources(artifact, this);
+        attachPhotoResources();
     }
 
     @Override
@@ -152,6 +155,21 @@ public class ArtifactFragment extends Fragment
     @Override
     public void onError(String errorDescription) {
         Log.e("ZigZag/MediaCarouselF", String.format("Error %s", errorDescription));
+    }
+
+    public void attachPhotoResources() {
+        if (photoResourcesAttached) {
+            return;
+        }
+
+        Controller.getInstance(getActivity()).fetchArtifactResources(artifact, this);
+        photoResourcesAttached = true;
+    }
+
+    @Override
+    public void clearPhotoResources() {
+        ((ArtifactView)getView()).clearPhotoResources();
+        photoResourcesAttached = false;
     }
 
     private void onPhotoDescriptionLongClick(int idx) {
