@@ -11,5 +11,5 @@ exception PhotoAlreadyExists {
 }
 
 service Service {
-  model.PhotoDescription process_one_photo(1: string subtitle, 2: string description, 3: string source_uri) throws (1: Error e, 2: PhotoAlreadyExists pae)
+  model.PhotoDescription process_one_photo(1: string source_uri) throws (1: Error e, 2: PhotoAlreadyExists pae)
 }

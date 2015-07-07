@@ -39,7 +39,7 @@ class ServiceHandler(object):
             'image/gif': photo_save.decoders.gif.Decoder()
         }
 
-    def process_one_photo(self, subtitle, description, source_uri):
+    def process_one_photo(self, source_uri):
         logging.info('Processing "%s"' % source_uri)
 
         logging.info('Fetching from remote source')
@@ -75,8 +75,7 @@ class ServiceHandler(object):
                 lambda mime_type: self._unique_photo_path(self._photos_dir, mime_type))
 
         logging.info('Done')
-        return model.PhotoDescription(subtitle.encode('utf-8'), description.encode('utf-8'),
-            source_uri, photo_data)
+        return photo_data
 
     def _unique_photo_path(self, photos_dir, mime_type):
         extension = defines.PHOTO_MIMETYPES_TO_EXTENSION[mime_type]

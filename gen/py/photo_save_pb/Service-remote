@@ -24,7 +24,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print('Usage: ' + sys.argv[0] + ' [-h host[:port]] [-u url] [-f[ramed]] [-s[sl]] function [arg1 [arg2...]]')
   print('')
   print('Functions:')
-  print('  PhotoDescription process_one_photo(string subtitle, string description, string source_uri)')
+  print('  PhotoDescription process_one_photo(string source_uri)')
   print('')
   sys.exit(0)
 
@@ -82,10 +82,10 @@ client = Service.Client(protocol)
 transport.open()
 
 if cmd == 'process_one_photo':
-  if len(args) != 3:
-    print('process_one_photo requires 3 args')
+  if len(args) != 1:
+    print('process_one_photo requires 1 args')
     sys.exit(1)
-  pp.pprint(client.process_one_photo(args[0],args[1],args[2],))
+  pp.pprint(client.process_one_photo(args[0],))
 
 else:
   print('Unrecognized method %s' % cmd)

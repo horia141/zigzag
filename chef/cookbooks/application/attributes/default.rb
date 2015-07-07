@@ -1,4 +1,4 @@
-default['application']['DUMB_project_path'] = '/home/horiacoman/Work/zigzag'
+default['application']['DUMB_project_path'] = '/home/picjardev/zigzag'
 
 default['application']['user'] = 'zigzag'
 default['application']['group'] = 'zigzag'

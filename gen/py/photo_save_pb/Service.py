@@ -18,11 +18,9 @@ except:
 
 
 class Iface(object):
-  def process_one_photo(self, subtitle, description, source_uri):
+  def process_one_photo(self, source_uri):
     """
     Parameters:
-     - subtitle
-     - description
      - source_uri
     """
     pass
@@ -35,21 +33,17 @@ class Client(Iface):
       self._oprot = oprot
     self._seqid = 0
 
-  def process_one_photo(self, subtitle, description, source_uri):
+  def process_one_photo(self, source_uri):
     """
     Parameters:
-     - subtitle
-     - description
      - source_uri
     """
-    self.send_process_one_photo(subtitle, description, source_uri)
+    self.send_process_one_photo(source_uri)
     return self.recv_process_one_photo()
 
-  def send_process_one_photo(self, subtitle, description, source_uri):
+  def send_process_one_photo(self, source_uri):
     self._oprot.writeMessageBegin('process_one_photo', TMessageType.CALL, self._seqid)
     args = process_one_photo_args()
-    args.subtitle = subtitle
-    args.description = description
     args.source_uri = source_uri
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
@@ -102,7 +96,7 @@ class Processor(Iface, TProcessor):
     iprot.readMessageEnd()
     result = process_one_photo_result()
     try:
-      result.success = self._handler.process_one_photo(args.subtitle, args.description, args.source_uri)
+      result.success = self._handler.process_one_photo(args.source_uri)
     except Error, e:
       result.e = e
     except PhotoAlreadyExists, pae:
@@ -118,21 +112,15 @@ class Processor(Iface, TProcessor):
 class process_one_photo_args(object):
   """
   Attributes:
-   - subtitle
-   - description
    - source_uri
   """
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'subtitle', None, None, ), # 1
-    (2, TType.STRING, 'description', None, None, ), # 2
-    (3, TType.STRING, 'source_uri', None, None, ), # 3
+    (1, TType.STRING, 'source_uri', None, None, ), # 1
   )
 
-  def __init__(self, subtitle=None, description=None, source_uri=None,):
-    self.subtitle = subtitle
-    self.description = description
+  def __init__(self, source_uri=None,):
     self.source_uri = source_uri
 
   def read(self, iprot):
@@ -145,16 +133,6 @@ class process_one_photo_args(object):
       if ftype == TType.STOP:
         break
       if fid == 1:
-        if ftype == TType.STRING:
-          self.subtitle = iprot.readString();
-        else:
-          iprot.skip(ftype)
-      elif fid == 2:
-        if ftype == TType.STRING:
-          self.description = iprot.readString();
-        else:
-          iprot.skip(ftype)
-      elif fid == 3:
         if ftype == TType.STRING:
           self.source_uri = iprot.readString();
         else:
@@ -169,16 +147,8 @@ class process_one_photo_args(object):
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('process_one_photo_args')
-    if self.subtitle is not None:
-      oprot.writeFieldBegin('subtitle', TType.STRING, 1)
-      oprot.writeString(self.subtitle)
-      oprot.writeFieldEnd()
-    if self.description is not None:
-      oprot.writeFieldBegin('description', TType.STRING, 2)
-      oprot.writeString(self.description)
-      oprot.writeFieldEnd()
     if self.source_uri is not None:
-      oprot.writeFieldBegin('source_uri', TType.STRING, 3)
+      oprot.writeFieldBegin('source_uri', TType.STRING, 1)
       oprot.writeString(self.source_uri)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -190,8 +160,6 @@ class process_one_photo_args(object):
 
   def __hash__(self):
     value = 17
-    value = (value * 31) ^ hash(self.subtitle)
-    value = (value * 31) ^ hash(self.description)
     value = (value * 31) ^ hash(self.source_uri)
     return value
 
