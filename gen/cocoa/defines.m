@@ -74,8 +74,23 @@ static int32_t common.definesPHOTO_DEDUP_EDGE_PIXELS = 16;
   [tmp0 setName:@"Reddit"];
   [tmp0 setArtifact_title_name:@"reddit.com"];
   [tmp0 setStart_page_uri:@"http://reddit.com/r/%s"];
-  NSMutableSet *tmp1 = [[[NSMutableSet alloc] initWithCapacity:1] autorelease_stub];
+  NSMutableSet *tmp1 = [[[NSMutableSet alloc] initWithCapacity:16] autorelease_stub];
   [tmp1 addObject:@"pics"];
+  [tmp1 addObject:@"comics"];
+  [tmp1 addObject:@"fffffffuuuuuuuuuuuu"];
+  [tmp1 addObject:@"ragecomics"];
+  [tmp1 addObject:@"lolcats"];
+  [tmp1 addObject:@"AdviceAnimals"];
+  [tmp1 addObject:@"Demotivational"];
+  [tmp1 addObject:@"memes"];
+  [tmp1 addObject:@"images"];
+  [tmp1 addObject:@"aww"];
+  [tmp1 addObject:@"cats"];
+  [tmp1 addObject:@"foxes"];
+  [tmp1 addObject:@"dogpictures"];
+  [tmp1 addObject:@"sloths"];
+  [tmp1 addObject:@"gifs"];
+  [tmp1 addObject:@"reactiongifs"];
 
   [tmp0 setSubdomains:tmp1];
 
@@ -85,8 +100,11 @@ static int32_t common.definesPHOTO_DEDUP_EDGE_PIXELS = 16;
   [tmp2 setName:@"Imgur"];
   [tmp2 setArtifact_title_name:@"imgur"];
   [tmp2 setStart_page_uri:@"http://imgur.com"];
-  NSMutableSet *tmp3 = [[[NSMutableSet alloc] initWithCapacity:1] autorelease_stub];
+  NSMutableSet *tmp3 = [[[NSMutableSet alloc] initWithCapacity:4] autorelease_stub];
   [tmp3 addObject:@"hot:viral"];
+  [tmp3 addObject:@"hot:top"];
+  [tmp3 addObject:@"top:viral"];
+  [tmp3 addObject:@"top:top"];
 
   [tmp2 setSubdomains:tmp3];
 
@@ -100,6 +118,12 @@ static int32_t common.definesPHOTO_DEDUP_EDGE_PIXELS = 16;
   [tmp5 addObject:@"hot"];
 
   [tmp4 setSubdomains:tmp5];
+  NSMutableSet *tmp6 = [[[NSMutableSet alloc] initWithCapacity:3] autorelease_stub];
+  [tmp6 addObject:@"hot"];
+  [tmp6 addObject:@"trending"];
+  [tmp6 addObject:@"gif"];
+
+  [tmp4 setSubdomains:tmp6];
 
   [common.definesARTIFACT_SOURCES setObject:tmp4 forKey:[NSNumber numberWithLongLong: 3]];
 
