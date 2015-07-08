@@ -10,6 +10,7 @@ import android.support.v4.util.LruCache;
 import android.util.Log;
 
 import com.android.volley.Cache;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Network;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -116,7 +117,9 @@ public final class Controller {
     private static final Pattern CACHEABLE_FILES_PATTERN = Pattern.compile(definesConstants.CACHEABLE_FILES_PATTERN);
     private static final String REQUESTS_TAG = NAME;
     private static final String API_NEXTGEN_URL_PATTERN = "http://horia141.com:9000/api/v1/nextgen?from=%s&output=thrift";
+    private static final int API_NEXTGEN_RETRIES = 10;
     private static final String API_RES_URL_PATTERN = "http://horia141.com:9001/%s";
+    private static final int API_RES_RETRIES = 10;
     private static final int IMAGE_CACHE_SIZE = 20;
     private static final String FILEPROVIDER_AUTHORITY = "com.zigzag.client_app.fileprovider";
 
@@ -205,6 +208,8 @@ public final class Controller {
             });
 
         request.setTag(REQUESTS_TAG);
+        request.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
+                API_NEXTGEN_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(request);
     }
 
@@ -288,6 +293,8 @@ public final class Controller {
                         });
 
                 request.setTag(REQUESTS_TAG);
+                request.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
+                        API_RES_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
                 requestQueue.add(request);
             }
         }
