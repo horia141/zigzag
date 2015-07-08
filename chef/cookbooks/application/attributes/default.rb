@@ -96,6 +96,7 @@ default['application']['explorer']['photo_save']['daemon']['debug_log'] = File.j
 default['application']['explorer']['explorer']['name'] = 'zigzag_explorer_explorer'
 default['application']['explorer']['explorer']['sleep_sec'] = 30 * 60
 default['application']['explorer']['explorer']['pid_file'] = File.join(default['application']['var_dir'], 'explorer.explorer.pid')
+default['application']['explorer']['explorer']['counters_log'] = File.join(default['application']['var_dir'], 'explorer.explorer.counters.log')
 default['application']['explorer']['explorer']['log'] = File.join(default['application']['var_dir'], 'explorer.explorer.log')
 default['application']['explorer']['explorer']['daemon']['script'] = '/etc/init.d/zigzag_explorer_explorer'
 default['application']['explorer']['explorer']['daemon']['pid_file'] = File.join(default['application']['var_dir'], 'explorer.explorer_daemon.pid')

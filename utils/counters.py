@@ -3,17 +3,18 @@ class Counters(object):
         self._counters = {}
 
     def inc(self, name, value=1):
-        self._counters[name] = self._counters.get(name, 0) + value
+        key_name = name.lower()
+        self._counters[key_name] = self._counters.get(key_name, 0) + value
 
     def clear(self):
         self._counters = {}
 
-    def format(self):
+    def format(self, padding=''):
         if len(self._counters) == 0:
             return ''
 
         names = sorted(self._counters.keys())
         max_name_size = max(len(name) for name in names)
-        text = '\n'.join('%s  %d'% (name.ljust(max_name_size), self._counters[name])
+        text = '\n'.join('%s%s  %d'% (padding, name.ljust(max_name_size), self._counters[name])
                          for name in names)
         return text

@@ -21,6 +21,7 @@ import fetcher_pb.ttypes as fetcher_types
 import photo_save_pb.Service
 import photo_save_pb.ttypes as photo_save_types
 import rest_api.models as datastore
+import utils.counters as counters
 import utils.pidfile as pidfile
 import utils.rpc as rpc
 
@@ -39,6 +40,8 @@ def main():
         help='Port on which the photo_save server is listening')
     parser.add_argument('--log_path', type=str, required=True,
         help='Path to the log file')
+    parser.add_argument('--counters_log_path', type=str, required=True,
+        help='Path to the counters log file')
     parser.add_argument('--pidfile_path', type=str, required=True,
         help='Path for the pidfile')
     args = parser.parse_args()
@@ -50,6 +53,8 @@ def main():
     if args.sleep_sec <= 0:
         logging.error('The number of seconds to sleep (sleep_sec) must be positive')
         return
+
+    cnts = counters.Counters()
 
     right_now_0 = datetime.datetime.now(pytz.utc)
 
@@ -86,7 +91,10 @@ def main():
             logging.info('Have %d possibly new artifacts', len(artifact_descs))
     
             for artifact_desc in artifact_descs:
+                cnts.inc('/%s/artifacts/found' % analyzer_name)
+
                 if datastore.artifact_exists_by_page_uri(artifact_desc['page_uri']):
+                    cnts.inc('/%s/artifacts/already-exist' % analyzer_name)
                     logging.info('Found already existing artifact "%s"', artifact_desc['page_uri'])
                     continue
     
@@ -95,6 +103,7 @@ def main():
     
                 try:
                     for image_raw_description in artifact_desc['photo_description']:
+                        cnts.inc('/%s/photo-descriptions/raw' % analyzer_name)
                         logging.info('Fetching photo "%s"' % image_raw_description['uri_path'])
                         source_uri = image_raw_description['uri_path']
                         
@@ -102,23 +111,28 @@ def main():
                             with rpc.to(photo_save_pb.Service, args.photo_save_host, args.photo_save_port) as photo_save_client:
                                 photo_data = photo_save_client.process_one_photo(source_uri)
                         except photo_save_types.PhotoAlreadyExists as e:
+                            cnts.inc('/%s/photo-descriptions/photo-save-already-exists' % analyzer_name)
                             logging.error('Photo "%s" already exists in the photo database' % image_raw_description['uri_path'])
                             continue
 
                         photo_description = model.PhotoDescription()
                         if not image_raw_description['subtitle'].isspace():
+                            cnts.inc('/%s/photo-descriptions/had-subtitle' % analyzer_name)
                             photo_description.subtitle = image_raw_description['subtitle']
                         if not image_raw_description['description'].isspace():
+                            cnts.inc('/%s/photo-descriptions/had-description' % analyzer_name)
                             photo_description.description = image_raw_description['description']
                         photo_description.source_uri = source_uri
                         photo_description.photo_data = photo_data
                         photo_descriptions.append(photo_description)
                 except (photo_save_types.Error, Exception) as e:
+                    cnts.inc('/%s/artifacts/serious-error' % analyzer_name)
                     logging.error('Encountered an error in processing artifact "%s"', artifact_desc['title'])
                     logging.error(str(e))
                     continue
 
                 if len(photo_descriptions) <= defines.PHOTO_DEDUP_KEEP_SIZE_FACTOR * len(artifact_desc['photo_description']):
+                    cnts.inc('/%s/artifacts/too-many-dup-photos' % analyzer_name)
                     logging.error('Not enough new photos in artifact to keep it')
                     continue
 
@@ -127,6 +141,7 @@ def main():
                                           analyzer.source.id, photo_descriptions)
                 artifacts.append(artifact)
     
+                cnts.inc('/%s/artifacts/added' % analyzer_name)
                 logging.info('Finished processing for "%s"', artifact.title)
     
             logging.info('Finished processing for "%s"', analyzer_name)
@@ -162,6 +177,14 @@ def main():
         sleep_time_sec = max(10, args.sleep_sec - duration.total_seconds())
 
         logging.info('Took %d seconds. Going to sleep for %d seconds' % (duration.total_seconds(), sleep_time_sec))
+        logging.info('Counts:\n%s' % cnts.format('  '))
+
+        counters_log = open(args.counters_log_path, 'wa')
+        counters_log.write('Counts for %s:\n%s\n' % (right_now_1.strftime(defines.TIME_FORMAT), cnts.format('  ')))
+        counters_log.write('================\n')
+        counters_log.close()
+
+        cnts.clear()
 
         time.sleep(sleep_time_sec)
 
