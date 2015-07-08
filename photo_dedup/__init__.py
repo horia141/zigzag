@@ -55,7 +55,9 @@ def _frame_hash(hasher, frame):
     frame_gray = frame.convert('L')
     (frame_small, _) = photos.resize_to_width(frame_gray, defines.PHOTO_DEDUP_SMALL_WIDTH)
     mat = numpy.array(frame_small, dtype=numpy.float) - 128
-    mat_dct = fftpack.dct(fftpack.dct(mat, norm='ortho').T, norm='ortho').T
+    ep = defines.PHOTO_DEDUP_EDGE_PIXELS
+    mat_core = mat[ep:(mat.shape[0]-ep), ep:(mat.shape[1]-ep)]
+    mat_dct = fftpack.dct(fftpack.dct(mat_core, norm='ortho').T, norm='ortho').T
 
     for ii in range(0, 4):
         for jj in range(0, 4):
