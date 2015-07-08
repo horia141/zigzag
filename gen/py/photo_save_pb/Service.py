@@ -183,7 +183,7 @@ class process_one_photo_result(object):
   """
 
   thrift_spec = (
-    (0, TType.STRUCT, 'success', (common.model.ttypes.PhotoDescription, common.model.ttypes.PhotoDescription.thrift_spec), None, ), # 0
+    (0, TType.STRUCT, 'success', (common.model.ttypes.PhotoData, common.model.ttypes.PhotoData.thrift_spec), None, ), # 0
     (1, TType.STRUCT, 'e', (Error, Error.thrift_spec), None, ), # 1
     (2, TType.STRUCT, 'pae', (PhotoAlreadyExists, PhotoAlreadyExists.thrift_spec), None, ), # 2
   )
@@ -204,7 +204,7 @@ class process_one_photo_result(object):
         break
       if fid == 0:
         if ftype == TType.STRUCT:
-          self.success = common.model.ttypes.PhotoDescription()
+          self.success = common.model.ttypes.PhotoData()
           self.success.read(iprot)
         else:
           iprot.skip(ftype)
