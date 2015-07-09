@@ -80,7 +80,7 @@ class Analyzer(analyzers.Analyzer):
                     raise analyzers.Error('Unknown submission type')
                 self._page_uri_filter.add(item.permalink)
             except (urllib2.URLError, ValueError, analyzers.Error) as e:
-                self._counters.inc('/redditr/analyzer/items/analysis-error')
+                self._counters.inc('/reddit/analyzer/items/analysis-error')
                 logging.error('Could not process because "%s"' % str(e))
                 continue
 
