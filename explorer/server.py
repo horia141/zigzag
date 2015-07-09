@@ -179,7 +179,7 @@ def main():
         logging.info('Took %d seconds. Going to sleep for %d seconds' % (duration.total_seconds(), sleep_time_sec))
         logging.info('Counts:\n%s' % cnts.format('  '))
 
-        counters_log = open(args.counters_log_path, 'wa')
+        counters_log = open(args.counters_log_path, 'a')
         counters_log.write('Counts for %s:\n%s\n' % (right_now_1.strftime(defines.TIME_FORMAT), cnts.format('  ')))
         counters_log.write('================\n')
         counters_log.close()
