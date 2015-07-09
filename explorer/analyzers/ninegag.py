@@ -15,8 +15,8 @@ import utils.rpc as rpc
 class Analyzer(analyzers.Analyzer):
     """Class for performing analysis of the 9gag artifact source."""
 
-    def __init__(self, source, fetcher_host, fetcher_port):
-        super(Analyzer, self).__init__(source, fetcher_host, fetcher_port)
+    def __init__(self, source, fetcher_host, fetcher_port, counters):
+        super(Analyzer, self).__init__(source, fetcher_host, fetcher_port, counters)
 
     def analyze(self):
         logging.info('Analyzing 9gag')

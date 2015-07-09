@@ -77,21 +77,6 @@ public class definesConstants {
     tmp0.setStart_page_uri("http://reddit.com/r/%s");
     Set<String> tmp1 = new HashSet<String>();
     tmp1.add("pics");
-    tmp1.add("comics");
-    tmp1.add("fffffffuuuuuuuuuuuu");
-    tmp1.add("ragecomics");
-    tmp1.add("lolcats");
-    tmp1.add("AdviceAnimals");
-    tmp1.add("Demotivational");
-    tmp1.add("memes");
-    tmp1.add("images");
-    tmp1.add("aww");
-    tmp1.add("cats");
-    tmp1.add("foxes");
-    tmp1.add("dogpictures");
-    tmp1.add("sloths");
-    tmp1.add("gifs");
-    tmp1.add("reactiongifs");
 
     tmp0.setSubdomains(tmp1);
 
@@ -103,9 +88,6 @@ public class definesConstants {
     tmp2.setStart_page_uri("http://imgur.com");
     Set<String> tmp3 = new HashSet<String>();
     tmp3.add("hot:viral");
-    tmp3.add("hot:top");
-    tmp3.add("top:viral");
-    tmp3.add("top:top");
 
     tmp2.setSubdomains(tmp3);
 
@@ -119,12 +101,6 @@ public class definesConstants {
     tmp5.add("hot");
 
     tmp4.setSubdomains(tmp5);
-    Set<String> tmp6 = new HashSet<String>();
-    tmp6.add("hot");
-    tmp6.add("trending");
-    tmp6.add("gif");
-
-    tmp4.setSubdomains(tmp6);
 
     ARTIFACT_SOURCES.put(3L, tmp4);
   }

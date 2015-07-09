@@ -38,21 +38,6 @@ ARTIFACT_SOURCES = {
     "start_page_uri" : "http://reddit.com/r/%s",
     "subdomains" : set([
       "pics",
-      "comics",
-      "fffffffuuuuuuuuuuuu",
-      "ragecomics",
-      "lolcats",
-      "AdviceAnimals",
-      "Demotivational",
-      "memes",
-      "images",
-      "aww",
-      "cats",
-      "foxes",
-      "dogpictures",
-      "sloths",
-      "gifs",
-      "reactiongifs",
     ]),
   }),
   2 : common.model.ttypes.ArtifactSource(**{
@@ -62,9 +47,6 @@ ARTIFACT_SOURCES = {
     "start_page_uri" : "http://imgur.com",
     "subdomains" : set([
       "hot:viral",
-      "hot:top",
-      "top:viral",
-      "top:top",
     ]),
   }),
   3 : common.model.ttypes.ArtifactSource(**{
@@ -74,11 +56,6 @@ ARTIFACT_SOURCES = {
     "start_page_uri" : "http://9gag.com/%s",
     "subdomains" : set([
       "hot",
-    ]),
-    "subdomains" : set([
-      "hot",
-      "trending",
-      "gif",
     ]),
   }),
 }

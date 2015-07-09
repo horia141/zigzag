@@ -63,9 +63,12 @@ def main():
     logging.info('Building analyzers')
 
     all_analyzers = {
-        'Reddit': reddit.Analyzer(defines.ARTIFACT_SOURCES[1], args.fetcher_host, args.fetcher_port),
-        'Imgur': imgur.Analyzer(defines.ARTIFACT_SOURCES[2], args.fetcher_host, args.fetcher_port),
-        '9GAG': ninegag.Analyzer(defines.ARTIFACT_SOURCES[3], args.fetcher_host, args.fetcher_port)
+        'Reddit': reddit.Analyzer(defines.ARTIFACT_SOURCES[1], args.fetcher_host, 
+            args.fetcher_port, cnts),
+        'Imgur': imgur.Analyzer(defines.ARTIFACT_SOURCES[2], args.fetcher_host,
+            args.fetcher_port, cnts),
+        '9GAG': ninegag.Analyzer(defines.ARTIFACT_SOURCES[3], args.fetcher_host,
+            args.fetcher_port, cnts)
     }
 
     iter_nr = 1

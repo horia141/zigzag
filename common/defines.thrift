@@ -23,17 +23,19 @@ const map<i64, model.ArtifactSource> ARTIFACT_SOURCES = {
         'name': 'Reddit',
 	'artifact_title_name': 'reddit.com',
         'start_page_uri': 'http://reddit.com/r/%s',
-        'subdomains': ['pics', 'comics', 'fffffffuuuuuuuuuuuu', 'ragecomics'
-            'lolcats', 'AdviceAnimals', 'Demotivational', 'memes', 'images',
-            'aww', 'cats', 'foxes', 'dogpictures', 'sloths', 'gifs',
-            'reactiongifs']
+	'subdomains': ['pics'],
+        // 'subdomains': ['pics', 'comics', 'fffffffuuuuuuuuuuuu', 'ragecomics'
+        //     'lolcats', 'AdviceAnimals', 'Demotivational', 'memes', 'images',
+        //     'aww', 'cats', 'foxes', 'dogpictures', 'sloths', 'gifs',
+        //     'reactiongifs']
     },
     2: {
         'id': 2,
         'name': 'Imgur',
 	'artifact_title_name': 'imgur',
-        'start_page_uri': 'http://imgur.com'
-	'subdomains': ['hot:viral', 'hot:top', 'top:viral', 'top:top'],
+        'start_page_uri': 'http://imgur.com',
+	'subdomains': ['hot:viral'],
+	// 'subdomains': ['hot:viral', 'hot:top', 'top:viral', 'top:top'],
     },
     3: {
         'id': 3,
@@ -41,7 +43,7 @@ const map<i64, model.ArtifactSource> ARTIFACT_SOURCES = {
 	'artifact_title_name': '9gag',
         'start_page_uri': 'http://9gag.com/%s',
 	'subdomains': ['hot'],
-        'subdomains': ['hot', 'trending', 'gif']
+        // 'subdomains': ['hot', 'trending', 'gif']
     }
 }
 
