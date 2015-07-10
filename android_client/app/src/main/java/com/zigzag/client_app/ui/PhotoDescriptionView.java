@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Space;
 import android.widget.TextView;
 
 import com.zigzag.client_app.R;
@@ -72,6 +73,12 @@ public class PhotoDescriptionView extends LinearLayout implements UiPhotoHolder 
         state = State.PHOTO_DESCRIPTION_SET;
         photoDescription = newPhotoDescription;
 
+        boolean setSubtitle = newPhotoDescription.getSubtitle().matches(".*\\w.*");
+        if (setSubtitle) {
+            subtitleView.setVisibility(VISIBLE);
+            subtitleView.setText(newPhotoDescription.getSubtitle());
+        }
+
         // Update view components.
         if (newPhotoDescription.getPhoto_data().isSetToo_big_photo_data()) {
             // Nothing to do here.
@@ -85,14 +92,10 @@ public class PhotoDescriptionView extends LinearLayout implements UiPhotoHolder 
             throw new IllegalStateException("No valid photo data found");
         }
 
-        if (newPhotoDescription.getSubtitle().matches(".*\\w.*")) {
-            subtitleView.setVisibility(VISIBLE);
-            subtitleView.setText(newPhotoDescription.getSubtitle());
-        }
-
-        if (newPhotoDescription.getDescription().matches(".*\\w.*")) {
+        boolean setDescription = newPhotoDescription.getDescription().matches(".*\\w.*");
+        if (setDescription) {
             descriptionView.setVisibility(VISIBLE);
-            descriptionView.setText(newPhotoDescription.getSubtitle());
+            descriptionView.setText(newPhotoDescription.getDescription());
         }
 
         // Request new drawing and layout.

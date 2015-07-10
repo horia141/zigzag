@@ -132,7 +132,7 @@ public class ImagePhotoView extends ViewGroup implements UiPhotoHolder {
 
     @Override
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        int currentTop = top;
+        int currentTop = 0;
 
         for (int ii = 0; ii < data.getTilesSize(); ii++) {
             View viewForTile = getChildAt(ii);
