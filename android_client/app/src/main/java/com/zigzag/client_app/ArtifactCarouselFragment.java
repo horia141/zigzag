@@ -83,6 +83,7 @@ public class ArtifactCarouselFragment extends MediaCarouselFragment
 
         // We know we have some artifacts, because we usually end up here because of a
         // StartUpActivity invoking us. That happens when there is some data.
+        artifacts.clear();
         artifacts.addAll(Controller.getInstance(getActivity()).getArtifacts());
         artifactsAdapter.notifyDataSetChanged();
 
@@ -107,7 +108,16 @@ public class ArtifactCarouselFragment extends MediaCarouselFragment
             Controller.getInstance(getActivity()).fetchArtifacts(ArtifactCarouselFragment.this);
         }
 
-        artifactsAdapter.getFragmentFor(artifactIdx).attachPhotoResources();
+        ArtifactFragment artifactFragment = artifactsAdapter.getFragmentFor(artifactIdx);
+
+        if (artifactFragment == null) {
+            // This can be null if the set of fragments (UI elements dependent on the fragment and
+            // activities flow) is not in sync with the set of artifacts (which have a larger
+            // lifespan).
+            return;
+        }
+
+        artifactFragment.attachPhotoResources();
         (new UiPhotoHolderClearingTask(previousArtifactIdx)).execute();
         previousArtifactIdx = artifactIdx;
     }
@@ -208,7 +218,12 @@ public class ArtifactCarouselFragment extends MediaCarouselFragment
             return artifact.getTitle();
         }
 
+        @Nullable
         public ArtifactFragment getFragmentFor(int artifactIdx) {
+            if (artifactIdx >= fragments.size()) {
+                return null;
+            }
+
             return fragments.get(artifactIdx);
         }
     }
