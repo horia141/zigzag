@@ -1,6 +1,7 @@
 package com.zigzag.client_app.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.support.annotation.Nullable;
@@ -9,11 +10,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.zigzag.client_app.R;
+import com.zigzag.client_app.controller.Controller;
 import com.zigzag.common.model.Artifact;
 import com.zigzag.common.model.ArtifactSource;
 import com.zigzag.common.model.PhotoDescription;
@@ -43,6 +47,7 @@ public class ArtifactView extends ScrollView implements UiPhotoHolder {
     @Nullable private Date dateAdded;
     @Nullable private OnLongClickListener onLongClickListener;
     private final LinearLayout contentView;
+    private final Button debugButton;
     private final TextView sourceNameView;
     private final TextView dateAddedView;
     private final TextView titleView;
@@ -63,10 +68,21 @@ public class ArtifactView extends ScrollView implements UiPhotoHolder {
 
         inflate(getContext(), R.layout.artifact_view, this);
         contentView = (LinearLayout) findViewById(R.id.content);
+        debugButton = (Button) findViewById(R.id.debug_button);
         sourceNameView = (TextView) findViewById(R.id.source_name);
         dateAddedView = (TextView) findViewById(R.id.date_added);
         titleView = (TextView) findViewById(R.id.title);
         photoDescriptionViews = new ArrayList<>();
+
+        if (Controller.getInstance(context).isDebug()) {
+            debugButton.setVisibility(VISIBLE);
+            debugButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onDebugButtonClicked(view);
+                }
+            });
+        }
     }
 
     public void setArtifact(Artifact newArtifact, ArtifactSource newArtifactSource,
@@ -97,7 +113,8 @@ public class ArtifactView extends ScrollView implements UiPhotoHolder {
                     R.layout.artifact_view_photo_description, contentView, false);
             photoDescriptionView.setPhotoDescription(photoDescription);
             photoDescriptionViews.add(photoDescriptionView);
-            contentView.addView(photoDescriptionView);
+            // Add before the last element, since the last element is the debug button.
+            contentView.addView(photoDescriptionView, contentView.getChildCount() - 1);
 
             // VideoPhotoViews need some extra care. They should only start playing when we scroll
             // to them. The ArtifactView controls when this happens. Also, if this is the first
@@ -219,7 +236,25 @@ public class ArtifactView extends ScrollView implements UiPhotoHolder {
         onLongClickListener = newOnLongClickListener;
     }
 
-    public void onPhotoDescriptionLongClick(int photoDescriptionIdx) {
+    public void onDebugButtonClicked(View v) {
+        if (v != debugButton) {
+            return;
+        }
+
+        Intent openInMailIntent = Controller.getInstance(getContext())
+                .getOpenMailIntentForArtifact(getContext(), artifact);
+
+        if (openInMailIntent == null) {
+            Toast.makeText(getContext(), getContext().getString(R.string.cannot_open_in_mail),
+                    Toast.LENGTH_LONG)
+                    .show();
+            return;
+        }
+
+        getContext().startActivity(openInMailIntent);
+    }
+
+    private void onPhotoDescriptionLongClick(int photoDescriptionIdx) {
         if (onLongClickListener == null) {
             return;
         }

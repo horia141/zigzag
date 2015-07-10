@@ -111,6 +111,8 @@ public final class Controller {
         }
     }
 
+    private static final boolean DEBUG = true;
+
     private static final String NAME = "ZizZag";
     private static final String CACHE_PATH = "volley-cache";
     private static final int CACHE_SIZE = 100;
@@ -396,6 +398,17 @@ public final class Controller {
         return intent;
     }
 
+    @Nullable
+    public Intent getOpenMailIntentForArtifact(Context context, Artifact artifact) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("message/rfc822");
+        intent.putExtra(Intent.EXTRA_SUBJECT, String.format("Artifact '%s'", artifact.getTitle()));
+        intent.putExtra(Intent.EXTRA_TEXT, artifact.toString());
+        Intent mailIntent = Intent.createChooser(intent, null);
+
+        return mailIntent;
+    }
+
     private static String translateNextGenPath(List<Generation> generations) {
         if (generations.size() == 0) {
             return String.format(API_NEXTGEN_URL_PATTERN, "latest");
@@ -425,6 +438,10 @@ public final class Controller {
         } else {
             throw new RuntimeException("Invalid photoData object");
         }
+    }
+
+    public boolean isDebug() {
+        return DEBUG;
     }
 
     // Singleton interface.

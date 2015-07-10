@@ -20,6 +20,7 @@
     <string name="cannot_share_artifact">Cannot share</string>
 
     <string name="cannot_open_in_browser">Cannot open in browser</string>
+    <string name="cannot_open_in_mail">Cannot open in mail</string>
 
     <string name="drawer_action_open">Opening drawer menu</string>
     <string name="drawer_action_close">Closing drawer menu</string>

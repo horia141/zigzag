@@ -55,5 +55,13 @@
                 android:layout_marginBottom="8dp"
                 style="@style/ArtifactTitle" />
         </LinearLayout>
+
+        <Button
+            android:id="@+id/debug_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Debug"
+            android:visibility="gone" />
+
     </LinearLayout>
 </merge>
