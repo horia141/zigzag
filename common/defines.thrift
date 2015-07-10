@@ -23,6 +23,7 @@ const map<i64, model.ArtifactSource> ARTIFACT_SOURCES = {
         'name': 'Reddit',
 	'artifact_title_name': 'reddit.com',
         'start_page_uri': 'http://reddit.com/r/%s',
+	// 'subdomains': ['pics'],
         'subdomains': ['pics', 'comics', 'fffffffuuuuuuuuuuuu', 'ragecomics'
             'lolcats', 'AdviceAnimals', 'Demotivational', 'memes', 'images',
             'aww', 'cats', 'foxes', 'dogpictures', 'sloths', 'gifs',
@@ -32,7 +33,8 @@ const map<i64, model.ArtifactSource> ARTIFACT_SOURCES = {
         'id': 2,
         'name': 'Imgur',
 	'artifact_title_name': 'imgur',
-        'start_page_uri': 'http://imgur.com'
+        'start_page_uri': 'http://imgur.com',
+	// 'subdomains': ['hot:viral'],
 	'subdomains': ['hot:viral', 'hot:top', 'top:viral', 'top:top'],
     },
     3: {
@@ -40,6 +42,7 @@ const map<i64, model.ArtifactSource> ARTIFACT_SOURCES = {
         'name': '9GAG',
 	'artifact_title_name': '9gag',
         'start_page_uri': 'http://9gag.com/%s',
+	// 'subdomains': ['hot'],
         'subdomains': ['hot', 'trending', 'gif']
     }
 }
@@ -85,3 +88,4 @@ const string EXPLORER_USER_AGENT = 'ZigZag Explorer v1'
 const double PHOTO_DEDUP_KEEP_SIZE_FACTOR = 0.25
 const list<i32> PHOTO_DEDUP_KEY_FRAMES = [0, 4, 9, 14, 19]
 const i32 PHOTO_DEDUP_SMALL_WIDTH = 128
+const i32 PHOTO_DEDUP_EDGE_PIXELS = 16

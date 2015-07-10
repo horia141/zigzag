@@ -45,6 +45,7 @@ static NSString * common.definesEXPLORER_USER_AGENT = @"ZigZag Explorer v1";
 static double common.definesPHOTO_DEDUP_KEEP_SIZE_FACTOR = 0.25;
 static NSMutableArray * common.definesPHOTO_DEDUP_KEY_FRAMES;
 static int32_t common.definesPHOTO_DEDUP_SMALL_WIDTH = 128;
+static int32_t common.definesPHOTO_DEDUP_EDGE_PIXELS = 16;
 
 @implementation common.definesdefinesConstants
 + (void) initialize {
@@ -219,6 +220,9 @@ static int32_t common.definesPHOTO_DEDUP_SMALL_WIDTH = 128;
 }
 + (int32_t) PHOTO_DEDUP_SMALL_WIDTH{
   return common.definesPHOTO_DEDUP_SMALL_WIDTH;
+}
++ (int32_t) PHOTO_DEDUP_EDGE_PIXELS{
+  return common.definesPHOTO_DEDUP_EDGE_PIXELS;
 }
 @end
 

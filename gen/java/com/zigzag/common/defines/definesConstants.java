@@ -174,4 +174,6 @@ public class definesConstants {
 
   public static final int PHOTO_DEDUP_SMALL_WIDTH = 128;
 
+  public static final int PHOTO_DEDUP_EDGE_PIXELS = 16;
+
 }

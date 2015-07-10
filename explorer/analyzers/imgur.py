@@ -15,8 +15,8 @@ class Analyzer(analyzers.Analyzer):
 
     PAGE_URI_FILTER_MAX_SIZE = 20000
 
-    def __init__(self, source, fetcher_host, fetcher_port):
-        super(Analyzer, self).__init__(source, fetcher_host, fetcher_port)
+    def __init__(self, source, fetcher_host, fetcher_port, counters):
+        super(Analyzer, self).__init__(source, fetcher_host, fetcher_port, counters)
         self._subdomains_pairs = [tuple(s.split(':')) for s in source.subdomains]
         self._page_uri_filter = set()
         self._client = imgur.ImgurClient(defines.IMGUR_CLIENT_ID, defines.IMGUR_CLIENT_SECRET)
@@ -28,11 +28,15 @@ class Analyzer(analyzers.Analyzer):
 
         items = []
 
+        self._counters.inc('/imgur/analyzer/main-page')
+
         for (section, sort) in self._subdomains_pairs:
+            self._counters.inc('/imgur/analyzer/subdomains/found')
             try:
                 logging.info('Fetching "%s" and "%s"' % (section, sort))
                 items.extend(self._client.gallery(section=section, sort=sort))
             except (ImgurClientRateLimitError, ImgurClientError) as e:
+                self._counters.inc('/imgur/analyzer/subdomains/imgur-error')
                 logging.error('Imgur error "%s"' % str(e))
                 continue
 
@@ -41,8 +45,11 @@ class Analyzer(analyzers.Analyzer):
         artifact_descs = []
 
         for item in items:
+            self._counters.inc('/imgur/analyzer/items/found')
+
             logging.info('Scanning artifact "%s"' % item.title)
             if item.link in self._page_uri_filter:
+                self._counters.inc('/imgur/analyzer/items/already-exist-local-filter')
                 logging.info('Already processed artifact in this run')
                 continue
 
@@ -53,7 +60,11 @@ class Analyzer(analyzers.Analyzer):
                     artifact_descs.append(self._analyze_image(item))
                 self._page_uri_filter.add(item.link)
             except analyzers.Error as e:
+                self._counters.inc('/imgur/analyzer/items/analysis-error')
                 logging.error('Could not process because "%s"' % str(e))
+                continue
+
+            self._counters.inc('/imgur/analyzer/items/added')
 
         # Reset the page_uri_filter.
         if len(self._page_uri_filter) > Analyzer.PAGE_URI_FILTER_MAX_SIZE:
@@ -61,12 +72,15 @@ class Analyzer(analyzers.Analyzer):
 
         return artifact_descs
 
-    def analyze_by_id(self, item_id, title=None):
+    def analyze_by_id(self, item_id, title=None, counter_prefix='imgur'):
         logging.info('Analyzing artifact by id "%s" (%s)' % (item_id, title))
+
+        self._counters.inc('/imgur/analyzer-by-id/items/found')
 
         try:
             logging.info('Trying to analyze artifact as image')
             image = self._client.get_image(item_id)
+            self._counters.inc('/imgur/analyzer-by-id/items/added-as-image')
             return self._analyze_image(image, title)
         except (ImgurClientRateLimitError, ImgurClientError) as e:
             logging.info('Artifact was not an image')
@@ -74,17 +88,22 @@ class Analyzer(analyzers.Analyzer):
         try:
             logging.info('Trying to analyze artifact as album')
             album = self._client.get_album(item_id)
+            self._counters.inc('/imgur/analyzer-by-id/items/added-as-album')
             return self._analyze_album(album, title)
         except (ImgurClientRateLimitError, ImgurClientError) as e:
             logging.info('Artifact was not an album')
 
+        self._counters.inc('/imgur/analyzer-by-id/items/failed-as-image-and-album')
         raise analyzers.Error('Artifact was neither image nor album -- wierd')
 
     def _analyze_image(self, image, title=None):
         logging.info('Analyzing artifact as image')
 
+        self._counters.inc('/imgur/analyzer/items/image/found')
         page_uri = self._get_str_attribute(image, image, 'link')
         title = self._get_str_attribute(image, image, 'title', title)
+
+        self._counters.inc('/imgur/analyzer/items/image/added')
 
         return {
             'page_uri': page_uri,
@@ -99,16 +118,22 @@ class Analyzer(analyzers.Analyzer):
     def _analyze_album(self, album_shallow, title=None):
         logging.info('Found artifact of %d images' % album_shallow.images_count)
 
+        self._counters.inc('/imgur/analyzer/items/album/found')
+
         try:
             album = self._client.get_album(album_shallow.id)
         except (ImgurClientRateLimitError, ImgurClientError) as e:
+            self._counters.inc('/imgur/analyzer/items/album/imgur-error')
             raise analyzers.Error('Imgur error "%s"' % str(e))
 
         if not hasattr(album, 'link') and not hasattr(album_shallow, 'link'):
+            self._counters.inc('/imgur/analyzer/items/album/no-link-error')
             raise analyzers.Error('Cannot find artifact link')
 
         page_uri = self._get_str_attribute(album, album_shallow, 'link')
         title = self._get_str_attribute(album, album_shallow, 'title', title)
+
+        self._counters.inc('/imgur/analyzer/items/album/added')
 
         photo_descriptions = []
 
