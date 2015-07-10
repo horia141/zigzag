@@ -200,6 +200,6 @@ public class VideoPhotoView extends ViewGroup implements UiPhotoHolder {
     @Override
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         View view = getChildAt(0);
-        view.layout(left, top, right, bottom);
+        view.layout(left, 0, right, view.getMeasuredHeight());
     }
 }
