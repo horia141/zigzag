@@ -1,0 +1,15 @@
+startup_icon_description: Application icon
+startup_logo_description: ZigZag Logo
+
+activity_media_carousel_action_title: Latest news
+activity_media_carousel_action_save_title: Save
+activity_media_carousel_action_share_title: Share
+activity_media_carousel_action_open_in_browser_title: Open in browser
+fragment_media_carousel_title: Title
+fragment_media_carousel_source_name: zigzag
+fragment_media_carousel_time_added: 1 Jan 1970
+fragment_media_carousel_one_image_subtitle: Subtitle
+fragment_media_carousel_one_image_description: Description
+
+drawer_action_open: Opening drawer menu
+drawer_action_close: Closing drawer menu
