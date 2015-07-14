@@ -17,13 +17,13 @@ import UIKit
  * EntityIds are immutable, can be properly hashed, cloned and compared for equality.
  */
 class EntityId: NSObject {
-    private var id: String! = nil
+    private var id: NSNumber! = nil
     
-    init(id: String){
+    init(id: NSNumber){
         self.id = id
     }
     
-    func getId() -> String {
+    func getId() -> NSNumber {
         return self.id
     }
     
@@ -32,11 +32,11 @@ class EntityId: NSObject {
             return false;
         }
         
-        if (self == o as EntityId){
+        if (self == o as! EntityId){
             return true;
         }
         
-        if (self.id == (o as EntityId).getId()){
+        if (self.id == (o as! EntityId).getId()){
             return true;
         }
         

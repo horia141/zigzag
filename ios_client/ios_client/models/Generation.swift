@@ -15,32 +15,44 @@ class Generation: Entity {
      * Generation private members, all initialized by default to nil or
      * empty (using implicit optionals)
      */
-    private var timeAdded: String! = nil
-    private var timeClosed: String! = nil
+    private var datetime_started: String! = nil
+    private var datetime_ended: String! = nil
+    private var datetime_started_ts: NSNumber! = nil
+    private var datetime_ended_ts: NSNumber! = nil
     private var artifacts: [Artifact] = []
     
     /**
      * custom constructor
      */
-    init(id: EntityId, timeAdded: String, timeClosed: String, artifacts: [Artifact]){
+    init(id: EntityId, timeStarted: String, timeEnded: String, timeStartedTS: NSNumber, timeEndedTS: NSNumber, artifacts: [Artifact]){
         /**
          * call super class with entity ID
          */
         super.init(id: id)
-        self.timeAdded = timeAdded
-        self.timeClosed = timeClosed
+        self.datetime_started = timeStarted
+        self.datetime_started_ts = timeStartedTS
+        self.datetime_ended = timeEnded
+        self.datetime_started_ts = timeEndedTS
         self.artifacts = artifacts
     }
     
     /**
      * getter methods
      */
-    func getTimeAdded() -> String {
-        return self.timeAdded
+    func getDateTimeStarted() -> String {
+        return self.datetime_started
     }
     
-    func getTimeClosed() -> String {
-        return self.timeClosed
+    func getDateTimeStartedTS() -> NSNumber{
+        return self.datetime_started_ts
+    }
+    
+    func getDateTimeEnded() -> String {
+        return self.datetime_ended
+    }
+    
+    func getDateTimeEndedTS() -> NSNumber {
+        return self.datetime_ended_ts
     }
     
     func getArtifacts() -> [Artifact] {
