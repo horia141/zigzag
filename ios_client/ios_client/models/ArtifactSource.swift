@@ -11,32 +11,26 @@ class ArtifactSource: Entity {
     /**
      * private artifact source variables
      */
-    private var startPageUrl: String! = nil
+    private var start_page_uri: String! = nil
     private var name: String! = nil
-    private var timeAdded: String! = nil
     
     /**
      * custom constructor
      */
-    init(id: EntityId, startPageUrl: String, name: String, timeAdded: String) {
+    init(id: EntityId, startPageUri: String, name: String) {
         super.init(id: id)
-        self.startPageUrl = startPageUrl
+        self.start_page_uri = startPageUri
         self.name = name
-        self.timeAdded = timeAdded
     }
     
     /**
      * getters
      */
-    func getStartPageUrl() -> String {
-        return self.startPageUrl;
+    func getStartPageUri() -> String {
+        return self.start_page_uri;
     }
     
     func getName() -> String {
         return self.name;
-    }
-    
-    func getTimeAdded() -> String {
-        return self.timeAdded;
     }
 }

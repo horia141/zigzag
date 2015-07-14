@@ -5,36 +5,37 @@
  * based on design by HoriaComan
  */
 
-
 import UIKit
 
 class Artifact: Entity {
     /**
      * private member variables
      */
-    private var pageUrl: String! = nil
+    private var page_uri: String! = nil
     private var title: String! = nil
-    private var artifactSource: ArtifactSource! = nil
-    private var imageDescription: [ImageDescription] = []
+    private var artifact_source: ArtifactSource! = nil
+    private var photo_descriptions: [PhotoDescription] = []
+    private var artifact_date: NSTimeInterval = 0
     
     /**
      * custom constructor
      */
-    init(id: EntityId, pageUrl: String, artifactSource: ArtifactSource,
-        title: String, imageDescription: [ImageDescription]) {
+    init(id: EntityId, pageUri: String, artifactSource: ArtifactSource,
+        title: String, photoDescription: [PhotoDescription], artifactDate: NSTimeInterval) {
             
         super.init(id: id)
-        self.pageUrl = pageUrl
+        self.page_uri = pageUri
         self.title = title
-        self.artifactSource = artifactSource
-        self.imageDescription = imageDescription
+        self.artifact_source = artifactSource
+        self.photo_descriptions = photoDescription
+        self.artifact_date = artifactDate
     }
     
     /**
      * getter methods
      */
-    func getPageUrl() -> String {
-        return self.pageUrl
+    func getPageUri() -> String {
+        return self.page_uri
     }
     
     func getTitle() -> String {
@@ -42,10 +43,14 @@ class Artifact: Entity {
     }
     
     func getArtifactSource() -> ArtifactSource {
-        return self.artifactSource
+        return self.artifact_source
     }
     
-    func getImagesDescription() -> [ImageDescription] {
-        return self.imageDescription
+    func getPhotoDescriptions() -> [PhotoDescription] {
+        return self.photo_descriptions
+    }
+    
+    func getArtifactDate() -> NSTimeInterval {
+        return self.artifact_date
     }
 }
