@@ -1,4 +1,5 @@
 import argparse
+import re
 
 import yaml
 
@@ -35,14 +36,29 @@ class AndroidGenerator(MessagesGenerator):
             output_file.write(self._MASTER_TEMPLATE_FOOTER)
             output_file.write('\n')
 
+    def _clean_message(self, message):
+        return message
+
 
 class IOSGenerator(MessagesGenerator):
+    _RECORD_TEMPLATE = u'"{0}" = "{1}"'
+    _PATTERN_RE = re.compile('[{](\d+)[}]')
+
     def __init__(self, output_path):
         super(IOSGenerator, self).__init__()
         self._output_path = output_path
 
     def generate(self, messages):
-        print 'Generate for IOS'
+        with open(self._output_path, 'w') as output_file:
+            for key in sorted(messages.iterkeys()):
+                message = self._clean_message(messages[key])
+                output_file.write(self._RECORD_TEMPLATE.format(key, message).encode('utf-8'))
+                output_file.write('\n')
+
+    def _clean_message(self, message):
+        message_1 = message.replace('"', '\\"')
+        message_2 = re.sub(self._PATTERN_RE, r'%\1$@', message_1)
+        return message_2
 
 
 PLATFORMS = set(['android', 'ios'])

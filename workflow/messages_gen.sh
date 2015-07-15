@@ -8,7 +8,7 @@ DEFINITIONS=(
 )
 
 ANDROID_OUTPUT_PATH=./android_client/app/src/main/res/values/strings-messages.xml
-IOS_OUTPUT_PATH=./none
+IOS_OUTPUT_PATH=./ios_client/ios_client/Base.lproj/Localizable.string
 
 python ./workflow/messages_gen.py \
     --android_output_path=${ANDROID_OUTPUT_PATH} \
