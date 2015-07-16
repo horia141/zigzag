@@ -1,0 +1,25 @@
+# Common
+launcher.png:
+  platform: android+ios
+  action: transcode
+startup_background.png:
+  platform: android+ios
+  action: transcode
+startup_logo.png:
+  platform: android+ios
+  action: transcode
+save.png:
+  platform: android+ios
+  action: transcode
+share.png:
+  platform: android+ios
+  action: transcode
+open_in_browser.png:
+  platform: android+ios
+  action: transcode
+
+# Android client
+
+# iOS client
+
+# Web client

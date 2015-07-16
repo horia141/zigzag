@@ -4,6 +4,7 @@ from thrift.protocol import TBinaryProtocol
 from thrift.transport import TSocket
 from thrift.transport import TTransport
 
+
 class to(object):
     def __init__(self, service_class, host, port):
         self._service_class = service_class
