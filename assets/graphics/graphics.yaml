@@ -19,6 +19,9 @@ open_in_browser.png:
   action: transcode
 
 # Android client
+artifact_zone_background.xml:
+  platform: android
+  action: copy
 
 # iOS client
 
