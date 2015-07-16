@@ -26,7 +26,7 @@
         </activity>
         <activity
             android:name=".MediaCarouselActivity"
-            android:label="@string/activity_media_carousel_action_title"
+            android:label="@string/activity_media_carousel_title"
             android:theme="@style/ZigZagMediaCarouselTheme"
             android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>

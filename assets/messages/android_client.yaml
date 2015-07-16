@@ -1,15 +1,42 @@
-startup_icon_description: Application icon
-startup_logo_description: ZigZag Logo
+startup_icon_description:
+  text: Application icon
+  desc: The accessibility description for the icon
+startup_logo_description:
+  text: ZigZag Logo
+  desc: The accessibility description for the logo
 
-activity_media_carousel_action_title: Latest news
-activity_media_carousel_action_save_title: Save
-activity_media_carousel_action_share_title: Share
-activity_media_carousel_action_open_in_browser_title: Open in browser
-fragment_media_carousel_title: Title
-fragment_media_carousel_source_name: zigzag
-fragment_media_carousel_time_added: 1 Jan 1970
-fragment_media_carousel_one_image_subtitle: Subtitle
-fragment_media_carousel_one_image_description: Description
+activity_media_carousel_title:
+  text: Latest news
+  desc: Title for main application activity
+activity_media_carousel_action_save_title:
+  text: Save
+  desc: Menu text for saving an artifact
+activity_media_carousel_action_share_title:
+  text: Share
+  desc: Menu text for sharing an artifact
+activity_media_carousel_action_open_in_browser_title:
+  text: Open in browser
+  desc: Menu text for opening an artifact in a  browser
 
-drawer_action_open: Opening drawer menu
-drawer_action_close: Closing drawer menu
+fragment_media_carousel_title:
+  text: Title
+  desc: Default text for artifact title
+fragment_media_carousel_source_name:
+  text: zigzag
+  desc: Default text for artifact source
+fragment_media_carousel_time_added:
+  text: 1 Jan 1970
+  desc: Default text for artifact date
+fragment_media_carousel_one_image_subtitle: 
+  text: Subtitle
+  desc: Default text for artifact subtitle
+fragment_media_carousel_one_image_description: 
+  text: Description
+  desc: Default text for artifact description
+
+drawer_action_open:
+  text: Opening drawer menu
+  desc: Action name for opening the drawer menu
+drawer_action_close:
+  text: Closing drawer menu
+  desc: Action name for closing the drawer menu

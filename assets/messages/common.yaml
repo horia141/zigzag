@@ -1,43 +1,71 @@
-app_name: ZigZag
-copyright: ©ZigZag 2015
+app_name:
+  text: ZigZag
+  desc: Application name
+copyright:
+  text: ©ZigZag 2015
+  desc: Application copyright
 
-share_title: '"{1}" via {2}'
-share_body: '"{1}" via {2} from {3}'
-cannot_share_artifact: Cannot share
+share_title:
+  text: '"{1}" via {2}'
+  desc: Title for sharing an artifact
+share_body:
+  text: '"{1}" via {2} from {3}'
+  desc: Body for sharing an artifact
+cannot_share_artifact:
+  text: Cannot share
+  desc: Error message shown when an artifact cannot be shared
 
-cannot_open_in_browser: Cannot open in browser
-cannot_open_in_mail: Cannot open in mail
+cannot_open_in_browser:
+  text: Cannot open in browser
+  desc: Error message shown when an artifact cannot be opend in a browser
+cannot_open_in_mail:
+  text: Cannot open in mail
+  desc: Error message shown when an artifact cannot be mailed
 
-artifact_carousel_title: Latest pictures
-preferences_title: Preferences
-terms_and_conditions_title: Terms and conditions
-about_title: About
-share_app_title: Share ZigZag
+artifact_carousel_title:
+  text: Latest pictures
+  desc: Title for the main carousel in the left drawer
+preferences_title:
+  text: Preferences
+  desc: Title for the preferences section in the left drawer
+terms_and_conditions_title:
+  text: Terms and conditions
+  desc: Title for the terms and conditions in the left drawer
+about_title:
+  text: About
+  desc: Title for the about in the left drawer
+share_app_title:
+  text: Share ZigZag
+  desc: Title for the share ZigZag section in the left drawer
 
-app_terms_and_conditions: >
-  Sed ut perspiciatis unde omnis iste natus verror sit voluptatem accusantium
-  doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore
-  veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
-  ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
-  consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque
-  porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur,
-  adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et
-  dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis
-  nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex
-  ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea
-  voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem
-  eum fugiat quo voluptas nulla pariatur?
+app_terms_and_conditions:
+  text: >
+    Sed ut perspiciatis unde omnis iste natus verror sit voluptatem accusantium
+    doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore
+    veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
+    ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
+    consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque
+    porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur,
+    adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et
+    dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis
+    nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid
+    ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea
+    voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem
+    eum fugiat quo voluptas nulla pariatur?
+  desc: The terms and conditions
 
-app_about: >
-  Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium
-  doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore
-  veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
-  ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
-  consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque
-  porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur,
-  adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et
-  dolore magnam aliquam quaerat voluptatem. Ut enim ad minimaveniam, quis
-  nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex
-  ea ommodi consequatur? Quis autem vel eum iure reprehenderit qui in ea
-  voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem
-  eum fugiat quo voluptas nulla pariatur?
+app_about:
+  text: >
+    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium
+    doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore
+    veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
+    ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
+    consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque
+    porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur,
+    adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et
+    dolore magnam aliquam quaerat voluptatem. Ut enim ad minimaveniam, quis
+    nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid
+    ex ea ommodi consequatur? Quis autem vel eum iure reprehenderit qui in ea
+    voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem
+    eum fugiat quo voluptas nulla pariatur?
+  desc: The application about text

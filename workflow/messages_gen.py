@@ -30,7 +30,7 @@ class AndroidGenerator(MessagesGenerator):
             for key in sorted(messages.iterkeys()):
                 message = messages[key]
                 output_file.write('  ')
-                output_file.write(self._RECORD_TEMPLATE.format(key, message).encode('utf-8'))
+                output_file.write(self._RECORD_TEMPLATE.format(key, message['text']).encode('utf-8'))
                 output_file.write('\n')
             
             output_file.write(self._MASTER_TEMPLATE_FOOTER)
@@ -42,6 +42,7 @@ class AndroidGenerator(MessagesGenerator):
 
 class IOSGenerator(MessagesGenerator):
     _RECORD_TEMPLATE = u'"{0}" = "{1}"'
+    _COMMENT_TEMPLATE = u'/* {0} */'
     _PATTERN_RE = re.compile('[{](\d+)[}]')
 
     def __init__(self, output_path):
@@ -52,16 +53,22 @@ class IOSGenerator(MessagesGenerator):
         with open(self._output_path, 'w') as output_file:
             for key in sorted(messages.iterkeys()):
                 message = self._clean_message(messages[key])
-                output_file.write(self._RECORD_TEMPLATE.format(key, message).encode('utf-8'))
+                output_file.write(self._COMMENT_TEMPLATE.format(message['desc']).encode('utf-8'))
                 output_file.write('\n')
+                output_file.write(self._RECORD_TEMPLATE.format(key, message['text']).encode('utf-8'))
+                output_file.write('\n\n')
 
     def _clean_message(self, message):
-        message_1 = message.replace('"', '\\"')
-        message_2 = re.sub(self._PATTERN_RE, r'%\1$@', message_1)
-        return message_2
+        message_text_1 = message['text'].replace('"', '\\"')
+        message_text_2 = re.sub(self._PATTERN_RE, r'%\1$@', message_text_1)
+        return {
+            'text': message_text_1,
+            'desc': message['desc']
+            }
 
 
 PLATFORMS = set(['android', 'ios'])
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -118,8 +125,17 @@ def _load_messages(messages_paths):
                 if not isinstance(k, basestring):
                     raise Exception('Key "%s" is not a string for "%s"' % (str(k), messages_path))
 
-                if not isinstance(m, basestring):
-                    raise Exception('Message "%s" is not a string "%s"' % (str(m), messages_path))
+                if not isinstance(m, dict):
+                    raise Exception('Message "%s" is not a correct format for "%s"' % (str(m), messages_path))
+
+                if 'text' not in m or 'desc' not in m:
+                    raise Exception('Message "%s" has no text or desc keys for "%s"' % (k, messages_path))
+
+                if not isinstance(m['text'], basestring):
+                    raise Exception('Message "%s" has no string for key text for "%s"' % (k, messages_path))
+
+                if not isinstance(m['desc'], basestring):
+                    raise Exception('Message "%s" has no string for key desc for "%s"' % (k, messages_path))
 
             messages_map_keys = set(messages_map.iterkeys())
 
@@ -139,7 +155,10 @@ def _load_messages(messages_paths):
 
 def _clean_messages(messages):
     def clean(m):
-        return m.strip()
+        return {
+            'text': m['text'].strip(),
+            'desc': m['desc'].strip()
+            }
 
     cleaned_messages = {}
 
