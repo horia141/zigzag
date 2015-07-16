@@ -1,3 +1,4 @@
 *~
 *.pyc
+*.DS_Store
 /ios_client/build
