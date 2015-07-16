@@ -17,6 +17,7 @@ class AndroidGenerator(MessagesGenerator):
 <resources>"""
     _MASTER_TEMPLATE_FOOTER = u"""</resources>"""
     _RECORD_TEMPLATE = u'<string name="{0}">{1}</string>'
+    _PATTERN_RE = re.compile('[{](\d+)[}]')
 
     def __init__(self, output_path):
         super(AndroidGenerator, self).__init__()
@@ -28,7 +29,7 @@ class AndroidGenerator(MessagesGenerator):
             output_file.write('\n')
 
             for key in sorted(messages.iterkeys()):
-                message = messages[key]
+                message = self._clean_message(messages[key])
                 output_file.write('  ')
                 output_file.write(self._RECORD_TEMPLATE.format(key, message['text']).encode('utf-8'))
                 output_file.write('\n')
@@ -37,7 +38,13 @@ class AndroidGenerator(MessagesGenerator):
             output_file.write('\n')
 
     def _clean_message(self, message):
-        return message
+        message_text_1 = message['text'].replace("'", "\\'")
+        message_text_2 = message_text_1.replace('"', '\\"')
+        message_text_3 = re.sub(self._PATTERN_RE, r'%\1$s', message_text_2)
+        return {
+            'text': message_text_3,
+            'desc': message['desc']
+            }
 
 
 class IOSGenerator(MessagesGenerator):
