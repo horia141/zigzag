@@ -23,7 +23,7 @@
         style="@style/MediaCarouselDrawer">
 
         <ImageView
-            android:src="@drawable/ic_launcher"
+            android:src="@drawable/launcher"
             android:contentDescription="@string/startup_icon_description"
             android:paddingTop="54dp"
             android:paddingLeft="84dp"
