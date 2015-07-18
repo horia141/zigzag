@@ -1,4 +1,5 @@
 import argparse
+import json
 import os
 import os.path
 import shutil
@@ -8,7 +9,7 @@ import yaml
 
 
 PLATFORMS = frozenset(['android', 'ios'])
-ACTIONS = frozenset(['copy', 'transcode'])
+USAGES = frozenset(['appicon', 'launcher', 'asset'])
 
 
 class GraphicsGenerator(object):
@@ -27,16 +28,16 @@ class GraphicsGenerator(object):
 
 class AndroidGenerator(GraphicsGenerator):
     class Profile(object):
-        def __init__(self, out_path, target_width):
+        def __init__(self, out_path, rescale_factor):
             self.out_path = out_path
-            self.target_width = target_width
+            self.rescale_factor = rescale_factor
 
     _PROFILES = {
         'none': Profile('drawable', None),
-        'mdpi': Profile('drawable-mdpi', 48),
-        'hdpi': Profile('drawable-hdpi', 72),
-        'xhdpi': Profile('drawable-xhdpi', 96),
-        'xxhdpi': Profile('drawable-xxhdpi', 144)
+        'mdpi': Profile('drawable-mdpi', 48.0 / 144.0),
+        'hdpi': Profile('drawable-hdpi', 72.0 / 144.0),
+        'xhdpi': Profile('drawable-xhdpi', 96.0 / 144.0),
+        'xxhdpi': Profile('drawable-xxhdpi', 144.0 / 144.0)
     }
 
     def __init__(self, output_dir_path):
@@ -57,25 +58,139 @@ class AndroidGenerator(GraphicsGenerator):
         return self
 
     def generate(self, g_name, g_config):
-        for p_name, profile in self._PROFILES.iteritems():
-            path = g_config['path']
-            out_path = os.path.join(self._output_dir_path, profile.out_path, g_name)
+        path = g_config['path']
+        path_type = os.path.splitext(path)[1]
 
-            if g_config['action'] == 'copy':
-                shutil.copy2(path, out_path)
-            elif profile.target_width is not None:
+        if path_type == '.xml':
+            out_path = os.path.join(self._output_dir_path, self._PROFILES['none'].out_path, g_name)
+            shutil.copy2(path, out_path)
+        elif path_type == '.png':
+            for p_name, profile in self._PROFILES.iteritems():
+                if profile.rescale_factor is None:
+                    continue
+
+                out_path = os.path.join(self._output_dir_path, profile.out_path, g_name)
                 image = Image.open(path)
-                image_resized = _resize_to_width(image, profile.target_width)
+                desired_width = int(image.size[0] * profile.rescale_factor)
+                image_resized = _resize_to_width(image, desired_width)
                 image_resized[0].save(out_path)
+        else:
+            raise Exception('Unsupported asset type "%s"' % path_type)
 
 
 class IOSGenerator(GraphicsGenerator):
+    class Profile(object):
+        def __init__(self, out_path_mod, rescale_factor):
+            self.out_path_mod = out_path_mod
+            self.rescale_factor = rescale_factor
+
+        def modify_path(self, path):
+            if self.out_path_mod == '1x':
+                (root_path, ext_path) = os.path.splitext(path)
+                return '%s%s' % (root_path, '.png')
+            else:
+                (root_path, ext_path) = os.path.splitext(path)
+                return '%s@%s%s' % (root_path, self.out_path_mod, '.png')
+
+    _PROFILES = {
+        '1x': Profile('1x', 29.0 / 60.0),
+        '2x': Profile('2x', 40.0 / 60.0),
+        '3x': Profile('3x', 60.0 / 60.0)
+        }
+
+    _MODIFIER_FOR_USAGE = {
+        'appicon': 'appiconset',
+        'launcher': 'launchimage',
+        'asset': 'imageset'
+        }
+
     def __init__(self, output_dir_path):
         super(IOSGenerator, self).__init__()
         self._output_dir_path = output_dir_path
 
+    def __enter__(self):
+        if os.path.exists(self._output_dir_path):
+            if os.path.exists(self._output_dir_path):
+                if os.path.isfile(self._output_dir_path):
+                    os.remove(self._output_dir_path)
+                else:
+                    shutil.rmtree(self._output_dir_path)
+        os.mkdir(self._output_dir_path)
+        return self
+
     def generate(self, g_name, g_config):
-        print g_name
+        (g_name_base, g_name_ext) = os.path.splitext(g_name)
+        path = g_config['path']
+        path_type = os.path.splitext(path)[1]
+
+        if path_type == '.png':
+            dir_path = os.path.join(self._output_dir_path,
+                '%s.%s' % (g_name_base, self._MODIFIER_FOR_USAGE[g_config['usage']]))
+            base_out_path = os.path.join(dir_path, g_name)
+            os.mkdir(dir_path)
+
+            metadata = {
+                'images': [],
+                'info': {
+                    'version': 1,
+                    'author': 'xcode' # Should be the assets pipeline.
+                    }
+                }
+
+            for g_name, profile in self._PROFILES.iteritems():
+                out_path = profile.modify_path(base_out_path)
+                image = Image.open(path)
+                desired_width = int(image.size[0] * profile.rescale_factor)
+                image_resized = _resize_to_width(image, desired_width)
+                image_resized[0].save(out_path)
+                metadata['images'].append({
+                        'idiom': 'universal',
+                        'scale': profile.out_path_mod,
+                        'filename': os.path.basename(out_path)
+                        })
+
+            with open(os.path.join(dir_path, 'Contents.json'), 'w') as contents_file:
+                contents_file.write(json.dumps(metadata))
+        elif path_type == '.gif':
+            dir_path_pattern = os.path.join(self._output_dir_path,
+                '%s%%02d.imageset' % g_name_base)
+            g_name_pattern = '%s%%02d%s' % (g_name_base, g_name_ext)
+            base_out_path_pattern = os.path.join(dir_path_pattern, g_name_pattern)
+
+            fr = 0
+            image = Image.open(path)
+            while True:
+                try:
+                    image.seek(fr)
+                except EOFError:
+                    break
+
+                dir_path = dir_path_pattern % fr
+                os.mkdir(dir_path)
+                metadata = {
+                    'images': [],
+                    'info': {
+                        'version': 1,
+                        'author': 'xcode' # Should be the assets pipeline.
+                        }
+                    }
+
+                for g_name, profile in self._PROFILES.iteritems():
+                    out_path = profile.modify_path(base_out_path_pattern % (fr, fr))
+                    frame = image.copy()
+                    desired_width = int(frame.size[0] * profile.rescale_factor)
+                    frame_resized = _resize_to_width(image, desired_width)
+                    frame_resized[0].save(out_path)
+                    metadata['images'].append({
+                            'idiom': 'universal',
+                            'scale': profile.out_path_mod,
+                            'filename': os.path.basename(out_path)
+                            })
+
+                    with open(os.path.join(dir_path, 'Contents.json'), 'w') as contents_file:
+                        contents_file.write(json.dumps(metadata))
+                
+                fr = fr + 1
 
 
 def main():
@@ -115,7 +230,7 @@ def _load_config(config_path):
             if not isinstance(g_config, dict):
                 raise Exception('Invalid format for "%s"' % g_name)
 
-            if 'platform' not in g_config or 'action' not in g_config:
+            if 'platform' not in g_config or 'usage' not in g_config:
                 raise Exception('Required keys missing for "%s"' % g_name)
 
             if not isinstance(g_config['platform'], basestring):
@@ -128,11 +243,11 @@ def _load_config(config_path):
 
             g_config['platform'] = frozenset(platforms)
 
-            if not isinstance(g_config['action'], basestring):
-                raise Exception('Invalid format for action for "%s"' % g_name)
+            if not isinstance(g_config['usage'], basestring):
+                raise Exception('Invalid format for usage for "%s"' % g_name)
 
-            if g_config['action'] not in ACTIONS:
-                raise Exception('Invalid action for "%s' % g_name)
+            if g_config['usage'] not in USAGES:
+                raise Exception('Invalid usage for "%s"' % g_name)
 
             g_config['path'] = os.path.join(os.path.dirname(config_path), g_name)
 

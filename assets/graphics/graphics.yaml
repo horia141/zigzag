@@ -1,28 +1,55 @@
 # Common
 launcher.png:
   platform: android+ios
-  action: transcode
+  usage: appicon
 startup_background.png:
   platform: android+ios
-  action: transcode
+  usage: launcher
 startup_logo.png:
   platform: android+ios
-  action: transcode
+  usage: asset
 save.png:
   platform: android+ios
-  action: transcode
+  usage: asset
 share.png:
   platform: android+ios
-  action: transcode
+  usage: asset
 open_in_browser.png:
   platform: android+ios
-  action: transcode
+  usage: asset
 
 # Android client
 artifact_zone_background.xml:
   platform: android
-  action: copy
+  usage: asset
 
 # iOS client
+drawer_home.png:
+  platform: ios
+  usage: asset
+drawer_pref.png:
+  platform: ios
+  usage: asset
+drawer_terms.png:
+  platform: ios
+  usage: asset
+drawer_about.png:
+  platform: ios
+  usage: asset
+drawer_share.png:
+  platform: ios
+  usage: asset
+burger_menu_btn.png:
+  platform: ios
+  usage: asset
+play_movie.png:
+  platform: ios
+  usage: asset
+shareicon.png:
+  platform: ios
+  usage: asset
+loader.gif:
+  platform: ios
+  usage: asset
 
 # Web client
