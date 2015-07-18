@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="about_title">About</string>
+  <string name="activity_media_carousel_action_open_in_browser_title">Open in browser</string>
+  <string name="activity_media_carousel_action_save_title">Save</string>
+  <string name="activity_media_carousel_action_share_title">Share</string>
+  <string name="activity_media_carousel_title">Latest news</string>
+  <string name="app_about">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minimaveniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea ommodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</string>
+  <string name="app_name">ZigZag</string>
+  <string name="app_terms_and_conditions">Sed ut perspiciatis unde omnis iste natus verror sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</string>
+  <string name="artifact_carousel_title">Latest pictures</string>
+  <string name="cannot_open_in_browser">Cannot open in browser</string>
+  <string name="cannot_open_in_mail">Cannot open in mail</string>
+  <string name="cannot_share_artifact">Cannot share</string>
+  <string name="copyright">©ZigZag 2015</string>
+  <string name="drawer_action_close">Closing drawer menu</string>
+  <string name="drawer_action_open">Opening drawer menu</string>
+  <string name="fragment_media_carousel_one_image_description">Description</string>
+  <string name="fragment_media_carousel_one_image_subtitle">Subtitle</string>
+  <string name="fragment_media_carousel_source_name">zigzag</string>
+  <string name="fragment_media_carousel_time_added">1 Jan 1970</string>
+  <string name="fragment_media_carousel_title">Title</string>
+  <string name="preferences_title">Preferences</string>
+  <string name="share_app_title">Share ZigZag</string>
+  <string name="share_body">\"%1$s\" via %2$s from %3$s</string>
+  <string name="share_title">\"%1$s\" via %2$s</string>
+  <string name="startup_icon_description">Application icon</string>
+  <string name="startup_logo_description">ZigZag Logo</string>
+  <string name="terms_and_conditions_title">Terms and conditions</string>
+</resources>
