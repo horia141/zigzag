@@ -26,7 +26,7 @@ class _Handler(object):
     def __init__(self, extension):
         self._extension = extension
 
-    def __call__(self):
+    def __call__(self, output_dir_path, g_name, g_config, path):
         raise NotImplementedError()
 
 

@@ -25,7 +25,7 @@ class _XmlHandler(generators._Handler):
     def __init__(self):
         super(_XmlHandler, self).__init__('.xml')
 
-    def __call__(self, output_dir_path, g_name, path):
+    def __call__(self, output_dir_path, g_name, g_config, path):
         out_path = os.path.join(output_dir_path, _PROFILES['none'].out_path, g_name)
         shutil.copy2(path, out_path)
 
@@ -34,7 +34,7 @@ class _PngHandler(generators._Handler):
     def __init__(self):
         super(_PngHandler, self).__init__('.png')
 
-    def __call__(self, output_dir_path, g_name, path):
+    def __call__(self, output_dir_path, g_name, g_config, path):
         for p_name, profile in _PROFILES.iteritems():
             if profile.rescale_factor is None:
                 continue
@@ -75,4 +75,4 @@ class Generator(generators.BaseGenerator):
     def generate(self, g_name, g_config):
         path = g_config['path']
         path_type = os.path.splitext(path)[1]
-        _HANDLERS[path_type](self.output_dir_path, g_name, path)
+        _HANDLERS[path_type](self.output_dir_path, g_name, g_config, path)
