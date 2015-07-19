@@ -35,17 +35,13 @@ class Generator(generators.BaseGenerator):
         }
 
     def __init__(self, output_dir_path):
-        super(Generator, self).__init__()
-        self._output_dir_path = output_dir_path
+        super(Generator, self).__init__(output_dir_path)
 
     def __enter__(self):
-        if os.path.exists(self._output_dir_path):
-            if os.path.exists(self._output_dir_path):
-                if os.path.isfile(self._output_dir_path):
-                    os.remove(self._output_dir_path)
-                else:
-                    shutil.rmtree(self._output_dir_path)
-        os.mkdir(self._output_dir_path)
+        # Recreate the directory for graphics assets. In iOS, this directory is completely under
+        # the application's control, so we can just recreate it without issues at this point.
+        generators._recreate_directory(self.output_dir_path)
+
         return self
 
     def generate(self, g_name, g_config):
@@ -54,7 +50,7 @@ class Generator(generators.BaseGenerator):
         path_type = os.path.splitext(path)[1]
 
         if path_type == '.png':
-            dir_path = os.path.join(self._output_dir_path,
+            dir_path = os.path.join(self.output_dir_path,
                 '%s.%s' % (g_name_base, self._MODIFIER_FOR_USAGE[g_config['usage']]))
             base_out_path = os.path.join(dir_path, g_name)
             os.mkdir(dir_path)
@@ -71,7 +67,7 @@ class Generator(generators.BaseGenerator):
                 out_path = profile.modify_path(base_out_path)
                 image = Image.open(path)
                 desired_width = int(image.size[0] * profile.rescale_factor)
-                image_resized = self._resize_to_width(image, desired_width)
+                image_resized = generators._resize_to_width(image, desired_width)
                 image_resized[0].save(out_path)
                 metadata['images'].append({
                         'idiom': 'universal',
@@ -82,7 +78,7 @@ class Generator(generators.BaseGenerator):
             with open(os.path.join(dir_path, 'Contents.json'), 'w') as contents_file:
                 contents_file.write(json.dumps(metadata))
         elif path_type == '.gif':
-            dir_path_pattern = os.path.join(self._output_dir_path,
+            dir_path_pattern = os.path.join(self.output_dir_path,
                 '%s%%02d.imageset' % g_name_base)
             g_name_pattern = '%s%%02d%s' % (g_name_base, g_name_ext)
             base_out_path_pattern = os.path.join(dir_path_pattern, g_name_pattern)
@@ -109,7 +105,7 @@ class Generator(generators.BaseGenerator):
                     out_path = profile.modify_path(base_out_path_pattern % (fr, fr))
                     frame = image.copy()
                     desired_width = int(frame.size[0] * profile.rescale_factor)
-                    frame_resized = self._resize_to_width(image, desired_width)
+                    frame_resized = generators._resize_to_width(image, desired_width)
                     frame_resized[0].save(out_path)
                     metadata['images'].append({
                             'idiom': 'universal',
