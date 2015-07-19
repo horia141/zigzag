@@ -8,14 +8,14 @@ class BaseGenerator(object):
     def __init__(self, output_dir_path):
         self._output_dir_path = output_dir_path
 
-    def generate(self, g_name, g_config):
-        raise NotImplementedError()
-
     def __enter__(self):
         raise NotImplementedError()
 
     def __exit__(self, type, value, traceback):
         return False
+
+    def generate(self, g_name, g_config):
+        raise NotImplementedError()
 
     @property
     def output_dir_path(self):

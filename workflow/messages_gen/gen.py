@@ -4,15 +4,32 @@ import re
 import yaml
 
 
-class MessagesGenerator(object):
-    def __init__(self):
-        pass
+class BaseGenerator(object):
+    def __init__(self, output_path):
+        self._output_path = output_path
+        self._output_file = open(self._output_path, 'w')
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        self._output_file.close()
+        return False
 
     def generate(self, messages):
         raise NotImplementedError()
 
+    @property
+    def output_path(self):
+        return self._output_path
 
-class AndroidGenerator(MessagesGenerator):
+    @property
+    def output_file(self):
+        assert self._output_file is not None
+        return self._output_file
+
+
+class AndroidGenerator(BaseGenerator):
     _MASTER_TEMPLATE_HEADER = u"""<?xml version="1.0" encoding="utf-8"?>
 <resources>"""
     _MASTER_TEMPLATE_FOOTER = u"""</resources>"""
@@ -20,57 +37,58 @@ class AndroidGenerator(MessagesGenerator):
     _PATTERN_RE = re.compile('[{](\d+)[}]')
 
     def __init__(self, output_path):
-        super(AndroidGenerator, self).__init__()
-        self._output_path = output_path
+        super(AndroidGenerator, self).__init__(output_path)
 
-    def generate(self, messages):
-        with open(self._output_path, 'w') as output_file:
-            output_file.write(self._MASTER_TEMPLATE_HEADER)
-            output_file.write('\n')
+    def __enter__(self):
+        self.output_file.write(self._MASTER_TEMPLATE_HEADER)
+        self.output_file.write('\n')
+        return self
 
-            for key in sorted(messages.iterkeys()):
-                message = self._clean_message(messages[key])
-                output_file.write('  ')
-                output_file.write(self._RECORD_TEMPLATE.format(key, message['text']).encode('utf-8'))
-                output_file.write('\n')
-            
-            output_file.write(self._MASTER_TEMPLATE_FOOTER)
-            output_file.write('\n')
+    def __exit__(self, type, value, traceback):
+        self.output_file.write(self._MASTER_TEMPLATE_FOOTER)
+        self.output_file.write('\n')
+        self.output_file.close()
+        return False
 
-    def _clean_message(self, message):
-        message_text_1 = message['text'].replace("'", "\\'")
-        message_text_2 = message_text_1.replace('"', '\\"')
-        message_text_3 = re.sub(self._PATTERN_RE, r'%\1$s', message_text_2)
+    def generate(self, k, m):
+        mc = self._clean_message(m)
+        self.output_file.write('  ')
+        self.output_file.write(self._RECORD_TEMPLATE.format(k, mc['text']).encode('utf-8'))
+        self.output_file.write('\n')
+
+    def _clean_message(self, m):
+        m_text_1 = m['text'].replace("'", "\\'")
+        m_text_2 = m_text_1.replace('"', '\\"')
+        m_text_3 = re.sub(self._PATTERN_RE, r'%\1$s', m_text_2)
         return {
-            'text': message_text_3,
-            'desc': message['desc']
+            'text': m_text_3,
+            'desc': m['desc'],
+            'platform': m['platform']
             }
 
 
-class IOSGenerator(MessagesGenerator):
+class IOSGenerator(BaseGenerator):
     _RECORD_TEMPLATE = u'"{0}" = "{1}"'
     _COMMENT_TEMPLATE = u'/* {0} */'
     _PATTERN_RE = re.compile('[{](\d+)[}]')
 
     def __init__(self, output_path):
-        super(IOSGenerator, self).__init__()
-        self._output_path = output_path
+        super(IOSGenerator, self).__init__(output_path)
 
-    def generate(self, messages):
-        with open(self._output_path, 'w') as output_file:
-            for key in sorted(messages.iterkeys()):
-                message = self._clean_message(messages[key])
-                output_file.write(self._COMMENT_TEMPLATE.format(message['desc']).encode('utf-8'))
-                output_file.write('\n')
-                output_file.write(self._RECORD_TEMPLATE.format(key, message['text']).encode('utf-8'))
-                output_file.write('\n\n')
+    def generate(self, k, m):
+        mc = self._clean_message(m)
+        self.output_file.write(self._COMMENT_TEMPLATE.format(mc['desc']).encode('utf-8'))
+        self.output_file.write('\n')
+        self.output_file.write(self._RECORD_TEMPLATE.format(k, mc['text']).encode('utf-8'))
+        self.output_file.write('\n\n')
 
-    def _clean_message(self, message):
-        message_text_1 = message['text'].replace('"', '\\"')
-        message_text_2 = re.sub(self._PATTERN_RE, r'%\1$@', message_text_1)
+    def _clean_message(self, m):
+        m_text_1 = m['text'].replace('"', '\\"')
+        m_text_2 = re.sub(self._PATTERN_RE, r'%\1$@', m_text_1)
         return {
-            'text': message_text_1,
-            'desc': message['desc']
+            'text': m_text_1,
+            'desc': m['desc'],
+            'platform': m['platform']
             }
 
 
@@ -89,8 +107,13 @@ def main():
 
     config_for_platform = _load_config(args.config_path)
 
-    AndroidGenerator(args.android_output_path).generate(config_for_platform['android'])
-    IOSGenerator(args.ios_output_path).generate(config_for_platform['ios'])
+    with AndroidGenerator(args.android_output_path) as generator:
+        for k, m in config_for_platform['android'].iteritems():
+            generator.generate(k, m)
+
+    with IOSGenerator(args.ios_output_path) as generator:
+        for k, m in config_for_platform['ios'].iteritems():
+            generator.generate(k, m)
 
 
 def _load_config(config_path):
