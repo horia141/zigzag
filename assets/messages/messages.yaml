@@ -1,42 +1,55 @@
+# Common
 app_name:
   text: ZigZag
   desc: Application name
+  platform: android+ios
 copyright:
   text: ©ZigZag 2015
   desc: Application copyright
+  platform: android+ios
 
 share_title:
   text: '"{1}" via {2}'
   desc: Title for sharing an artifact
+  platform: android+ios
 share_body:
   text: '"{1}" via {2} from {3}'
   desc: Body for sharing an artifact
+  platform: android+ios
 cannot_share_artifact:
   text: Cannot share
   desc: Error message shown when an artifact cannot be shared
+  platform: android+ios
 
 cannot_open_in_browser:
   text: Cannot open in browser
   desc: Error message shown when an artifact cannot be opend in a browser
+  platform: android+ios
 cannot_open_in_mail:
   text: Cannot open in mail
   desc: Error message shown when an artifact cannot be mailed
+  platform: android+ios
 
 artifact_carousel_title:
   text: Latest pictures
   desc: Title for the main carousel in the left drawer
+  platform: android+ios
 preferences_title:
   text: Preferences
   desc: Title for the preferences section in the left drawer
+  platform: android+ios
 terms_and_conditions_title:
   text: Terms and conditions
   desc: Title for the terms and conditions in the left drawer
+  platform: android+ios
 about_title:
   text: About
   desc: Title for the about in the left drawer
+  platform: android+ios
 share_app_title:
   text: Share ZigZag
   desc: Title for the share ZigZag section in the left drawer
+  platform: android+ios
 
 app_terms_and_conditions:
   text: >
@@ -53,6 +66,7 @@ app_terms_and_conditions:
     voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem
     eum fugiat quo voluptas nulla pariatur?
   desc: The terms and conditions
+  platform: android+ios
 
 app_about:
   text: >
@@ -69,3 +83,64 @@ app_about:
     voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem
     eum fugiat quo voluptas nulla pariatur?
   desc: The application about text
+  platform: android+ios
+
+# Android client
+startup_icon_description:
+  text: Application icon
+  desc: The accessibility description for the icon
+  platform: android
+startup_logo_description:
+  text: ZigZag Logo
+  desc: The accessibility description for the logo
+  platform: android
+
+activity_media_carousel_title:
+  text: Latest news
+  desc: Title for main application activity
+  platform: android
+activity_media_carousel_action_save_title:
+  text: Save
+  desc: Menu text for saving an artifact
+  platform: android
+activity_media_carousel_action_share_title:
+  text: Share
+  desc: Menu text for sharing an artifact
+  platform: android
+activity_media_carousel_action_open_in_browser_title:
+  text: Open in browser
+  desc: Menu text for opening an artifact in a  browser
+  platform: android
+
+fragment_media_carousel_title:
+  text: Title
+  desc: Default text for artifact title
+  platform: android
+fragment_media_carousel_source_name:
+  text: zigzag
+  desc: Default text for artifact source
+  platform: android
+fragment_media_carousel_time_added:
+  text: 1 Jan 1970
+  desc: Default text for artifact date
+  platform: android
+fragment_media_carousel_one_image_subtitle: 
+  text: Subtitle
+  desc: Default text for artifact subtitle
+  platform: android
+fragment_media_carousel_one_image_description: 
+  text: Description
+  desc: Default text for artifact description
+  platform: android
+
+drawer_action_open:
+  text: Opening drawer menu
+  desc: Action name for opening the drawer menu
+  platform: android
+drawer_action_close:
+  text: Closing drawer menu
+  desc: Action name for closing the drawer menu
+  platform: android
+
+
+# iOS client

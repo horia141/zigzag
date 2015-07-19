@@ -79,100 +79,72 @@ PLATFORMS = set(['android', 'ios'])
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument('--config_path', type=str, required=True,
+        help='Configuration path for messages assets')
     parser.add_argument('--android_output_path', type=str, required=True,
         help='Output file for Android messages')
     parser.add_argument('--ios_output_path', type=str, required=True,
         help='Output file for iOS messages')
-    parser.add_argument('messages_files', type=str, nargs='+',
-        help='Messages and platforms to generate for')
     args = parser.parse_args()
 
-    GENERATORS = {
-        'android': AndroidGenerator(args.android_output_path),
-        'ios': IOSGenerator(args.ios_output_path)
+    config_for_platform = _load_config(args.config_path)
+
+    AndroidGenerator(args.android_output_path).generate(config_for_platform['android'])
+    IOSGenerator(args.ios_output_path).generate(config_for_platform['ios'])
+
+
+def _load_config(config_path):
+    config_for_platform = dict((k, {}) for k in PLATFORMS)
+
+    with open(config_path) as config_file:
+        config = yaml.load(config_file)
+
+        if not isinstance(config, dict):
+            raise Exception('Invalid format for config file')
+
+        for k, m in config.iteritems():
+            if not isinstance(k, basestring):
+                raise Exception('Key "%s" is not a string' % str(k))
+
+            if not isinstance(m, dict):
+                raise Exception('Message "%s" is not a correct format' % k)
+
+            if 'text' not in m or 'desc' not in m or 'platform' not in m:
+                raise Exception('Message "%s" has no text, desc or platform keys' % k)
+
+            if not isinstance(m['text'], basestring):
+                raise Exception('Message "%s" has no string for key text' % k)
+
+            if not isinstance(m['desc'], basestring):
+                raise Exception('Message "%s" has no string for key desc' % k)
+
+            if not isinstance(m['platform'], basestring):
+                raise Exception('Invalid format for platform for "%s"' % k)
+
+            platforms = m['platform'].split('+')
+
+            if any(p not in PLATFORMS for p in platforms):
+                raise Exception('Invalid platforms for "%s"' % k)
+
+            m['platform'] = frozenset(platforms)
+
+            for p in platforms:
+                config_for_platform[p][k] = _clean(m)
+
+        config_keys = set(config.iterkeys())
+
+        if len(config_keys) != len(config):
+            raise Exception('Duplicate keys in "%s"' % messages_path)
+
+    return config_for_platform
+
+
+def _clean(m):
+    return {
+        'text': m['text'].strip(),
+        'desc': m['desc'].strip(),
+        'platform': m['platform']
         }
-
-    platform_messages_files = _split_messages_by_platform(args.messages_files)
-
-    for platform, messages_files in platform_messages_files.iteritems():
-        messages = _clean_messages(_load_messages(messages_files))
-        GENERATORS[platform].generate(messages)
-
-
-def _split_messages_by_platform(messages_files):
-    gen_file_pairs_map = dict((p, []) for p in PLATFORMS)
-
-    for fgs in messages_files:
-        fgs_ls = fgs.split('=')
-        assert len(fgs_ls) == 2
-        f, gs = fgs_ls
-        for g in gs.split(':'):
-            if g not in PLATFORMS:
-                raise Exception('Unknown platform "%s"' % g)
-            gen_file_pairs_map[g].append(f)
-
-    return gen_file_pairs_map
-
-
-def _load_messages(messages_paths):
-    messages_keys = set()
-    messages_maps = {}
-
-    for messages_path in messages_paths:
-        with open(messages_path) as messages_file:
-            messages_map = yaml.load(messages_file)
-
-            if messages_map is None:
-                continue
-
-            if not isinstance(messages_map, dict):
-                raise Exception('Bad format for "%s"' % messages_path)
-
-            for k, m in messages_map.iteritems():
-                if not isinstance(k, basestring):
-                    raise Exception('Key "%s" is not a string for "%s"' % (str(k), messages_path))
-
-                if not isinstance(m, dict):
-                    raise Exception('Message "%s" is not a correct format for "%s"' % (str(m), messages_path))
-
-                if 'text' not in m or 'desc' not in m:
-                    raise Exception('Message "%s" has no text or desc keys for "%s"' % (k, messages_path))
-
-                if not isinstance(m['text'], basestring):
-                    raise Exception('Message "%s" has no string for key text for "%s"' % (k, messages_path))
-
-                if not isinstance(m['desc'], basestring):
-                    raise Exception('Message "%s" has no string for key desc for "%s"' % (k, messages_path))
-
-            messages_map_keys = set(messages_map.iterkeys())
-
-            if len(messages_map_keys) != len(messages_map):
-                raise Exception('Duplicate keys in "%s"' % messages_path)
-
-            common_keys = messages_keys & messages_map_keys
-
-            if len(common_keys) != 0:
-                raise Exception('Duplicate keys with other files in "%s"' % messages_path)
-
-            messages_keys |= messages_map_keys
-            messages_maps.update(messages_map)    
-
-    return messages_maps
-
-
-def _clean_messages(messages):
-    def clean(m):
-        return {
-            'text': m['text'].strip(),
-            'desc': m['desc'].strip()
-            }
-
-    cleaned_messages = {}
-
-    for k, m in messages.iteritems():
-        cleaned_messages[k] = clean(m)
-
-    return cleaned_messages
 
 
 if __name__ == '__main__':
