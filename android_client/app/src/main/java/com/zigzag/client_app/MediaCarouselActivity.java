@@ -48,9 +48,9 @@ public class MediaCarouselActivity extends Activity{
         drawerItemDescriptors.add(new DrawerItemDescriptor(
                 PreferencesFragment.class, R.id.drawer_preferences, false));
         drawerItemDescriptors.add(new DrawerItemDescriptor(
-                TermsAndConditionsFragment.class, R.id.drawer_terms_and_conditions, true));
+                TermsAndConditionsFragment.class, R.id.drawer_terms_and_conditions, false));
         drawerItemDescriptors.add(new DrawerItemDescriptor(
-                AboutFragment.class, R.id.drawer_about, true));
+                AboutFragment.class, R.id.drawer_about, false));
         drawerItemDescriptors.add(new DrawerItemDescriptor(
                 AboutFragment.class, R.id.drawer_share_app, false));
     }

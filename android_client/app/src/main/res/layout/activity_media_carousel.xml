@@ -64,7 +64,8 @@
             android:paddingRight="16dp"
             android:gravity="center_vertical"
             android:layout_width="240dp"
-            android:layout_height="40dp" />
+            android:layout_height="40dp"
+            style="@style/MediaCarouselDrawerInactive" />
 
         <TextView
             android:id="@+id/drawer_about"
@@ -74,7 +75,8 @@
             android:paddingRight="16dp"
             android:gravity="center_vertical"
             android:layout_width="240dp"
-            android:layout_height="40dp" />
+            android:layout_height="40dp"
+            style="@style/MediaCarouselDrawerInactive" />
 
         <TextView
             android:id="@+id/drawer_share_app"
