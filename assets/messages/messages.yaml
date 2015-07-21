@@ -1,10 +1,10 @@
 # Common
 app_name:
-  text: ZigZag
+  text: PicJar
   desc: Application name
   platform: android+ios
 copyright:
-  text: ©ZigZag 2015
+  text: ©PicJar 2015
   desc: Application copyright
   platform: android+ios
 
@@ -47,8 +47,8 @@ about_title:
   desc: Title for the about in the left drawer
   platform: android+ios
 share_app_title:
-  text: Share ZigZag
-  desc: Title for the share ZigZag section in the left drawer
+  text: Share PicJar
+  desc: Title for the share PicJar section in the left drawer
   platform: android+ios
 
 app_terms_and_conditions:
@@ -91,7 +91,7 @@ startup_icon_description:
   desc: The accessibility description for the icon
   platform: android
 startup_logo_description:
-  text: ZigZag Logo
+  text: PicJar Logo
   desc: The accessibility description for the logo
   platform: android
 
@@ -117,7 +117,7 @@ fragment_media_carousel_title:
   desc: Default text for artifact title
   platform: android
 fragment_media_carousel_source_name:
-  text: zigzag
+  text: picjar
   desc: Default text for artifact source
   platform: android
 fragment_media_carousel_time_added:
