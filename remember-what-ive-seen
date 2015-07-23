@@ -1,0 +1,146 @@
+After ./unique-images, one very important feature of the application is to remember what pictures a user has seen and never show them in the stream. Optionally, a list of "seen" images could be presented. Although, because of Android interesting bits it might not be such a good idea for this stage.
+
+In any case, this is an important feature which will make us stand out. You can see how this is an extension of "./unique-images". That guarantees that there are no global level dups of a photo which would cause the user to see reposts / images which he has already seen. Thisis good. But, consider the following setup. A user starts the app. He swipes right and sees N artifacts. Then he closes the app and goes on his way. Some time in the future, he's restarts the app. He swipes right and sees M artifacts. But at some point, he's gonna encounter the original N artifacts he looked at earlier. At this point he disengages with the app.
+This is the way most such apps operate at this point. But it SUCKS. Things should not be so. There should always be a stream of new content.
+
+So, in broad lines, the application needs to remember which artifacts a user has seen. When a new batch/generation is requested, it should contain only artifacts which he has not seen.
+
+A fist issue which we must take care of is that of users. Obviously this concept needs to exist at the application level in order for the whole feature to work. We'll come back to this issue in a giffy.
+
+A second issue which we must take care of is that of actually recording what's seen. For each user we need to store which artifacts have been seen. However, this is a pretty gross level of detail. We should have the "generation" as this. So we need to basically store a user-generation setup.
+
+When we request a generation we actually request the latest generation (of highest id) which does not appear in the set of generations a user has seen.
+
+The third issue to take care of is allowing the old API. That is, simple anonymous access the the application, which will present a "global" stream.
+
+So, let us talk about representing users. We are going to need a Users table. What is a user? For the moment, we don't really care. In the future, we'll do some sort of singned-in setup via Facebook, Twitter, Google+ etc. But for now, we only care that we have a consistent id for a user across sessions. A cookie basically. We don't particularly care about identity, nor about resiliance cross reinstalls etc. We should, but that's a problem for identity to solve.
+
+Some details. Identity should be provided by the server. When a client makes a request, they make it without any user information. Then the server will respond with the default behaviour, of selecting the "latest" generation globally. But it will also provide a cookie for the user, which serves as a identifier for that client. The client will save the cookie for use in all later requests in a private and secure storage. FOr web clients this can happen automatically as part of the HTTP protocol, while for the Android and iOS clients we might need to pass it as an argument. Although they should support the cookie header. So the server can basically act the same way regardless.
+Notice that if the client is not using this protocol, he will be using the "older" protocol, in which case basically the same behavior happens.
+Theres's only the "from" parameter which should actually always be included. And it should have a meaning for cookie based things as well. It shouldn't be used, but it might be useful for debugging. And then we have a sane interface.
+In any case, this is added as an extra parameter to the generation response.
+
+The client should also pass some extra information such as "client type". But that's all. A proposed schema should be:
+
+  message User {
+    required string id;
+    required ClientType client_type;
+    required int32 date_joined_ts;
+  }
+
+There should also be a Users table with schema
+
+  table Users
+    id string - primary key, unique, non null
+    user_ser bytes - a serialize User object
+
+Now, about storing the generations which have been seen. We have to look at what query to write. A natural setup would be to have a table UserViewedGenerations with the schema:
+
+  table UserViewedGeneration
+    user_id foreign key and primary key on Users
+    generation_id foreign key on GenerationStore
+
+Then we would need a query of the form:
+
+  select
+    generation_id,
+    generation_ser
+  from generation_store
+  where
+    not exists (
+      select
+        user_id,
+        generation_id
+      from user_viewed_generations
+      where user_id = :user_id
+    )
+  order by generation_id descending
+  limit 1
+
+If the query optimizer is good this should result in 1 scan to find all generations a particular user has viwed, and scans from the highest generation downward to find one which isn't present in the result of that.
+I will need to performance tune this thing.
+
+There's also the problem of writing such a query in Django. Maybe I'll need to write it by hand.
+
+  gens = UserViewedGenerations.objects.get(user_id=:user_id)
+  gen = GenerationStore.objects.exclude(generation_id__in=gens).order_by('-id').first() ... will have to work!
+
+Lets say we have this system now.
+
+We've served a generation. The client receives it. After this it also needs to send a message to the server to mark it as done. This is simply an insert inside the database with the user and id of the generation. Possibly a sequence number if we want to be correct.
+We could do the mark as read on the first request. But there are a couple of disadvantages:
+- First, it will take extra writes to the db. This is a critical path, and it should not be that hard to do. Although for every read there is also a write so u know.
+- Second, and more importantly, suppose the client doesn't actually get to see the generation. On the next request there would be a problem, since it would find a completely new generation.
+Hmmm ... I think I don't agree with my suggestion anymore.
+Since every read is gonna be followed by a write, why introduce the extra complexity of having the client dictate this? But what if a failure occurs.
+We need to store the generations to explore on the client as well, in a permament memory.
+Assume an ideal world. No failures and always a clean stream of of fetches.
+So no. On the client.
+- We do a request for a next generation.
+- When it arrives we append it to the in memory data structures.
+- We also append it to a disk based log of generations.
+- We send a confirmation to the server that it has been received and one can mark it as read.
+When we start, we look at the disk based log of generations and we start with that.
+When a generation is fully explored, we need to exclude it from the log.
+In fact, it seems only the current generation should be in that log.
+Once we request a new generation and it arrives, we replace it.
+But there is a prefetch. If the prefetch is 5 artifacts. And the request happens very fast. Like before we get to artifact -4. And then we save the new generation as the current one. And then it stops. When it restarts it is going to look at the current generation and miss the last 4. Now cool.
+We should change how we do prefetch.
+We should have the current generation. When we view the first artifact of it, we make a request to get the next generation and re
+I think a 2 phase approach is mandatory. It would be simpler to just assume the client will receive a fetch request and process it, but then we'll have wierd behaviors and edge cases.
+
+Actors: server, client
+Client starts
+It has no state
+Requests data from server.
+- Gets a generation and a client id.
+- Saves client id for all future calls.
+- Saves generation as to the generation cache, as single element. The last element is always going to be the most recent generation we've explored.
+- Saves artifact id as zero in it.
+- Saves maximum explored artifact, which is one from the last generation. Sets it to zero.
+- Mark on server the generation as being read.
+
+Swipe right and left.
+- Basically mirror whatever happens to the local state: artifact id and generations on disk.
+- Only increment te maximum viewed artifact on a swipe right when we actually see a new artifact.
+
+Client starts
+It has state. This is where things differ.
+Load it from disk. Only keep generations which contain artifacts greater than the maximum seen artifact. Recompute all numbers properly to these values. We've basically reconstructed the internal state.
+Save this state to disk. It will be completed by all the next writes.
+
+Whenever we start viewing a new generation (artifact id == first artifact in a generation for the first time), we mark that generation as seen. The client should actually send this only once to avoid multi-sends on edges, but the operation on the server should be idempotent just in case.
+This means that we do a fetch for a new generation where there are ~5 artifacts to go from the current one.
+Assuming a good network, we get a response super quick.
+We append the result to the in-memory and on-disk repreentations when we get the data.
+then we mark it as done.
+On a restart, we'll have the data for this thing and won't need to do a refetch. So we won't miss anything from the generation we've just received, and will not re-request it until it is done.
+
+What happens is that we need to keep track of what is seen both on the client and server. And at different levels of granularity. On the server we only care about what generations have been seen. On the client we care about what particular artifacts have been seen. We also have limited memory. In any case, there are two bad behaviors: viewing a generation we've already seen or skipping a generation we've not seen. They are in decreasing order of badness. The first is a bad user experience, while the second is an inconsistet approach. The first occurs if we request a generation, show some artifacts from it and never mark it as read. When we request another generation at some point in the future, this might get redisplayed. So, as a rule of thumb, whenever we receive the data for a generation, we must also mark it as read. We could do it on the server side, but that would cuase probems wof rht second bad behavior. Skipping a generation we've not seen occurs if we do not keep client side state of what the user actually saw, and rely only on the server side. For example, if we mark as part of reading, on the server, then, if a failure occurs in transmission on the return part, we'll have the thing marked. Of course, the client just sees an error and retries and then it gets a new result, because this one has been marked. Similarly, if we do thing separately, but do not keep any persistent state, we will do a fetch, and a mark. This avoids the first problem. But if at this point the user stops, the next time he'll reload the app, he will request completely new data from the server. Which will ignore the previously saved thing. What if we only marked when a new generation started? Well, we'd avoid the setup where between the prefetch and the new generation the client stops. But then, between the first generation and a prefetch, if the client stops, we'll miss all the artifacts after the stop. If we marked at the end? Then we'd have possible duplicates.
+So putting the problem even more concretely, we need to have a separate request and mark, because of the first bad behaviour.
+If we request and mark at the same time, we may loose between the mark moment and the end of the new generation.
+If we mark at the start of the new generation, we may lose between the first and the end of the new generation.
+If we mark at the end of the new generation, we may reshow some of the artifacts.
+So we need some client state management. It needs to know where it is when it restarts.
+Requesting and then marking seems like the natural choice. But then we also need to maintain some state.
+The current internal state needs to always be backed up, so when a restart occurs, we don't do a resend, but rather revert to our previous state. Because the core of the problem is really losing track of where we were, and getting it from the server, and then skipping after some artifacts because we were optimistic on the client side. So then if we always keep state on "disk" and return to it, we will know where to start.
+
+Obviously, there are issues [retracted].
+- if the request fails forever, than the client is stuck. This is a natural error.
+- if the update of the internal state and persisting it on disk fails, then we don't know that the new info has been processed. This should cause a crash. In the meantime some artifacts might have been seen from the previous generation, but not the first. They should have been updated. And when the app restarts, it will do a fetch. This is cool actually.
+- if the mark on server fails for some reason (transmission, server error etc.) then we will see duplicated images. If the thing is actually well persisted, we might want to double-check actually, since we could skip this.
+
+This seems to be actually pretty solid. If we dedup the gotten generation with what we have on disk, then marking errors won't be as bad.
+
+The only problem is then if we can't do this deduping. If both write to disk failed, but then we showed more artifacts from a new generation, and then mark failed. But this should actually never occur. Because write to disk should be fatal. And if we do things in a non-async way, if we have:
+- request
+- - write data to disk -- if failure, then everything fails and we don't get to see extra artifacts on the client.
+- - mark 
+
+This should be it then.
+Hopefully the code will be simpler.
+
+Extra AIs: 
+- figure out a good way to generate cookies - cryptographic signatures and stuff.
+- investigate a method to send the cookie to the server from the Android/iOS app.
+- investigate how to write the complex query in Django.
