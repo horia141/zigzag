@@ -46,6 +46,7 @@ static double common.definesPHOTO_DEDUP_KEEP_SIZE_FACTOR = 0.25;
 static NSMutableArray * common.definesPHOTO_DEDUP_KEY_FRAMES;
 static int32_t common.definesPHOTO_DEDUP_SMALL_WIDTH = 128;
 static int32_t common.definesPHOTO_DEDUP_EDGE_PIXELS = 16;
+static NSString * common.definesSHARE_APP_TARGET_URL = @"http://picjar.io:9100/getpicjar";
 
 @implementation common.definesdefinesConstants
 + (void) initialize {
@@ -223,6 +224,9 @@ static int32_t common.definesPHOTO_DEDUP_EDGE_PIXELS = 16;
 }
 + (int32_t) PHOTO_DEDUP_EDGE_PIXELS{
   return common.definesPHOTO_DEDUP_EDGE_PIXELS;
+}
++ (NSString *) SHARE_APP_TARGET_URL{
+  return common.definesSHARE_APP_TARGET_URL;
 }
 @end
 

@@ -8,7 +8,7 @@ start () {
     daemon --name='<%= node.default['application']['api_server']['app']['name'] %>' \
            --command='<%= node.default['application']['virtual_env'] %>/bin/gunicorn -c <%= node.default['application']['api_server']['app']['gunicorn_config_ln'] %> <%= node.default['application']['api_server']['app']['wsgi_module'] %>' \
            --env='PYTHONPATH=<%= node.default['application']['python_env']['PYTHONPATH_GUNICORN'] %>' \
-           --env='DJANGO_SETTINGS_MODULE=<%= node.default['application']['python_env']['DJANGO_SETTINGS_MODULE'] %>' \
+           --env='DJANGO_SETTINGS_MODULE=<%= node.default['application']['python_env']['DJANGO_SETTINGS_MODULE_API'] %>' \
            --env='PYTHON_EGG_CACHE=<%= node.default['application']['python_env']['PYTHON_EGG_CACHE'] %>' \
            --pidfile='<%= node.default['application']['api_server']['app']['daemon']['pid_file'] %>' \
            --user='<%= node.default['application']['api_server']['user'] %>' \

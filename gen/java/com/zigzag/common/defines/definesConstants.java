@@ -176,4 +176,6 @@ public class definesConstants {
 
   public static final int PHOTO_DEDUP_EDGE_PIXELS = 16;
 
+  public static final String SHARE_APP_TARGET_URL = "http://picjar.io:9100/getpicjar";
+
 }

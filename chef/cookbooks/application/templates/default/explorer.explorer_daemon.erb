@@ -8,7 +8,7 @@ start () {
     daemon --name='<%= node.default['application']['explorer']['explorer']['name'] %>' \
            --command='<%= node.default['application']['virtual_env'] %>/bin/python <%= node.default['application']['sources_dir'] %>/explorer/server.py --sleep_sec=<%= node.default['application']['explorer']['explorer']['sleep_sec'] %> --fetcher_host=<%= node.default['application']['explorer']['fetcher']['host'] %> --fetcher_port=<%= node.default['application']['explorer']['fetcher']['port'] %> --photo_save_host=<%= node.default['application']['explorer']['photo_save']['host'] %> --photo_save_port=<%= node.default['application']['explorer']['photo_save']['port'] %> --counters_log_path=<%= node.default['application']['explorer']['explorer']['counters_log'] %> --log_path=<%= node.default['application']['explorer']['explorer']['log'] %> --pidfile_path=<%= node.default['application']['explorer']['explorer']['pid_file'] %>' \
            --env='PYTHONPATH=<%= node.default['application']['python_env']['PYTHONPATH'] %>' \
-           --env='DJANGO_SETTINGS_MODULE=<%= node.default['application']['python_env']['DJANGO_SETTINGS_MODULE'] %>' \
+           --env='DJANGO_SETTINGS_MODULE=<%= node.default['application']['python_env']['DJANGO_SETTINGS_MODULE_API'] %>' \
            --env='PYTHON_EGG_CACHE=<%= node.default['application']['python_env']['PYTHON_EGG_CACHE'] %>' \
            --pidfile='<%= node.default['application']['explorer']['explorer']['daemon']['pid_file'] %>' \
            --user='<%= node.default['application']['explorer']['user'] %>' \

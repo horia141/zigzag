@@ -83,6 +83,18 @@ end
 
 # TODO(horia141): Hackish way of going about this. Also, the test if for the user existing, not for
 # it having the desired roles.
+bash "database_create_role_#{node.default['application']['redirect_server']['user']}" do
+  code <<-EOH
+    (sleep 1)
+    (#{PSQL_CMD} --command='create user #{node.default['application']['redirect_server']['user']} login;')
+  EOH
+  user node.default['application']['database']['user']
+  group node.default['application']['group']
+  not_if "sleep 1 && #{PSQL_CMD} --command='\\du' | grep #{node.default['application']['redirect_server']['user']}"
+end
+
+# TODO(horia141): Hackish way of going about this. Also, the test if for the user existing, not for
+# it having the desired roles.
 bash "database_create_role_#{node.default['application']['res_server']['user']}" do
   code <<-EOH
     (sleep 1)
@@ -139,4 +151,5 @@ bash 'build_and_sync_db' do
   user node.default['application']['user']
   group node.default['application']['group']
   subscribes :run, "template[#{node.default['application']['api_server']['app']['django_config']}]", :immediately
+  subscribes :run, "template[#{node.default['application']['redirect_server']['app']['django_config']}]", :immediately
 end

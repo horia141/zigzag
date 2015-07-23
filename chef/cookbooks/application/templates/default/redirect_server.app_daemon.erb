@@ -1,0 +1,72 @@
+#!/bin/sh
+# Comments to support chkconfig on Red Hat Linux
+# chkconfig: 2345 64 36
+# Description: <%= node.default['application']['redirect_server']['app']['name'] %>
+
+start () {
+    echo "Starting <%= node.default['application']['redirect_server']['app']['name'] %>... "
+    daemon --name='<%= node.default['application']['redirect_server']['app']['name'] %>' \
+           --command='<%= node.default['application']['virtual_env'] %>/bin/gunicorn -c <%= node.default['application']['redirect_server']['app']['gunicorn_config_ln'] %> <%= node.default['application']['redirect_server']['app']['wsgi_module'] %>' \
+           --env='PYTHONPATH=<%= node.default['application']['python_env']['PYTHONPATH_GUNICORN'] %>' \
+           --env='DJANGO_SETTINGS_MODULE=<%= node.default['application']['python_env']['DJANGO_SETTINGS_MODULE_REDIRECT'] %>' \
+           --env='PYTHON_EGG_CACHE=<%= node.default['application']['python_env']['PYTHON_EGG_CACHE'] %>' \
+           --pidfile='<%= node.default['application']['redirect_server']['app']['daemon']['pid_file'] %>' \
+           --user='<%= node.default['application']['redirect_server']['user'] %>' \
+           --chdir='<%= node.default['application']['work_dir'] %>' \
+           --unsafe \
+           --respawn \
+           --errlog='<%= node.default['application']['redirect_server']['app']['daemon']['error_log'] %>' \
+           --dbglog='<%= node.default['application']['redirect_server']['app']['daemon']['debug_log'] %>' \
+           --verbose
+    return $?
+}
+
+stop () {
+    echo "Stopping <%= node.default['application']['redirect_server']['app']['name'] %>... "
+    daemon --name='<%= node.default['application']['redirect_server']['app']['name'] %>' \
+           --pidfile='<%= node.default['application']['redirect_server']['app']['daemon']['pid_file'] %>' \
+           --stop \
+           --verbose
+    return $?
+}
+
+
+restart () {
+    echo "Restarting <%= node.default['application']['redirect_server']['app']['name'] %>..."
+    daemon --name='<%= node.default['application']['redirect_server']['app']['name'] %>' \
+           --pidfile='<%= node.default['application']['redirect_server']['app']['daemon']['pid_file'] %>' \
+           --restart \
+           --verbose
+    return $?
+}
+
+
+status () {
+    daemon --name='<%= node.default['application']['redirect_server']['app']['name'] %>' \
+           --pidfile='<%= node.default['application']['redirect_server']['app']['daemon']['pid_file'] %>' \
+           --running \
+           --verbose
+    return $?
+}
+
+
+case "$1" in
+    start)
+        start
+    ;;
+    status)
+        status
+    ;;
+    stop)
+        stop
+    ;;
+    restart)
+        restart
+    ;;
+    *)
+        echo $"Usage: <%= node.default['application']['redirect_server']['app']['name'] %> {start|status|stop|restart}"
+        exit 3
+    ;;
+esac
+
+exit $RETVAL

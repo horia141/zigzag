@@ -8,7 +8,7 @@ start () {
     daemon --name='<%= node.default['application']['log_analyzer']['name'] %>' \
            --command='<%= node.default['application']['virtual_env'] %>/bin/python <%= node.default['application']['sources_dir'] %>/log_analyzer/server.py --sleep_sec=<%= node.default['application']['log_analyzer']['sleep_sec'] %> --api_server_log_path=<%= node.default['application']['api_server']['frontend']['access_log'] %> --res_server_log_path=<%= node.default['application']['res_server']['access_log'] %> --log_path=<%= node.default['application']['log_analyzer']['log'] %> --pidfile_path=<%= node.default['application']['log_analyzer']['pid_file'] %>' \
            --env='PYTHONPATH=<%= node.default['application']['python_env']['PYTHONPATH'] %>' \
-           --env='DJANGO_SETTINGS_MODULE=<%= node.default['application']['python_env']['DJANGO_SETTINGS_MODULE'] %>' \
+           --env='DJANGO_SETTINGS_MODULE=<%= node.default['application']['python_env']['DJANGO_SETTINGS_MODULE_API'] %>' \
            --env='PYTHON_EGG_CACHE=<%= node.default['application']['python_env']['PYTHON_EGG_CACHE'] %>' \
            --pidfile='<%= node.default['application']['log_analyzer']['daemon']['pid_file'] %>' \
            --user='<%= node.default['application']['log_analyzer']['user'] %>' \

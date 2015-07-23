@@ -8,7 +8,7 @@ start () {
     daemon --name='<%= node.default['application']['explorer']['fetcher']['name'] %>' \
            --command='<%= node.default['application']['virtual_env'] %>/bin/python <%= node.default['application']['sources_dir'] %>/fetcher/server.py --host=<%= node.default['application']['explorer']['fetcher']['host'] %> --port=<%= node.default['application']['explorer']['fetcher']['port'] %> --log_path=<%= node.default['application']['explorer']['fetcher']['log'] %> --pidfile_path=<%= node.default['application']['explorer']['fetcher']['pid_file'] %>' \
            --env='PYTHONPATH=<%= node.default['application']['python_env']['PYTHONPATH'] %>' \
-           --env='DJANGO_SETTINGS_MODULE=<%= node.default['application']['python_env']['DJANGO_SETTINGS_MODULE'] %>' \
+           --env='DJANGO_SETTINGS_MODULE=<%= node.default['application']['python_env']['DJANGO_SETTINGS_MODULE_API'] %>' \
            --env='PYTHON_EGG_CACHE=<%= node.default['application']['python_env']['PYTHON_EGG_CACHE'] %>' \
            --pidfile='<%= node.default['application']['explorer']['fetcher']['daemon']['pid_file'] %>' \
            --user='<%= node.default['application']['explorer']['user'] %>' \

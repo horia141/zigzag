@@ -89,3 +89,5 @@ const double PHOTO_DEDUP_KEEP_SIZE_FACTOR = 0.25
 const list<i32> PHOTO_DEDUP_KEY_FRAMES = [0, 4, 9, 14, 19]
 const i32 PHOTO_DEDUP_SMALL_WIDTH = 128
 const i32 PHOTO_DEDUP_EDGE_PIXELS = 16
+
+const string SHARE_APP_TARGET_URL = 'http://picjar.io:9100/getpicjar'

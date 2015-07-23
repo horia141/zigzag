@@ -26,6 +26,11 @@ execute 'sources' do
           "chown -R #{node.default['application']['user']} #{node.default['application']['sources_dir']}/interface_server && " + 
           "chgrp -R #{node.default['application']['group']} #{node.default['application']['sources_dir']}/interface_server && " +
           "chmod -R g+w #{node.default['application']['sources_dir']}/interface_server && " +
+
+          "cp -r #{node.default['application']['DUMB_project_path']}/redirect_server #{node.default['application']['sources_dir']} && " +
+          "chown -R #{node.default['application']['user']} #{node.default['application']['sources_dir']}/redirect_server && " + 
+          "chgrp -R #{node.default['application']['group']} #{node.default['application']['sources_dir']}/redirect_server && " +
+          "chmod -R g+w #{node.default['application']['sources_dir']}/redirect_server && " +
   
           "cp -r #{node.default['application']['DUMB_project_path']}/log_analyzer #{node.default['application']['sources_dir']} && " +
           "chown -R #{node.default['application']['user']} #{node.default['application']['sources_dir']}/log_analyzer && " + 

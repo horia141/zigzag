@@ -1,0 +1,11 @@
+import multiprocessing
+
+bind = ['<%= node.default['application']['redirect_server']['app']['fastcgi_host'] %>:<%= node.default['application']['redirect_server']['app']['fastcgi_port'] %>']
+workers = multiprocessing.cpu_count() * 2 + 1
+chdir = '<%= node.default['application']['redirect_server']['app']['gunicorn_work_dir'] %>'
+daemon = False
+pidfile = '<%= node.default['application']['redirect_server']['app']['pid_file'] %>'
+worker_tmp_dir = '<%= node.default['application']['tmp_dir'] %>'
+tmp_upload_dir = '<%= node.default['application']['tmp_dir'] %>'
+accesslog = '<%= node.default['application']['redirect_server']['app']['access_log'] %>'
+errorlog = '<%= node.default['application']['redirect_server']['app']['error_log'] %>'

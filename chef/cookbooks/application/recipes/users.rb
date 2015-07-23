@@ -26,6 +26,14 @@ user node.default['application']['api_server']['user'] do
   system true
 end
 
+user node.default['application']['redirect_server']['user'] do
+  comment 'User for the API server component'
+  group node.default['application']['group']
+  shell '/usr/sbin/nologin'
+  home node.default['application']['work_dir']
+  system true
+end
+
 user node.default['application']['res_server']['user'] do
   comment 'User for the resources server component'
   group node.default['application']['group']

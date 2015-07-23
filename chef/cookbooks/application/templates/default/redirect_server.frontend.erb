@@ -1,0 +1,31 @@
+server.modules = (
+  "mod_access",
+  "mod_fastcgi",
+  "mod_accesslog",
+  "mod_proxy",
+)
+
+server.document-root = "<%= node.default['application']['var_dir'] %>"
+
+server.port = <%= node.default['application']['redirect_server']['frontend']['port'] %>
+
+server.username = "<%= node.default['application']['redirect_server']['user'] %>"
+server.groupname = "<%= node.default['application']['group'] %>"
+server.pid-file = "<%= node.default['application']['redirect_server']['frontend']['pid_file'] %>"
+server.errorlog = "<%= node.default['application']['redirect_server']['frontend']['error_log'] %>"
+accesslog.filename = "<%= node.default['application']['redirect_server']['frontend']['access_log'] %>"
+
+$HTTP["url"] =~ "^/" {
+  proxy.balance = "hash"
+  proxy.server = (
+    "" => (
+      "gunicorn" => (
+        "host" => "<%= node.default['application']['redirect_server']['app']['fastcgi_host'] %>",
+        "port" => <%= node.default['application']['redirect_server']['app']['fastcgi_port'] %>
+      )
+    )
+  )
+}
+
+static-file.exclude-extensions = ( ".fcgi", ".php", ".rb", "~", ".inc" )
+index-file.names = ()
