@@ -46,7 +46,11 @@ static double common.definesPHOTO_DEDUP_KEEP_SIZE_FACTOR = 0.25;
 static NSMutableArray * common.definesPHOTO_DEDUP_KEY_FRAMES;
 static int32_t common.definesPHOTO_DEDUP_SMALL_WIDTH = 128;
 static int32_t common.definesPHOTO_DEDUP_EDGE_PIXELS = 16;
-static NSString * common.definesSHARE_APP_TARGET_URL = @"http://picjar.io:9100/getpicjar";
+static NSString * common.definesURLS_MAIN = @"http://picjar.io";
+static NSString * common.definesURLS_API_NEXTGEN_PATTERN = @"http://picjar.io:9000/api/v1/nextgen?from=%s&output=thrift";
+static NSString * common.definesURLS_API_NEXTGEN_JSON_PATTERN = @"http://picjar.io:9000/api/v1/nextgen?from=%s&output=json";
+static NSString * common.definesURLS_API_RES_URL_PATTERN = @"http://picjar.io:9001/%s";
+static NSString * common.definesURLS_SHARE_APP_TARGET = @"http://picjar.io:9100/getpicjar";
 
 @implementation common.definesdefinesConstants
 + (void) initialize {
@@ -225,8 +229,20 @@ static NSString * common.definesSHARE_APP_TARGET_URL = @"http://picjar.io:9100/g
 + (int32_t) PHOTO_DEDUP_EDGE_PIXELS{
   return common.definesPHOTO_DEDUP_EDGE_PIXELS;
 }
-+ (NSString *) SHARE_APP_TARGET_URL{
-  return common.definesSHARE_APP_TARGET_URL;
++ (NSString *) URLS_MAIN{
+  return common.definesURLS_MAIN;
+}
++ (NSString *) URLS_API_NEXTGEN_PATTERN{
+  return common.definesURLS_API_NEXTGEN_PATTERN;
+}
++ (NSString *) URLS_API_NEXTGEN_JSON_PATTERN{
+  return common.definesURLS_API_NEXTGEN_JSON_PATTERN;
+}
++ (NSString *) URLS_API_RES_URL_PATTERN{
+  return common.definesURLS_API_RES_URL_PATTERN;
+}
++ (NSString *) URLS_SHARE_APP_TARGET{
+  return common.definesURLS_SHARE_APP_TARGET;
 }
 @end
 

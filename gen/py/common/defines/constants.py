@@ -109,4 +109,8 @@ PHOTO_DEDUP_KEY_FRAMES = [
 ]
 PHOTO_DEDUP_SMALL_WIDTH = 128
 PHOTO_DEDUP_EDGE_PIXELS = 16
-SHARE_APP_TARGET_URL = "http://picjar.io:9100/getpicjar"
+URLS_MAIN = "http://picjar.io"
+URLS_API_NEXTGEN_PATTERN = "http://picjar.io:9000/api/v1/nextgen?from=%s&output=thrift"
+URLS_API_NEXTGEN_JSON_PATTERN = "http://picjar.io:9000/api/v1/nextgen?from=%s&output=json"
+URLS_API_RES_URL_PATTERN = "http://picjar.io:9001/%s"
+URLS_SHARE_APP_TARGET = "http://picjar.io:9100/getpicjar"
