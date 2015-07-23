@@ -186,4 +186,8 @@ public class definesConstants {
 
   public static final String URLS_SHARE_APP_TARGET = "http://picjar.io:9100/getpicjar";
 
+  public static final String URLS_GOOGLE_PLAY_STORE = "https://play.google.com/store";
+
+  public static final String URLS_APPSTORE = "https://itunes.apple.com";
+
 }

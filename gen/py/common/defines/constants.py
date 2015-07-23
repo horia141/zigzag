@@ -114,3 +114,5 @@ URLS_API_NEXTGEN_PATTERN = "http://picjar.io:9000/api/v1/nextgen?from=%s&output=
 URLS_API_NEXTGEN_JSON_PATTERN = "http://picjar.io:9000/api/v1/nextgen?from=%s&output=json"
 URLS_API_RES_URL_PATTERN = "http://picjar.io:9001/%s"
 URLS_SHARE_APP_TARGET = "http://picjar.io:9100/getpicjar"
+URLS_GOOGLE_PLAY_STORE = "https://play.google.com/store"
+URLS_APPSTORE = "https://itunes.apple.com"

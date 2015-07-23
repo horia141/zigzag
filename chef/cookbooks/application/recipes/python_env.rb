@@ -69,3 +69,21 @@ python_pip 'praw' do
   virtualenv node.default['application']['virtual_env']
   options "--cache-dir #{node.default['application']['pip_cache']}"
 end
+
+# TODO(horia141): figure out how to write this as the appropriate user and group.
+python_pip 'pyyaml' do
+  virtualenv node.default['application']['virtual_env']
+  options "--cache-dir #{node.default['application']['pip_cache']}"
+end
+
+# TODO(horia141): figure out how to write this as the appropriate user and group.
+python_pip 'ua-parser' do
+  virtualenv node.default['application']['virtual_env']
+  options "--cache-dir #{node.default['application']['pip_cache']}"
+end
+
+# TODO(horia141): figure out how to write this as the appropriate user and group.
+python_pip 'user-agents' do
+  virtualenv node.default['application']['virtual_env']
+  options "--cache-dir #{node.default['application']['pip_cache']}"
+end
