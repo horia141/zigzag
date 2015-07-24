@@ -9,9 +9,9 @@ def shareapp(request):
     user_agent = user_agents.parse(user_agent_string)
 
     if user_agent.is_mobile:
-        if user_agent.device.family == 'Android':
+        if user_agent.os.family == 'Android':
             return redirect(defines.URLS_GOOGLE_PLAY_STORE)
-        elif user_agent.device.family == 'iPhone':
+        elif user_agent.os.family == 'iOS':
             return redirect(defines.URLS_APPSTORE)
         else:
             return redirect(defines.URLS_MAIN)
