@@ -26,9 +26,8 @@ share_app_title:
   platform: android+ios
 share_app_body:
   text: >
-    Try out PicJar! [ {0} ] A small and quick app for viewing funny images and 
-    gifs from the web. We'll try our best to show you fresh stuff, with no
-    reposts.
+    [ {0} ] A small and quick app for viewing funny images and gifs from the
+    web. We'll try our best to show you fresh stuff, with no reposts.
   desc: Body for sharing the application
   platform: android+ios
 cannot_share_app:

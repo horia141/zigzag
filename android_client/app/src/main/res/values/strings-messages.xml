@@ -8,7 +8,7 @@
   <string name="cannot_open_in_browser">Cannot open in browser</string>
   <string name="copyright">©PicJar 2015</string>
   <string name="activity_media_carousel_action_open_in_browser_title">Open in browser</string>
-  <string name="share_app_body">Try out PicJar! [ %0$s ] A small and quick app for viewing funny images and  gifs from the web. We\'ll try our best to show you fresh stuff, with no reposts.</string>
+  <string name="share_app_body">[ %0$s ] A small and quick app for viewing funny images and gifs from the web. We\'ll try our best to show you fresh stuff, with no reposts.</string>
   <string name="activity_media_carousel_action_share_app_title">Share App</string>
   <string name="drawer_action_close">Closing drawer menu</string>
   <string name="share_title">\"%1$s\" via %2$s</string>

@@ -20,7 +20,7 @@
 "share_title" = "\"{1}\" via {2}"
 
 /* Body for sharing the application */
-"share_app_body" = "Try out PicJar! [ {0} ] A small and quick app for viewing funny images and  gifs from the web. We'll try our best to show you fresh stuff, with no reposts."
+"share_app_body" = "[ {0} ] A small and quick app for viewing funny images and gifs from the web. We'll try our best to show you fresh stuff, with no reposts."
 
 /* The terms and conditions */
 "app_terms_and_conditions" = "Sed ut perspiciatis unde omnis iste natus verror sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"
