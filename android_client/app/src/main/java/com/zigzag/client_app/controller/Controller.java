@@ -118,9 +118,7 @@ public final class Controller {
     private static final int CACHE_SIZE = 100;
     private static final Pattern CACHEABLE_FILES_PATTERN = Pattern.compile(definesConstants.CACHEABLE_FILES_PATTERN);
     private static final String REQUESTS_TAG = NAME;
-    private static final String API_NEXTGEN_URL_PATTERN = "http://picjar.io:9000/api/v1/nextgen?from=%s&output=thrift";
     private static final int API_NEXTGEN_RETRIES = 10;
-    private static final String API_RES_URL_PATTERN = "http://picjar.io:9001/%s";
     private static final int API_RES_RETRIES = 10;
     private static final int IMAGE_CACHE_SIZE = 20;
     private static final String FILEPROVIDER_AUTHORITY = "com.zigzag.client_app.fileprovider";
@@ -411,15 +409,16 @@ public final class Controller {
 
     private static String translateNextGenPath(List<Generation> generations) {
         if (generations.size() == 0) {
-            return String.format(API_NEXTGEN_URL_PATTERN, "latest");
+            return String.format(definesConstants.URLS_API_NEXTGEN_PATTERN, "latest");
         } else {
             final Generation latestGeneration = generations.get(generations.size()-1);
-            return String.format(API_NEXTGEN_URL_PATTERN, latestGeneration.getId());
+            return String.format(definesConstants.URLS_API_NEXTGEN_PATTERN,
+                    latestGeneration.getId());
         }
     }
 
     private static String translatePhotoPath(String photoUrlPath) {
-        return String.format(API_RES_URL_PATTERN, photoUrlPath);
+        return String.format(definesConstants.URLS_API_RES_URL_PATTERN, photoUrlPath);
     }
 
     private static List<String> getUriPathsToFetch(PhotoData photoData) {
