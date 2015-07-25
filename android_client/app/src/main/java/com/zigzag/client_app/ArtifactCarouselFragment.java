@@ -67,7 +67,7 @@ public class ArtifactCarouselFragment extends MediaCarouselFragment
     private int previousArtifactIdx = 0;
 
     public ArtifactCarouselFragment() {
-        super(R.string.artifact_carousel_title, R.menu.artifact_carousel_fragment);
+        super(R.string.hamburger_artifact_carousel_title, R.menu.artifact_carousel_fragment);
     }
 
     @Override

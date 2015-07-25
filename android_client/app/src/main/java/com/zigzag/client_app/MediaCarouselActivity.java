@@ -2,6 +2,7 @@ package com.zigzag.client_app;
 
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -15,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.zigzag.client_app.controller.Controller;
 
@@ -46,14 +48,15 @@ public class MediaCarouselActivity extends Activity{
         drawerItemDescriptors.add(new DrawerItemDescriptor(
                 ArtifactCarouselFragment.class, R.id.drawer_artifact_carousel, true));
         drawerItemDescriptors.add(new DrawerItemDescriptor(
-                PreferencesFragment.class, R.id.drawer_preferences, false));
+                PreferencesFragment.class, R.id.drawer_preferences, true));
         drawerItemDescriptors.add(new DrawerItemDescriptor(
                 TermsAndConditionsFragment.class, R.id.drawer_terms_and_conditions, false));
         drawerItemDescriptors.add(new DrawerItemDescriptor(
                 AboutFragment.class, R.id.drawer_about, false));
-        drawerItemDescriptors.add(new DrawerItemDescriptor(
-                AboutFragment.class, R.id.drawer_share_app, false));
     }
+
+    private static final DrawerItemDescriptor shareAppDrawerItemDescriptor =
+            new DrawerItemDescriptor(AboutFragment.class, R.id.drawer_share_app, false);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,11 +97,18 @@ public class MediaCarouselActivity extends Activity{
             TextView descriptorView = (TextView) findViewById(descriptor.textViewId);
             descriptorView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
-                    onDrawerItemClick(descriptor);
+                public void onClick(View view) {onDrawerItemClick(descriptor);
                 }
             });
         }
+
+        TextView shareAppDescriptorView = (TextView) findViewById(shareAppDrawerItemDescriptor.textViewId);
+        shareAppDescriptorView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onShareAppDrawerItemClick();
+            }
+        });
     }
 
     @Override
@@ -168,5 +178,18 @@ public class MediaCarouselActivity extends Activity{
         } catch (IllegalAccessException e) {
             Log.e("ZigZag/MediaCarouselA", "Cannot create fragment");
         }
+    }
+
+    private void onShareAppDrawerItemClick() {
+        Intent appSharingIntent = Controller.getInstance(this).getSharingIntentForApp(this);
+
+        if (appSharingIntent == null) {
+            Toast.makeText(this, getString(R.string.cannot_share_app), Toast.LENGTH_LONG)
+                    .show();
+            return;
+        }
+
+        startActivity(Intent.createChooser(appSharingIntent, getString(
+                R.string.activity_media_carousel_action_share_app_title)));
     }
 }

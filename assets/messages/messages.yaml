@@ -20,6 +20,21 @@ cannot_share_artifact:
   text: Cannot share
   desc: Error message shown when an artifact cannot be shared
   platform: android+ios
+share_app_title:
+  text: Try out PicJar
+  desc: Title for sharing the application
+  platform: android+ios
+share_app_body:
+  text: >
+    Try out PicJar! [ {0} ] A small and quick app for viewing funny images and 
+    gifs from the web. We'll try our best to show you fresh stuff, with no
+    reposts.
+  desc: Body for sharing the application
+  platform: android+ios
+cannot_share_app:
+  text: Cannot share app
+  desc: Error message shown when the application cannot be shared
+  platform: android+ios
 
 cannot_open_in_browser:
   text: Cannot open in browser
@@ -30,23 +45,23 @@ cannot_open_in_mail:
   desc: Error message shown when an artifact cannot be mailed
   platform: android+ios
 
-artifact_carousel_title:
+hamburger_artifact_carousel_title:
   text: Latest pictures
   desc: Title for the main carousel in the left drawer
   platform: android+ios
-preferences_title:
+hamburger_preferences_title:
   text: Preferences
   desc: Title for the preferences section in the left drawer
   platform: android+ios
-terms_and_conditions_title:
+hamburger_terms_and_conditions_title:
   text: Terms and conditions
   desc: Title for the terms and conditions in the left drawer
   platform: android+ios
-about_title:
+hamburger_about_title:
   text: About
   desc: Title for the about in the left drawer
   platform: android+ios
-share_app_title:
+hamburger_share_app_title:
   text: Share PicJar
   desc: Title for the share PicJar section in the left drawer
   platform: android+ios
@@ -106,6 +121,10 @@ activity_media_carousel_action_save_title:
 activity_media_carousel_action_share_title:
   text: Share
   desc: Menu text for sharing an artifact
+  platform: android
+activity_media_carousel_action_share_app_title:
+  text: Share App
+  desc: Menu text for sharing the application
   platform: android
 activity_media_carousel_action_open_in_browser_title:
   text: Open in browser

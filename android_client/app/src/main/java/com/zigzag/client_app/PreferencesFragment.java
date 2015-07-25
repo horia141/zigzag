@@ -11,7 +11,7 @@ import com.zigzag.client_app.R;
 public class PreferencesFragment extends MediaCarouselFragment {
 
     public PreferencesFragment() {
-        super(R.string.preferences_title, R.menu.preferences_fragment);
+        super(R.string.hamburger_preferences_title, R.menu.preferences_fragment);
     }
 
     @Override

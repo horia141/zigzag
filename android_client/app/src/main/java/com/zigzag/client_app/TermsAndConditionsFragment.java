@@ -11,7 +11,7 @@ import com.zigzag.client_app.R;
 public class TermsAndConditionsFragment extends MediaCarouselFragment {
 
     public TermsAndConditionsFragment() {
-        super(R.string.terms_and_conditions_title, R.menu.terms_and_conditions_fragment);
+        super(R.string.hamburger_terms_and_conditions_title, R.menu.terms_and_conditions_fragment);
     }
 
     @Override

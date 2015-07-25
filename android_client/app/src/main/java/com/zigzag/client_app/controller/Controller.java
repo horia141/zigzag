@@ -363,16 +363,29 @@ public final class Controller {
 
         String subject = context.getString(R.string.share_title, artifact.getTitle(),
                 context.getString(R.string.app_name));
-        String text = context.getString(R.string.share_body, artifact.getTitle(),
+        String body = context.getString(R.string.share_body, artifact.getTitle(),
                 context.getString(R.string.app_name), artifact.getPage_uri());
 
         Uri contentUri = FileProvider.getUriForFile(context, FILEPROVIDER_AUTHORITY, cacheFile);
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-        intent.putExtra(Intent.EXTRA_TEXT, text);
+        intent.putExtra(Intent.EXTRA_TEXT, body);
         intent.putExtra(Intent.EXTRA_STREAM, contentUri);
         intent.setType(definesConstants.STANDARD_IMAGE_MIMETYPE);
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        return intent;
+    }
+
+    @Nullable
+    public Intent getSharingIntentForApp(Context context) {
+        String subject = context.getString(R.string.share_app_title);
+        String body = context.getString(R.string.share_app_body, definesConstants.URLS_SHARE_APP_TARGET);
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        intent.putExtra(Intent.EXTRA_TEXT, body);
 
         return intent;
     }
