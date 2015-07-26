@@ -19,10 +19,3 @@ service node.default['application']['frontend']['name'] do
   action [:enable, :start, :restart]
   provider Chef::Provider::Service::Init::Debian
 end
-
-firewall_rule node.default['application']['frontend']['name'] do
-  port node.default['application']['frontend']['port']
-  protocol :tcp
-  action :allow
-  notifies :enable, 'firewall[ufw]', :delayed
-end
