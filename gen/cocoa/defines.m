@@ -47,10 +47,10 @@ static NSMutableArray * common.definesPHOTO_DEDUP_KEY_FRAMES;
 static int32_t common.definesPHOTO_DEDUP_SMALL_WIDTH = 128;
 static int32_t common.definesPHOTO_DEDUP_EDGE_PIXELS = 16;
 static NSString * common.definesURLS_MAIN = @"http://picjar.io";
-static NSString * common.definesURLS_API_NEXTGEN_PATTERN = @"http://picjar.io:9000/api/v1/nextgen?from=%s&output=thrift";
-static NSString * common.definesURLS_API_NEXTGEN_JSON_PATTERN = @"http://picjar.io:9000/api/v1/nextgen?from=%s&output=json";
-static NSString * common.definesURLS_API_RES_URL_PATTERN = @"http://picjar.io:9001/%s";
-static NSString * common.definesURLS_SHARE_APP_TARGET = @"http://picjar.io:9100/getpicjar";
+static NSString * common.definesURLS_API_NEXTGEN_PATTERN = @"http://picjar.io/api/v1/nextgen?from=%s&output=thrift";
+static NSString * common.definesURLS_API_NEXTGEN_JSON_PATTERN = @"http://picjar.io/api/v1/nextgen?from=%s&output=json";
+static NSString * common.definesURLS_API_RES_URL_PATTERN = @"http://picjar.io/%s";
+static NSString * common.definesURLS_SHARE_APP_TARGET = @"http://picjar.io/getpicjar";
 static NSString * common.definesURLS_GOOGLE_PLAY_STORE = @"https://play.google.com/store";
 static NSString * common.definesURLS_APPSTORE = @"https://itunes.apple.com";
 

@@ -178,13 +178,13 @@ public class definesConstants {
 
   public static final String URLS_MAIN = "http://picjar.io";
 
-  public static final String URLS_API_NEXTGEN_PATTERN = "http://picjar.io:9000/api/v1/nextgen?from=%s&output=thrift";
+  public static final String URLS_API_NEXTGEN_PATTERN = "http://picjar.io/api/v1/nextgen?from=%s&output=thrift";
 
-  public static final String URLS_API_NEXTGEN_JSON_PATTERN = "http://picjar.io:9000/api/v1/nextgen?from=%s&output=json";
+  public static final String URLS_API_NEXTGEN_JSON_PATTERN = "http://picjar.io/api/v1/nextgen?from=%s&output=json";
 
-  public static final String URLS_API_RES_URL_PATTERN = "http://picjar.io:9001/%s";
+  public static final String URLS_API_RES_URL_PATTERN = "http://picjar.io/%s";
 
-  public static final String URLS_SHARE_APP_TARGET = "http://picjar.io:9100/getpicjar";
+  public static final String URLS_SHARE_APP_TARGET = "http://picjar.io/getpicjar";
 
   public static final String URLS_GOOGLE_PLAY_STORE = "https://play.google.com/store";
 

@@ -91,9 +91,9 @@ const i32 PHOTO_DEDUP_SMALL_WIDTH = 128
 const i32 PHOTO_DEDUP_EDGE_PIXELS = 16
 
 const string URLS_MAIN = 'http://picjar.io'
-const string URLS_API_NEXTGEN_PATTERN = 'http://picjar.io:9000/api/v1/nextgen?from=%s&output=thrift'
-const string URLS_API_NEXTGEN_JSON_PATTERN = 'http://picjar.io:9000/api/v1/nextgen?from=%s&output=json'
-const string URLS_API_RES_URL_PATTERN = 'http://picjar.io:9001/%s'
-const string URLS_SHARE_APP_TARGET = 'http://picjar.io:9100/getpicjar'
+const string URLS_API_NEXTGEN_PATTERN = 'http://picjar.io/api/v1/nextgen?from=%s&output=thrift'
+const string URLS_API_NEXTGEN_JSON_PATTERN = 'http://picjar.io/api/v1/nextgen?from=%s&output=json'
+const string URLS_API_RES_URL_PATTERN = 'http://picjar.io/%s'
+const string URLS_SHARE_APP_TARGET = 'http://picjar.io/getpicjar'
 const string URLS_GOOGLE_PLAY_STORE = 'https://play.google.com/store'
 const string URLS_APPSTORE = 'https://itunes.apple.com'
