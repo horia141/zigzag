@@ -52,6 +52,10 @@ public class PhotoCache implements Cache {
                 throw new RuntimeException("Unable to create cache root directory");
             }
         }
+        File resDir = new File(newRootDirectory, "res");
+        if (!resDir.exists()) {
+            resDir.mkdir();
+        }
     }
 
     public Entry get(String key) {
