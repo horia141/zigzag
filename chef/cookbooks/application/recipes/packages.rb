@@ -5,6 +5,7 @@ include_recipe 'build-essential'
 include_recipe 'firewall'
 include_recipe 'python'
 include_recipe 'thrift'
+include_recipe 'iptables'
 
 package 'daemon'
 package 'lighttpd'
