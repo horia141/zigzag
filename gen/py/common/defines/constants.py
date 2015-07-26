@@ -112,7 +112,7 @@ PHOTO_DEDUP_EDGE_PIXELS = 16
 URLS_MAIN = "http://picjar.io"
 URLS_API_NEXTGEN_PATTERN = "http://picjar.io/api/v1/nextgen?from=%s&output=thrift"
 URLS_API_NEXTGEN_JSON_PATTERN = "http://picjar.io/api/v1/nextgen?from=%s&output=json"
-URLS_API_RES_URL_PATTERN = "http://picjar.io/%s"
+URLS_API_RES_URL_PATTERN = "http://picjar.io/res/%s"
 URLS_SHARE_APP_TARGET = "http://picjar.io/getpicjar"
 URLS_GOOGLE_PLAY_STORE = "https://play.google.com/store"
 URLS_APPSTORE = "https://itunes.apple.com"

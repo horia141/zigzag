@@ -182,7 +182,7 @@ public class definesConstants {
 
   public static final String URLS_API_NEXTGEN_JSON_PATTERN = "http://picjar.io/api/v1/nextgen?from=%s&output=json";
 
-  public static final String URLS_API_RES_URL_PATTERN = "http://picjar.io/%s";
+  public static final String URLS_API_RES_URL_PATTERN = "http://picjar.io/res/%s";
 
   public static final String URLS_SHARE_APP_TARGET = "http://picjar.io/getpicjar";
 
