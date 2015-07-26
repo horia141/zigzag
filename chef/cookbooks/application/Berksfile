@@ -4,6 +4,7 @@ metadata
 
 cookbook 'apt', '~> 2.7.0'
 cookbook 'firewall', '~> 1.1.1'
+cookbook 'ruby', '~> 0.9.3'
 cookbook 'python', '~> 1.4.6'
 cookbook 'thrift', '~> 1.2.0'
 cookbook 'iptables', '~ 1.0.0'

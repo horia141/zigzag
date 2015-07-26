@@ -3,6 +3,7 @@
 include_recipe 'apt'
 include_recipe 'build-essential'
 include_recipe 'firewall'
+include_recipe 'ruby'
 include_recipe 'python'
 include_recipe 'thrift'
 include_recipe 'iptables'
@@ -19,6 +20,13 @@ package 'libreadline6'
 package 'libreadline6-dev'
 package 'python-numpy'
 package 'python-scipy'
+
+# Disable the standard lighttpd daemon. We have no use for it.
+service 'lighttpd' do
+  init_command '/etc/init.d/lighttpd'
+  action :disable
+  provider Chef::Provider::Service::Init::Debian
+end
 
 # Install PostgreSQL from sources.
 
