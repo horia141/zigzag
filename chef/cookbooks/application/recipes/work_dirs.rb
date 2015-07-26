@@ -50,6 +50,13 @@ directory node.default['application']['var_dir'] do
   action :create
 end
 
+directory node.default['application']['http_base_dir'] do
+  owner node.default['application']['user']
+  group node.default['application']['group']
+  mode '0770'
+  action :create
+end
+
 directory node.default['application']['tmp_dir'] do
   owner node.default['application']['user']
   group node.default['application']['group']

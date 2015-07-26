@@ -1,0 +1,69 @@
+#!/bin/sh
+# Comments to support chkconfig on Red Hat Linux
+# chkconfig: 2345 64 36
+# Description: <%= node.default['application']['frontend']['name'] %>
+
+start () {
+    echo "Starting <%= node.default['application']['frontend']['name'] %>... "
+    daemon --name='<%= node.default['application']['frontend']['name'] %>' \
+           --command='lighttpd -D -f <%= node.default['application']['frontend']['config'] %>' \
+           --pidfile='<%= node.default['application']['frontend']['daemon']['pid_file'] %>' \
+           --user='<%= node.default['application']['frontend']['user'] %>' \
+           --chdir='<%= node.default['application']['work_dir'] %>' \
+           --safe \
+           --respawn \
+           --errlog='<%= node.default['application']['frontend']['daemon']['error_log'] %>' \
+           --dbglog='<%= node.default['application']['frontend']['daemon']['debug_log'] %>' \
+           --verbose
+    return $?
+}
+
+stop () {
+    echo "Stopping <%= node.default['application']['frontend']['name'] %>... "
+    daemon --name='<%= node.default['application']['frontend']['name'] %>' \
+           --pidfile='<%= node.default['application']['frontend']['daemon']['pid_file'] %>' \
+           --stop \
+           --verbose
+    return $?
+}
+
+
+restart () {
+    echo "Restarting <%= node.default['application']['frontend']['name'] %>..."
+    daemon --name='<%= node.default['application']['frontend']['name'] %>' \
+           --pidfile='<%= node.default['application']['frontend']['daemon']['pid_file'] %>' \
+           --restart  \
+           --verbose
+    return $?
+}
+
+
+status () {
+    daemon --name='<%= node.default['application']['frontend']['name'] %>' \
+           --pidfile='<%= node.default['application']['frontend']['daemon']['pid_file'] %>' \
+           --running \
+           --verbose
+    return $?
+}
+
+
+case "$1" in
+    start)
+        start
+    ;;
+    status)
+        status
+    ;;
+    stop)
+        stop
+    ;;
+    restart)
+        restart
+    ;;
+    *)
+        echo $"Usage: <%= node.default['application']['frontend']['name'] %> {start|status|stop|restart}"
+        exit 3
+    ;;
+esac
+
+exit $RETVAL

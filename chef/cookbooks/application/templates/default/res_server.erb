@@ -1,10 +1,11 @@
 server.modules = (
   "mod_access",
   "mod_accesslog",
-  "mod_expire"
+  "mod_expire",
+  "mod_alias",
 )
 
-server.document-root = "<%= node.default['application']['photos_dir'] %>"
+server.document-root = "<%= node.default['application']['http_base_dir'] %>"
 
 server.port = <%= node.default['application']['res_server']['port'] %>
 
@@ -27,5 +28,8 @@ $HTTP["url"] !~ "\.(<%= node.default['application']['res_server']['allowed_exten
   url.access-deny = ("")
 }
 
+# Alias /res/ URLs to photos dir.
+alias.url = ( "/res/" => "<%= node.default['application']['photos_dir'] %>/" )
+
 # Setup caching.
-expire.url = ( "/" => "<%= node.default['application']['res_server']['expire'] %>" )
+expire.url = ( "/res/" => "<%= node.default['application']['res_server']['expire'] %>" )

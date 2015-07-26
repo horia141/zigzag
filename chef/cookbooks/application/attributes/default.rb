@@ -1,4 +1,6 @@
-default['application']['DUMB_project_path'] = '/home/picjardev/zigzag2'
+default['application']['DUMB_project_path'] = '/home/picjardev/zigzag'
+
+default['application']['main_host'] = 'picjar.io'
 
 default['application']['user'] = 'zigzag'
 default['application']['group'] = 'zigzag'
@@ -12,6 +14,7 @@ default['application']['original_photos_dir'] = File.join(default['application']
 default['application']['processed_photos_dir'] = File.join(default['application']['photos_dir'], 'processed')
 default['application']['sources_dir'] = File.join(default['application']['work_dir'], 'sources')
 default['application']['var_dir'] = File.join(default['application']['work_dir'], 'var')
+default['application']['http_base_dir'] = File.join(default['application']['var_dir'], 'http_base')
 default['application']['tmp_dir'] = File.join(default['application']['work_dir'], 'tmp')
 
 default['application']['database_name'] = 'zigzag_main'
@@ -31,10 +34,24 @@ default['application']['database']['daemon']['pid_file'] = File.join(default['ap
 default['application']['database']['daemon']['error_log'] = File.join(default['application']['var_dir'], 'database_daemon.error.log')
 default['application']['database']['daemon']['debug_log'] = File.join(default['application']['var_dir'], 'database_daemon.debug.log')
 
+default['application']['frontend']['name'] = 'zigzag_frontend'
+default['application']['frontend']['user'] = 'zigzag_frontend'
+default['application']['frontend']['host'] = default['application']['main_host']
+default['application']['frontend']['port'] = 20000
+default['application']['frontend']['config'] = File.join(default['application']['config_dir'], 'frontend')
+default['application']['frontend']['pid_file'] = File.join(default['application']['var_dir'], 'frontend.pid')
+default['application']['frontend']['error_log'] = File.join(default['application']['var_dir'], 'frontend.error.log')
+default['application']['frontend']['access_log'] = File.join(default['application']['var_dir'], 'frontend.access.log')
+default['application']['frontend']['daemon']['script'] = '/etc/init.d/zigzag_frontend'
+default['application']['frontend']['daemon']['pid_file'] = File.join(default['application']['var_dir'], 'frontend_daemon.pid')
+default['application']['frontend']['daemon']['error_log'] = File.join(default['application']['var_dir'], 'frontend_daemon.error.log')
+default['application']['frontend']['daemon']['debug_log'] = File.join(default['application']['var_dir'], 'frontend_daemon.debug.log')
+
 default['application']['api_server']['name'] = 'zigzag_api_server'
 default['application']['api_server']['user'] = 'zigzag_api_server'
 default['application']['api_server']['frontend']['name'] = 'zigzag_api_server_frontend'
 default['application']['api_server']['frontend']['config'] = File.join(default['application']['config_dir'], 'api_server.frontend')
+default['application']['api_server']['frontend']['host'] = '127.0.0.1'
 default['application']['api_server']['frontend']['port'] = 9000
 default['application']['api_server']['frontend']['pid_file'] = File.join(default['application']['var_dir'], 'api_server.frontend.pid')
 default['application']['api_server']['frontend']['error_log'] = File.join(default['application']['var_dir'], 'api_server.frontend.error.log')
@@ -63,6 +80,7 @@ default['application']['redirect_server']['name'] = 'zigzag_redirect_server'
 default['application']['redirect_server']['user'] = 'zigzag_redirect_server'
 default['application']['redirect_server']['frontend']['name'] = 'zigzag_redirect_server_frontend'
 default['application']['redirect_server']['frontend']['config'] = File.join(default['application']['config_dir'], 'redirect_server.frontend')
+default['application']['redirect_server']['frontend']['host'] = '127.0.0.1'
 default['application']['redirect_server']['frontend']['port'] = 9100
 default['application']['redirect_server']['frontend']['pid_file'] = File.join(default['application']['var_dir'], 'redirect_server.frontend.pid')
 default['application']['redirect_server']['frontend']['error_log'] = File.join(default['application']['var_dir'], 'redirect_server.frontend.error.log')
@@ -89,6 +107,7 @@ default['application']['redirect_server']['app']['daemon']['debug_log'] = File.j
 
 default['application']['res_server']['name'] = 'zigzag_res_server'
 default['application']['res_server']['user'] = 'zigzag_res_server'
+default['application']['res_server']['host'] = '127.0.0.1'
 default['application']['res_server']['port'] = 9001
 default['application']['res_server']['allowed_extension'] = 'jpg|mp4'
 default['application']['res_server']['expire'] = 'access plus 1 months'

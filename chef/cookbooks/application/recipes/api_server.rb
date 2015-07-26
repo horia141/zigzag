@@ -20,13 +20,6 @@ service node.default['application']['api_server']['frontend']['name'] do
   provider Chef::Provider::Service::Init::Debian
 end
 
-firewall_rule node.default['application']['api_server']['frontend']['name'] do
-  port node.default['application']['api_server']['frontend']['port']
-  protocol :tcp
-  action :allow
-  notifies :enable, 'firewall[ufw]', :delayed
-end
-
 template node.default['application']['api_server']['app']['gunicorn_config'] do
   source 'api_server.app_gunicorn.erb'
   owner node.default['application']['api_server']['user']

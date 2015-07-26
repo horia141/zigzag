@@ -18,6 +18,14 @@ user node.default['application']['database']['user'] do
   system true
 end
 
+user node.default['application']['frontend']['user'] do
+  comment 'User for the frontend component'
+  group node.default['application']['group']
+  shell '/usr/sbin/nologin'
+  home node.default['application']['work_dir']
+  system true
+end
+
 user node.default['application']['api_server']['user'] do
   comment 'User for the API server component'
   group node.default['application']['group']
@@ -27,7 +35,7 @@ user node.default['application']['api_server']['user'] do
 end
 
 user node.default['application']['redirect_server']['user'] do
-  comment 'User for the API server component'
+  comment 'User for the redirect server component'
   group node.default['application']['group']
   shell '/usr/sbin/nologin'
   home node.default['application']['work_dir']

@@ -1,0 +1,71 @@
+server.modules = (
+  "mod_access",
+  "mod_accesslog",
+  "mod_proxy",
+)
+
+server.document-root = "<%= node.default['application']['http_base_dir'] %>"
+
+server.port = <%= node.default['application']['frontend']['port'] %>
+
+server.username = "<%= node.default['application']['frontend']['user'] %>"
+server.groupname = "<%= node.default['application']['group'] %>"
+server.pid-file = "<%= node.default['application']['frontend']['pid_file'] %>"
+server.errorlog = "<%= node.default['application']['frontend']['error_log'] %>"
+accesslog.filename = "<%= node.default['application']['frontend']['access_log'] %>"
+
+access.deny-all = "enable"
+
+$HTTP["url"] =~ "^/getpicjar" {
+  proxy.balance = "hash"
+  proxy.server = (
+    "" => (
+      "redirect_server" => (
+        "host" => "<%= node.default['application']['redirect_server']['frontend']['host'] %>",
+        "port" => <%= node.default['application']['redirect_server']['frontend']['port'] %>
+      )
+    )
+  )
+} else $HTTP["url"] =~ "^/api" {
+  proxy.balance = "hash"
+  proxy.server = (
+    "" => (
+      "redirect_server" => (
+        "host" => "<%= node.default['application']['api_server']['frontend']['host'] %>",
+        "port" => <%= node.default['application']['api_server']['frontend']['port'] %>
+      )
+    )
+  )
+} else $HTTP["url"] =~ "^/res" {
+  proxy.balance = "hash"
+  proxy.server = (
+    "" => (
+      "redirect_server" => (
+        "host" => "<%= node.default['application']['res_server']['host'] %>",
+        "port" => <%= node.default['application']['res_server']['port'] %>
+      )
+    )
+  )
+} else $HTTP["host"] == "andreea-si-horia.com" {
+  # TODO(horia141): Remove this thing from here.
+  proxy.balance = "hash"
+  proxy.server = (
+    "" => (
+      "redirect_server" => (
+        "host" => "127.0.0.1",
+        "port" => 30000
+      )
+    )
+  )
+} else $HTTP["host"] == "andreea-si-horia.ro" {
+  # TODO(horia141): Remove this thing from here.
+  proxy.balance = "hash"
+  proxy.server = (
+    "" => (
+      "redirect_server" => (
+        "host" => "127.0.0.1",
+        "port" => 30000
+      )
+    )
+  )
+}
