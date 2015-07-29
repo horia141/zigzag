@@ -38,10 +38,6 @@
         <item name="android:textColor">@color/text_gray</item>
     </style>
 
-    <style name="StartUpImageBackground">
-        <item name="android:background">@drawable/startup_background</item>
-    </style>
-
     <style name="TransparentBackground">
         <item name="android:background">@color/background_white_transparent</item>
     </style>
