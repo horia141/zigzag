@@ -5,6 +5,7 @@
     <color name="text_white">#ffffff</color>
     <color name="text_link">#167cdc</color>
     <color name="text_gray">#bababa</color>
+    <color name="background_black">#0a1f23</color>
     <color name="background_gray">#f7f7f7</color>
     <color name="background_white">#ffffff</color>
     <color name="background_white_transparent">#00ffffff</color>

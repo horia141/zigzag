@@ -3,7 +3,7 @@
 
     <!-- Base application theme. -->
     <style name="ZigZagStartUpTheme" parent="@android:style/Theme.Holo.NoActionBar">
-        <item name="android:background">@drawable/startup_background</item>
+        <item name="android:background">@color/background_black</item>
     </style>
 
     <style name="ZigZagMediaCarouselTheme" parent="@android:style/Theme.Holo.Light">

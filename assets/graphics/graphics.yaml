@@ -2,12 +2,6 @@
 launcher.png:
   platform: android+ios
   usage: appicon
-startup_background.png:
-  platform: android+ios
-  usage: launcher
-startup_logo.png:
-  platform: android+ios
-  usage: asset
 save.png:
   platform: android+ios
   usage: asset
