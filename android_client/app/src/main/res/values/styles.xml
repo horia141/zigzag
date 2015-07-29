@@ -63,18 +63,18 @@
     </style>
 
     <style name="ArtifactTitle">
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/text_black</item>
+        <item name="android:textColor">@color/title_text_gray</item>
     </style>
 
     <style name="ArtifactSourceName">
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/text_link</item>
     </style>
 
     <style name="ArtifactTimeAdded">
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/text_gray</item>
         <item name="android:gravity">right</item>
     </style>
@@ -96,7 +96,7 @@
     </style>
 
     <style name="PhotoDescriptionViewDescription">
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/text_black</item>
     </style>
 </resources>
