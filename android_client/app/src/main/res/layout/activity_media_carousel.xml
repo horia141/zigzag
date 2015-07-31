@@ -22,17 +22,6 @@
         android:layout_gravity="start"
         style="@style/MediaCarouselDrawer">
 
-        <ImageView
-            android:src="@drawable/launcher"
-            android:contentDescription="@string/startup_icon_description"
-            android:paddingTop="54dp"
-            android:paddingLeft="84dp"
-            android:paddingRight="84dp"
-            android:paddingBottom="54dp"
-            android:layout_width="240dp"
-            android:layout_height="180dp"
-            android:layout_marginBottom="8dp" />
-
         <TextView
             android:id="@+id/drawer_artifact_carousel"
             android:text="@string/hamburger_artifact_carousel_title"
@@ -85,7 +74,8 @@
             android:paddingRight="16dp"
             android:gravity="center_vertical"
             android:layout_width="240dp"
-            android:layout_height="40dp" />
+            android:layout_height="40dp"
+            style="@style/MediaCarouselDrawerUnselected" />
 
         <Space
             android:layout_width="240dp"

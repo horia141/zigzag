@@ -17,24 +17,29 @@
     </style>
 
     <style name="MediaCarouselDrawer">
-        <item name="android:background">@color/background_white</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:background">@color/background_black</item>
     </style>
 
     <style name="MediaCarouselDrawerSelected">
+        <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/text_white</item>
         <item name="android:background">@color/action_bar_blue</item>
     </style>
 
     <style name="MediaCarouselDrawerUnselected">
-        <item name="android:textColor">@color/text_black</item>
-        <item name="android:background">@color/background_white</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/text_white</item>
+        <item name="android:background">@color/background_black</item>
     </style>
 
     <style name="MediaCarouselDrawerInactive">
+        <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/text_gray</item>
     </style>
 
     <style name="MediaCarouselDrawerCopyright">
+        <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/text_gray</item>
     </style>
 

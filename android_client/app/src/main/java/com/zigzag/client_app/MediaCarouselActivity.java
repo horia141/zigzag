@@ -48,7 +48,7 @@ public class MediaCarouselActivity extends Activity{
         drawerItemDescriptors.add(new DrawerItemDescriptor(
                 ArtifactCarouselFragment.class, R.id.drawer_artifact_carousel, true));
         drawerItemDescriptors.add(new DrawerItemDescriptor(
-                PreferencesFragment.class, R.id.drawer_preferences, true));
+                PreferencesFragment.class, R.id.drawer_preferences, false));
         drawerItemDescriptors.add(new DrawerItemDescriptor(
                 TermsAndConditionsFragment.class, R.id.drawer_terms_and_conditions, false));
         drawerItemDescriptors.add(new DrawerItemDescriptor(
@@ -156,7 +156,7 @@ public class MediaCarouselActivity extends Activity{
             }
 
             TextView descriptorView = (TextView) findViewById(descriptor.textViewId);
-            descriptorView.setBackgroundResource(R.color.background_white);
+            descriptorView.setBackgroundResource(R.color.background_black);
             descriptorView.setTextAppearance(this, R.style.MediaCarouselDrawerUnselected);
         }
 
