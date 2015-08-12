@@ -27,7 +27,7 @@ class PhotoCellView: UITableViewCell, UITableViewDelegate {
     }
 
     func initWithSubCellSources(subCellSources: [CellSource]){
-        println("init video cell here with subcellsources")
+//        println("init video cell here with subcellsources")
         photo_cell_vm = TableCellVM(subCellSources: subCellSources)
         ContentTable.dataSource = photo_cell_vm
         self.ContentTable.reloadData()

@@ -105,7 +105,7 @@ class MainVM: NSObject, UITableViewDataSource {
                 cellsources.append(VideoCellSource(subCellSources: subcellsources))
             break
             default:
-                println("default")
+//                println("default")
             break
             }
         }

@@ -32,7 +32,7 @@ class ConnectionManager: NSObject, NSURLConnectionDataDelegate {
     }
     
     func connection(connection: NSURLConnection, didReceiveResponse response: NSURLResponse) {
-        println("did reveive data")
+//        println("did reveive data")
     }
     
     func connection(connection: NSURLConnection, didReceiveData data: NSData) {

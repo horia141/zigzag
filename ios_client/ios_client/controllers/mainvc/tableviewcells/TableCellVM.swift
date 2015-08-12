@@ -38,7 +38,7 @@ class TableCellVM: NSObject, UITableViewDataSource {
      * Table view data source delegate methods
      */
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        println("This video type cell has \(subcellsources.count) elements")
+//        println("This video type cell has \(subcellsources.count) elements")
         return subcellsources.count
     }
     

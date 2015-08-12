@@ -28,7 +28,7 @@ class GenerationParser: NSObject {
         // create a dictionary out of the raw data sent
         var responseJSON = NSJSONSerialization.JSONObjectWithData(self.data, options: NSJSONReadingOptions.MutableContainers, error: nil) as! NSDictionary!
         
-        println("response json \(responseJSON)")
+//        println("response json \(responseJSON)")
         
         // start the actual parsing procedure to pars a generation
         if let resp = responseJSON{
@@ -49,7 +49,7 @@ class GenerationParser: NSObject {
      */
     private func parseGeneration(gendata: NSDictionary) -> Generation? {
         // get basic generation information
-        println("Generation Keys: \(gendata.allKeys)")
+//        println("Generation Keys: \(gendata.allKeys)")
         var id = gendata.objectForKey("id") as! NSNumber
         var entity_id = EntityId(id: id)
         var datetime_started = gendata.objectForKey("datetime_started") as! String
@@ -76,7 +76,7 @@ class GenerationParser: NSObject {
      * Function that parses an artifact source
      */
     private func parseArtifactSource(artsourcredata: NSDictionary) -> ArtifactSource{
-        println("Artifact Source Keys \(artsourcredata.allKeys)")
+//        println("Artifact Source Keys \(artsourcredata.allKeys)")
         var id = artsourcredata.objectForKey("id") as! NSNumber
         var entity_id = EntityId(id: id)
         var start_page_uri = artsourcredata.objectForKey("start_page_uri") as! String
@@ -104,7 +104,7 @@ class GenerationParser: NSObject {
      */
     private func parseArtifact(artdata: NSDictionary, artifactDate: NSTimeInterval) -> Artifact {
         // get the basic info
-        println("Artifact Keys \(artdata.allKeys)")
+//        println("Artifact Keys \(artdata.allKeys)")
         var id = artdata.objectForKey("id") as! NSNumber
         var entity_id = EntityId(id: id)
         var title = artdata.objectForKey("title") as! String
@@ -133,7 +133,7 @@ class GenerationParser: NSObject {
      */
     private func parsePhotoDescription(imgdescdata: NSDictionary) -> PhotoDescription{
         // get basic data
-        println("Image description Keys \(imgdescdata.allKeys)")
+//        println("Image description Keys \(imgdescdata.allKeys)")
         var subtitle = imgdescdata.objectForKey("subtitle") as! String
         var description_text = imgdescdata.objectForKey("description") as! String
         var source_uri = imgdescdata.objectForKey("source_uri") as! String
@@ -167,7 +167,7 @@ class GenerationParser: NSObject {
      */
     private func parseImagePhotoData(imagedata: NSDictionary) -> ImagePhotoData {
         // get basic data
-        println("Image photo data description Keys \(imagedata.allKeys)")
+//        println("Image photo data description Keys \(imagedata.allKeys)")
         var tiles: [Tile] = []
         var tiles_nsarray = imagedata.objectForKey("tiles") as! NSArray
         for tile in tiles_nsarray {
@@ -181,7 +181,7 @@ class GenerationParser: NSObject {
      */
     private func parseVideoPhotoData(videodata: NSDictionary) -> VideoPhotoData {
         // get basic data
-        println("Video photo data description Keys \(videodata.allKeys)")
+//        println("Video photo data description Keys \(videodata.allKeys)")
         var frames_per_sec = videodata.valueForKey("frames_per_sec") as! Int
         var time_between_frames_ms = videodata.valueForKey("time_between_frames_ms") as! Int
         var first_frame_dict = videodata.objectForKey("first_frame") as! NSDictionary
@@ -197,7 +197,7 @@ class GenerationParser: NSObject {
      */
     private func parseTile(tiledata: NSDictionary) -> Tile {
         // get basic data
-        println("Tile description Keys \(tiledata.allKeys)")
+//        println("Tile description Keys \(tiledata.allKeys)")
         var uri_path = tiledata.objectForKey("uri_path") as! String
         var full_uri_path = GenerationManager.sharedInstance.getImgURL() + uri_path
         var width = tiledata.valueForKey("width") as! CGFloat
