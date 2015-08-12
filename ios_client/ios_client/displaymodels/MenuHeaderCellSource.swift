@@ -10,7 +10,24 @@ import UIKit
  * Implementation for the menu header cell source class
  */
 class MenuHeaderCellSource: CellSource {
+    
+    /**
+     * title
+     */
+    private var title: String! = nil
+    
    /**
-    * no data here
+    * custom init
     */
+    init (title: String){
+        super.init()
+        self.title = title
+    }
+    
+    /**
+     * custom setters and getters
+     */
+    func getTitle() -> String {
+        return self.title
+    }
 }

@@ -23,6 +23,9 @@ extension TileCellSource{
         // clear image
         cell?.TileImage.image = nil
         
+//        cell?.TileImage.layer.borderColor = UIColor.magentaColor().CGColor
+//        cell?.TileImage.layer.borderWidth = 1.0
+        
         cell?.LoadingSpinner.startAnimating()
         cell?.LoadingSpinner.alpha = 1
         
@@ -47,6 +50,10 @@ extension TileCellSource{
         var new_width = (UIScreen.mainScreen().bounds.width - 16) as CGFloat
         var old_width = self.getTile().getWidth()
         var old_height = self.getTile().getHeight()
-        return calcNewHeightFor(newWidth: new_width, fromOldWidth: old_width, andOldHeight: old_height)
+        return calcNewHeightFor(
+            newWidth: new_width,
+            fromOldWidth: old_width,
+            andOldHeight: old_height
+        )
     }
 }

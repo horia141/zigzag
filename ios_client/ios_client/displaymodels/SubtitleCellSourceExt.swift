@@ -30,7 +30,11 @@ extension SubtitleCellSource{
     }
     
     override func heightForRowAtIndexPath() -> CGFloat {
-        var text_w = UIScreen.mainScreen().bounds.width - 32
-        return calcTextHeightForWidth(width: text_w, text: self.getSubtitle())
+        var text_w = UIScreen.mainScreen().bounds.width - 16
+        return calc3TextHeightForWidth(
+            width:text_w,
+            text: self.getSubtitle(),
+            font:UIFont(name: "Arial-BoldMT", size: 14)!
+        )+8
     }
 }

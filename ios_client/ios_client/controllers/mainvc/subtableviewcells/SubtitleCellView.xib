@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7702" systemVersion="14C2513" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14C2513" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="SubtitleCellViewId" id="KGk-i7-Jjw" customClass="SubtitleCellView" customModule="ios_client" customModuleProvider="target">
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="SubtitleCellViewId" id="KGk-i7-Jjw" customClass="SubtitleCellView" customModule="picjar" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
@@ -16,17 +15,17 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2E2-A2-Fji" userLabel="SubtitleLabel">
-                        <rect key="frame" x="8" y="0.0" width="304" height="43"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
                         <fontDescription key="fontDescription" name="Arial-BoldMT" family="Arial" pointSize="14"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="2E2-A2-Fji" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailing" constant="-8" id="5Dq-xj-LTW"/>
-                    <constraint firstItem="2E2-A2-Fji" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="-8" id="AJc-6c-DOo"/>
-                    <constraint firstAttribute="bottomMargin" secondItem="2E2-A2-Fji" secondAttribute="bottom" constant="-8" id="KY1-2I-GJb"/>
-                    <constraint firstItem="2E2-A2-Fji" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="T20-6V-EL9"/>
+                    <constraint firstAttribute="trailing" secondItem="2E2-A2-Fji" secondAttribute="trailing" id="4bb-pQ-IGf"/>
+                    <constraint firstItem="2E2-A2-Fji" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="Byz-8v-Lwy"/>
+                    <constraint firstItem="2E2-A2-Fji" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="gRZ-tv-ycT"/>
+                    <constraint firstAttribute="bottom" secondItem="2E2-A2-Fji" secondAttribute="bottom" id="vc0-x7-ahQ"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>

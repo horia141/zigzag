@@ -19,11 +19,11 @@ class PhotoCellView: UITableViewCell, UITableViewDelegate {
         self.ContentTable.registerNib(UINib(nibName: "DescriptionCellView", bundle: nil), forCellReuseIdentifier: "DescriptionCellViewId")
         
         // Initialization code
-        self.ContentTable.layer.shadowColor = UIColor.blackColor().CGColor
-        self.ContentTable.layer.shadowOpacity = 0.2
-        self.ContentTable.layer.shadowOffset = CGSizeZero
-        self.ContentTable.layer.masksToBounds = false
-        self.ContentTable.layer.shadowRadius = 2
+//        self.ContentTable.layer.shadowColor = UIColor.blackColor().CGColor
+//        self.ContentTable.layer.shadowOpacity = 0.2
+//        self.ContentTable.layer.shadowOffset = CGSizeZero
+//        self.ContentTable.layer.masksToBounds = false
+//        self.ContentTable.layer.shadowRadius = 2
     }
 
     func initWithSubCellSources(subCellSources: [CellSource]){

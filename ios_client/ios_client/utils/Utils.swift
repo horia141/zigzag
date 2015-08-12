@@ -17,6 +17,27 @@ func calcTextHeightForWidth(width _width: CGFloat, text _text: String) -> CGFloa
     return (CGFloat)((ceilf(fl)+22)*0.75);
 }
 
+func calc2TextHeightForWidth(width _width: CGFloat, text _text: NSString, font _font: UIFont) -> CGFloat {
+    var calc_size = _text.boundingRectWithSize(
+        CGSizeMake(_width, 0),
+        options: NSStringDrawingOptions.UsesLineFragmentOrigin,
+        attributes: [NSFontAttributeName:_font],
+        context: nil)
+    return calc_size.height;
+}
+
+func calc3TextHeightForWidth(width _width:CGFloat, text _text: NSString, font _font:UIFont) -> CGFloat{
+    let label:UILabel = UILabel(frame: CGRectMake(0, 0, _width, CGFloat.max))
+    label.numberOfLines = 0
+    label.lineBreakMode = NSLineBreakMode.ByWordWrapping
+    label.font = _font
+    label.text = _text as String
+    
+    label.sizeToFit()
+    let fH = CGFloat(Float(label.frame.size.height) as Float) as CGFloat
+    return fH
+}
+
 /**
  * custom scaling functions
  */
@@ -38,7 +59,7 @@ func getVC(withId _storyboardId: String) -> UIViewController {
 /**
  * Create custom sharing VC
  */
-func shareInfo(title _title: String?, text _text: String?, url _url: String?, img _img: String?) {
+func shareInfo(title _title: String?, text _text: String?, url _url: String?, img _img: UIImage!) {
     var items: [AnyObject] = [] as [AnyObject]
     
     if let t = _title {
@@ -51,7 +72,7 @@ func shareInfo(title _title: String?, text _text: String?, url _url: String?, im
         items.append(NSURL(string: u) as NSURL!)
     }
     if let i = _img {
-        items.append(UIImage(named: i) as UIImage!)
+        items.append(_img)
     }
     
     var activity =  UIActivityViewController(activityItems: items, applicationActivities: nil)

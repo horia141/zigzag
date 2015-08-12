@@ -25,11 +25,7 @@ extension MenuRowCellSource {
         cell?.Icon.image = UIImage(named: self.getIcon())
         cell?.Icon.image = cell?.Icon.image?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
         cell?.Icon.tintColor = UIColor(red: 0.7, green: 0.7, blue: 0.7, alpha: 1)
-        
-        // set background color
-        if (indexPath.row % 2 == 0){
-            cell?.backgroundColor = UIColor(red: 0.98, green: 0.98, blue: 0.98, alpha: 1)
-        }
+        cell?.backgroundColor = UIColor.clearColor()
         
         return cell!
     }

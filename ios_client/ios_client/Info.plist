@@ -15,7 +15,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>ZigZag</string>
+	<string>PicJar</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -45,5 +45,12 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Arial.ttf</string>
+		<string>Arial Italic.ttf</string>
+		<string>Arial Bold.ttf</string>
+		<string>Arial Bold Italic.ttf</string>
+	</array>
 </dict>
 </plist>

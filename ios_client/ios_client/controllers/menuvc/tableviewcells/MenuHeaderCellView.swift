@@ -11,14 +11,15 @@ import UIKit
  */
 class MenuHeaderCellView: UITableViewCell {
 
-    @IBOutlet weak var ZZLogoTitle: UILabel!
+    /**
+     * outlets
+     */
+    @IBOutlet weak var titleLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
         
-        ZZLogoTitle.layer.cornerRadius = 7
-        ZZLogoTitle.layer.masksToBounds = true
     }
 
     override func setSelected(selected: Bool, animated: Bool) {

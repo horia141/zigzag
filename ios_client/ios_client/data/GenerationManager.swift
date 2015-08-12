@@ -22,8 +22,9 @@ class GenerationManager: NSObject, ConnectionManagerProtocol {
     /**
      * private constants
      */
-    private let GEN_URL = "http://horia141.com:9000/api/v1/nextgen?output=json&from=" as String
-    private let IMG_URL = "http://horia141.com:9001/" as String
+    
+    private let GEN_URL = "http://picjar.io/api/v1/nextgen?output=json&from=" as String
+    private let IMG_URL = "http://picjar.io/res/" as String
     
     /**
      * connection variables

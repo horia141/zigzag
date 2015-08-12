@@ -12,12 +12,10 @@ import UIKit
  */
 class LoadVC: UIViewController, GenerationManagerProtocol {
 
+    @IBOutlet weak var titleIco: UIImageView!
     /**
      * Outlet variables
      */
-    @IBOutlet weak var zigzag_logo_shadow: UIView!
-    @IBOutlet weak var zigzag_logo_label: UILabel!
-    
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
@@ -25,11 +23,9 @@ class LoadVC: UIViewController, GenerationManagerProtocol {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // make the logo and shadow have borders
-        self.zigzag_logo_label.layer.cornerRadius = 10;
-        self.zigzag_logo_label.layer.masksToBounds = true
-        self.zigzag_logo_shadow.layer.cornerRadius = 10;
-        self.zigzag_logo_shadow.layer.masksToBounds = true
+        // style for the icon
+        titleIco.layer.cornerRadius = 15.0
+        titleIco.layer.masksToBounds = true
         
         // Do any additional setup after loading the view, typically from a nib.
         GenerationManager.sharedInstance.generation_delegate = self

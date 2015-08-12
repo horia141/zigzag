@@ -59,15 +59,15 @@ class MainVM: NSObject, UITableViewDataSource {
                 // now create cell sources for the photo cell source object
                 var subcellsources: [CellSource] = []
                 
-                // append the tiles
-                for tile in photo_data.getTiles() {
-                    subcellsources.append(TileCellSource(tile: tile as Tile, isMovie: false, video: nil))
-                }
-                
                 // append subtitle, if exists
                 // @Warning: have to fix this check to be better
                 if (subtitle != ""){
                     subcellsources.append(SubtitleCellSource(subtitle: subtitle))
+                }
+                
+                // append the tiles
+                for tile in photo_data.getTiles() {
+                    subcellsources.append(TileCellSource(tile: tile as Tile, isMovie: false, video: nil))
                 }
                 
                 // append description, if exists
@@ -86,14 +86,14 @@ class MainVM: NSObject, UITableViewDataSource {
                 // now create cell sources for the video cell source object
                 var subcellsources: [CellSource] = []
                 
-                // append the first frame
-                subcellsources.append(TileCellSource(tile: photo_data.getFirstFrame(), isMovie: true, video: photo_data.getVideo()))
-                
                 // append subtitle, if exists
                 // @Warning: have to fix this check to be better
                 if (subtitle != ""){
                     subcellsources.append(SubtitleCellSource(subtitle: subtitle))
                 }
+                
+                // append the first frame
+                subcellsources.append(TileCellSource(tile: photo_data.getFirstFrame(), isMovie: true, video: photo_data.getVideo()))
                 
                 // append description, if exists
                 // @Warning: have to fix this check to be better

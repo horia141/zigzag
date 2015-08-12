@@ -58,6 +58,7 @@ class TileCellSource: CellSource, TileCellViewProtocol{
         mplayer.fullscreen = true
         mplayer.controlStyle = MPMovieControlStyle.None
         mplayer.scalingMode = .AspectFill
+        mplayer.repeatMode = MPMovieRepeatMode.One
         mplayer.prepareToPlay()
         self.videoContainer!.addSubview(mplayer.view)
         mplayer.play()

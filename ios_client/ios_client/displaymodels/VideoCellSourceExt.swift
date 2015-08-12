@@ -30,6 +30,6 @@ extension VideoCellSource{
         for cell_src in self.getSubCellSources() {
             h += (cell_src as CellSource).heightForRowAtIndexPath()
         }
-        return h+8
+        return h+16
     }
 }

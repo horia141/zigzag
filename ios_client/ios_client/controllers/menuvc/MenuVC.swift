@@ -35,6 +35,11 @@ class MenuVC: UIViewController, UITableViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+//        var imgv = UIImageView(frame: UIScreen.mainScreen().bounds)
+//        imgv.image = UIImage(named: "background_2")
+//        self.MenuTable.addSubview(imgv)
+//        self.view.bringSubviewToFront(self.MenuTable)
+        
         // register nibs and such
         self.MenuTable.registerNib(UINib(nibName: "MenuHeaderCellView", bundle: nil), forCellReuseIdentifier: "MenuHeaderCellViewId")
         self.MenuTable.registerNib(UINib(nibName: "MenuRowCellView", bundle: nil), forCellReuseIdentifier: "MenuRowCellViewId")
@@ -74,33 +79,57 @@ class MenuVC: UIViewController, UITableViewDelegate {
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        if (indexPath.row == 5){
-            
-            shareInfo(title: "ZigZag", text: "Tell all your friends about ZigZag! Now!", url: "http://zigzag.com", img: "shareicon")
-            
+        // get real index
+        var realIndex = 0 as NSInteger
+        
+        // no action cases
+        if (indexPath.row == 0 || indexPath.row == 3 || indexPath.row == 6){
+            return
         }
-        else {
-            // initial re-setup
-            self.menuOpened = false
-            
-            // close the menu and change the view controller
-            var frame = self.current_vc.view.frame
-            frame.origin.x = 0
-            
-            UIView.animateWithDuration(
-                0.25,
-                // perform animation
-                animations: { () -> Void in
-                    self.current_vc.view.frame = frame
-                },
-                completion: { (Bool) -> Void in
-                    self.current_vc.view.removeFromSuperview()
-                    
-                    var object = self.menu_vm.getCellSourceAtIndexPath(indexPath) as! MenuRowCellSource
-                    self.performSegueWithIdentifier(object.getSegue(), sender: self)
-                }
+        // share case
+        else if (indexPath.row == 7){
+            shareInfo(
+                title: "PicJar",
+                text: "Tell all your friends about PicJar! Now!",
+                url: "http://picjar.com",
+                img: UIImage(named: "shareicon")
             )
+            return
         }
+        // segue cases
+        else if (indexPath.row == 1){
+            realIndex = 0
+        }
+        else if (indexPath.row == 2){
+            realIndex = 1
+        }
+        else if (indexPath.row == 4){
+            realIndex = 2
+        }
+        else if (indexPath.row == 5){
+            realIndex = 3
+        }
+        
+        // initial re-setup
+        self.menuOpened = false
+        
+        // close the menu and change the view controller
+        var frame = self.current_vc.view.frame
+        frame.origin.x = 0
+        
+        UIView.animateWithDuration(
+            0.25,
+            // perform animation
+            animations: { () -> Void in
+                self.current_vc.view.frame = frame
+            },
+            completion: { (Bool) -> Void in
+                self.current_vc.view.removeFromSuperview()
+                
+                var object = self.menu_vm.getCellSourceAtIndexPath(indexPath) as! MenuRowCellSource
+                self.performSegueWithIdentifier(object.getSegue(), sender: self)
+            }
+        )
     }
     
     /**

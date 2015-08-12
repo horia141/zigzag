@@ -30,7 +30,11 @@ extension DescriptionCellSource{
     }
     
     override func heightForRowAtIndexPath() -> CGFloat {
-        var text_w = UIScreen.mainScreen().bounds.width - 32
-        return calcTextHeightForWidth(width: text_w, text: self.getDescriptionText())+16
+        var text_w = UIScreen.mainScreen().bounds.width - 16
+        return calc3TextHeightForWidth(
+            width: text_w,
+            text: self.getDescriptionText(),
+            font: UIFont(name: "ArialMT", size: 14)!
+        )+8
     }
 }

@@ -23,11 +23,13 @@ class MenuVM: NSObject, UITableViewDataSource {
         super.init()
         
         // populate menus array
-        menu_sources.append(MenuHeaderCellSource())
+        menu_sources.append(MenuHeaderCellSource(title: "PicJar"))
         menu_sources.append(MenuRowCellSource(title: "Home", segue: "MenuToMainSegue", icon: "1.home"))
         menu_sources.append(MenuRowCellSource(title: "My prefferences", segue: "MenuToPrefSegue", icon: "2.pref"))
+        menu_sources.append(MenuHeaderCellSource(title: "Legal stuff"))
         menu_sources.append(MenuRowCellSource(title: "Terms and conditions", segue: "MenuToTermsSegue", icon: "3.terms"))
         menu_sources.append(MenuRowCellSource(title: "About", segue: "MenuToAboutSegue", icon: "4.about"))
+        menu_sources.append(MenuHeaderCellSource(title: "Tell your friends"))
         menu_sources.append(MenuRowCellSource(title: "Share app", segue: "MenuToShareSegue", icon: "5.share"))
     }
     

@@ -54,11 +54,9 @@ class MainVC: UIViewController, UITableViewDelegate {
         self.navigationBar.frame = frame
         
         var frame2 = self.ArtifactTable.frame
-        frame2.origin.y = 12
+        frame2.origin.y = 9
         frame2.size.height = UIScreen.mainScreen().bounds.size.height - 32
         self.ArtifactTable.frame = frame2
-        
-        println(NSStringFromCGRect(frame2))
     }
     
     override func viewDidLoad() {
@@ -137,7 +135,25 @@ class MainVC: UIViewController, UITableViewDelegate {
     
     @IBAction func shareArtifact(sender: AnyObject) {
         var artifact = self.mainVM.vm_artifact
-        shareInfo(title: "Look what I found on ZigZag today", text: artifact.getTitle(), url: artifact.getPageUri(), img: "shareicon")
+        var pdata = (self.mainVM.vm_artifact.getPhotoDescriptions().first as PhotoDescription!).getPhotoData() as PhotoData!
+        
+        // determine the actual URL
+        var url = "" as String
+        if (pdata.getType() == PhotoData.getImagePhotoDataType()){
+            url = (pdata as! ImagePhotoData).getTiles().first?.getFullUriPath() as String!
+        }
+        else {
+            url = (pdata as! VideoPhotoData).getFirstFrame().getFullUriPath() as String!
+        }
+        
+        // load image async
+        asyncImageLoad(url, { (image: UIImage, size: CGRect) in
+            shareInfo(
+                title: "Look what I found on PicJar today",
+                text: artifact.getTitle(),
+                url: artifact.getPageUri(),
+                img: image)
+        })
     }
     
     /*

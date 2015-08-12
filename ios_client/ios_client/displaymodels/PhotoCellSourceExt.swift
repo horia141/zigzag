@@ -18,7 +18,8 @@ extension PhotoCellSource{
         
         // init this cell
         cell?.initWithSubCellSources(self.getSubCellSources())
-        
+//        cell?.layer.borderColor = UIColor.blackColor().CGColor
+//        cell?.layer.borderWidth = 2.0
         return cell!
     }
     
@@ -27,6 +28,6 @@ extension PhotoCellSource{
         for cell_src in self.getSubCellSources() {
             h += (cell_src as CellSource).heightForRowAtIndexPath()
         }
-        return h+8
+        return h+16
     }
 }

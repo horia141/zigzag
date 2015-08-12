@@ -20,11 +20,11 @@ class MenuRowCellView: UITableViewCell {
         super.setSelected(selected, animated: animated)
     
         // find out color
-        var text_color: UIColor = UIColor.blackColor()
+        var text_color: UIColor = UIColor(red: 0.85, green: 0.85, blue: 0.85, alpha: 1)
         var icon_color: UIColor = UIColor(red: 0.7, green: 0.7, blue: 0.7, alpha: 1)
         if (selected){
-            text_color = UIColor(red: 44/255.0, green: 130/255.0, blue: 201/255.0, alpha: 1)
-            icon_color = UIColor(red: 44/255.0, green: 130/255.0, blue: 201/255.0, alpha: 1)
+            text_color = UIColor.whiteColor()
+            icon_color = UIColor(red: 37/255.0, green: 183/255.0, blue: 211/255.0, alpha: 1)
         }
         
         // set the actual colors

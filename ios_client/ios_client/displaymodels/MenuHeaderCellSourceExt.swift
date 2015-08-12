@@ -20,10 +20,14 @@ extension MenuHeaderCellSource {
             cell = MenuHeaderCellView()
         }
         
+        // set title
+        cell?.titleLabel.text = self.getTitle()
+        cell?.selectionStyle = UITableViewCellSelectionStyle.None
+        
         return cell!
     }
     
     override func heightForRowAtIndexPath() -> CGFloat {
-        return 200
+        return 50
     }
 }

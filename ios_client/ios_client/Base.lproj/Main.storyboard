@@ -13,8 +13,8 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="mzz-ub-fuB">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="backgroundColor" red="0.40784313725490196" green="0.71372549019607845" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <color key="barTintColor" red="0.40784313729999999" green="0.71372549019999998" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.14509803921568629" green="0.71764705882352942" blue="0.82745098039215681" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="barTintColor" red="0.14509803921568629" green="0.71764705882352942" blue="0.82745098039215681" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <textAttributes key="titleTextAttributes">
                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
                             <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -34,11 +34,11 @@
         <!--MenuVC-->
         <scene sceneID="dst-hC-inp">
             <objects>
-                <viewController id="PXr-3W-XDK" customClass="MenuVC" customModule="ios_client" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="PXr-3W-XDK" customClass="MenuVC" customModule="picjar" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="F9p-Y9-JaQ" userLabel="MenuTable">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="536"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.031372549019607843" green="0.16078431372549021" blue="0.18431372549019609" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <connections>
                             <outlet property="dataSource" destination="PXr-3W-XDK" id="Sde-yJ-AN6"/>
                             <outlet property="delegate" destination="PXr-3W-XDK" id="72j-jd-gz1"/>
@@ -46,10 +46,10 @@
                     </tableView>
                     <connections>
                         <outlet property="MenuTable" destination="F9p-Y9-JaQ" id="ywk-nt-tPB"/>
-                        <segue destination="0ZC-9c-tUU" kind="custom" identifier="MenuToTermsSegue" customClass="MenuGoSegue" customModule="ios_client" customModuleProvider="target" id="4kT-FU-NTx"/>
-                        <segue destination="H2E-C8-ekH" kind="custom" identifier="MenuToMainSegue" customClass="MenuGoSegue" customModule="ios_client" customModuleProvider="target" id="4UH-eq-KV4"/>
-                        <segue destination="TUB-La-n3T" kind="custom" identifier="MenuToPrefSegue" customClass="MenuGoSegue" customModule="ios_client" customModuleProvider="target" id="rLR-rQ-SdE"/>
-                        <segue destination="e3R-OQ-KWJ" kind="custom" identifier="MenuToAboutSegue" customClass="MenuGoSegue" customModule="ios_client" customModuleProvider="target" id="o0w-RM-IeJ"/>
+                        <segue destination="0ZC-9c-tUU" kind="custom" identifier="MenuToTermsSegue" customClass="MenuGoSegue" customModule="picjar" customModuleProvider="target" id="4kT-FU-NTx"/>
+                        <segue destination="H2E-C8-ekH" kind="custom" identifier="MenuToMainSegue" customClass="MenuGoSegue" customModule="picjar" customModuleProvider="target" id="4UH-eq-KV4"/>
+                        <segue destination="TUB-La-n3T" kind="custom" identifier="MenuToPrefSegue" customClass="MenuGoSegue" customModule="picjar" customModuleProvider="target" id="rLR-rQ-SdE"/>
+                        <segue destination="e3R-OQ-KWJ" kind="custom" identifier="MenuToAboutSegue" customClass="MenuGoSegue" customModule="picjar" customModuleProvider="target" id="o0w-RM-IeJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UUb-rY-vvh" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -59,7 +59,7 @@
         <!--LoadVC-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
-                <viewController automaticallyAdjustsScrollViewInsets="NO" id="vXZ-lx-hvc" customClass="LoadVC" customModule="ios_client" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="vXZ-lx-hvc" customClass="LoadVC" customModule="picjar" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Dg2-3N-TZb"/>
                         <viewControllerLayoutGuide type="bottom" id="HAt-ke-MiN"/>
@@ -68,57 +68,44 @@
                         <rect key="frame" x="0.0" y="64" width="600" height="536"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="template_image" translatesAutoresizingMaskIntoConstraints="NO" id="0YU-QJ-Br8" userLabel="Background">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="536"/>
-                            </imageView>
-                            <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wa2-WC-Ogr">
-                                <rect key="frame" x="300" y="150" width="222" height="82"/>
-                                <subviews>
-                                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nEZ-cE-NmU" userLabel="Shadow">
-                                        <rect key="frame" x="8" y="7" width="75" height="75"/>
-                                        <color key="backgroundColor" red="0.21176470588235294" green="0.61960784313725492" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                    </view>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="ZZ" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Rx6-ka-bwU" userLabel="ZZLogo Title">
-                                        <rect key="frame" x="0.0" y="0.0" width="75" height="75"/>
-                                        <color key="backgroundColor" red="0.40784313729999999" green="0.71372549019999998" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <fontDescription key="fontDescription" name="Futura-CondensedExtraBold" family="Futura" pointSize="46"/>
-                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="zigzag_pilgi" translatesAutoresizingMaskIntoConstraints="NO" id="N1C-Yq-ruU">
-                                        <rect key="frame" x="91" y="7" width="137" height="68"/>
-                                    </imageView>
-                                </subviews>
-                            </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Loading..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jfH-ij-NY6">
-                                <rect key="frame" x="300" y="321" width="66" height="17"/>
-                                <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="15"/>
-                                <color key="textColor" red="0.32549019607843138" green="0.32549019607843138" blue="0.32549019607843138" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="© PicJar 2015" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KXu-YO-OWO">
+                                <rect key="frame" x="16" y="501" width="568" height="21"/>
+                                <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="17"/>
+                                <color key="textColor" red="0.95294117649999999" green="0.95294117649999999" blue="0.95294117649999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="picjar_bigico" translatesAutoresizingMaskIntoConstraints="NO" id="drx-gw-5cH">
+                                <rect key="frame" x="236" y="131" width="128" height="128"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="128" id="LQh-Os-scv"/>
+                                    <constraint firstAttribute="height" constant="128" id="jP9-aN-wH6"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.031372549019607843" green="0.16078431372549021" blue="0.18431372549019609" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="wa2-WC-Ogr" firstAttribute="top" secondItem="Dg2-3N-TZb" secondAttribute="top" priority="999" constant="150" id="3ov-0k-GNz"/>
-                            <constraint firstAttribute="centerX" secondItem="wa2-WC-Ogr" secondAttribute="centerX" id="9gS-pX-lI1"/>
-                            <constraint firstAttribute="centerX" secondItem="jfH-ij-NY6" secondAttribute="centerX" id="Tnj-gW-9wj"/>
+                            <constraint firstItem="KXu-YO-OWO" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" id="0Zb-Bt-uVx"/>
+                            <constraint firstItem="KXu-YO-OWO" firstAttribute="trailing" secondItem="kh9-bI-dsS" secondAttribute="trailingMargin" id="3R9-mF-bGQ"/>
+                            <constraint firstItem="KXu-YO-OWO" firstAttribute="top" secondItem="Dg2-3N-TZb" secondAttribute="bottom" constant="501" id="8QK-UG-gxg"/>
+                            <constraint firstItem="drx-gw-5cH" firstAttribute="top" secondItem="Dg2-3N-TZb" secondAttribute="bottom" constant="131" id="DON-Ze-MHr"/>
+                            <constraint firstAttribute="centerX" secondItem="drx-gw-5cH" secondAttribute="centerX" id="SCJ-FP-Cen"/>
+                            <constraint firstItem="HAt-ke-MiN" firstAttribute="top" secondItem="KXu-YO-OWO" secondAttribute="bottom" constant="14" id="ubj-S7-qpn"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="Pps-rs-4d3"/>
                     <connections>
-                        <outlet property="zigzag_logo_label" destination="Rx6-ka-bwU" id="wGd-bD-Bpb"/>
-                        <outlet property="zigzag_logo_shadow" destination="nEZ-cE-NmU" id="cOk-CB-Sco"/>
+                        <outlet property="titleIco" destination="drx-gw-5cH" id="ZEF-SS-QRv"/>
                         <segue destination="PXr-3W-XDK" kind="show" identifier="LoadVCtoMenuVCSegue" id="0Xi-SW-W6x"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-151" y="1445"/>
+            <point key="canvasLocation" x="-147" y="1445"/>
         </scene>
         <!--MainVC-->
         <scene sceneID="5Gu-c0-BX5">
             <objects>
-                <viewController storyboardIdentifier="MainVCId" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="H2E-C8-ekH" customClass="MainVC" customModule="ios_client" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MainVCId" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="H2E-C8-ekH" customClass="MainVC" customModule="picjar" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="r0i-AX-Srp"/>
                         <viewControllerLayoutGuide type="bottom" id="rgV-Zc-vcL"/>
@@ -140,8 +127,8 @@
                             </tableView>
                             <navigationBar contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TAh-Vg-fLE">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
-                                <color key="backgroundColor" red="0.40784313729999999" green="0.71372549019999998" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <color key="barTintColor" red="0.40784313729999999" green="0.71372549019999998" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.14509803921568629" green="0.71764705882352942" blue="0.82745098039215681" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="barTintColor" red="0.14509803921568629" green="0.71764705882352942" blue="0.82745098039215681" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <textAttributes key="titleTextAttributes">
                                     <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="14"/>
                                     <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -175,6 +162,10 @@
                                     </navigationItem>
                                 </items>
                             </navigationBar>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XYB-0l-07Z" userLabel="statusBackground">
+                                <rect key="frame" x="0.0" y="-20" width="600" height="20"/>
+                                <color key="backgroundColor" red="0.015686274509803921" green="0.66666666666666663" blue="0.78823529411764703" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
@@ -216,7 +207,7 @@
         <!--TermsVC-->
         <scene sceneID="baM-G4-YtJ">
             <objects>
-                <viewController id="0ZC-9c-tUU" customClass="TermsVC" customModule="ios_client" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="0ZC-9c-tUU" customClass="TermsVC" customModule="picjar" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="YbJ-g9-y5h"/>
                         <viewControllerLayoutGuide type="bottom" id="oFv-ad-9ho"/>
@@ -227,8 +218,8 @@
                         <subviews>
                             <navigationBar contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PVP-B2-EIk">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
-                                <color key="backgroundColor" red="0.40784313729999999" green="0.71372549019999998" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <color key="barTintColor" red="0.40784313729999999" green="0.71372549019999998" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.14509803921568629" green="0.71764705882352942" blue="0.82745098039215681" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="barTintColor" red="0.14509803921568629" green="0.71764705882352942" blue="0.82745098039215681" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <textAttributes key="titleTextAttributes">
                                     <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="14"/>
                                     <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -259,6 +250,10 @@ Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium dolor
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oi4-Hg-IWt" userLabel="statusBackground">
+                                <rect key="frame" x="0.0" y="-20" width="600" height="20"/>
+                                <color key="backgroundColor" red="0.015686274510000001" green="0.66666666669999997" blue="0.78823529410000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -281,7 +276,7 @@ Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium dolor
         <!--AboutVC-->
         <scene sceneID="han-Ru-C2X">
             <objects>
-                <viewController id="e3R-OQ-KWJ" customClass="AboutVC" customModule="ios_client" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="e3R-OQ-KWJ" customClass="AboutVC" customModule="picjar" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="fsE-dp-kpu"/>
                         <viewControllerLayoutGuide type="bottom" id="lXX-62-8Dq"/>
@@ -292,8 +287,8 @@ Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium dolor
                         <subviews>
                             <navigationBar contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gZY-oM-I4I">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
-                                <color key="backgroundColor" red="0.40784313729999999" green="0.71372549019999998" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <color key="barTintColor" red="0.40784313729999999" green="0.71372549019999998" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.14509803921568629" green="0.71764705882352942" blue="0.82745098039215681" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="barTintColor" red="0.14509803921568629" green="0.71764705882352942" blue="0.82745098039215681" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <textAttributes key="titleTextAttributes">
                                     <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="14"/>
                                     <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -325,6 +320,10 @@ Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium dolor
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="n6B-Ku-bR9" userLabel="statusBackground">
+                                <rect key="frame" x="0.0" y="-20" width="600" height="20"/>
+                                <color key="backgroundColor" red="0.015686274510000001" green="0.66666666669999997" blue="0.78823529410000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -347,7 +346,7 @@ Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium dolor
         <!--PrefVC-->
         <scene sceneID="NqO-K2-5zV">
             <objects>
-                <viewController id="TUB-La-n3T" customClass="PrefVC" customModule="ios_client" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="TUB-La-n3T" customClass="PrefVC" customModule="picjar" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="lOt-my-WKK"/>
                         <viewControllerLayoutGuide type="bottom" id="lAI-93-OvV"/>
@@ -358,8 +357,8 @@ Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium dolor
                         <subviews>
                             <navigationBar contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vUQ-l1-T28">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
-                                <color key="backgroundColor" red="0.40784313729999999" green="0.71372549019999998" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <color key="barTintColor" red="0.40784313729999999" green="0.71372549019999998" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.14509803921568629" green="0.71764705882352942" blue="0.82745098039215681" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="barTintColor" red="0.14509803921568629" green="0.71764705882352942" blue="0.82745098039215681" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <textAttributes key="titleTextAttributes">
                                     <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="14"/>
                                     <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -382,6 +381,10 @@ Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium dolor
                                     </navigationItem>
                                 </items>
                             </navigationBar>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LnT-wX-Iy2" userLabel="statusBackground">
+                                <rect key="frame" x="0.0" y="-20" width="600" height="20"/>
+                                <color key="backgroundColor" red="0.015686274510000001" green="0.66666666669999997" blue="0.78823529410000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -401,8 +404,7 @@ Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium dolor
     </scenes>
     <resources>
         <image name="burger_menu_btn" width="46" height="37"/>
+        <image name="picjar_bigico" width="512" height="512"/>
         <image name="share_btn" width="50" height="50"/>
-        <image name="template_image" width="375" height="667"/>
-        <image name="zigzag_pilgi" width="137" height="68"/>
     </resources>
 </document>

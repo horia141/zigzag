@@ -16,17 +16,25 @@ extension TitleCellSource{
         if (cell == nil){
             cell = TitleCellView()
         }
-        
-        // customize
-        cell?.TitleLabel.text = self.getTitle().capitalizedString
-        cell?.SourceLabel.text = self.getSource()
-        cell?.DateLabel.text = self.getPostDate()
+                
+        // customize text
+        cell?.TitleLabel.text = self.getTitle()
+        cell?.DateLabel.text = "\(self.getPostDate()) by \(self.getSource())"
+    
+//        cell?.TitleLabel.layer.borderColor = UIColor.greenColor().CGColor
+//        cell?.TitleLabel.layer.borderWidth = 1.0
+//        cell?.DateLabel.layer.borderColor = UIColor.blueColor().CGColor
+//        cell?.DateLabel.layer.borderWidth = 1.0
         
         return cell!
     }
     
     override func heightForRowAtIndexPath() -> CGFloat {
-        var width = self.getMaxCellWidth()
-        return 48 + calcTextHeightForWidth(width: width, text: self.getTitle())
+        var width = UIScreen.mainScreen().bounds.width - 24
+        return calc2TextHeightForWidth(
+            width: self.getMaxCellWidth(),
+            text: self.getTitle(),
+            font: UIFont(name: "Arial-BoldMT", size: 18)!
+        ) + 48
     }
 }
