@@ -111,7 +111,7 @@ public class PhotoCache implements Cache {
             writeHeaders(headersFileForKey(key), key, entry);
             writeContent(contentFileForKey(key), entry);
         } catch (IOException e) {
-            throw new RuntimeException("Could not write cache entry");
+            throw new RuntimeException("Could not write cache entry", e);
         }
     }
 
