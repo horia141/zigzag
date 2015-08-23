@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -47,6 +46,19 @@ public class ArtifactFragment extends Fragment
         int artifactLocalId = args.getInt(ARTIFACT_LOCAL_ID);
         String artifactPageUri = args.getString(ARTIFACT_PAGE_URI);
         artifact = Controller.getInstance(getActivity()).getArtifactByPageUri(artifactPageUri);
+
+        if (artifact == null) {
+            // This should not normally happen, since we usually get here through a normal flow of
+            // {@link StartUpActivity} -> {@link MediaCarouselActivity} ->
+            // {@link ArtifactCarouselFragment} -> {@link ArtifactFragment}. However, sometimes the
+            // system seems to hang on to this fragment, and starts it up without the proper flow.
+            // In that case, the {@link Controller} will be fresh. We need to reload it. Or better
+            // yet, start a fresh flow.
+            Intent startUpIntent = new Intent(getActivity(), StartUpActivity.class);
+            startActivity(startUpIntent);
+            return (ArtifactView) inflater.inflate(
+                    R.layout.fragment_artifact, container, false);
+        }
         ArtifactSource artifactSource = Controller.getInstance(getActivity())
                 .getSourceForArtifact(artifact);
         Date dateAdded = Controller.getInstance(getActivity()).getDateForArtifact(artifact);
@@ -68,12 +80,22 @@ public class ArtifactFragment extends Fragment
     @Override
     public void onStart() {
         super.onStart();
+
+        if (artifact == null) {
+            return;
+        }
+
         attachPhotoResources();
     }
 
     @Override
     public void onStop() {
         super.onStop();
+
+        if (artifact == null) {
+            return;
+        }
+
         Controller.getInstance(getActivity()).deregisterArtifactResources(artifact, this);
     }
 
