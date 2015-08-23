@@ -35,6 +35,7 @@ class GenerationManager: NSObject, ConnectionManagerProtocol {
      * Generation manager variables
      */
     private var cur_generation: Generation! = nil
+    private var gen_start: String = "latest"
     private var gen_i: Int = 0
     private var artifacts: [Artifact] = []
     private var cur_artifact: Artifact! = nil
@@ -67,8 +68,9 @@ class GenerationManager: NSObject, ConnectionManagerProtocol {
      * function that for now just takes the latest generation
      */
     func downloadNextGeneration(){
-        gen_i++;
+//        gen_i--;
         var localURL = GEN_URL+"\(gen_i)"
+        println("Getting generation \(localURL)")
         self.conn_manager.makeRequest(localURL)
     }
     
@@ -110,8 +112,14 @@ class GenerationManager: NSObject, ConnectionManagerProtocol {
         var parser = GenerationParser(data: packet) as GenerationParser
         parser.startParsingData()
         self.cur_generation = parser.getParsedGeneration()
+        
         self.artifacts += self.cur_generation.getArtifacts()
         self.max_art_i += self.cur_generation.getArtifacts().count
+        
+        // get info about the current generation <i>
+        self.gen_i = self.cur_generation.getId().getId() as Int
+        
+        println("generation i: \(self.gen_i)")
         
         // just when loading
         if (self.cur_artifact == nil){

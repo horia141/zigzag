@@ -35,7 +35,7 @@ func asyncImageLoad(urlstring: NSString, success: (UIImage, CGRect) -> ()){
         
         // go back
         dispatch_async(dispatch_get_main_queue()) {
-            println("loaded \(fullurl)")
+//            println("loaded \(fullurl)")
             // call success function
             success(newImage, CGRectMake(0, 0, screen_w, new_h))
         }
