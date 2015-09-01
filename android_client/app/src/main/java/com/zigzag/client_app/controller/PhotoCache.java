@@ -57,7 +57,7 @@ public class PhotoCache implements Cache {
         if (!resDir.exists()) {
             boolean created = resDir.mkdirs();
             if (!created) {
-                throw new RuntimeException("Unbale to create res directory");
+                throw new RuntimeException("Unable to create res directory");
             }
         }
     }
