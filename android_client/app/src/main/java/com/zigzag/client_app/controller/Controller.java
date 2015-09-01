@@ -115,7 +115,7 @@ public final class Controller {
 
     private static final String NAME = "ZizZag";
     private static final String CACHE_PATH = "volley-cache";
-    private static final int CACHE_SIZE = 100;
+    private static final int CACHE_SIZE = 250;
     private static final Pattern CACHEABLE_FILES_PATTERN = Pattern.compile(definesConstants.CACHEABLE_FILES_PATTERN);
     private static final String REQUESTS_TAG = NAME;
     private static final int API_NEXTGEN_RETRIES = 10;
