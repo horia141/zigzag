@@ -217,7 +217,7 @@ public class PhotoCache implements Cache {
     public File contentFileForKey(String key) {
         // This function assumes the keys are something like http://[host]/[path].(jpg|mp4).
         Uri keyAsUri = Uri.parse(key);
-        return new File(rootDirectory, keyAsUri.getPath());
+        return new File(rootDirectory, keyAsUri.getLastPathSegment());
     }
 
     private void removeAllFiles() {
