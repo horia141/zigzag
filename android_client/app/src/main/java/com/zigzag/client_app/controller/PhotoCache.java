@@ -52,9 +52,13 @@ public class PhotoCache implements Cache {
                 throw new RuntimeException("Unable to create cache root directory");
             }
         }
-        File resDir = new File(newRootDirectory, "res");
+
+        File resDir = new File(rootDirectory, "res");
         if (!resDir.exists()) {
-            resDir.mkdir();
+            boolean created = resDir.mkdirs();
+            if (!created) {
+                throw new RuntimeException("Unbale to create res directory");
+            }
         }
     }
 
@@ -111,7 +115,7 @@ public class PhotoCache implements Cache {
             writeHeaders(headersFileForKey(key), key, entry);
             writeContent(contentFileForKey(key), entry);
         } catch (IOException e) {
-            throw new RuntimeException("Could not write cache entry", e);
+            Log.e("ZigZag/PhotoCache", "Could not write cache entry", e);
         }
     }
 
@@ -300,7 +304,7 @@ public class PhotoCache implements Cache {
             throw new IOException("No data to write to content file");
         }
 
-        OutputStream fos = new BufferedOutputStream(new FileOutputStream(contentFile));
+        OutputStream fos = new BufferedOutputStream(new FileOutputStream(contentFile.getAbsolutePath()));
         fos.write(entry.data);
         fos.close();
     }
