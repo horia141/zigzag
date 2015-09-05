@@ -78,6 +78,10 @@ const i64 BANDWIDTH_ALERT_BYTES_PER_MONTH = 1073741824; // 1GB
 // based on a 2000 image sample. They are mostly GIFs as well.
 const i64 MAXIMUM_FETCHED_PHOTO_SIZE_IN_BYTES = 5242880; // 5MB
 
+// TODO(horia141): investigate if this is still a problem after migration to a proper
+// CDN.            
+const string RES_SERVING_CACHE_CONTROL = "max-age=2592000";
+
 
 // TODO(horia141): perhaps this should not be here.
 const string IMGUR_CLIENT_ID = '0df7ad16acdd582'

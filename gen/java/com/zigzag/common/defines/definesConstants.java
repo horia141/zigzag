@@ -155,6 +155,8 @@ public class definesConstants {
 
   public static final long MAXIMUM_FETCHED_PHOTO_SIZE_IN_BYTES = 5242880L;
 
+  public static final String RES_SERVING_CACHE_CONTROL = "max-age=2592000";
+
   public static final String IMGUR_CLIENT_ID = "0df7ad16acdd582";
 
   public static final String IMGUR_CLIENT_SECRET = "67d3131c430b25d393e55f2eaa63252249b734df";

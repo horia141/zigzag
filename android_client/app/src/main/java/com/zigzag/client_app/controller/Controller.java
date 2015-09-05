@@ -109,6 +109,14 @@ public final class Controller {
 
         @Override
         protected Response<String> parseNetworkResponse(NetworkResponse response) {
+            // Sometimes the network overwrites the "Cache-Control" header with something like
+            // no-cache. Not necessarily a problem for other assets, but a big problem for videos,
+            // since it means the video data isn't written to the cache and is not acessible to the
+            // player later. So we need to override the cache control header with the value the
+            // resources serving system would have assigned it.
+            // TODO(horia141): investigate if this is still a problem after migration to a proper
+            // CDN.
+            response.headers.put("Cache-Control", definesConstants.RES_SERVING_CACHE_CONTROL);
             return Response.success("", HttpHeaderParser.parseCacheHeaders(response));
         }
     }
@@ -189,8 +197,8 @@ public final class Controller {
 
                     // Update the "model".
                     artifactSources.putAll(generation.getArtifact_sources());
-                    generationIds.add(generation.getId());
                     generations.add(generation);
+                    generationIds.add(generation.getId());
                     artifacts.addAll(generation.getArtifacts());
 
                     if (generation.getArtifacts().size() == 0) {

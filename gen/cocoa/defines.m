@@ -39,6 +39,7 @@ static int32_t common.definesPHOTO_MAX_WIDTH = 2048;
 static int32_t common.definesPHOTO_MAX_HEIGHT = 2048;
 static int64_t common.definesBANDWIDTH_ALERT_BYTES_PER_MONTH = 1073741824;
 static int64_t common.definesMAXIMUM_FETCHED_PHOTO_SIZE_IN_BYTES = 5242880;
+static NSString * common.definesRES_SERVING_CACHE_CONTROL = @"max-age=2592000";
 static NSString * common.definesIMGUR_CLIENT_ID = @"0df7ad16acdd582";
 static NSString * common.definesIMGUR_CLIENT_SECRET = @"67d3131c430b25d393e55f2eaa63252249b734df";
 static NSString * common.definesEXPLORER_USER_AGENT = @"ZigZag Explorer v1";
@@ -209,6 +210,9 @@ static NSString * common.definesURLS_APPSTORE = @"https://itunes.apple.com";
 }
 + (int64_t) MAXIMUM_FETCHED_PHOTO_SIZE_IN_BYTES{
   return common.definesMAXIMUM_FETCHED_PHOTO_SIZE_IN_BYTES;
+}
++ (NSString *) RES_SERVING_CACHE_CONTROL{
+  return common.definesRES_SERVING_CACHE_CONTROL;
 }
 + (NSString *) IMGUR_CLIENT_ID{
   return common.definesIMGUR_CLIENT_ID;
