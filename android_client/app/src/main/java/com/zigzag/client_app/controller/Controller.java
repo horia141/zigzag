@@ -37,8 +37,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 public final class Controller {
@@ -127,6 +129,7 @@ public final class Controller {
     private final ImageLoader imageLoader;
     private final Map<Long, ArtifactSource> artifactSources;
     private final List<Generation> generations;
+    private final Set<Long> generationIds;
     private final List<Artifact> artifacts;
     private final ModelDecoder modelDecoder;
     @Nullable private AllArtifactsListener allArtifactsListener;
@@ -140,6 +143,7 @@ public final class Controller {
         this.imageLoader = new ImageLoader(this.requestQueue, new ImageCache());
         this.artifactSources = new HashMap<>();
         this.generations = new ArrayList<>();
+        this.generationIds = new HashSet<>();
         this.artifacts = new ArrayList<>();
         this.modelDecoder = new ModelDecoder();
         this.allArtifactsListener = null;
@@ -175,8 +179,17 @@ public final class Controller {
 
                     Generation generation = nextGenResponse.getGeneration();
 
+                    if (generationIds.contains(generation.getId())) {
+                        // If we have already seen this generation, we complain about it, but we
+                        // do not add it again. This situation can occur when we send two fetchArtifact
+                        // calls in quick succession (before the first one can answer).
+                        listener.onError(String.format("Duplicate generation %d", generation.getId()));
+                        return;
+                    }
+
                     // Update the "model".
                     artifactSources.putAll(generation.getArtifact_sources());
+                    generationIds.add(generation.getId());
                     generations.add(generation);
                     artifacts.addAll(generation.getArtifacts());
 
