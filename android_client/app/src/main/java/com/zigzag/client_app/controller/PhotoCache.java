@@ -22,6 +22,24 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * ZigZag's implementation of the standard Volley Cache.
+ * 
+ * <p>We need a special implementation because the standard cache stores the full
+ * HTTP request with headers and body. Since the pattern for video resources is
+ * to give the video player a File where it should seek the video, using the cache
+ * file Volley maintains will blow up. AFAIK there's no way to get at the raw
+ * bytes content either.
+ * 
+ * <p>This cache stores the headers in a file and the body in another file. There
+ * are other simplifying assumptions as well: only images and videos from ZigZag's
+ * resource URL are cached (this is controlled by the newAllowedKeys argument).
+ * Everything else is simply not stored, therefore it will always trigger a cache
+ * miss on re-read.
+ * 
+ * <p>Other than that, the same Cache interface and behavior is exposed. In fact,
+ * this class is much inspired from the DiskBasedCache.
+ */
 public class PhotoCache implements Cache {
 
     private static final String COUNT_FILE_PATH = "counts";
@@ -31,6 +49,15 @@ public class PhotoCache implements Cache {
     private final File rootDirectory;
     private final int maxNumberOfElements;
     private final Pattern allowedKeys;
+    
+    // Cache operating state. Each entry has an id associated with it, which is
+    // a number from 0 to maxNumberOfElements. An entry is stored in two files,
+    // with names id.headers and id.contents. The entries map maps URLs to cache
+    // entries. The allocatedIdx map maps URLs to their assigned IDs. The
+    // reverseAllocatedIdxs map maps IDs to their URLs. Every operation on the
+    // cache needs to maintain the correctness of these structures. The "counts"
+    // file stores the contents of these structures on disk and it is read on
+    // initialization and updated on every put.
     private int currentIndex;
     private final Map<Integer, String> reverseAllocatedIdxs;
     private final Map<String, Integer> allocatedIdxs;
@@ -81,14 +108,18 @@ public class PhotoCache implements Cache {
     }
 
     public void put(String key, Entry entry) {
+        // Filter out keys with the wrong type. They don't get saved in the cache.
         Matcher keyMatcher = allowedKeys.matcher(key);
         if (!keyMatcher.matches()) {
             return;
         }
 
         String previousKey = null;
+        // The next bit is the only place where we have to care about synchronization.
+        // Put might get called from different threads concurrently. All the others
+        // are reads or done at initialization time.
         synchronized (this) {
-            // First, remove any existing key.
+            // First, remove any existing key from the internal structures.
             previousKey = reverseAllocatedIdxs.get(currentIndex);
             if (previousKey != null) {
                 reverseAllocatedIdxs.remove(currentIndex);
@@ -96,12 +127,12 @@ public class PhotoCache implements Cache {
                 entries.remove(previousKey);
             }
 
-            // Then, update the index with it.
+            // Then, update the internal structures with it.
             reverseAllocatedIdxs.put(currentIndex, key);
             allocatedIdxs.put(key, currentIndex);
             entries.put(key, entry);
 
-            // Modul update the counter.
+            // Modulo update the counter.
             currentIndex = (currentIndex + 1) % maxNumberOfElements;
         }
 
@@ -111,10 +142,15 @@ public class PhotoCache implements Cache {
                 contentFileForKey(previousKey).delete();
             }
 
+            // Overwrite metadata file with new internal state. 
             updateCountStatus();
+            // Write new cache entry information.
             writeHeaders(headersFileForKey(key), key, entry);
             writeContent(contentFileForKey(key), entry);
         } catch (IOException e) {
+            // TODO(horia141): rollback changes at this point? Not worth it, cause they
+            // will be overwritten by other changes, and, presumably, the caller is
+            // expecting whatever form of null we'll be returning.
             Log.e("ZigZag/PhotoCache", "Could not write cache entry", e);
         }
     }
@@ -133,6 +169,8 @@ public class PhotoCache implements Cache {
             // Do nothing.
         }
 
+        // If the cache configuration is wrong, restart it from scratch. We could try to rebuild it
+        // but it's not worth it. This thing happens super-rarely.
         if (maxNumberOfElements != previousMaxNumberOfElements || currentIndex >= maxNumberOfElements) {
             removeAllFiles();
         }
